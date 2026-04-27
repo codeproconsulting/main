@@ -151,37 +151,7 @@ function DestinationContent({ destination }: { destination: Destination }) {
         </div>
       </section>
 
-      {/* CTA strip */}
-      <section className="relative py-10 md:py-12 overflow-hidden bg-slate-50 border-t border-slate-200/80">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_55%_at_50%_0%,rgba(255,77,109,0.18),transparent_60%)]" />
-        <div className="max-w-7xl mx-auto px-6 relative z-10">
-          <div className="rounded-3xl border border-slate-200/80 bg-white/80 backdrop-blur p-5 md:p-7 shadow-sm">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-2xl border border-slate-200/80 flex items-center justify-center bg-[#FF4D6D]/5 shrink-0">
-                  <GraduationCap className="w-6 h-6 text-[#FF4D6D]" />
-                </div>
-                <div>
-                  <h2 className="text-xl md:text-2xl font-bold text-[#0B1B3A]">
-                    Ready to study in {destination.name}?
-                  </h2>
-                  <p className="mt-1 text-slate-600 text-sm md:text-base max-w-2xl">
-                    We’ll help you with applications, visas, and choosing the right course.
-                  </p>
-                </div>
-              </div>
 
-              <Link
-                to="/education/contact"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-[#FF4D6D] hover:opacity-95 text-white font-bold px-7 py-3 text-sm md:text-base transition-all shadow-md shadow-pink-500/20 whitespace-nowrap"
-              >
-                Get free consultation
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
 
       <Footer />
     </>

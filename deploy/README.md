@@ -14,8 +14,8 @@ This guide provides step-by-step instructions for deploying the **unified ProCon
 ### 1. Connect and Clone
 Connect to your VPS via SSH and clone the repository:
 ```bash
-git clone https://github.com/YOUR_USER/proconsulting_main.git
-cd proconsulting_main
+git clone https://github.com/codeproconsulting/main.git
+cd main
 ```
 
 ### 2. Run the Setup Script

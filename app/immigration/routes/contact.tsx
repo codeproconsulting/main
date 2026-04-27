@@ -27,7 +27,6 @@ type FormState = {
   countryOfResidence: string;
   destinationCountry: string;
   serviceType: string;
-  travelPurpose: string;
 };
 
 const initialForm: FormState = {
@@ -37,7 +36,6 @@ const initialForm: FormState = {
   countryOfResidence: "",
   destinationCountry: "",
   serviceType: "",
-  travelPurpose: "",
 };
 
 export default function Contact() {
@@ -67,16 +65,15 @@ export default function Contact() {
 
     setSubmitting(true);
     try {
-      const res = await fetch(SCRIPT_URL, {
+      await fetch(SCRIPT_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=UTF-8" },
         body: JSON.stringify({
           source: "immigration_site_free_consultation",
           ...form,
         }),
       });
-
-      if (!res.ok) throw new Error(`Request failed: ${res.status}`);
 
       setSuccess("Thank you! Your request has been sent successfully. We will get back to you shortly.");
       setForm(initialForm);
@@ -212,16 +209,7 @@ export default function Contact() {
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-bold text-slate-700 ml-1">Purpose of Travel</label>
-                <textarea
-                  rows={3}
-                  value={form.travelPurpose}
-                  onChange={onChange("travelPurpose")}
-                  className="w-full rounded-2xl border-2 border-slate-100 bg-slate-50/50 px-4 py-3.5 text-slate-900 transition-all focus:border-pink-500 focus:bg-white focus:outline-none resize-none"
-                  placeholder="Tell us a bit more about your plans..."
-                />
-              </div>
+
 
               {error && (
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="p-4 rounded-xl bg-red-50 text-red-700 text-sm font-medium border border-red-100">
@@ -276,13 +264,13 @@ export default function Contact() {
                     <p className="text-slate-900 font-bold group-hover:text-pink-600 transition-colors">info@proconsulting.uk</p>
                   </div>
                 </a>
-                <a href="tel:+923701902128" className="flex items-center gap-4 group">
+                <a href="tel:03701902125" className="flex items-center gap-4 group">
                   <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center group-hover:bg-pink-50 transition-colors">
                     <Phone className="w-5 h-5 text-blue-600 group-hover:text-pink-600 transition-colors" />
                   </div>
                   <div>
                     <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-0.5">Call / WhatsApp</p>
-                    <p className="text-slate-900 font-bold group-hover:text-pink-600 transition-colors">+92 370 1902128</p>
+                    <p className="text-slate-900 font-bold group-hover:text-pink-600 transition-colors">0370 1902125</p>
                   </div>
                 </a>
               </div>

@@ -272,26 +272,7 @@ export default function CourseSlugPage() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-16 md:py-20 bg-slate-50 border-t border-slate-200/80">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="rounded-3xl border border-slate-200/80 bg-white/80 backdrop-blur p-8 md:p-12 text-center shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-[#0B1B3A] mb-3">
-              Want help choosing the right programme?
-            </h2>
-            <p className="text-slate-600 max-w-xl mx-auto mb-8">
-              Share your profile and target country. We’ll shortlist universities and guide you step-by-step.
-            </p>
-            <Link
-              to="/education/contact"
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-[#FF4D6D] hover:opacity-95 text-white font-bold px-8 py-3.5 transition-all shadow-md shadow-pink-500/20"
-            >
-              Get free consultation
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-        </div>
-      </section>
+
 
       <Footer />
     </>

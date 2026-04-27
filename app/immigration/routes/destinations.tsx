@@ -153,34 +153,7 @@ export default function Destinations() {
         </div>
       </section>
 
-      {/* CTA — same structure as education */}
-      <section className="relative py-20 md:py-28 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-900 to-slate-800" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_100%,rgba(255,77,109,0.15),transparent)]" />
-        <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col items-center text-center">
-          <MapPin
-            className="w-12 h-12 mb-6"
-            style={{ color: BRAND.pink }}
-          />
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Not sure where to go?
-          </h2>
-          <p className="text-white text-lg max-w-lg mx-auto mb-10">
-            Book a free consultation. We’ll help you compare destinations, visa
-            types, and requirements so you can plan with confidence.
-          </p>
-          <Link
-            to="/immigration/contact"
-            className="inline-flex items-center justify-center gap-2 rounded-full text-white font-bold text-lg px-10 py-4 shadow-lg transition-all hover:opacity-95"
-            style={{
-              backgroundColor: BRAND.pink,
-              boxShadow: `0 10px 40px ${BRAND.pink}40`,
-            }}
-          >
-            Get free consultation
-          </Link>
-        </div>
-      </section>
+
 
       <Footer />
     </>

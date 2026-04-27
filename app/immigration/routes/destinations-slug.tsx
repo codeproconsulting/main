@@ -288,33 +288,7 @@ function DestinationContent({ destination }: { destination: Destination }) {
         <DestinationFAQBlock faqs={faqs} destinationName={destination.name} />
       )}
 
-      {/* CTA strip – same as education */}
-      <section className="relative py-16 md:py-20 overflow-hidden bg-slate-900">
-        <div
-          className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_100%,rgba(255,77,109,0.15),transparent)]"
-          aria-hidden
-        />
-        <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col items-center text-center">
-          <MapPin
-            className="w-12 h-12 mb-6"
-            style={{ color: BRAND.pink }}
-          />
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
-            Ready to visit {destination.name}?
-          </h2>
-          <p className="text-white max-w-lg mb-8">
-            We’ll help you with visa requirements, documents, and applications.
-            Book a free consultation today.
-          </p>
-          <Link
-            to="/immigration/contact"
-            className="inline-flex items-center justify-center gap-2 rounded-full text-white font-bold px-8 py-3.5 transition-all hover:opacity-95"
-            style={{ backgroundColor: BRAND.pink }}
-          >
-            Get free consultation
-          </Link>
-        </div>
-      </section>
+
 
       <Footer />
     </>

@@ -13,7 +13,7 @@ import { RecentUpdatesSection } from "~/education/components/ui/RecentUpdatesSec
 import { PopularCoursesSection } from "~/education/components/ui/PopularCoursesSection";
 import { FAQSection } from "~/education/components/ui/FAQSection";
 import { PartnerUniversitiesSection } from "~/education/components/ui/PartnerUniversitiesSection";
-import { FreeConsultationSection } from "~/education/components/ui/FreeConsultationSection";
+
 import { ReviewsSection } from "~/education/components/ui/ReviewsSection";
 
 const TITLE = "Proconsulting Education";
@@ -49,7 +49,7 @@ export default function Home() {
       <RecentUpdatesSection />
       <StudyDestinationsSection />
       <FAQSection />
-      <FreeConsultationSection />
+
       <Footer />
     </>
   );

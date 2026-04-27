@@ -255,26 +255,7 @@ export default function About() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-20 md:py-28 bg-[#0B1B3A]">
-        <div className="max-w-3xl mx-auto px-6 text-center">
-          <MapPin className="w-12 h-12 text-pink-400 mx-auto mb-6" />
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Working with top institutions around the world
-          </h2>
-          <p className="text-gray-400 text-lg mb-10">
-            Pro Consulting has consistently been successful in eliminating myths about visa requirements.
-          </p>
-          <Link
-            to="/immigration/contact"
-            className="inline-flex items-center justify-center gap-2 rounded-full text-white font-bold text-lg px-10 py-4 transition-colors hover:opacity-95"
-            style={{ backgroundColor: BRAND.pink }}
-          >
-            Get free consultation
-            <ArrowRight className="w-5 h-5" />
-          </Link>
-        </div>
-      </section>
+
 
       <Footer />
     </>

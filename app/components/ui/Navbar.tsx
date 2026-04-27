@@ -7,8 +7,10 @@ import {
   FaBarsStaggered as MenuIcon,
   FaXmark,
   FaChevronRight,
+  FaChevronDown,
   FaGraduationCap,
-  FaPlane
+  FaPlane,
+  FaPassport,
 } from 'react-icons/fa6';
 import { cn } from "../../lib/utils";
 import { EDUCATION_URL, IMMIGRATION_URL } from "../../lib/constants";
@@ -16,8 +18,12 @@ import { EDUCATION_URL, IMMIGRATION_URL } from "../../lib/constants";
 const navLinks = [
   { to: "/", label: "Home" },
   { to: EDUCATION_URL, label: "Study Abroad" },
-  { to: IMMIGRATION_URL, label: "Immigration" },
   { to: "/about", label: "About Us" },
+];
+
+const immigrationSubLinks = [
+  { to: `${IMMIGRATION_URL}/services`, label: "Visit Visa", icon: FaPlane, description: "Visit, tourism & business visas" },
+  { to: IMMIGRATION_URL, label: "Immigration", icon: FaPassport, description: "Work, family, settlement & appeals" },
 ];
 
 const CONSULTATION_OPTIONS = [
@@ -32,6 +38,7 @@ const consultationButtonClass =
 export function Navbar({ className }: { className?: string } = {}) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [consultationOpen, setConsultationOpen] = useState(false);
+  const [immigrationOpen, setImmigrationOpen] = useState(false);
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -87,6 +94,50 @@ export function Navbar({ className }: { className?: string } = {}) {
                   </Link>
                 )
               )}
+
+              {/* Immigration dropdown */}
+              <div
+                className="relative"
+                onMouseEnter={() => setImmigrationOpen(true)}
+                onMouseLeave={() => setImmigrationOpen(false)}
+              >
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-1.5 font-medium whitespace-nowrap text-sm lg:text-base py-2 rounded transition-colors text-black hover:text-neutral-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-slate-400"
+                >
+                  Immigration
+                  <FaChevronDown className={cn("w-3 h-3 transition-transform duration-200", immigrationOpen && "rotate-180")} />
+                </button>
+
+                <AnimatePresence>
+                  {immigrationOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 6, scale: 0.97 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 6, scale: 0.97 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-64 rounded-2xl bg-white border border-slate-200 shadow-xl shadow-slate-200/60 overflow-hidden z-50"
+                    >
+                      {immigrationSubLinks.map(({ to, label, icon: Icon, description }) => (
+                        <Link
+                          key={to}
+                          to={to}
+                          className="flex items-start gap-3 px-4 py-3.5 hover:bg-slate-50 transition-colors group"
+                          onClick={() => setImmigrationOpen(false)}
+                        >
+                          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-white mt-0.5" style={{ backgroundColor: "#FF4D6D" }}>
+                            <Icon className="w-4 h-4" />
+                          </span>
+                          <div>
+                            <span className="block text-sm font-semibold text-slate-900 group-hover:text-pink-600 transition-colors">{label}</span>
+                            <span className="block text-xs text-slate-500 mt-0.5">{description}</span>
+                          </div>
+                        </Link>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             </div>
 
             {/* Right CTA – same style as education site, opens consultation choice */}
@@ -164,6 +215,25 @@ export function Navbar({ className }: { className?: string } = {}) {
                     </Link>
                   )
                 )}
+
+                {/* Immigration sub-section */}
+                <div className="pt-2">
+                  <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Immigration</p>
+                  {immigrationSubLinks.map(({ to, label, icon: Icon, description }) => (
+                    <Link
+                      key={to}
+                      to={to}
+                      className="flex items-center gap-3 py-3 text-black hover:text-pink-600 transition-colors group"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-white" style={{ backgroundColor: "#FF4D6D" }}>
+                        <Icon className="w-4 h-4" />
+                      </span>
+                      <span className="text-base font-medium">{label}</span>
+                      <FaChevronRight className="ml-auto w-4 h-4 text-gray-300 group-hover:text-pink-600" />
+                    </Link>
+                  ))}
+                </div>
               </div>
             </div>
 
