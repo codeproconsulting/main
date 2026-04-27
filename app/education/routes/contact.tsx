@@ -324,7 +324,7 @@ export default function Contact() {
                   type="submit"
                   size="lg"
                   disabled={submitting}
-                  className="w-full sm:w-auto gap-2 bg-[#2F58A0] hover:bg-[#2F58A0]/90"
+                  className="w-full sm:w-auto gap-2 bg-[#FF4D6D] hover:bg-[#E11D48] text-white"
                 >
                   <Send className="w-4 h-4" />
                   {submitting ? "Sending…" : "Submit enquiry"}

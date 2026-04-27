@@ -55,7 +55,7 @@ export function PopularCoursesSection() {
           </div>
           <Link
             to="/education/courses"
-            className="group inline-flex items-center gap-2 rounded-full border-2 border-[#FF4D6D] bg-[#FF4D6D]/10 px-7 py-4 font-semibold text-[#FB7185] transition-all duration-300 hover:bg-[#FF4D6D] hover:text-white hover:shadow-lg shrink-0"
+            className="group inline-flex items-center gap-2 rounded-full border-2 border-[#FF4D6D] bg-[#FF4D6D]/10 px-7 py-4 font-semibold text-white transition-all duration-300 hover:bg-[#FF4D6D] hover:text-white hover:shadow-lg shrink-0"
           >
             View all courses
             <ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />

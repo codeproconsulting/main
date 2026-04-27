@@ -12,6 +12,15 @@
   --color-gradient-mid: #7B3FAE;
   --color-gradient-end: #2B4EAE;
 
+  /* Tailwind component token: Button default variant */
+  --primary: #FF4D6D;
+  --primary-foreground: #ffffff;
+  --ring: #FF4D6D;
+  --background: #ffffff;
+  --accent: #f1f5f9;
+  --accent-foreground: #0f172a;
+  --destructive: #ef4444;
+
   --bg-page: #FFFFFF;
   --bg-muted: #F7F8FC;
   --bg-tint-blue: #EEF3FB;

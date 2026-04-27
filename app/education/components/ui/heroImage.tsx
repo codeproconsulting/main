@@ -97,7 +97,7 @@ export function Hero() {
               <Link to={slides[currentIndex].buttonLink}>
                 <Button 
                   size="lg" 
-                  className="bg-[#2F58A0] hover:bg-[#264a87] text-white font-bold text-lg px-8 py-5 md:px-12 md:py-6 rounded-xl md:rounded-2xl shadow-lg transition-all hover:opacity-95"
+                  className="bg-[#FF4D6D] hover:bg-[#E11D48] text-white font-bold text-lg px-8 py-5 md:px-12 md:py-6 rounded-xl md:rounded-2xl shadow-lg transition-all hover:opacity-95"
                 >
                   {slides[currentIndex].buttonText}
                 </Button>
