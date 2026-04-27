@@ -1,25 +1,57 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { FaGraduationCap, FaPlane, FaArrowRightLong } from 'react-icons/fa6';
 import { Navbar } from "../components/ui/Navbar";
 import { Footer } from "../components/ui/Footer";
-import { SuccessSections } from "../components/ui/SuccessSections";
 import { WhyChooseUs } from "../components/ui/WhyChooseUs";
 import { ReviewsSection } from "../components/ui/ReviewsSection";
 import { PartnerUniversitiesSection } from "../components/ui/PartnerUniversitiesSection";
 import { BlogPreview } from "../components/ui/BlogPreview";
 import { EDUCATION_URL, IMMIGRATION_URL, BRAND } from "../lib/constants";
 
+const STAT_SETS = [
+  {
+    label: "Study Abroad",
+    icon: FaGraduationCap,
+    color: "#2563EB",
+    stats: [
+      { value: "2000+", label: "Assessments done" },
+      { value: "500+", label: "Student visas granted" },
+      { value: "700+", label: "Cases completed" },
+    ],
+  },
+  {
+    label: "Immigration",
+    icon: FaPlane,
+    color: "#FF4D6D",
+    stats: [
+      { value: "700+", label: "Assessments done" },
+      { value: "250+", label: "Visas granted" },
+      { value: "250+", label: "Satisfied clients" },
+    ],
+  },
+];
+
 export default function HomePage() {
+  const [statIdx, setStatIdx] = useState(0);
+
+  useEffect(() => {
+    const t = setInterval(() => setStatIdx((i) => (i + 1) % STAT_SETS.length), 4000);
+    return () => clearInterval(t);
+  }, []);
+
+  const current = STAT_SETS[statIdx];
+  const Icon = current.icon;
+
   return (
     <>
       <Navbar />
 
       <main>
-        {/* Hero – clean light split layout */}
+        {/* ─── Hero ─── */}
         <section aria-label="Hero" className="relative min-h-[90vh] flex items-center overflow-hidden bg-white">
-          {/* Subtle background decoration */}
+          {/* Background decoration */}
           <div className="absolute inset-0 pointer-events-none" aria-hidden>
             <div className="absolute top-0 right-0 w-[55vw] h-full bg-slate-50 rounded-bl-[80px]" />
             <div className="absolute top-[10%] right-[8%] w-72 h-72 rounded-full border border-slate-200/80 opacity-60" />
@@ -44,9 +76,7 @@ export default function HomePage() {
                 <span
                   className="flex h-5 w-5 items-center justify-center rounded-full text-white text-[10px]"
                   style={{ backgroundColor: BRAND.pink }}
-                >
-                  ✦
-                </span>
+                >✦</span>
                 Trusted by 700+ clients
               </motion.div>
 
@@ -77,6 +107,7 @@ export default function HomePage() {
                 Whether you're planning to study abroad or navigate the immigration process — we guide you every step of the way with absolute clarity.
               </motion.p>
 
+              {/* CTAs */}
               <motion.div
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -85,7 +116,7 @@ export default function HomePage() {
               >
                 <Link
                   to="/education"
-                  className="inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-md transition-all hover:opacity-95 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-pink-500"
+                  className="inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-md transition-all hover:opacity-95 hover:shadow-lg"
                   style={{ backgroundColor: BRAND.pink }}
                 >
                   <FaGraduationCap className="w-4 h-4" />
@@ -93,7 +124,7 @@ export default function HomePage() {
                 </Link>
                 <Link
                   to="/immigration"
-                  className="inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-md transition-all hover:opacity-95 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-slate-700"
+                  className="inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-md transition-all hover:opacity-95 hover:shadow-lg"
                   style={{ backgroundColor: BRAND.navy }}
                 >
                   <FaPlane className="w-4 h-4" />
@@ -101,33 +132,86 @@ export default function HomePage() {
                 </Link>
                 <Link
                   to="/?consult=open"
-                  className="inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold border-2 transition-all hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-pink-500"
+                  className="inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold border-2 transition-all"
                   style={{ borderColor: BRAND.pink, color: BRAND.pink }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.backgroundColor = BRAND.pink; (e.currentTarget as HTMLElement).style.color = '#fff'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent'; (e.currentTarget as HTMLElement).style.color = BRAND.pink; }}
+                  onMouseEnter={e => {
+                    (e.currentTarget as HTMLElement).style.backgroundColor = BRAND.pink;
+                    (e.currentTarget as HTMLElement).style.color = '#fff';
+                  }}
+                  onMouseLeave={e => {
+                    (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
+                    (e.currentTarget as HTMLElement).style.color = BRAND.pink;
+                  }}
                 >
                   Free Consultation
                   <FaArrowRightLong className="w-3.5 h-3.5" />
                 </Link>
               </motion.div>
 
-              {/* Stats strip */}
+              {/* ── Rotating Stats Strip ── */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.75 }}
-                className="mt-12 flex flex-wrap gap-8"
+                className="mt-12"
               >
-                {[
-                  { value: "700+", label: "Assessments done" },
-                  { value: "250+", label: "Visas granted" },
-                  { value: "5+", label: "Years of experience" },
-                ].map((s) => (
-                  <div key={s.label}>
-                    <p className="text-3xl font-extrabold tracking-tight" style={{ color: BRAND.navy }}>{s.value}</p>
-                    <p className="text-sm text-slate-500 mt-0.5">{s.label}</p>
-                  </div>
-                ))}
+                {/* Label + dots */}
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={`label-${statIdx}`}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.35 }}
+                    className="flex items-center gap-2 mb-4"
+                  >
+                    <span
+                      className="flex h-6 w-6 items-center justify-center rounded-full text-white shrink-0"
+                      style={{ backgroundColor: current.color }}
+                    >
+                      <Icon className="w-3 h-3" />
+                    </span>
+                    <span className="text-xs font-bold uppercase tracking-widest text-slate-500">
+                      {current.label} &middot; Our Numbers
+                    </span>
+                    {/* Progress dots */}
+                    <div className="ml-auto flex gap-1.5">
+                      {STAT_SETS.map((_, i) => (
+                        <button
+                          key={i}
+                          onClick={() => setStatIdx(i)}
+                          className="w-2 h-2 rounded-full transition-all duration-300 cursor-pointer"
+                          style={{
+                            backgroundColor: i === statIdx ? current.color : '#CBD5E1',
+                            transform: i === statIdx ? 'scale(1.4)' : 'scale(1)',
+                          }}
+                          aria-label={`Show ${STAT_SETS[i].label} stats`}
+                        />
+                      ))}
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+
+                {/* Numbers */}
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={`stats-${statIdx}`}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -12 }}
+                    transition={{ duration: 0.4 }}
+                    className="flex flex-wrap gap-8"
+                  >
+                    {current.stats.map((s) => (
+                      <div key={s.label}>
+                        <p className="text-3xl font-extrabold tracking-tight" style={{ color: current.color }}>
+                          {s.value}
+                        </p>
+                        <p className="text-sm text-slate-500 mt-0.5">{s.label}</p>
+                      </div>
+                    ))}
+                  </motion.div>
+                </AnimatePresence>
               </motion.div>
             </div>
 
@@ -197,15 +281,15 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Services Overview */}
+        {/* ─── Services Overview ─── */}
         <section aria-label="Our services" className="py-20 md:py-24 bg-zinc-50">
           <div className="max-w-7xl mx-auto px-6">
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight mb-12 text-center">
               What We Do
             </h2>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* Card 1 – Study Abroad */}
-              <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm hover:shadow-md transition-all duration-200 focus-within:ring-2 focus-within:ring-slate-300 focus-within:ring-offset-2">
+              {/* Study Abroad */}
+              <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm hover:shadow-md transition-all duration-200">
                 <div className="w-14 h-14 rounded-xl flex items-center justify-center text-white mb-6" style={{ backgroundColor: BRAND.pink }}>
                   <FaGraduationCap className="w-7 h-7" />
                 </div>
@@ -222,15 +306,15 @@ export default function HomePage() {
                 </ul>
                 <Link
                   to="/education"
-                  className="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold text-white w-full sm:w-auto transition-all duration-200 hover:opacity-95 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-slate-400"
+                  className="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold text-white w-full sm:w-auto transition-all hover:opacity-95 hover:shadow-md"
                   style={{ backgroundColor: BRAND.pink }}
                 >
                   Explore Education Services
                 </Link>
               </div>
 
-              {/* Card 2 – Immigration */}
-              <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm hover:shadow-md transition-all duration-200 focus-within:ring-2 focus-within:ring-slate-300 focus-within:ring-offset-2">
+              {/* Immigration */}
+              <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm hover:shadow-md transition-all duration-200">
                 <div className="w-14 h-14 rounded-xl flex items-center justify-center text-white mb-6" style={{ backgroundColor: BRAND.navy }}>
                   <FaPlane className="w-7 h-7" />
                 </div>
@@ -247,7 +331,7 @@ export default function HomePage() {
                 </ul>
                 <Link
                   to="/immigration"
-                  className="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold text-white w-full sm:w-auto transition-all duration-200 hover:opacity-95 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-slate-400"
+                  className="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold text-white w-full sm:w-auto transition-all hover:opacity-95 hover:shadow-md"
                   style={{ backgroundColor: BRAND.navy }}
                 >
                   Explore Immigration Services
@@ -257,11 +341,9 @@ export default function HomePage() {
           </div>
         </section>
 
-        <SuccessSections />
         <WhyChooseUs />
         <ReviewsSection />
         <PartnerUniversitiesSection />
-
         <BlogPreview />
       </main>
 
