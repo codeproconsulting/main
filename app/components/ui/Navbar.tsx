@@ -18,7 +18,6 @@ import { EDUCATION_URL, IMMIGRATION_URL } from "../../lib/constants";
 const navLinks = [
   { to: "/", label: "Home" },
   { to: EDUCATION_URL, label: "Study Abroad" },
-  { to: "/about", label: "About Us" },
 ];
 
 const immigrationSubLinks = [
@@ -67,7 +66,7 @@ export function Navbar({ className }: { className?: string } = {}) {
               className="flex items-center shrink-0 mr-auto py-2 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-slate-400 transition-shadow"
               onClick={() => setMobileMenuOpen(false)}
             >
-              <img src="/logo.png" alt="Pro Consulting" className="h-11 w-auto object-contain" />
+              <img src="/Logo_main.png" alt="Pro Consulting" className="h-11 w-auto object-contain" />
             </Link>
 
             <div className="hidden lg:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 items-center gap-x-6">
@@ -95,7 +94,7 @@ export function Navbar({ className }: { className?: string } = {}) {
                 )
               )}
 
-              {/* Immigration dropdown */}
+              {/* Immigration dropdown – between Study Abroad and About Us */}
               <div
                 className="relative"
                 onMouseEnter={() => setImmigrationOpen(true)}
@@ -138,6 +137,18 @@ export function Navbar({ className }: { className?: string } = {}) {
                   )}
                 </AnimatePresence>
               </div>
+
+              {/* About Us – after Immigration dropdown */}
+              <Link
+                to="/about"
+                className={cn(
+                  "font-medium whitespace-nowrap text-sm lg:text-base py-2 rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-slate-400 text-black hover:text-neutral-800",
+                  location.pathname === "/about" && "text-black"
+                )}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                About Us
+              </Link>
             </div>
 
             {/* Right CTA – same style as education site, opens consultation choice */}

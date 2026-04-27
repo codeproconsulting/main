@@ -77,16 +77,15 @@ export default function HomePage() {
                 Whether you're planning to study abroad or navigate the immigration process — we guide you every step of the way with absolute clarity.
               </motion.p>
 
-              {/* CTAs */}
               <motion.div
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5, duration: 0.5 }}
-                className="flex flex-wrap gap-4 items-center"
+                className="flex flex-wrap gap-3 items-center"
               >
                 <Link
                   to="/education"
-                  className="inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-base font-bold text-white shadow-lg transition-all hover:opacity-95 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-pink-500"
+                  className="inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-md transition-all hover:opacity-95 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-pink-500"
                   style={{ backgroundColor: BRAND.pink }}
                 >
                   <FaGraduationCap className="w-4 h-4" />
@@ -94,7 +93,7 @@ export default function HomePage() {
                 </Link>
                 <Link
                   to="/immigration"
-                  className="inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-base font-bold text-white shadow-lg transition-all hover:opacity-95 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-slate-700"
+                  className="inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-md transition-all hover:opacity-95 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-slate-700"
                   style={{ backgroundColor: BRAND.navy }}
                 >
                   <FaPlane className="w-4 h-4" />
@@ -102,16 +101,13 @@ export default function HomePage() {
                 </Link>
                 <Link
                   to="/?consult=open"
-                  className="inline-flex items-center gap-2 text-sm font-semibold transition-colors group"
-                  style={{ color: BRAND.pink }}
+                  className="inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold border-2 transition-all hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-pink-500"
+                  style={{ borderColor: BRAND.pink, color: BRAND.pink }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.backgroundColor = BRAND.pink; (e.currentTarget as HTMLElement).style.color = '#fff'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent'; (e.currentTarget as HTMLElement).style.color = BRAND.pink; }}
                 >
-                  <span
-                    className="border-b group-hover:opacity-80 transition-opacity pb-0.5"
-                    style={{ borderColor: BRAND.pink }}
-                  >
-                    Free consultation
-                  </span>
-                  <FaArrowRightLong className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  Free Consultation
+                  <FaArrowRightLong className="w-3.5 h-3.5" />
                 </Link>
               </motion.div>
 

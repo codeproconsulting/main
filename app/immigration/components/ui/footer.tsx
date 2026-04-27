@@ -89,13 +89,13 @@ export function Footer() {
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="w-4 h-4 shrink-0 text-[#FF4D6D]" />
-                <a href="tel:+923701902128" className="hover:text-white transition-colors">
-                  +92 370 1902128
+                <a href="tel:03701902125" className="hover:text-white transition-colors">
+                  0370 1902125
                 </a>
               </li>
               <li className="flex items-start gap-3">
                 <MapPin className="w-4 h-4 shrink-0 text-[#FF4D6D] mt-0.5" />
-                <span>ProConsulting UK – Immigration</span>
+                <span>Vista Building, 2nd Floor, Office No 203-204, I-8 Markaz, Islamabad, Pakistan</span>
               </li>
             </ul>
           </div>
