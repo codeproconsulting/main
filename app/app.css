@@ -1,0 +1,177 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+}
+:root {
+  --color-primary-pink: #E91E8C;
+  --color-primary-blue: #2B4EAE;
+  --color-accent-blue: #4A90D9;
+  --color-gradient-start: #E91E8C;
+  --color-gradient-mid: #7B3FAE;
+  --color-gradient-end: #2B4EAE;
+
+  --bg-page: #FFFFFF;
+  --bg-muted: #F7F8FC;
+  --bg-tint-blue: #EEF3FB;
+  --bg-tint-pink: #FDF0F7;
+
+  --text-heading: #0F172A;
+  --text-body: #374151;
+  --text-muted: #6B7280;
+
+  --border-subtle: #E5E7EB;
+}
+
+/* Global base styles */
+body {
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  background-color: var(--bg-page);
+  color: var(--text-body);
+}
+
+/* Ensure CTA/button links keep white text (global a color would override otherwise) */
+a.text-white,
+a .text-white {
+  color: #ffffff !important;
+}
+
+/* Navbar: links are black, not blue (match education site); hover = slightly bolder */
+.site-navbar a:not([class*="text-white"]) {
+  color: #0f172a !important;
+}
+.site-navbar a:not([class*="text-white"]):hover {
+  color: #1e293b !important;
+  font-weight: 600 !important;
+}
+
+.btn-primary {
+  background-image: linear-gradient(
+    90deg,
+    var(--color-gradient-start),
+    var(--color-gradient-mid),
+    var(--color-gradient-end)
+  );
+  color: #ffffff;
+  border-radius: 9999px;
+  padding: 0.75rem 2rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 150ms ease, opacity 150ms ease, box-shadow 150ms ease;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.09);
+}
+
+.btn-primary:hover {
+  opacity: 0.92;
+  transform: scale(1.02);
+}
+
+.btn-secondary {
+  border-radius: 9999px;
+  padding: 0.75rem 2rem;
+  font-weight: 600;
+  background-color: #ffffff;
+  color: var(--color-primary-blue);
+  border: 2px solid var(--color-primary-blue);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-primary-blue);
+  color: #ffffff;
+}
+
+.section-heading {
+  color: var(--text-heading);
+  letter-spacing: -0.02em;
+}
+
+.section-underline {
+  height: 3px;
+  width: 64px;
+  border-radius: 9999px;
+  background-image: linear-gradient(
+    90deg,
+    var(--color-gradient-start),
+    var(--color-gradient-end)
+  );
+}
+
+.card-brand {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 1.75rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border-subtle);
+}
+
+.card-brand-accent {
+  border-top: 3px solid transparent;
+  border-image: linear-gradient(
+      90deg,
+      var(--color-gradient-start),
+      var(--color-gradient-end)
+    )
+    1;
+}
+
+@keyframes university-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-university-scroll {
+  animation: university-scroll 40s linear infinite;
+}
+
+@keyframes blob {
+  0% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(30px, -50px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+  100% { transform: translate(0px, 0px) scale(1); }
+}
+
+.animate-blob {
+  animation: blob 10s infinite alternate;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+/* Global link reset to prevent browser blue */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Footer-specific link styling */
+.site-footer {
+  color: #ffffff !important;
+}
+
+.site-footer a:not([class*="text-"]) {
+  color: #ffffff !important;
+}
+
+.site-footer p, 
+.site-footer span,
+.site-footer li {
+  color: #ffffff !important;
+}
+
+.site-footer a:hover {
+  opacity: 0.8;
+  color: #ffffff !important;
+}
+
+
+

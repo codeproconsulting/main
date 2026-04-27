@@ -1,0 +1,12 @@
+node_modules/
+**/node_modules/
+dist/
+build/
+*.log
+npm-debug.log*
+.DS_Store
+.env
+.cursor/
+
+
+.react-router/
