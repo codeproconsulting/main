@@ -71,7 +71,7 @@ function ServiceCard({
       {/* Large corner number */}
       <span
         className="absolute bottom-4 right-6 text-[6rem] md:text-[7rem] font-bold leading-none select-none pointer-events-none"
-        style={{ color: "rgba(255,255,255,0.06)" }}
+        style={{ color: "rgba(255,255,255,0.12)" }}
       >
         {index + 1}
       </span>

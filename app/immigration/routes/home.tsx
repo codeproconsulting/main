@@ -117,9 +117,9 @@ export default function Home() {
                         >
                           <Icon className="h-6 w-6" />
                         </div>
-                        <span className="text-xs font-semibold text-white">
-                          {String(index + 1).padStart(2, "0")}
-                        </span>
+                      <span className="text-xs font-semibold text-slate-100">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
                       </div>
 
                       <h3 className="mt-5 text-xl font-bold text-[#0B1B3A] group-hover:text-[#FF4D6D] transition-colors">

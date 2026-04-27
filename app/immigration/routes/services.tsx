@@ -71,7 +71,7 @@ export default function Services() {
                   className="group block relative rounded-3xl overflow-hidden transition-all duration-300 h-full min-h-[280px] flex flex-col p-6 md:p-8 border border-slate-200/80 bg-white hover:border-[#FF4D6D]/30 hover:shadow-xl hover:shadow-[#FF4D6D]/10"
                 >
                   <span
-                    className="absolute bottom-4 right-6 text-[6rem] md:text-[7rem] font-bold leading-none select-none text-white"
+                    className="absolute bottom-4 right-6 text-[6rem] md:text-[7rem] font-bold leading-none select-none text-slate-100"
                     aria-hidden
                   >
                     {index + 1}

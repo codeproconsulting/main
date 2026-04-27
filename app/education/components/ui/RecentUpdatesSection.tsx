@@ -67,7 +67,7 @@ export function RecentUpdatesSection() {
 
         {loading ? (
           <div className="flex justify-center py-20">
-            <Loader2 className="w-10 h-10 animate-spin text-white" />
+            <Loader2 className="w-10 h-10 animate-spin text-[#0B1B3A]" />
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
