@@ -189,7 +189,7 @@ export function Navbar({ className }: { className?: string } = {}) {
                 onClick={() => setMobileMenuOpen(false)}
                 className="flex items-center rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-slate-400"
               >
-                <img src="/logo.png" alt="Pro Consulting" className="h-9 w-auto object-contain" />
+                <img src="/Logo_main.png" alt="Pro Consulting" className="h-9 w-auto object-contain" />
               </Link>
               <button
                 onClick={() => setMobileMenuOpen(false)}
