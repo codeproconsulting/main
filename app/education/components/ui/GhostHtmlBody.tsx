@@ -3,7 +3,6 @@
  * Injects id attributes into headings so TOC links work.
  */
 
-import React from "react";
 
 export interface HeadingItem {
   id: string;

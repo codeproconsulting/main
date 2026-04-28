@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, Clock, CheckCircle2, ArrowRight, Loader2, Globe, Send } from "lucide-react";
+import { Mail, Phone, CheckCircle2, ArrowRight, Loader2, Globe, Send } from "lucide-react";
 import { Navbar } from "~/immigration/components/ui/Navbar";
 import { Footer } from "~/immigration/components/ui/footer";
 import { destinations } from "~/immigration/lib/destinations";

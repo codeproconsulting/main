@@ -3,7 +3,6 @@
  * Ghost returns content as HTML; we render it in a constrained prose container.
  */
 
-import React from "react";
 
 interface GhostHtmlContentProps {
   html: string | null | undefined;
