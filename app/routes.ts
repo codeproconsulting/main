@@ -11,6 +11,10 @@ export default [
   route("about", "routes/about.tsx"),
   route("contact", "routes/contact.tsx"),
 
+  // Root level sitemap and robots
+  route("sitemap.xml", "routes/sitemap.xml.ts"),
+  route("robots.txt", "routes/robots.txt.ts"),
+
   // Prefixed sub-apps
   ...prefix("education", educationRoutes),
   ...prefix("immigration", immigrationRoutes),

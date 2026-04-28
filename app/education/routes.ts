@@ -19,7 +19,5 @@ export default [
   route("privacy-policy", "education/routes/privacy-policy.tsx"),
   route("terms", "education/routes/terms.tsx"),
   route("cookie-policy", "education/routes/cookie-policy.tsx"),
-  route("sitemap.xml", "education/routes/sitemap.xml.ts"),
-  route("robots.txt", "education/routes/robots.txt.ts"),
 ] satisfies RouteConfig;
     
