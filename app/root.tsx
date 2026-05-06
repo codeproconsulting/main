@@ -25,7 +25,8 @@ export const links: Route.LinksFunction = () => [
 
 export function meta() {
   return [
-    { property: "og:site_name", content: "Proconsulting Main" },
+    { title: "Proconsulting | Education & Immigration Consultants" },
+    { property: "og:site_name", content: "Proconsulting" },
     { property: "og:type", content: "website" },
     { property: "og:locale", content: "en" },
     { name: "twitter:card", content: "summary_large_image" },

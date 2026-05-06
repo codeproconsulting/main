@@ -13,8 +13,8 @@ import type { Route } from "./+types/home";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "ProConsulting Immigration" },
-    { name: "description", content: "Expert immigration and visa services – proconsulting.uk/immigration" },
+    { title: "Immigration & Visa Services | ProConsulting Immigration" },
+    { name: "description", content: "Professional immigration and visa services. We specialize in visit visas, work permits, family visas, and settlement applications." },
   ];
 }
 

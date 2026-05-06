@@ -10,6 +10,13 @@ import { PartnerUniversitiesSection } from "../components/ui/PartnerUniversities
 import { BlogPreview } from "../components/ui/BlogPreview";
 import { EDUCATION_URL, IMMIGRATION_URL, BRAND } from "../lib/constants";
 
+export function meta() {
+  return [
+    { title: "Proconsulting | Study Abroad & Immigration Services" },
+    { name: "description", content: "Expert education and immigration consultants. We help you navigate university admissions and visa processes with clarity and confidence." },
+  ];
+}
+
 const STAT_SETS = [
   {
     label: "Study Abroad",
@@ -44,8 +51,35 @@ export default function HomePage() {
   const current = STAT_SETS[statIdx];
   const Icon = current.icon;
 
+  const schemaOrgJSONLD = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "name": "Proconsulting",
+        "url": "https://www.proconsulting.uk",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://www.proconsulting.uk/education/blog?search={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      },
+      {
+        "@type": "Organization",
+        "name": "Proconsulting",
+        "url": "https://www.proconsulting.uk",
+        "logo": "https://www.proconsulting.uk/logo.png",
+        "description": "Expert education and immigration consultants helping you study abroad and navigate the visa process with confidence."
+      }
+    ]
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaOrgJSONLD) }}
+      />
       <Navbar />
 
       <main>

@@ -66,7 +66,7 @@ export function Navbar({ className }: { className?: string } = {}) {
               className="flex items-center shrink-0 mr-auto py-2 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-slate-400 transition-shadow"
               onClick={() => setMobileMenuOpen(false)}
             >
-              <img src="/Logo_main.png" alt="Pro Consulting" className="h-11 w-auto object-contain" />
+              <img src="/Logo_main.png" alt="Pro Consulting" width={180} height={44} loading="eager" className="h-11 w-auto object-contain" />
             </Link>
 
             <div className="hidden lg:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 items-center gap-x-6">
@@ -189,7 +189,7 @@ export function Navbar({ className }: { className?: string } = {}) {
                 onClick={() => setMobileMenuOpen(false)}
                 className="flex items-center rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-slate-400"
               >
-                <img src="/Logo_main.png" alt="Pro Consulting" className="h-9 w-auto object-contain" />
+                <img src="/Logo_main.png" alt="Pro Consulting" width={147} height={36} loading="eager" className="h-9 w-auto object-contain" />
               </Link>
               <button
                 onClick={() => setMobileMenuOpen(false)}

@@ -16,7 +16,7 @@ import { PartnerUniversitiesSection } from "~/education/components/ui/PartnerUni
 
 import { ReviewsSection } from "~/education/components/ui/ReviewsSection";
 
-const TITLE = "Proconsulting Education";
+const TITLE = "Study Abroad Services | Proconsulting Education";
 const DESCRIPTION =
   "Expert study abroad consultancy: university applications, visa guidance, and career counselling for UK, Australia, Canada, USA and more. Free consultation.";
 

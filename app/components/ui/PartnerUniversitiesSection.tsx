@@ -51,6 +51,9 @@ export function PartnerUniversitiesSection() {
                 <img
                   src={uni.image}
                   alt={uni.name}
+                  width={200}
+                  height={100}
+                  loading="lazy"
                   className={`max-w-full w-auto h-auto object-contain ${uni.smallLogo ? "max-h-[88px] md:max-h-[96px] scale-110" : "max-h-[70px] md:max-h-[80px]"}`}
                 />
               </div>

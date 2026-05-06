@@ -5,6 +5,13 @@ import { Navbar } from "../components/ui/Navbar";
 import { Footer } from "../components/ui/Footer";
 import { CONTACT, SOCIAL, BRAND } from "../lib/constants";
 
+export function meta() {
+  return [
+    { title: "Contact Proconsulting | Free Consultation" },
+    { name: "description", content: "Get in touch with Proconsulting for expert guidance on university admissions and visa processing. Book your free consultation today." },
+  ];
+}
+
 const serviceOptions = [
   "Study Abroad",
   "Immigration",

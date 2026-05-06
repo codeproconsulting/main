@@ -15,6 +15,13 @@ import {
 } from 'react-icons/fa6';
 import { BRAND } from "../lib/constants";
 
+export function meta() {
+  return [
+    { title: "About Proconsulting | Our Story & Core Values" },
+    { name: "description", content: "Learn about Proconsulting, your trusted partner for study abroad and immigration services. Discover our core values, mission, and success stories." },
+  ];
+}
+
 const CORE_VALUES = [
   { name: "Integrity", icon: FaHandshake, color: "indigo" as const },
   { name: "Expertise", icon: FaAward, color: "pink" as const },
