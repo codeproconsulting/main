@@ -70,6 +70,8 @@ export default function Contact() {
   const [countryCodes, setCountryCodes] = useState<CountryCode[]>([]);
   const location = useLocation();
   const isApplyPage = location.pathname === "/apply";
+  const searchParams = new URLSearchParams(location.search);
+  const defaultCountry = searchParams.get("country") || "";
 
   useEffect(() => {
     let cancelled = false;
@@ -270,6 +272,7 @@ export default function Contact() {
                   <select
                     id="interestedCountry"
                     name="interestedCountry"
+                    defaultValue={defaultCountry}
                     className="w-full rounded-lg border border-slate-200 bg-white px-4 py-2 text-slate-900 focus:border-pink-500 focus:ring-2 focus:ring-pink-500/20 outline-none transition"
                   >
                     <option value="">Select country</option>
