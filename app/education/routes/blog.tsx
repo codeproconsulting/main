@@ -29,7 +29,7 @@ const POPULAR_TAGS = [
 ];
 
 export function meta(args?: Route.MetaArgs) {
-  const pathname = args?.location?.pathname ?? "/blog";
+  const pathname = args?.location?.pathname ?? "/education/blog";
   return [
     { title: TITLE },
     { name: "description", content: DESCRIPTION },
@@ -38,7 +38,7 @@ export function meta(args?: Route.MetaArgs) {
 }
 
 export function links(args?: any) {
-  return canonicalLink(args?.location?.pathname ?? "/blog");
+  return canonicalLink(args?.location?.pathname ?? "/education/blog");
 }
 
 function formatDate(dateStr: string | null | undefined): string {
@@ -146,7 +146,7 @@ export default function Blog() {
                           key={post.id}
                           className="rounded-2xl overflow-hidden bg-slate-50/80 border border-slate-200/80 shadow-sm hover:shadow-md transition-shadow"
                         >
-                          <Link to={`/blog/${post.slug}`} className="block">
+                          <Link to={`/education/blog/${post.slug}`} className="block">
                             <div className="aspect-[16/10] md:aspect-[21/9] bg-slate-200 overflow-hidden">
                               <img
                                 src={coverUrl}
@@ -193,7 +193,7 @@ export default function Blog() {
                     >
                       {page > 1 ? (
                         <Link
-                          to={page === 2 ? "/blog" : `/blog?page=${page - 1}`}
+                          to={page === 2 ? "/education/blog" : `/education/blog?page=${page - 1}`}
                           className="inline-flex items-center gap-1 px-4 py-2 rounded-lg border border-slate-200 bg-white text-slate-700 text-sm font-medium hover:bg-slate-50"
                           aria-label="Previous page"
                         >
@@ -210,7 +210,7 @@ export default function Blog() {
                         {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
                           <Link
                             key={p}
-                            to={p === 1 ? "/blog" : `/blog?page=${p}`}
+                            to={p === 1 ? "/education/blog" : `/education/blog?page=${p}`}
                             className={`min-w-[2.5rem] px-3 py-2 rounded-lg text-sm font-medium text-center transition-colors ${
                               p === page
                                 ? "bg-[#0B1B3A] text-white"
@@ -225,7 +225,7 @@ export default function Blog() {
                       </div>
                       {page < totalPages ? (
                         <Link
-                          to={`/blog?page=${page + 1}`}
+                          to={`/education/blog?page=${page + 1}`}
                           className="inline-flex items-center gap-1 px-4 py-2 rounded-lg border border-slate-200 bg-white text-slate-700 text-sm font-medium hover:bg-slate-50"
                           aria-label="Next page"
                         >
@@ -286,7 +286,7 @@ export default function Blog() {
                   {recentPosts.map((post) => (
                     <li key={post.id}>
                       <Link
-                        to={`/blog/${post.slug}`}
+                        to={`/education/blog/${post.slug}`}
                         className="flex gap-3 group"
                       >
                         <div className="w-16 h-16 shrink-0 rounded-lg overflow-hidden bg-slate-200">

@@ -80,7 +80,7 @@ export function RecentUpdatesSection() {
                 ? getCoverImageUrl(post as Post)
                 : (post as DummyPost).imageUrl;
               const category = (post as DummyPost).category ?? "Study Abroad";
-              const href = isGhost ? `/blog/${(post as Post).slug}` : (post as DummyPost).link;
+              const href = isGhost ? `/education/blog/${(post as Post).slug}` : (post as DummyPost).link;
               const isExternal = !isGhost;
               const titleDisplay = title.length > 50 ? title.slice(0, 50) + "..." : title;
 

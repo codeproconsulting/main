@@ -58,7 +58,7 @@ export function meta(args?: Route.MetaArgs) {
   const post = args.data.post;
   const title = (post.metaTitle || post.title) + " | ProConsulting";
   const description = (post.metaDescription || post.excerpt) ?? "";
-  const pathname = args?.location?.pathname ?? (args?.params ? `/blog/${args.params.slug}` : "");
+  const pathname = args?.location?.pathname ?? (args?.params ? `/education/blog/${args.params.slug}` : "");
   const ogImage = getCoverImageUrl(post);
   const metaTags: Route.MetaArgs["meta"] = [
     { title },
@@ -78,7 +78,7 @@ export function meta(args?: Route.MetaArgs) {
 
 export function links(args?: any) {
   if (!args?.data?.post) return [];
-  const pathname = args?.location?.pathname ?? (args?.params ? `/blog/${args.params.slug}` : "");
+  const pathname = args?.location?.pathname ?? (args?.params ? `/education/blog/${args.params.slug}` : "");
   return pathname ? canonicalLink(pathname) : [];
 }
 
@@ -179,7 +179,7 @@ export default function BlogPost() {
   }
 
   const base = getBaseUrl();
-  const articleUrl = base ? getAbsoluteUrl(`/blog/${post.slug}`) : undefined;
+  const articleUrl = base ? getAbsoluteUrl(`/education/blog/${post.slug}`) : undefined;
   const blogPostingJsonLd =
     base && articleUrl
       ? {
@@ -319,7 +319,7 @@ export default function BlogPost() {
                       Also Read
                     </p>
                     <Link
-                      to={`/blog/${alsoReadPost.slug}`}
+                      to={`/education/blog/${alsoReadPost.slug}`}
                       className="block text-white font-medium hover:underline"
                     >
                       {alsoReadPost.title}
@@ -514,7 +514,7 @@ export default function BlogPost() {
                   {relatedPosts.map((related) => (
                     <Link
                       key={related.id}
-                      to={`/blog/${related.slug}`}
+                      to={`/education/blog/${related.slug}`}
                       className="group block rounded-2xl overflow-hidden bg-white border border-slate-200 shadow-sm hover:shadow-md hover:border-[#FF4D6D]/30 transition-all"
                     >
                       <div className="aspect-video bg-slate-200 overflow-hidden">
