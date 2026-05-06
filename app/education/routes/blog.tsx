@@ -129,7 +129,7 @@ export default function Blog() {
               )}
               {!loading && !error && posts.length === 0 && (
                 <div className="text-center py-20 text-slate-600 rounded-2xl border border-slate-200 bg-slate-50/50 p-8">
-                  <p>No posts yet. Add posts in Payload Admin to see them here.</p>
+                  <p>No posts yet. Add posts in Ghost Admin to see them here.</p>
                 </div>
               )}
               {!loading && !error && (posts.length > 0 || totalDocs > 0) && (
