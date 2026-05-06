@@ -77,6 +77,9 @@ export default function Contact() {
 
       setSuccess("Thank you! Your request has been sent successfully. We will get back to you shortly.");
       setForm(initialForm);
+      if (typeof window !== "undefined" && (window as any).fbq) {
+        (window as any).fbq('track', 'Lead');
+      }
     } catch (err) {
       setError("Something went wrong. Please try again or contact us directly via WhatsApp.");
     } finally {

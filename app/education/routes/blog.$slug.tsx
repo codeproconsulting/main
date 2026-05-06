@@ -171,6 +171,9 @@ export default function BlogPost() {
       });
       setLeadSubmitted(true);
       form.reset();
+      if (typeof window !== "undefined" && (window as any).fbq) {
+        (window as any).fbq('track', 'Lead');
+      }
     } catch (err: any) {
       setLeadError(err?.message || "Could not send your request. Please try again.");
     } finally {
