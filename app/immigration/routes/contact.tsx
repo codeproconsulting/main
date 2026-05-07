@@ -53,7 +53,7 @@ export default function Contact() {
     setSuccess(null);
     setError(null);
 
-    if (!form.fullName || !form.email || !form.phone || !form.serviceType || !form.destinationCountry) {
+    if (!form.fullName || !form.email || !form.phone || !form.serviceType || !form.destinationCountry || !form.countryOfResidence) {
       setError("Please fill in all required fields.");
       return;
     }
@@ -160,18 +160,19 @@ export default function Contact() {
                     value={form.phone}
                     onChange={onChange("phone")}
                     className="w-full rounded-2xl border-2 border-slate-100 bg-slate-50/50 px-4 py-3.5 text-slate-900 transition-all focus:border-pink-500 focus:bg-white focus:outline-none"
-                    placeholder="+92 3XX XXXXXXX"
+                    placeholder="e.g. 0300 1234567"
                     required
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-slate-700 ml-1">Current Residence</label>
+                  <label className="text-sm font-bold text-slate-700 ml-1">Current Residence *</label>
                   <input
                     type="text"
                     value={form.countryOfResidence}
                     onChange={onChange("countryOfResidence")}
                     className="w-full rounded-2xl border-2 border-slate-100 bg-slate-50/50 px-4 py-3.5 text-slate-900 transition-all focus:border-pink-500 focus:bg-white focus:outline-none"
                     placeholder="Country name"
+                    required
                   />
                 </div>
               </div>

@@ -74,6 +74,7 @@ export default function ContactPage() {
                     id="phone"
                     name="phone"
                     type="tel"
+                    required
                     className="w-full rounded-lg border border-slate-300 px-4 py-3 text-slate-900 focus:border-[#FF4D6D] focus:ring-2 focus:ring-[#FF4D6D]/20 outline-none transition"
                   />
                 </div>
@@ -82,6 +83,7 @@ export default function ContactPage() {
                   <select
                     id="service"
                     name="service"
+                    required
                     className="w-full rounded-lg border border-slate-300 px-4 py-3 text-slate-900 focus:border-[#FF4D6D] focus:ring-2 focus:ring-[#FF4D6D]/20 outline-none transition"
                   >
                     {serviceOptions.map((opt) => (
@@ -95,6 +97,7 @@ export default function ContactPage() {
                     id="message"
                     name="message"
                     rows={5}
+                    required
                     className="w-full rounded-lg border border-slate-300 px-4 py-3 text-slate-900 focus:border-[#FF4D6D] focus:ring-2 focus:ring-[#FF4D6D]/20 outline-none transition resize-y"
                   />
                 </div>

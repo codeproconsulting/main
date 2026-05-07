@@ -6,7 +6,6 @@ import { Navbar } from "~/education/components/ui/Navbar";
 import { Footer } from "~/education/components/ui/footer";
 import { Button } from "~/education/components/ui/button";
 import { destinations } from "~/education/lib/destinations";
-import { fetchCountryCallingCodes, type CountryCode } from "~/education/lib/country-codes";
 import { GOOGLE_SHEET_SCRIPT_URL } from "~/education/lib/google-sheet";
 import { MessageCircle, Send, CheckCircle } from "lucide-react";
 import type { Route } from "./+types/contact";
@@ -61,34 +60,22 @@ const PROGRAM_OPTIONS = [
   "Other",
 ];
 
-const DEFAULT_PHONE_CODE = "+92";
-
 export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const [countryCodes, setCountryCodes] = useState<CountryCode[]>([]);
   const location = useLocation();
   const isApplyPage = location.pathname === "/apply";
   const searchParams = new URLSearchParams(location.search);
   const defaultCountry = searchParams.get("country") || "";
-
-  useEffect(() => {
-    let cancelled = false;
-    fetchCountryCallingCodes().then((list) => {
-      if (!cancelled) setCountryCodes(list);
-    });
-    return () => { cancelled = true; };
-  }, []);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setSubmitError(null);
     const form = e.currentTarget;
     const data = new FormData(form);
-    const countryCode = (data.get("phoneCountryCode") as string) ?? DEFAULT_PHONE_CODE;
     const phoneNumber = (data.get("phoneNumber") as string) ?? "";
-    const phone = phoneNumber.trim() ? `${countryCode} ${phoneNumber.trim()}` : "";
+    const phone = phoneNumber.trim();
     const payload = {
       name: (data.get("name") as string) ?? "",
       email: (data.get("email") as string) ?? "",
@@ -218,35 +205,15 @@ export default function Contact() {
                     <label htmlFor="phoneNumber" className="block text-sm font-medium text-slate-700 mb-0.5">
                       Phone <span className="text-pink-500">*</span>
                     </label>
-                    <div className="flex gap-2">
-                      <select
-                        id="phoneCountryCode"
-                        name="phoneCountryCode"
-                        defaultValue={DEFAULT_PHONE_CODE}
-                        className="w-[120px] shrink-0 rounded-lg border border-slate-200 bg-white px-2 py-2 text-slate-900 focus:border-pink-500 focus:ring-2 focus:ring-pink-500/20 outline-none transition"
-                        aria-label="Country code"
-                        title={countryCodes.find((c) => c.code === DEFAULT_PHONE_CODE)?.name ?? "Country code"}
-                      >
-                        {countryCodes.length === 0 ? (
-                          <option value={DEFAULT_PHONE_CODE}>{DEFAULT_PHONE_CODE}</option>
-                        ) : (
-                          countryCodes.map((c) => (
-                            <option key={`${c.short}-${c.code}`} value={c.code} title={c.name}>
-                              {c.short} {c.code}
-                            </option>
-                          ))
-                        )}
-                      </select>
-                      <input
-                        id="phoneNumber"
-                        name="phoneNumber"
-                        type="tel"
-                        required
-                        autoComplete="tel-national"
-                        className="flex-1 rounded-lg border border-slate-200 bg-white px-3 py-2 text-slate-900 placeholder-slate-400 focus:border-pink-500 focus:ring-2 focus:ring-pink-500/20 outline-none transition"
-                        placeholder="e.g. 300 1234567"
-                      />
-                    </div>
+                    <input
+                      id="phoneNumber"
+                      name="phoneNumber"
+                      type="tel"
+                      required
+                      autoComplete="tel"
+                      className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-slate-900 placeholder-slate-400 focus:border-pink-500 focus:ring-2 focus:ring-pink-500/20 outline-none transition"
+                      placeholder="e.g. 0300 1234567"
+                    />
                   </div>
                   <div>
                     <label htmlFor="currentCity" className="block text-sm font-medium text-slate-700 mb-0.5">
@@ -267,12 +234,13 @@ export default function Contact() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
                 <div>
                   <label htmlFor="interestedCountry" className="block text-sm font-medium text-slate-700 mb-1">
-                    Interested country
+                    Interested country <span className="text-pink-500">*</span>
                   </label>
                   <select
                     id="interestedCountry"
                     name="interestedCountry"
                     defaultValue={defaultCountry}
+                    required
                     className="w-full rounded-lg border border-slate-200 bg-white px-4 py-2 text-slate-900 focus:border-pink-500 focus:ring-2 focus:ring-pink-500/20 outline-none transition"
                   >
                     <option value="">Select country</option>
@@ -285,11 +253,12 @@ export default function Contact() {
                 </div>
                 <div>
                   <label htmlFor="level" className="block text-sm font-medium text-slate-700 mb-1">
-                    Your last qualification
+                    Your last qualification <span className="text-pink-500">*</span>
                   </label>
                   <select
                     id="level"
                     name="level"
+                    required
                     className="w-full rounded-lg border border-slate-200 bg-white px-4 py-2 text-slate-900 focus:border-pink-500 focus:ring-2 focus:ring-pink-500/20 outline-none transition"
                   >
                     <option value="">Select qualification</option>
@@ -304,11 +273,12 @@ export default function Contact() {
 
               <div>
                 <label htmlFor="course" className="block text-sm font-medium text-slate-700 mb-1">
-                  Course or program of interest
+                  Course or program of interest <span className="text-pink-500">*</span>
                 </label>
                 <select
                   id="course"
                   name="course"
+                  required
                   className="w-full rounded-lg border border-slate-200 bg-white px-4 py-2 text-slate-900 focus:border-pink-500 focus:ring-2 focus:ring-pink-500/20 outline-none transition"
                 >
                   <option value="">Select course or program</option>
