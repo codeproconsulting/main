@@ -83,7 +83,7 @@ export default function Blog() {
                   return (
                     <Link
                       key={post.id}
-                      to={`/blog/${post.slug}`}
+                      to={`/immigration/blog/${post.slug}`}
                       className="group block rounded-2xl overflow-hidden border border-slate-200/80 bg-white shadow-sm hover:border-[#FF4D6D]/30 hover:shadow-xl transition-all duration-300"
                     >
                       <div className="aspect-video bg-slate-100 overflow-hidden">

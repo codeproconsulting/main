@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaGraduationCap, FaPlane, FaArrowRightLong } from 'react-icons/fa6';
+import { FaGraduationCap, FaPlane, FaArrowRightLong, FaCircleCheck, FaArrowRight } from 'react-icons/fa6';
 import { Navbar } from "../components/ui/Navbar";
 import { Footer } from "../components/ui/Footer";
 import { WhyChooseUs } from "../components/ui/WhyChooseUs";
@@ -9,12 +9,23 @@ import { ReviewsSection } from "../components/ui/ReviewsSection";
 import { PartnerUniversitiesSection } from "../components/ui/PartnerUniversitiesSection";
 import { BlogPreview } from "../components/ui/BlogPreview";
 import { EDUCATION_URL, IMMIGRATION_URL, BRAND } from "../lib/constants";
+import { pageMeta, canonicalLink } from "../lib/seo";
+import type { Route } from "./+types/home";
 
-export function meta() {
+const TITLE = "Proconsulting | Study Abroad & Immigration Consulting Services";
+const DESCRIPTION = "Expert education and immigration consultants in the UK. We help you navigate university admissions, student visas, and immigration processes with clarity and confidence.";
+const PATHNAME = "/";
+
+export function meta(_args?: Route.MetaArgs) {
   return [
-    { title: "Proconsulting | Study Abroad & Immigration Services" },
-    { name: "description", content: "Expert education and immigration consultants. We help you navigate university admissions and visa processes with clarity and confidence." },
+    { title: TITLE },
+    { name: "description", content: DESCRIPTION },
+    ...pageMeta({ title: TITLE, description: DESCRIPTION, pathname: PATHNAME }),
   ];
+}
+
+export function links() {
+  return canonicalLink(PATHNAME);
 }
 
 const STAT_SETS = [
@@ -57,19 +68,39 @@ export default function HomePage() {
       {
         "@type": "WebSite",
         "name": "Proconsulting",
-        "url": "https://www.proconsulting.uk",
+        "url": "https://proconsulting.uk",
         "potentialAction": {
           "@type": "SearchAction",
-          "target": "https://www.proconsulting.uk/education/blog?search={search_term_string}",
+          "target": "https://proconsulting.uk/education/blog?search={search_term_string}",
           "query-input": "required name=search_term_string"
         }
       },
       {
-        "@type": "Organization",
+        "@type": "LocalBusiness",
+        "@id": "https://proconsulting.uk/#organization",
         "name": "Proconsulting",
-        "url": "https://www.proconsulting.uk",
-        "logo": "https://www.proconsulting.uk/logo.png",
-        "description": "Expert education and immigration consultants helping you study abroad and navigate the visa process with confidence."
+        "alternateName": "Pro Consulting",
+        "url": "https://proconsulting.uk",
+        "logo": "https://proconsulting.uk/logo.png",
+        "image": "https://proconsulting.uk/Logo_main.png",
+        "description": "Expert study abroad and immigration consulting services. We help students with university admissions, student visas, and immigration processes across the UK, Europe, Canada, Australia, and USA.",
+        "priceRange": "Free consultation",
+        "telephone": ["+44 7432 406993", "+92 51 6135834"],
+        "email": "contact@proconsulting.uk",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Vista Building, 2nd Floor, Office No 203-204, I-8 Markaz",
+          "addressLocality": "Islamabad",
+          "addressCountry": "PK"
+        },
+        "sameAs": [
+          "https://www.facebook.com/proconsultinguk",
+          "https://www.instagram.com/pro_consulting1/",
+          "https://www.linkedin.com/company/proconsultinguk",
+          "https://x.com/proconsulting_"
+        ],
+        "areaServed": ["GB", "PK", "Worldwide"],
+        "serviceType": ["Study Abroad Consulting", "Immigration Consulting", "Visa Assistance", "University Admissions"]
       }
     ]
   };
@@ -122,14 +153,14 @@ export default function HomePage() {
                 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight leading-[1.1] mb-6"
                 style={{ color: BRAND.navy }}
               >
-                Your Trusted Partner{" "}
+                Your Trusted Consulting Partner{" "}
                 <span
                   className="block bg-clip-text text-transparent"
                   style={{ backgroundImage: `linear-gradient(135deg, ${BRAND.pink}, #E11D48)` }}
                 >
-                  for Education
+                  for Study Abroad
                 </span>
-                <span className="block" style={{ color: BRAND.navy }}>&amp; Immigration</span>
+                <span className="block" style={{ color: BRAND.navy }}>&amp; Immigration Services</span>
               </motion.h1>
 
               <motion.p
@@ -315,62 +346,102 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ─── Services Overview ─── */}
-        <section aria-label="Our services" className="py-20 md:py-24 bg-zinc-50">
-          <div className="max-w-7xl mx-auto px-6">
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight mb-12 text-center">
-              What We Do
-            </h2>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* Study Abroad */}
-              <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm hover:shadow-md transition-all duration-200">
-                <div className="w-14 h-14 rounded-xl flex items-center justify-center text-white mb-6" style={{ backgroundColor: BRAND.pink }}>
-                  <FaGraduationCap className="w-7 h-7" />
+        {/* ─── Services Overview (What We Do) ─── */}
+        <section aria-label="Our services" className="relative py-24 md:py-28 bg-[#0B1B3A] overflow-hidden">
+          {/* Decorative glowing gradient spheres */}
+          <div className="absolute top-1/4 left-[10%] w-96 h-96 bg-[#FF4D6D]/15 rounded-full filter blur-[100px] pointer-events-none" />
+          <div className="absolute bottom-1/4 right-[10%] w-96 h-96 bg-blue-600/10 rounded-full filter blur-[100px] pointer-events-none" />
+
+          <div className="relative max-w-7xl mx-auto px-6 z-10">
+            {/* Redesigned Section Header */}
+            <div className="text-center max-w-3xl mx-auto mb-16 md:mb-20">
+              <span className="inline-block text-xs font-bold tracking-widest text-[#FF4D6D] uppercase px-3 py-1.5 rounded-full border border-[#FF4D6D]/30 bg-[#FF4D6D]/10 mb-4 animate-pulse">
+                OUR CORE SERVICES
+              </span>
+              <h2 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-tight mb-4">
+                What We Do
+              </h2>
+              <p className="text-slate-300 text-lg leading-relaxed">
+                Empowering your global ambitions through structured counseling, expert legal advice, and end-to-end relocation support.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10">
+              {/* Study Abroad Card */}
+              <motion.div 
+                whileHover={{ y: -6, transition: { duration: 0.2 } }}
+                className="relative rounded-3xl border border-white/10 bg-white/5 backdrop-blur-md p-8 md:p-10 shadow-2xl flex flex-col justify-between hover:border-[#FF4D6D]/40 transition-all duration-300 group"
+              >
+                <div>
+                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-white mb-8 transition-transform duration-300 group-hover:scale-110 shadow-lg shadow-[#FF4D6D]/20" style={{ backgroundColor: BRAND.pink }}>
+                    <FaGraduationCap className="w-8 h-8" />
+                  </div>
+                  <h3 className="text-2xl md:text-3xl font-bold text-white mb-4">Education Consulting</h3>
+                  <p className="text-slate-300 leading-relaxed mb-8 text-base">
+                    We help students get admitted to top universities worldwide — UK, Europe, Canada, Australia, USA, and more. From shortlisting to visa processing, we handle it all.
+                  </p>
+                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-slate-200 mb-10">
+                    {[
+                      "University Admissions", 
+                      "Student Visas", 
+                      "IELTS / Test Prep", 
+                      "Career Counselling", 
+                      "Pre-Departure Guidance",
+                      "Scholarship Assistance"
+                    ].map((item) => (
+                      <li key={item} className="flex items-center gap-3 text-sm">
+                        <FaCircleCheck className="w-5 h-5 text-[#FF4D6D] shrink-0" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <h3 className="text-2xl font-bold text-slate-900 mb-3">Education Consulting</h3>
-                <p className="text-slate-600 leading-relaxed mb-6">
-                  We help students get admitted to top universities worldwide — UK, Europe, Canada, Australia, USA, and more. From shortlisting to visa processing, we handle it all.
-                </p>
-                <ul className="space-y-2 text-sm text-slate-700 mb-6">
-                  {["University Admissions", "Student Visas", "IELTS / Test Prep", "Career Counselling", "Pre-Departure Guidance"].map((item) => (
-                    <li key={item} className="flex items-center gap-2">
-                      <span className="text-green-600">✓</span> {item}
-                    </li>
-                  ))}
-                </ul>
                 <Link
                   to="/education"
-                  className="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold text-white w-full sm:w-auto transition-all hover:opacity-95 hover:shadow-md"
-                  style={{ backgroundColor: BRAND.pink }}
+                  className="inline-flex items-center justify-center gap-2 rounded-full px-8 py-4 text-sm font-semibold text-white w-full sm:w-auto transition-all bg-[#FF4D6D] hover:bg-[#E11D48] hover:shadow-lg hover:shadow-[#FF4D6D]/20 group/btn"
                 >
                   Explore Education Services
+                  <FaArrowRight className="w-4 h-4 transition-transform duration-200 group-hover/btn:translate-x-1" />
                 </Link>
-              </div>
+              </motion.div>
 
-              {/* Immigration */}
-              <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm hover:shadow-md transition-all duration-200">
-                <div className="w-14 h-14 rounded-xl flex items-center justify-center text-white mb-6" style={{ backgroundColor: BRAND.navy }}>
-                  <FaPlane className="w-7 h-7" />
+              {/* Immigration Card */}
+              <motion.div 
+                whileHover={{ y: -6, transition: { duration: 0.2 } }}
+                className="relative rounded-3xl border border-white/10 bg-white/5 backdrop-blur-md p-8 md:p-10 shadow-2xl flex flex-col justify-between hover:border-blue-500/40 transition-all duration-300 group"
+              >
+                <div>
+                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-white mb-8 transition-transform duration-300 group-hover:scale-110 shadow-lg shadow-blue-500/20" style={{ backgroundColor: "#2563EB" }}>
+                    <FaPlane className="w-8 h-8" />
+                  </div>
+                  <h3 className="text-2xl md:text-3xl font-bold text-white mb-4">Immigration &amp; Visas</h3>
+                  <p className="text-slate-300 leading-relaxed mb-8 text-base">
+                    Navigating immigration can be overwhelming. Our experts simplify the process — visit visas, work permits, family reunification, or settlement.
+                  </p>
+                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-slate-200 mb-10">
+                    {[
+                      "Visit Visas", 
+                      "Work Permits", 
+                      "Family Visas", 
+                      "Settlement Applications", 
+                      "Appeal Support",
+                      "Legal Consultation"
+                    ].map((item) => (
+                      <li key={item} className="flex items-center gap-3 text-sm">
+                        <FaCircleCheck className="w-5 h-5 text-blue-500 shrink-0" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <h3 className="text-2xl font-bold text-slate-900 mb-3">Immigration &amp; Visas</h3>
-                <p className="text-slate-600 leading-relaxed mb-6">
-                  Navigating immigration can be overwhelming. Our experts simplify the process — visit visas, work permits, family reunification, or settlement.
-                </p>
-                <ul className="space-y-2 text-sm text-slate-700 mb-6">
-                  {["Visit Visas", "Work Permits", "Family Visas", "Settlement Applications", "Appeal Support"].map((item) => (
-                    <li key={item} className="flex items-center gap-2">
-                      <span className="text-green-600">✓</span> {item}
-                    </li>
-                  ))}
-                </ul>
                 <Link
                   to="/immigration"
-                  className="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold text-white w-full sm:w-auto transition-all hover:opacity-95 hover:shadow-md"
-                  style={{ backgroundColor: BRAND.navy }}
+                  className="inline-flex items-center justify-center gap-2 rounded-full px-8 py-4 text-sm font-semibold text-white w-full sm:w-auto transition-all bg-blue-600 hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-500/20 group/btn"
                 >
                   Explore Immigration Services
+                  <FaArrowRight className="w-4 h-4 transition-transform duration-200 group-hover/btn:translate-x-1" />
                 </Link>
-              </div>
+              </motion.div>
             </div>
           </div>
         </section>

@@ -61,7 +61,7 @@ export function Navbar({ className }: { className?: string }) {
 
             <div className="hidden lg:block shrink-0 ml-auto" onMouseEnter={() => setActive(null)}>
               <Link to="/education/contact">
-                <Button className="rounded-full px-5 py-4 text-base font-bold bg-pink-600 hover:bg-pink-700 text-white shadow-lg transition-transform hover:scale-105 whitespace-nowrap lg:px-7 lg:py-5 lg:text-lg">
+                <Button className="rounded-full px-5 py-2.5 text-sm font-bold bg-pink-600 hover:bg-pink-700 text-white shadow-md transition-transform hover:scale-[1.02] whitespace-nowrap">
                   Get Free Consultation
                 </Button>
               </Link>
@@ -173,7 +173,7 @@ export function Navbar({ className }: { className?: string }) {
             {/* Footer */}
             <div className="p-6 border-t border-gray-100 bg-gray-50/50">
                <Link to="/education/contact" onClick={() => setMobileMenuOpen(false)}>
-                  <Button className="w-full py-6 text-lg rounded-xl font-bold bg-pink-600 hover:bg-pink-700 text-white shadow-lg">
+                  <Button className="w-full py-3.5 text-base rounded-xl font-bold bg-pink-600 hover:bg-pink-700 text-white shadow-md">
                     Get Free Consultation
                   </Button>
                 </Link>

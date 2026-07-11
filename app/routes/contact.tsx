@@ -4,12 +4,23 @@ import { useState } from "react";
 import { Navbar } from "../components/ui/Navbar";
 import { Footer } from "../components/ui/Footer";
 import { CONTACT, SOCIAL, BRAND } from "../lib/constants";
+import { pageMeta, canonicalLink } from "../lib/seo";
+import type { Route } from "./+types/contact";
 
-export function meta() {
+const TITLE = "Contact Proconsulting | Free Study Abroad & Immigration Consultation";
+const DESCRIPTION = "Get in touch with Proconsulting for expert guidance on university admissions, student visas, and immigration processing. Book your free consultation today.";
+const PATHNAME = "/contact";
+
+export function meta(_args?: Route.MetaArgs) {
   return [
-    { title: "Contact Proconsulting | Free Consultation" },
-    { name: "description", content: "Get in touch with Proconsulting for expert guidance on university admissions and visa processing. Book your free consultation today." },
+    { title: TITLE },
+    { name: "description", content: DESCRIPTION },
+    ...pageMeta({ title: TITLE, description: DESCRIPTION, pathname: PATHNAME }),
   ];
+}
+
+export function links() {
+  return canonicalLink(PATHNAME);
 }
 
 const serviceOptions = [
@@ -132,7 +143,17 @@ export default function ContactPage() {
                     <a href={`tel:${CONTACT.phoneUK.replace(/\s/g, "")}`} className="hover:text-[#FF4D6D]">{CONTACT.phoneUK}</a>
                   </li>
                   <li>
-                    <a href={`mailto:${CONTACT.email}`} className="hover:text-[#FF4D6D]">{CONTACT.email}</a>
+                    <span className="font-medium text-slate-700">Email:</span>{" "}
+                    <a
+                      href="#contact-form"
+                      className="hover:text-[#FF4D6D]"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' });
+                      }}
+                    >
+                      Use the form →
+                    </a>
                   </li>
                 </ul>
               </div>

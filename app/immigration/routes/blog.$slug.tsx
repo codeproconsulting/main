@@ -6,7 +6,7 @@ import { Navbar } from "~/immigration/components/ui/Navbar";
 import { Footer } from "~/immigration/components/ui/footer";
 import { getPostBySlug, getCoverImageUrl, getCoverImageAlt, getPrimaryAuthorName, type GhostPost } from "~/immigration/lib/ghost-api";
 import { GhostHtmlContent } from "~/immigration/components/ui/GhostHtmlContent";
-import { ArrowLeft, Calendar, Loader2, User } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 
 export function meta() {
   return [{ title: "Post | ProConsulting Immigration" }];
@@ -118,18 +118,7 @@ export default function BlogPost() {
                 {post.title}
               </h1>
               <div className="mt-2 w-16 h-1 rounded-full bg-[#FF4D6D]" />
-              <div className="flex flex-wrap items-center gap-4 mt-4 text-slate-600 text-sm">
-                {publishedDate && (
-                  <span className="flex items-center gap-1.5">
-                    <Calendar className="w-4 h-4" /> {publishedDate}
-                  </span>
-                )}
-                {getPrimaryAuthorName(post) && (
-                  <span className="flex items-center gap-1.5">
-                    <User className="w-4 h-4" /> {getPrimaryAuthorName(post)}
-                  </span>
-                )}
-              </div>
+              {/* Metadata block removed */}
             </div>
           </section>
 

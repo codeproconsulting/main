@@ -146,7 +146,7 @@ export function Footer() {
               <li>
                 <a href={`mailto:${CONTACT.email}`} className="flex items-center gap-3 hover:text-white transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B1B3A]">
                   <FaEnvelope className="w-5 h-5 shrink-0" style={{ color: BRAND.pink }} />
-                  <span>{CONTACT.email}</span>
+                  <span>Email Us</span>
                 </a>
               </li>
             </ul>

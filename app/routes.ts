@@ -11,9 +11,10 @@ export default [
   route("about", "routes/about.tsx"),
   route("contact", "routes/contact.tsx"),
 
-  // Root level sitemap and robots
+  // Root level sitemap, robots, and llms.txt for AI crawlers
   route("sitemap.xml", "routes/sitemap.xml.ts"),
   route("robots.txt", "routes/robots.txt.ts"),
+  route("llms.txt", "routes/llms[.]txt.ts"),
 
   // Prefixed sub-apps
   ...prefix("education", educationRoutes),

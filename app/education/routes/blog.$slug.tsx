@@ -275,28 +275,7 @@ export default function BlogPost() {
                   {post.title}
                 </h1>
 
-                {/* Author & meta – single row, centered, clear separators */}
-                <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-slate-600 text-sm mb-8">
-                  <span className="flex items-center gap-2 shrink-0">
-                    <span
-                      className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
-                      style={{ backgroundColor: BRAND.navy }}
-                    >
-                      {post.author ? post.author.charAt(0) : "?"}
-                    </span>
-                    {post.author && (
-                      <span className="font-medium text-slate-700">Written by {post.author}</span>
-                    )}
-                  </span>
-                  {publishedDate && (
-                    <>
-                      <span className="text-white hidden sm:inline" aria-hidden>|</span>
-                      <span>{publishedDate}</span>
-                    </>
-                  )}
-                  <span className="text-white hidden sm:inline" aria-hidden>|</span>
-                  <span>{readTime} min read</span>
-                </div>
+                {/* Author & meta removed */}
 
                 {/* Excerpt – left-aligned with body, spacing */}
                 {post.excerpt && (
@@ -339,11 +318,11 @@ export default function BlogPost() {
                     className="w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center text-lg sm:text-xl font-bold shrink-0"
                     style={{ backgroundColor: "rgba(255,255,255,0.2)" }}
                   >
-                    {post.author ? post.author.charAt(0) : "?"}
+                    P
                   </div>
                   <div className="min-w-0">
                     <p className="font-semibold text-sm mb-1" style={{ color: BRAND.pink }}>
-                      {post.author || "ProConsulting Team"}
+                      ProConsulting Team
                     </p>
                     <p className="text-white text-sm leading-relaxed">
                       Expert guidance on study abroad, university applications, and visas. We help students navigate their journey to studying in the UK, Australia, Canada, and beyond.

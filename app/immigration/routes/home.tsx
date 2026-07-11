@@ -10,12 +10,22 @@ import { ReviewsSection } from "~/immigration/components/ui/ReviewsSection";
 import { immigrationServices } from "~/immigration/lib/services";
 import { ArrowRight, Briefcase, FileCheck2, Gavel, Plane, Users } from "lucide-react";
 import type { Route } from "./+types/home";
+import { pageMeta, canonicalLink } from "~/immigration/lib/seo";
+
+const TITLE = "Immigration & Visa Consulting Services | Proconsulting";
+const DESCRIPTION = "Professional immigration and visa consulting services in the UK. We specialize in visit visas, work permits, family visas, settlement applications, and appeal support.";
+const PATHNAME = "/immigration";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "Immigration & Visa Services | ProConsulting Immigration" },
-    { name: "description", content: "Professional immigration and visa services. We specialize in visit visas, work permits, family visas, and settlement applications." },
+    { title: TITLE },
+    { name: "description", content: DESCRIPTION },
+    ...pageMeta({ title: TITLE, description: DESCRIPTION, pathname: PATHNAME }),
   ];
+}
+
+export function links() {
+  return canonicalLink(PATHNAME);
 }
 
 export default function Home() {

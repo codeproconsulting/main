@@ -46,7 +46,7 @@ export const MenuItem = ({
         transition={{ duration: 0.3 }}
         className={cn(
           "cursor-pointer text-sm font-medium inline-flex items-center gap-1 whitespace-nowrap lg:text-base",
-          isOpen ? "text-black" : "text-neutral-700 dark:text-neutral-200 hover:text-black"
+          isOpen ? "text-black" : "text-neutral-700 hover:text-black"
         )}
       >
         {item}
@@ -90,7 +90,7 @@ export const HoveredLink = ({ children, ...rest }: React.ComponentProps<typeof L
   return (
     <Link
       {...rest}
-      className="text-neutral-700 dark:text-neutral-200 hover:text-black hover:font-bold transition-all"
+      className="text-neutral-700 hover:text-black hover:font-bold transition-all"
     >
       {children}
     </Link>

@@ -265,7 +265,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-0.5">Email Us</p>
-                    <p className="text-slate-900 font-bold group-hover:text-pink-600 transition-colors">info@proconsulting.uk</p>
+                    <p className="text-slate-900 font-bold group-hover:text-pink-600 transition-colors">Use the contact form ↑</p>
                   </div>
                 </a>
                 <a href="tel:03701902125" className="flex items-center gap-4 group">

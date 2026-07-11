@@ -14,12 +14,23 @@ import {
   FaClipboardCheck
 } from 'react-icons/fa6';
 import { BRAND } from "../lib/constants";
+import { pageMeta, canonicalLink } from "../lib/seo";
+import type { Route } from "./+types/about";
 
-export function meta() {
+const TITLE = "About Proconsulting | Study Abroad & Immigration Consulting";
+const DESCRIPTION = "Learn about Proconsulting, your trusted UK partner for study abroad and immigration consulting services. Discover our story, core values, and success stories.";
+const PATHNAME = "/about";
+
+export function meta(_args?: Route.MetaArgs) {
   return [
-    { title: "About Proconsulting | Our Story & Core Values" },
-    { name: "description", content: "Learn about Proconsulting, your trusted partner for study abroad and immigration services. Discover our core values, mission, and success stories." },
+    { title: TITLE },
+    { name: "description", content: DESCRIPTION },
+    ...pageMeta({ title: TITLE, description: DESCRIPTION, pathname: PATHNAME }),
   ];
+}
+
+export function links() {
+  return canonicalLink(PATHNAME);
 }
 
 const CORE_VALUES = [

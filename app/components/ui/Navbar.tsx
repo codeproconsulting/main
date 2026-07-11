@@ -32,7 +32,7 @@ const CONSULTATION_OPTIONS = [
 
 /** Button style matching education site navbar CTA */
 const consultationButtonClass =
-  "rounded-full px-5 py-4 text-base font-bold bg-pink-600 hover:bg-pink-700 text-white shadow-lg transition-transform hover:scale-105 whitespace-nowrap lg:px-7 lg:py-5 lg:text-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-pink-500";
+  "rounded-full px-5 py-2.5 text-sm font-bold bg-pink-600 hover:bg-pink-700 text-white shadow-md transition-transform hover:scale-[1.02] whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-pink-500";
 
 export function Navbar({ className }: { className?: string } = {}) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);

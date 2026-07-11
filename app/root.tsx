@@ -25,11 +25,14 @@ export const links: Route.LinksFunction = () => [
 
 export function meta() {
   return [
-    { title: "Proconsulting | Education & Immigration Consultants" },
+    { title: "Proconsulting | Study Abroad & Immigration Consulting Services" },
+    { name: "description", content: "Expert education and immigration consultants in the UK. We help you navigate university admissions, student visas, and immigration processes with clarity and confidence." },
     { property: "og:site_name", content: "Proconsulting" },
     { property: "og:type", content: "website" },
-    { property: "og:locale", content: "en" },
+    { property: "og:locale", content: "en_GB" },
+    { property: "og:image", content: "https://proconsulting.uk/Logo_main.png" },
     { name: "twitter:card", content: "summary_large_image" },
+    { name: "twitter:site", content: "@proconsulting_" },
   ];
 }
 

@@ -4,7 +4,7 @@
  * Create a Custom Integration in Ghost Admin to get the Content API key.
  */
 
-const GHOST_URL = (import.meta.env.VITE_GHOST_URL ?? "").replace(/\/$/, "");
+const GHOST_URL = (import.meta.env.VITE_GHOST_API_URL ?? import.meta.env.VITE_GHOST_URL ?? "").replace(/\/$/, "").replace(/\/ghost$/, "");
 const API_KEY = import.meta.env.VITE_GHOST_CONTENT_API_KEY ?? "";
 
 export interface GhostAuthor {

@@ -84,7 +84,7 @@ export function Footer() {
               <li className="flex items-center gap-3">
                 <Mail className="w-4 h-4 shrink-0 text-[#FF4D6D]" />
                 <a href="mailto:info@proconsulting.uk" className="hover:text-white transition-colors">
-                  info@proconsulting.uk
+                  Email Us
                 </a>
               </li>
               <li className="flex items-center gap-3">

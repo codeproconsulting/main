@@ -117,7 +117,7 @@ export function Footer() {
               <li>
                 <a href="mailto:contact@proconsulting.uk" className="flex items-center gap-3 hover:text-white transition-colors">
                   <Mail className="w-5 h-5 shrink-0" style={{ color: BRAND.pink }} />
-                  <span>contact@proconsulting.uk</span>
+                  <span>Email Us</span>
                 </a>
               </li>
             </ul>
