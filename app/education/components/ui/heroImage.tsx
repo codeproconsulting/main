@@ -11,8 +11,8 @@ const slides = [
     title: "Guiding Students",
     highlight: "to Success",
     description: "Choose, Budget and thrive!",
-    buttonText: "Apply Now",
-    buttonLink: "/apply"
+    buttonText: "Get Free Assessment",
+    buttonLink: "/education/contact"
   },
   {
     id: 2,
@@ -20,8 +20,8 @@ const slides = [
     title: "Unlocking",
     highlight: "Global\nOpportunities",
     description: "For your Academic Journey!",
-    buttonText: "Apply Now",
-    buttonLink: "/apply"
+    buttonText: "Get Free Assessment",
+    buttonLink: "/education/contact"
   }
 ];
 

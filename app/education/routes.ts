@@ -8,6 +8,8 @@ export default [
   route("destinations/:slug", "education/routes/destinations.$slug.tsx"),
   route("contact", "education/routes/contact.tsx"),
   route("apply", "education/routes/contact.tsx", { id: "education/routes/apply" }),
+  route("assessment", "education/routes/contact.tsx", { id: "education/routes/assessment" }),
+  route("admin", "education/routes/admin.tsx"),
   route("courses", "education/routes/courses.tsx"),
   route("courses/:slug", "education/routes/courses.$slug.tsx"),
   route("about", "education/routes/about.tsx"),

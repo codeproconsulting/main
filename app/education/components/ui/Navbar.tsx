@@ -20,7 +20,7 @@ export function Navbar({ className }: { className?: string }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
-  const isContactPage = location.pathname === "/contact";
+  const isContactPage = location.pathname === "/contact" || location.pathname.startsWith("/education/contact") || location.pathname.startsWith("/education/apply");
 
   const handleWrapperLeave = (e: React.MouseEvent) => {
     const related = e.relatedTarget as Node | null;

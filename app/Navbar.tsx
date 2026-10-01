@@ -51,7 +51,7 @@ export function Navbar() {
             Contact
           </a>
           <a
-            href="#contact"
+            href="/education/assessment"
             className="ml-4 rounded-full bg-pink-600 px-4 py-2 text-xs font-semibold text-white shadow-md hover:bg-pink-700"
           >
             Free Assessment
