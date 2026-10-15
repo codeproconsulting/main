@@ -23,6 +23,7 @@ function XIcon({ className }: { className?: string }) {
 const quickLinks = [
   { to: "/", label: "Home" },
   { to: "/about", label: "About Us" },
+  { to: "/service-locations", label: "Service Locations" },
   { to: "/education/blog", label: "Blog", external: true },
   { to: "/contact", label: "Get free consultation" },
 ];

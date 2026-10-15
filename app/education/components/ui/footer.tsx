@@ -21,6 +21,7 @@ const BRAND = { navy: "#0B1B3A", pink: "#FF4D6D" };
 const quickLinks = [
   { to: "/", label: "Home" },
   { to: "/education/about", label: "About Us" },
+  { to: "/service-locations", label: "Service Locations" },
   { to: "/education/services", label: "Services" },
   { to: "/education/destinations", label: "Destinations" },
   { to: "/education/courses", label: "Courses" },

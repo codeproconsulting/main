@@ -9,6 +9,7 @@ const BRAND = { navy: "#0B1B3A", pink: "#FF4D6D" };
 const quickLinks = [
   { to: "/", label: "Home" },
   { to: "/immigration/about", label: "About Us" },
+  { to: "/service-locations", label: "Service Locations" },
   { to: "/immigration/blog", label: "Blog" },
   { to: "/immigration/destinations", label: "Destinations" },
   { to: "/immigration/services", label: "Services" },
