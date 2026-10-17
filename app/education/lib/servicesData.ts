@@ -209,6 +209,45 @@ export const servicesDetail: ServiceDetail[] = [
     ctaHeading: "Ready to reach your target score?",
     ctaDescription: "Get a study plan and start preparing with our expert trainers.",
   },
+  {
+    slug: "scholarships",
+    title: "International Student Scholarships",
+    tagline: "Find scholarships that match your academic profile, degree and budget.",
+    shortDescription:
+      "Find scholarships that match your academic profile. We check your grades, degree and budget, show you the awards you can realistically win, and help you apply before the deadline closes.",
+    metaDescription:
+      "Realistic scholarship shortlists for Pakistani students: profile evaluation, award matches and a personal action plan within 1 working day. Free check — office at I-8 Markaz, Islamabad.",
+    sections: [
+      {
+        heading: "Three Kinds of Funding — and Why Students Apply to the Wrong One",
+        content:
+          "Most students miss out because they apply to the wrong award, or apply late. Knowing the type of funding first saves months. Each award has its own eligibility rules, its own cycle, and its own competition.",
+        list: [
+          "Fully funded: Tuition plus living costs, sometimes travel. Few seats, heavy competition, long lead time.",
+          "Partial scholarship: Covers part of your tuition. More awards, easier to win. The realistic middle path most Pakistani students should target.",
+          "University merit award: Given for strong grades, often decided with your course application. The most accessible route.",
+        ],
+      },
+      {
+        heading: "The Deadline Nobody Sees",
+        content:
+          "Every scholarship year ends the same way: brilliant students discover the award two weeks after it closed. Fully funded cycles open months before the intake. Merit awards are judged with your course application. Start your free check early.",
+      },
+      {
+        heading: "From Confused to Clear — Problems We Solve",
+        content:
+          "We review your grades, degree and goals and give you an honest view of your chances. We shortlist matching awards, rebuild your CV and statements, and track every deadline for your intake.",
+      },
+    ],
+    benefits: [
+      "Free profile evaluation and realistic chance assessment",
+      "Scholarship shortlist matched to your profile, country and budget",
+      "Personal action plan delivered within 1 working day",
+      "Walk-in office at Vista Building, I-8 Markaz, Islamabad",
+    ],
+    ctaHeading: "Get My Free Scholarship Check",
+    ctaDescription: "Send your degree, grades and target country. Written plan within 1 working day.",
+  },
 ];
 
 export function getServiceBySlug(slug: string): ServiceDetail | undefined {

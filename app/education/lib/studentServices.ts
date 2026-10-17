@@ -31,4 +31,11 @@ export const studentServices = [
     link: "/education/services/test-prep",
     image: "", // Add image path
   },
+  {
+    id: 5,
+    title: "Scholarships",
+    description: "Find scholarships matching your profile. Free check, realistic awards, and deadlines.",
+    link: "/education/services/scholarships",
+    image: "",
+  },
 ];

@@ -4,7 +4,7 @@ import { Link } from "react-router";
 import { Navbar } from "~/education/components/ui/Navbar";
 import { Footer } from "~/education/components/ui/footer";
 import { servicesDetail } from "~/education/lib/servicesData";
-import { ArrowRight, Target, ScrollText, FileCheck, AppWindow } from "lucide-react";
+import { ArrowRight, Target, ScrollText, FileCheck, AppWindow, GraduationCap } from "lucide-react";
 
 const BRAND = { navy: "#0B1B3A", pink: "#FF4D6D", pinkDark: "#E11D48" };
 
@@ -13,6 +13,7 @@ const iconBySlug: Record<string, typeof Target> = {
   admission: ScrollText,
   visa: FileCheck,
   "test-prep": AppWindow,
+  scholarships: GraduationCap,
 };
 
 export function meta() {

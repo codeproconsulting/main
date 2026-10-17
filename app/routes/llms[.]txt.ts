@@ -38,6 +38,7 @@ Proconsulting is a registered education and immigration consultancy with offices
 - Destinations: https://proconsulting.uk/education/destinations
 - Universities: https://proconsulting.uk/education/universities
 - Services: https://proconsulting.uk/education/services
+- Scholarships: https://proconsulting.uk/education/services/scholarships
 
 ## Contact
 

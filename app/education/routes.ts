@@ -17,6 +17,7 @@ export default [
   route("blog/:slug", "education/routes/blog.$slug.tsx"),
   route("universities", "education/routes/universities.tsx"),
   route("services", "education/routes/services.tsx"),
+  route("services/scholarships", "education/routes/services.scholarships.tsx"),
   route("services/:slug", "education/routes/services.$slug.tsx"),
   route("privacy-policy", "education/routes/privacy-policy.tsx"),
   route("terms", "education/routes/terms.tsx"),
