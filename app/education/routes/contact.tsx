@@ -71,7 +71,7 @@ export async function action({ request }: ActionFunctionArgs) {
       majorSubject: (formData.get("majorSubject") as string) || "",
       gradeScore: (formData.get("gradeScore") as string) || "",
       passingYear: (formData.get("passingYear") as string) || "",
-      targetCountry: (formData.get("targetCountry") as string) || (destination === "uk" ? "United Kingdom" : ""),
+      targetCountry: (formData.get("targetCountry") as string) || (destination === "uk" ? "United Kingdom" : (destination === "germany" ? "Germany" : "")),
       targetDegree: (formData.get("targetDegree") as string) || "",
       targetIntake: (formData.get("targetIntake") as string) || "",
       budgetRange: (formData.get("budgetRange") as string) || "",
@@ -81,9 +81,9 @@ export async function action({ request }: ActionFunctionArgs) {
       studyGap: (formData.get("studyGap") as string) || "",
       notes: (formData.get("notes") as string) || "",
       enquiringAs,
-      destination: destination === "uk" ? "uk" : undefined,
-      originPath: destination === "uk" ? "/education/destinations/uk" : originPath,
-      serviceContext: destination === "uk" ? "UK study assessment" : serviceContext,
+      destination: destination === "uk" ? "uk" : (destination === "germany" ? "germany" : undefined),
+      originPath: destination === "uk" ? "/education/destinations/uk" : (destination === "germany" ? "/education/destinations/germany" : originPath),
+      serviceContext: destination === "uk" ? "UK study assessment" : (destination === "germany" ? "Germany study assessment" : serviceContext),
     };
 
     const saved = saveApplicant(applicantData);
@@ -105,6 +105,9 @@ export default function Contact() {
     rawDest === "uk" ||
     queryCountry?.toLowerCase() === "uk" ||
     queryCountry?.toLowerCase() === "united kingdom";
+  const isGermanyContext =
+    rawDest === "germany" ||
+    queryCountry?.toLowerCase() === "germany";
 
   const [step, setStep] = useState<number>(1);
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -122,7 +125,11 @@ export default function Contact() {
     gradeScore: "",
     passingYear: "2025",
     // Step 3: Study Intent & Budget
-    targetCountry: isUkContext ? "United Kingdom" : (queryCountry || "United Kingdom"),
+    targetCountry: isUkContext
+      ? "United Kingdom"
+      : isGermanyContext
+      ? "Germany"
+      : queryCountry || "United Kingdom",
     targetDegree: "Master's / Postgraduate (1 or 2 Years)",
     targetIntake: "September / Fall 2026",
     budgetRange: "£10,000 - £16,000 / year ($13k - $20k)",
@@ -131,9 +138,17 @@ export default function Contact() {
     hasRefusal: "No Refusals (Clean Travel / Visa Record)",
     studyGap: "No Study Gap (Fresh Graduate / Currently Enrolled)",
     notes: "",
-    destination: isUkContext ? "uk" : "",
-    originPath: isUkContext ? "/education/destinations/uk" : "",
-    serviceContext: isUkContext ? "UK study assessment" : "Study abroad consultation",
+    destination: isUkContext ? "uk" : isGermanyContext ? "germany" : "",
+    originPath: isUkContext
+      ? "/education/destinations/uk"
+      : isGermanyContext
+      ? "/education/destinations/germany"
+      : "",
+    serviceContext: isUkContext
+      ? "UK study assessment"
+      : isGermanyContext
+      ? "Germany study assessment"
+      : "Study abroad consultation",
   });
 
   const handleChange = (
@@ -279,6 +294,8 @@ export default function Contact() {
                 <span className="w-2 h-2 rounded-full bg-pink-400 animate-pulse" />
                 {isUkContext
                   ? "UK Study Assessment & Planning Consultation"
+                  : isGermanyContext
+                  ? "Germany Study Assessment & Planning Consultation"
                   : "1-on-1 Free Profile Evaluation & Visa Assessment"}
               </div>
 
@@ -286,6 +303,10 @@ export default function Contact() {
                 {isUkContext ? (
                   <>
                     Study in the UK: <span className="text-[#FF4D6D]">Free Assessment</span>
+                  </>
+                ) : isGermanyContext ? (
+                  <>
+                    Study in Germany: <span className="text-[#FF4D6D]">Free Assessment</span>
                   </>
                 ) : (
                   <>
@@ -305,6 +326,8 @@ export default function Contact() {
               <p className="text-base sm:text-lg text-slate-200 leading-relaxed font-normal">
                 {isUkContext
                   ? "Tell us where you are starting. We can begin with an unfinished shortlist, an existing offer or a funding question that needs a clearer answer."
+                  : isGermanyContext
+                  ? "Tell us where you are starting. We will use these details to discuss your Germany study options and the requirements that need checking. Do not upload identity or financial documents here."
                   : "Complete the quick profile assessment below. Our certified senior education consultants will evaluate your admission chances, match matching global universities, and map your study visa roadmap."}
               </p>
             </div>
@@ -411,7 +434,7 @@ export default function Contact() {
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        {isUkContext && (
+                        {(isUkContext || isGermanyContext) && (
                           <div className="md:col-span-2 p-4 rounded-xl bg-slate-50 border border-slate-200">
                             <label className="block text-sm font-semibold text-slate-800 mb-2">
                               I am enquiring as: <span className="text-pink-500">*</span>
@@ -690,6 +713,14 @@ export default function Contact() {
                               </span>
                               <input type="hidden" name="targetCountry" value="United Kingdom" />
                             </div>
+                          ) : isGermanyContext ? (
+                            <div className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-semibold text-sm flex items-center justify-between">
+                              <span>Germany</span>
+                              <span className="text-xs font-semibold text-[#FF4D6D] bg-[#FF4D6D]/10 px-2.5 py-0.5 rounded-full">
+                                Germany Study Assessment
+                              </span>
+                              <input type="hidden" name="targetCountry" value="Germany" />
+                            </div>
                           ) : (
                             <select
                               name="targetCountry"
@@ -711,9 +742,9 @@ export default function Contact() {
                               </option>
                             </select>
                           )}
-                          <input type="hidden" name="destination" value={isUkContext ? "uk" : ""} />
-                          <input type="hidden" name="originPath" value={isUkContext ? "/education/destinations/uk" : ""} />
-                          <input type="hidden" name="serviceContext" value={isUkContext ? "UK study assessment" : ""} />
+                          <input type="hidden" name="destination" value={isUkContext ? "uk" : isGermanyContext ? "germany" : ""} />
+                          <input type="hidden" name="originPath" value={isUkContext ? "/education/destinations/uk" : isGermanyContext ? "/education/destinations/germany" : ""} />
+                          <input type="hidden" name="serviceContext" value={isUkContext ? "UK study assessment" : isGermanyContext ? "Germany study assessment" : ""} />
                         </div>
 
                         <div>
@@ -951,7 +982,13 @@ export default function Contact() {
                             </>
                           ) : (
                             <>
-                              <span>{isUkContext ? "Get free UK assessment" : "Submit Free Assessment"}</span>
+                              <span>
+                                {isUkContext
+                                  ? "Get free UK assessment"
+                                  : isGermanyContext
+                                  ? "Get free Germany assessment"
+                                  : "Submit Free Assessment"}
+                              </span>
                               <CheckCircle2 className="w-4 h-4" />
                             </>
                           )}
@@ -983,13 +1020,22 @@ export default function Contact() {
                         </div>
 
                         <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-2">
-                          {isUkContext || applicantResult?.destination === "uk"
+                          {isGermanyContext || applicantResult?.destination === "germany"
+                            ? "Your Germany enquiry has been received"
+                            : isUkContext || applicantResult?.destination === "uk"
                             ? "Your UK assessment enquiry has been received"
                             : "Your Free Assessment Has Been Submitted!"}
                         </h2>
 
                         <p className="text-slate-600 max-w-lg mx-auto text-sm sm:text-base">
-                          {isUkContext || applicantResult?.destination === "uk" ? (
+                          {isGermanyContext || applicantResult?.destination === "germany" ? (
+                            <>
+                              Thank you. We have recorded Germany as your study destination and your preferred contact method. Keep your academic details available for the discussion.
+                              <span className="block mt-2 text-xs text-slate-500 font-medium">
+                                Please do not send sensitive documents until you are told how to share them securely.
+                              </span>
+                            </>
+                          ) : isUkContext || applicantResult?.destination === "uk" ? (
                             <>
                               ProConsulting will use the details you provided to contact you about your questions.
                               <span className="block mt-2 text-xs text-slate-500 font-medium">

@@ -9,6 +9,8 @@ import { ArrowRight, ArrowLeft, CheckCircle2 } from "lucide-react";
 import type { Route } from "./+types/destinations.$slug";
 import { UkDestinationView } from "~/education/components/destinations/UkDestinationView";
 import { UK_SEO, UK_SCHEMA_GRAPH } from "~/education/lib/ukDestinationData";
+import { GermanyDestinationView } from "~/education/components/destinations/GermanyDestinationView";
+import { GERMANY_SEO, GERMANY_SCHEMA_GRAPH } from "~/education/lib/germanyDestinationData";
 
 export function loader({ params }: Route.LoaderArgs) {
   const slug = params.slug;
@@ -32,6 +34,20 @@ export function meta(args: Route.MetaArgs) {
     ];
   }
 
+  if (slug === "germany") {
+    const title = GERMANY_SEO.title;
+    const description = GERMANY_SEO.metaDescription;
+    const pathname = "/education/destinations/germany";
+    return [
+      { title },
+      { name: "description", content: description },
+      ...pageMeta({ title, description, pathname }),
+      {
+        "script:ld+json": GERMANY_SCHEMA_GRAPH,
+      },
+    ];
+  }
+
   const destination = args?.data?.destination as Destination | null | undefined;
   if (!destination) {
     return [{ title: "Destination not found | ProConsulting" }];
@@ -50,6 +66,9 @@ export function links(args?: any) {
   const slug = args?.params?.slug;
   if (slug === "uk") {
     return [{ rel: "canonical", href: UK_SEO.canonicalUrl }];
+  }
+  if (slug === "germany") {
+    return [{ rel: "canonical", href: GERMANY_SEO.canonicalUrl }];
   }
   const pathname = args?.location?.pathname ?? (args?.params ? `/education/destinations/${args.params.slug}` : "");
   return pathname ? canonicalLink(pathname) : [];
@@ -184,6 +203,18 @@ export default function DestinationSlugPage() {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(UK_SCHEMA_GRAPH) }}
         />
         <UkDestinationView />
+      </>
+    );
+  }
+
+  if (slug === "germany") {
+    return (
+      <>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(GERMANY_SCHEMA_GRAPH) }}
+        />
+        <GermanyDestinationView />
       </>
     );
   }
