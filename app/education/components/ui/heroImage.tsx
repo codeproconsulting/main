@@ -8,21 +8,22 @@ const slides = [
   {
     id: 1,
     image: "/HeroImage.webp",
-    title: "Guiding Students",
-    highlight: "to Success",
-    description: "Choose, Budget and thrive!",
+    title: "Study Abroad Guidance",
+    highlight: "for Pakistani Students",
+    description:
+      "Plan your study abroad journey from Pakistan with a clearer view of your course options, application requirements and family budget. ProConsulting helps you compare destinations and understand your next steps.",
     buttonText: "Get Free Assessment",
-    buttonLink: "/education/contact"
+    buttonLink: "/education/contact",
   },
   {
     id: 2,
     image: "/HeroImg2.webp",
     title: "Unlocking",
     highlight: "Global\nOpportunities",
-    description: "For your Academic Journey!",
+    description: "Expert admission, scholarship, and student visa guidance across UK, Germany, Italy, and beyond.",
     buttonText: "Get Free Assessment",
-    buttonLink: "/education/contact"
-  }
+    buttonLink: "/education/contact",
+  },
 ];
 
 export function Hero() {
@@ -88,7 +89,7 @@ export function Hero() {
               </h1>
               
               {/* Sub-headline - center on mobile, left on desktop */}
-              <p className="text-2xl md:text-3xl font-medium text-white max-w-lg mb-6 md:mb-12 leading-snug mx-auto md:mx-0">
+              <p className="text-base sm:text-lg md:text-xl font-normal text-white/95 max-w-xl mb-6 md:mb-10 leading-relaxed mx-auto md:mx-0">
                 {slides[currentIndex].description}
               </p>
 

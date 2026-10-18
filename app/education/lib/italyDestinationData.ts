@@ -14,7 +14,7 @@ export interface ItalyOfficialSource {
 export const ITALY_SEO = {
   title: "Study in Italy from Pakistan | ProConsulting",
   metaDescription:
-    "Plan study in Italy from Pakistan with guidance on university admission, regional scholarships, documents, budgets and visa steps. Get a free Italy assessment.",
+    "Plan to study in Italy from Pakistan with guidance on courses, regional scholarships, documents, Universitaly and visa preparation. Get a free assessment.",
   h1: "Study in Italy from Pakistan—with a plan beyond the scholarship",
   canonicalUrl: "https://proconsulting.uk/education/destinations/italy",
   ctaText: "Get free Italy assessment",

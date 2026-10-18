@@ -14,7 +14,7 @@ export interface GermanyOfficialSource {
 export const GERMANY_SEO = {
   title: "Study in Germany from Pakistan | ProConsulting",
   metaDescription:
-    "Explore Germany study options from Pakistan: bachelor’s and master’s eligibility, tuition exceptions, funding and visa steps. Get a free Germany assessment.",
+    "Explore study in Germany from Pakistan: academic eligibility, public and private university costs, application routes and funding evidence. Get a free assessment.",
   h1: "Study in Germany from Pakistan",
   canonicalUrl: "https://proconsulting.uk/education/destinations/germany",
   ctaText: "Get free Germany assessment",

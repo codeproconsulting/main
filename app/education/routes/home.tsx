@@ -16,26 +16,62 @@ import { PartnerUniversitiesSection } from "~/education/components/ui/PartnerUni
 
 import { ReviewsSection } from "~/education/components/ui/ReviewsSection";
 
-const TITLE = "Study Abroad Services | Proconsulting Education";
+const TITLE = "Study Abroad Consultants for Pakistani Students | ProConsulting";
 const DESCRIPTION =
-  "Expert study abroad consultancy: university applications, visa guidance, and career counselling for UK, Australia, Canada, USA and more. Free consultation.";
+  "Explore study destinations, university applications, scholarships and student visa guidance with ProConsulting. Start with a free study abroad assessment.";
+const CANONICAL_URL = "https://proconsulting.uk/education";
+
+const EDUCATION_HUB_SCHEMA = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://proconsulting.uk/education#webpage",
+      "url": CANONICAL_URL,
+      "name": TITLE,
+      "description": DESCRIPTION,
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "Proconsulting",
+        "url": "https://proconsulting.uk"
+      }
+    },
+    {
+      "@type": "Service",
+      "@id": "https://proconsulting.uk/education#service",
+      "name": "Study Abroad Consulting Services",
+      "serviceType": "Study abroad consulting",
+      "url": CANONICAL_URL,
+      "provider": { "@id": "https://proconsulting.uk/#organization" },
+      "areaServed": { "@type": "Country", "name": "Pakistan" },
+      "description": DESCRIPTION
+    }
+  ]
+};
 
 export function meta(args?: Route.MetaArgs) {
-  const pathname = args?.location?.pathname ?? "/";
+  const pathname = "/education";
   return [
     { title: TITLE },
     { name: "description", content: DESCRIPTION },
     ...pageMeta({ title: TITLE, description: DESCRIPTION, pathname }),
+    {
+      "script:ld+json": EDUCATION_HUB_SCHEMA,
+    },
   ];
 }
 
-export function links(args?: any) {
-  return canonicalLink(args?.location?.pathname ?? "/");
+export function links() {
+  return [{ rel: "canonical", href: CANONICAL_URL }];
 }
 
 export default function Home() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(EDUCATION_HUB_SCHEMA) }}
+      />
       <Navbar />
       <div>
         <Hero />

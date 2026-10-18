@@ -6,7 +6,14 @@ import { Footer } from "~/education/components/ui/footer";
 import { servicesDetail } from "~/education/lib/servicesData";
 import { ArrowRight, Target, ScrollText, FileCheck, AppWindow, GraduationCap } from "lucide-react";
 
+import { pageMeta } from "~/education/lib/seo";
+
 const BRAND = { navy: "#0B1B3A", pink: "#FF4D6D", pinkDark: "#E11D48" };
+
+const TITLE = "Study Abroad Application & Student Visa Services | ProConsulting";
+const DESCRIPTION =
+  "Explore admission guidance, interview preparation, English test preparation and student visa application support. Discuss your study plans with ProConsulting.";
+const CANONICAL_URL = "https://proconsulting.uk/education/services";
 
 const iconBySlug: Record<string, typeof Target> = {
   "interview-prep": Target,
@@ -16,20 +23,65 @@ const iconBySlug: Record<string, typeof Target> = {
   scholarships: GraduationCap,
 };
 
-export function meta() {
-  return [
-    { title: "Student Services | ProConsulting" },
+const SERVICES_SCHEMA = {
+  "@context": "https://schema.org",
+  "@graph": [
     {
-      name: "description",
-      content:
-        "Interview preparation, admission guidance, visa processing, and English test preparation. End-to-end support for studying abroad.",
+      "@type": "WebPage",
+      "@id": "https://proconsulting.uk/education/services#webpage",
+      "url": CANONICAL_URL,
+      "name": TITLE,
+      "description": DESCRIPTION,
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "Proconsulting",
+        "url": "https://proconsulting.uk"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://proconsulting.uk/education/services#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://proconsulting.uk/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Student Services",
+          "item": CANONICAL_URL
+        }
+      ]
+    }
+  ]
+};
+
+export function meta() {
+  const pathname = "/education/services";
+  return [
+    { title: TITLE },
+    { name: "description", content: DESCRIPTION },
+    ...pageMeta({ title: TITLE, description: DESCRIPTION, pathname }),
+    {
+      "script:ld+json": SERVICES_SCHEMA,
     },
   ];
+}
+
+export function links() {
+  return [{ rel: "canonical", href: CANONICAL_URL }];
 }
 
 export default function Services() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(SERVICES_SCHEMA) }}
+      />
       <Navbar />
 
       {/* Title area – light header */}

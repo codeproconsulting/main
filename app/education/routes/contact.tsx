@@ -38,20 +38,61 @@ const BRAND = {
   gold: "#FFA700",
 };
 
+const TITLE = "Free Study Abroad Assessment | ProConsulting";
+const DESCRIPTION =
+  "Discuss your qualifications, study goals and budget with ProConsulting. Request a free initial study abroad assessment and understand your next steps.";
+const CANONICAL_URL = "https://proconsulting.uk/education/contact";
+
+const CONTACT_SCHEMA = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "ContactPage",
+      "@id": "https://proconsulting.uk/education/contact#webpage",
+      "url": CANONICAL_URL,
+      "name": TITLE,
+      "description": DESCRIPTION,
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "Proconsulting",
+        "url": "https://proconsulting.uk"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://proconsulting.uk/education/contact#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://proconsulting.uk/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Free Assessment",
+          "item": CANONICAL_URL
+        }
+      ]
+    }
+  ]
+};
+
 export function meta(args?: Route.MetaArgs) {
-  const pathname = args?.location?.pathname ?? "/education/contact";
-  const title = "Free Visa Assessment & Study Abroad Consultation | ProConsulting";
-  const description =
-    "Get an instant 100% free study abroad and visa assessment. Profile evaluation, university matching, scholarship checks, and visa readiness advisory.";
+  const pathname = "/education/contact";
   return [
-    { title },
-    { name: "description", content: description },
-    ...pageMeta({ title, description, pathname }),
+    { title: TITLE },
+    { name: "description", content: DESCRIPTION },
+    ...pageMeta({ title: TITLE, description: DESCRIPTION, pathname }),
+    {
+      "script:ld+json": CONTACT_SCHEMA,
+    },
   ];
 }
 
-export function links(args?: any) {
-  return canonicalLink(args?.location?.pathname ?? "/education/contact");
+export function links() {
+  return [{ rel: "canonical", href: CANONICAL_URL }];
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -289,6 +330,10 @@ export default function Contact() {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(CONTACT_SCHEMA) }}
+      />
       <Navbar />
 
       <main className="flex-1">

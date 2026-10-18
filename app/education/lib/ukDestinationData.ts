@@ -14,7 +14,7 @@ export interface UkOfficialSource {
 export const UK_SEO = {
   title: "Study in the UK from Pakistan | ProConsulting",
   metaDescription:
-    "Plan your UK studies with clear course comparisons, funding checks and Student visa preparation. Get a free UK assessment with ProConsulting.",
+    "Plan to study in the UK from Pakistan with guidance on course choices, costs, admission requirements, CAS and student visa preparation. Get a free assessment.",
   h1: "Study in the UK from Pakistan",
   canonicalUrl: "https://proconsulting.uk/education/destinations/uk",
   ctaText: "Get free UK assessment",

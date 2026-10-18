@@ -17,6 +17,9 @@ import { ITALY_SEO, ITALY_SCHEMA_GRAPH } from "~/education/lib/italyDestinationD
 export function loader({ params }: Route.LoaderArgs) {
   const slug = params.slug;
   const destination = getDestinationBySlug(slug);
+  if (!destination && slug !== "uk" && slug !== "germany" && slug !== "italy") {
+    throw new Response("Destination not found", { status: 404 });
+  }
   return { destination, slug };
 }
 
@@ -29,6 +32,7 @@ export function meta(args: Route.MetaArgs) {
     return [
       { title },
       { name: "description", content: description },
+      { tagName: "link", rel: "canonical", href: UK_SEO.canonicalUrl },
       ...pageMeta({ title, description, pathname }),
       {
         "script:ld+json": UK_SCHEMA_GRAPH,
@@ -43,6 +47,7 @@ export function meta(args: Route.MetaArgs) {
     return [
       { title },
       { name: "description", content: description },
+      { tagName: "link", rel: "canonical", href: GERMANY_SEO.canonicalUrl },
       ...pageMeta({ title, description, pathname }),
       {
         "script:ld+json": GERMANY_SCHEMA_GRAPH,
@@ -57,6 +62,7 @@ export function meta(args: Route.MetaArgs) {
     return [
       { title },
       { name: "description", content: description },
+      { tagName: "link", rel: "canonical", href: ITALY_SEO.canonicalUrl },
       ...pageMeta({ title, description, pathname }),
       {
         "script:ld+json": ITALY_SCHEMA_GRAPH,
@@ -70,10 +76,11 @@ export function meta(args: Route.MetaArgs) {
   }
   const title = `Study in ${destination.name} | ProConsulting`;
   const description = destination.description;
-  const pathname = args?.location?.pathname ?? (args?.params ? `/education/destinations/${args.params.slug}` : "");
+  const pathname = `/education/destinations/${slug}`;
   return [
     { title },
     { name: "description", content: description },
+    { tagName: "link", rel: "canonical", href: `https://proconsulting.uk/education/destinations/${slug}` },
     ...pageMeta({ title, description, pathname }),
   ];
 }
@@ -271,4 +278,24 @@ export default function DestinationSlugPage() {
   }
 
   return <DestinationContent destination={destination} />;
+}
+
+export function ErrorBoundary() {
+  return (
+    <>
+      <Navbar />
+      <main className="min-h-[60vh] flex flex-col items-center justify-center px-6 py-16 text-center">
+        <h1 className="text-3xl md:text-4xl font-bold text-slate-900 mb-3">Destination not found</h1>
+        <p className="text-slate-600 mb-8 max-w-md">The study destination you are looking for does not exist or has been moved.</p>
+        <Link
+          to="/education/destinations"
+          className="inline-flex items-center gap-2 text-white bg-[#FF4D6D] hover:bg-[#E11D48] px-6 py-3 rounded-xl font-bold text-sm shadow-md transition"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          View all destinations
+        </Link>
+      </main>
+      <Footer />
+    </>
+  );
 }

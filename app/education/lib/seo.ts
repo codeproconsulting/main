@@ -1,13 +1,13 @@
 /**
  * SEO helpers: base URL, canonical, default share image.
- * Set VITE_APP_URL in .env for production (e.g. https://proconsultingeducation.com).
+ * Set VITE_APP_URL in .env for production (e.g. https://proconsulting.uk).
  */
-const BASE_URL = (import.meta.env.VITE_APP_URL ?? "").replace(/\/$/, "");
+const BASE_URL = (import.meta.env.VITE_APP_URL ?? "https://proconsulting.uk").replace(/\/$/, "");
 
 export const SITE_NAME = "ProConsulting Education";
 export const DEFAULT_OG_IMAGE = "/Logo.png"; // or a dedicated 1200x630 share image path
 
-/** Absolute base URL for the site (empty in dev if VITE_APP_URL not set). */
+/** Absolute base URL for the site. */
 export function getBaseUrl(): string {
   return BASE_URL;
 }

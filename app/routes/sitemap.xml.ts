@@ -17,7 +17,6 @@ const STATIC_PATHS = [
   "/education",
   "/education/about",
   "/education/contact",
-  "/education/apply",
   "/education/destinations",
   "/education/courses",
   "/education/universities",
@@ -38,13 +37,13 @@ const STATIC_PATHS = [
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
-  const base = getBaseUrl() || url.origin;
+  const base = getBaseUrl() || "https://proconsulting.uk";
 
   const now = new Date().toISOString().slice(0, 10);
   const urls: string[] = [];
 
   for (const path of STATIC_PATHS) {
-    const loc = `${base}${path}`;
+    const loc = path === "" ? `${base}/` : `${base}${path}`;
     urls.push(`  <url><loc>${escapeXml(loc)}</loc><lastmod>${now}</lastmod></url>`);
   }
 
