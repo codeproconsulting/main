@@ -11,6 +11,8 @@ import { UkDestinationView } from "~/education/components/destinations/UkDestina
 import { UK_SEO, UK_SCHEMA_GRAPH } from "~/education/lib/ukDestinationData";
 import { GermanyDestinationView } from "~/education/components/destinations/GermanyDestinationView";
 import { GERMANY_SEO, GERMANY_SCHEMA_GRAPH } from "~/education/lib/germanyDestinationData";
+import { ItalyDestinationView } from "~/education/components/destinations/ItalyDestinationView";
+import { ITALY_SEO, ITALY_SCHEMA_GRAPH } from "~/education/lib/italyDestinationData";
 
 export function loader({ params }: Route.LoaderArgs) {
   const slug = params.slug;
@@ -48,6 +50,20 @@ export function meta(args: Route.MetaArgs) {
     ];
   }
 
+  if (slug === "italy") {
+    const title = ITALY_SEO.title;
+    const description = ITALY_SEO.metaDescription;
+    const pathname = "/education/destinations/italy";
+    return [
+      { title },
+      { name: "description", content: description },
+      ...pageMeta({ title, description, pathname }),
+      {
+        "script:ld+json": ITALY_SCHEMA_GRAPH,
+      },
+    ];
+  }
+
   const destination = args?.data?.destination as Destination | null | undefined;
   if (!destination) {
     return [{ title: "Destination not found | ProConsulting" }];
@@ -69,6 +85,9 @@ export function links(args?: any) {
   }
   if (slug === "germany") {
     return [{ rel: "canonical", href: GERMANY_SEO.canonicalUrl }];
+  }
+  if (slug === "italy") {
+    return [{ rel: "canonical", href: ITALY_SEO.canonicalUrl }];
   }
   const pathname = args?.location?.pathname ?? (args?.params ? `/education/destinations/${args.params.slug}` : "");
   return pathname ? canonicalLink(pathname) : [];
@@ -215,6 +234,18 @@ export default function DestinationSlugPage() {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(GERMANY_SCHEMA_GRAPH) }}
         />
         <GermanyDestinationView />
+      </>
+    );
+  }
+
+  if (slug === "italy") {
+    return (
+      <>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(ITALY_SCHEMA_GRAPH) }}
+        />
+        <ItalyDestinationView />
       </>
     );
   }
