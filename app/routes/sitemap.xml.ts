@@ -1,4 +1,4 @@
-import type { LoaderFunctionArgs } from "@react-router/node";
+import type { LoaderFunctionArgs } from "react-router";
 import { getPosts as getEducationPosts } from "~/education/lib/ghost-api";
 import { getAllServiceSlugs as getEducationServiceSlugs } from "~/education/lib/servicesData";
 import { getAllDestinationSlugs as getEducationDestinationSlugs } from "~/education/lib/destinations";
@@ -52,8 +52,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
     const eduPosts = await getEducationPosts();
     for (const post of eduPosts) {
       const loc = `${base}/education/blog/${post.slug}`;
-      const lastmod = post.publishedAt
-        ? new Date(post.publishedAt).toISOString().slice(0, 10)
+      const published = typeof post.publishedAt === "string" ? post.publishedAt : "";
+      const lastmod = published
+        ? new Date(published).toISOString().slice(0, 10)
         : now;
       urls.push(`  <url><loc>${escapeXml(loc)}</loc><lastmod>${lastmod}</lastmod></url>`);
     }
@@ -82,8 +83,15 @@ export async function loader({ request }: LoaderFunctionArgs) {
     const immPosts = await getImmigrationPosts();
     for (const post of immPosts) {
       const loc = `${base}/immigration/blog/${post.slug}`;
-      const lastmod = post.publishedAt
-        ? new Date(post.publishedAt).toISOString().slice(0, 10)
+      const postAny = post as Record<string, unknown>;
+      const published =
+        typeof post.published_at === "string"
+          ? post.published_at
+          : typeof postAny.publishedAt === "string"
+          ? (postAny.publishedAt as string)
+          : "";
+      const lastmod = published
+        ? new Date(published).toISOString().slice(0, 10)
         : now;
       urls.push(`  <url><loc>${escapeXml(loc)}</loc><lastmod>${lastmod}</lastmod></url>`);
     }

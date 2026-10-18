@@ -1,5 +1,5 @@
 import { getBaseUrl } from "~/education/lib/seo";
-import type { LoaderFunctionArgs } from "@react-router/node";
+import type { LoaderFunctionArgs } from "react-router";
 
 export function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
