@@ -57,6 +57,11 @@ export function links(args?: any) {
 export async function action({ request }: ActionFunctionArgs) {
   try {
     const formData = await request.formData();
+    const destination = (formData.get("destination") as string) || "";
+    const originPath = (formData.get("originPath") as string) || "";
+    const serviceContext = (formData.get("serviceContext") as string) || "";
+    const enquiringAs = (formData.get("enquiringAs") as string) || "Student";
+
     const applicantData = {
       fullName: (formData.get("fullName") as string) || "",
       email: (formData.get("email") as string) || "",
@@ -66,7 +71,7 @@ export async function action({ request }: ActionFunctionArgs) {
       majorSubject: (formData.get("majorSubject") as string) || "",
       gradeScore: (formData.get("gradeScore") as string) || "",
       passingYear: (formData.get("passingYear") as string) || "",
-      targetCountry: (formData.get("targetCountry") as string) || "",
+      targetCountry: (formData.get("targetCountry") as string) || (destination === "uk" ? "United Kingdom" : ""),
       targetDegree: (formData.get("targetDegree") as string) || "",
       targetIntake: (formData.get("targetIntake") as string) || "",
       budgetRange: (formData.get("budgetRange") as string) || "",
@@ -75,6 +80,10 @@ export async function action({ request }: ActionFunctionArgs) {
       hasRefusal: (formData.get("hasRefusal") as string) || "",
       studyGap: (formData.get("studyGap") as string) || "",
       notes: (formData.get("notes") as string) || "",
+      enquiringAs,
+      destination: destination === "uk" ? "uk" : undefined,
+      originPath: destination === "uk" ? "/education/destinations/uk" : originPath,
+      serviceContext: destination === "uk" ? "UK study assessment" : serviceContext,
     };
 
     const saved = saveApplicant(applicantData);
@@ -90,13 +99,19 @@ export default function Contact() {
   const isSubmitting = fetcher.state === "submitting";
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
+  const rawDest = searchParams.get("destination")?.toLowerCase();
   const queryCountry = searchParams.get("country");
+  const isUkContext =
+    rawDest === "uk" ||
+    queryCountry?.toLowerCase() === "uk" ||
+    queryCountry?.toLowerCase() === "united kingdom";
 
   const [step, setStep] = useState<number>(1);
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   const [form, setForm] = useState({
     // Step 1: Contact
+    enquiringAs: "Student",
     fullName: "",
     email: "",
     phone: "",
@@ -107,7 +122,7 @@ export default function Contact() {
     gradeScore: "",
     passingYear: "2025",
     // Step 3: Study Intent & Budget
-    targetCountry: queryCountry || "United Kingdom",
+    targetCountry: isUkContext ? "United Kingdom" : (queryCountry || "United Kingdom"),
     targetDegree: "Master's / Postgraduate (1 or 2 Years)",
     targetIntake: "September / Fall 2026",
     budgetRange: "£10,000 - £16,000 / year ($13k - $20k)",
@@ -116,6 +131,9 @@ export default function Contact() {
     hasRefusal: "No Refusals (Clean Travel / Visa Record)",
     studyGap: "No Study Gap (Fresh Graduate / Currently Enrolled)",
     notes: "",
+    destination: isUkContext ? "uk" : "",
+    originPath: isUkContext ? "/education/destinations/uk" : "",
+    serviceContext: isUkContext ? "UK study assessment" : "Study abroad consultation",
   });
 
   const handleChange = (
@@ -259,12 +277,22 @@ export default function Contact() {
             <div className="text-center max-w-3xl mx-auto">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs md:text-sm font-semibold text-pink-300 mb-4">
                 <span className="w-2 h-2 rounded-full bg-pink-400 animate-pulse" />
-                1-on-1 Free Profile Evaluation &amp; Visa Assessment
+                {isUkContext
+                  ? "UK Study Assessment & Planning Consultation"
+                  : "1-on-1 Free Profile Evaluation & Visa Assessment"}
               </div>
 
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-tight mb-4">
-                Check Your Study Visa &amp; Scholarship{" "}
-                <span className="text-[#FF4D6D]">Eligibility</span>
+                {isUkContext ? (
+                  <>
+                    Study in the UK: <span className="text-[#FF4D6D]">Free Assessment</span>
+                  </>
+                ) : (
+                  <>
+                    Check Your Study Visa &amp; Scholarship{" "}
+                    <span className="text-[#FF4D6D]">Eligibility</span>
+                  </>
+                )}
               </h1>
 
               <div
@@ -275,7 +303,9 @@ export default function Contact() {
               />
 
               <p className="text-base sm:text-lg text-slate-200 leading-relaxed font-normal">
-                Complete the quick profile assessment below. Our certified senior education consultants will evaluate your admission chances, match matching global universities, and map your study visa roadmap.
+                {isUkContext
+                  ? "Tell us where you are starting. We can begin with an unfinished shortlist, an existing offer or a funding question that needs a clearer answer."
+                  : "Complete the quick profile assessment below. Our certified senior education consultants will evaluate your admission chances, match matching global universities, and map your study visa roadmap."}
               </p>
             </div>
 
@@ -381,6 +411,38 @@ export default function Contact() {
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        {isUkContext && (
+                          <div className="md:col-span-2 p-4 rounded-xl bg-slate-50 border border-slate-200">
+                            <label className="block text-sm font-semibold text-slate-800 mb-2">
+                              I am enquiring as: <span className="text-pink-500">*</span>
+                            </label>
+                            <div className="flex flex-wrap gap-5">
+                              <label className="inline-flex items-center gap-2 cursor-pointer text-sm font-medium text-slate-800">
+                                <input
+                                  type="radio"
+                                  name="enquiringAs"
+                                  value="Student"
+                                  checked={form.enquiringAs === "Student"}
+                                  onChange={handleChange}
+                                  className="accent-[#FF4D6D] w-4 h-4"
+                                />
+                                <span>Student</span>
+                              </label>
+                              <label className="inline-flex items-center gap-2 cursor-pointer text-sm font-medium text-slate-800">
+                                <input
+                                  type="radio"
+                                  name="enquiringAs"
+                                  value="Parent or guardian"
+                                  checked={form.enquiringAs === "Parent or guardian"}
+                                  onChange={handleChange}
+                                  className="accent-[#FF4D6D] w-4 h-4"
+                                />
+                                <span>Parent or guardian</span>
+                              </label>
+                            </div>
+                          </div>
+                        )}
+
                         <div>
                           <label className="block text-sm font-semibold text-slate-700 mb-1.5">
                             Full Name (as on Passport / CNIC) <span className="text-pink-500">*</span>
@@ -620,25 +682,38 @@ export default function Contact() {
                           <label className="block text-sm font-semibold text-slate-700 mb-1.5">
                             Preferred Study Destination <span className="text-pink-500">*</span>
                           </label>
-                          <select
-                            name="targetCountry"
-                            value={form.targetCountry}
-                            onChange={handleChange}
-                            className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 focus:outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-500/20 text-sm bg-white"
-                          >
-                            <option value="United Kingdom">United Kingdom (UK)</option>
-                            <option value="Australia">Australia</option>
-                            <option value="Canada">Canada</option>
-                            <option value="United States">United States (USA)</option>
-                            <option value="Germany & Europe">Germany &amp; Europe</option>
-                            <option value="Ireland">Ireland</option>
-                            <option value="Sweden">Sweden</option>
-                            <option value="Turkey">Turkey</option>
-                            <option value="Malaysia">Malaysia</option>
-                            <option value="Open to Counselor Recommendation">
-                              Open to Counselor Recommendation
-                            </option>
-                          </select>
+                          {isUkContext ? (
+                            <div className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-semibold text-sm flex items-center justify-between">
+                              <span>United Kingdom</span>
+                              <span className="text-xs font-semibold text-[#FF4D6D] bg-[#FF4D6D]/10 px-2.5 py-0.5 rounded-full">
+                                UK Study Assessment
+                              </span>
+                              <input type="hidden" name="targetCountry" value="United Kingdom" />
+                            </div>
+                          ) : (
+                            <select
+                              name="targetCountry"
+                              value={form.targetCountry}
+                              onChange={handleChange}
+                              className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 focus:outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-500/20 text-sm bg-white"
+                            >
+                              <option value="United Kingdom">United Kingdom (UK)</option>
+                              <option value="Australia">Australia</option>
+                              <option value="Canada">Canada</option>
+                              <option value="United States">United States (USA)</option>
+                              <option value="Germany & Europe">Germany &amp; Europe</option>
+                              <option value="Ireland">Ireland</option>
+                              <option value="Sweden">Sweden</option>
+                              <option value="Turkey">Turkey</option>
+                              <option value="Malaysia">Malaysia</option>
+                              <option value="Open to Counselor Recommendation">
+                                Open to Counselor Recommendation
+                              </option>
+                            </select>
+                          )}
+                          <input type="hidden" name="destination" value={isUkContext ? "uk" : ""} />
+                          <input type="hidden" name="originPath" value={isUkContext ? "/education/destinations/uk" : ""} />
+                          <input type="hidden" name="serviceContext" value={isUkContext ? "UK study assessment" : ""} />
                         </div>
 
                         <div>
@@ -838,6 +913,19 @@ export default function Contact() {
                             className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 focus:outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-500/20 text-sm resize-none"
                           />
                         </div>
+
+                        <div className="md:col-span-2 space-y-2 pt-1">
+                          <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900">
+                            Please do not upload passports, bank statements or other sensitive documents at this initial stage.
+                          </div>
+                          <p className="text-xs text-slate-500 leading-relaxed">
+                            By submitting, you ask ProConsulting to contact you about this assessment. Read our{" "}
+                            <Link to="/education/privacy-policy" className="text-[#FF4D6D] underline font-medium">
+                              Privacy Policy
+                            </Link>{" "}
+                            to understand how your information is handled. Marketing choices are separate and optional.
+                          </p>
+                        </div>
                       </div>
 
                       <div className="flex items-center justify-between pt-4 border-t border-slate-100">
@@ -863,7 +951,7 @@ export default function Contact() {
                             </>
                           ) : (
                             <>
-                              <span>Submit Free Assessment</span>
+                              <span>{isUkContext ? "Get free UK assessment" : "Submit Free Assessment"}</span>
                               <CheckCircle2 className="w-4 h-4" />
                             </>
                           )}
@@ -895,13 +983,26 @@ export default function Contact() {
                         </div>
 
                         <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-2">
-                          Your Free Assessment Has Been Submitted!
+                          {isUkContext || applicantResult?.destination === "uk"
+                            ? "Your UK assessment enquiry has been received"
+                            : "Your Free Assessment Has Been Submitted!"}
                         </h2>
 
                         <p className="text-slate-600 max-w-lg mx-auto text-sm sm:text-base">
-                          Thank you, <strong className="text-slate-900">{applicantResult?.fullName || form.fullName}</strong>.
-                          Our senior counseling panel is now evaluating your academic background and matching your eligibility for{" "}
-                          <strong className="text-slate-900">{applicantResult?.targetCountry || form.targetCountry}</strong>.
+                          {isUkContext || applicantResult?.destination === "uk" ? (
+                            <>
+                              ProConsulting will use the details you provided to contact you about your questions.
+                              <span className="block mt-2 text-xs text-slate-500 font-medium">
+                                This is not an admission, scholarship or visa application.
+                              </span>
+                            </>
+                          ) : (
+                            <>
+                              Thank you, <strong className="text-slate-900">{applicantResult?.fullName || form.fullName}</strong>.
+                              Our senior counseling panel is now evaluating your academic background and matching your eligibility for{" "}
+                              <strong className="text-slate-900">{applicantResult?.targetCountry || form.targetCountry}</strong>.
+                            </>
+                          )}
                         </p>
                       </div>
 

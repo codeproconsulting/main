@@ -5,17 +5,33 @@ import { Navbar } from "~/education/components/ui/Navbar";
 import { Footer } from "~/education/components/ui/footer";
 import { getDestinationBySlug, type Destination } from "~/education/lib/destinations";
 import { pageMeta, canonicalLink } from "~/education/lib/seo";
-import { ArrowRight, ArrowLeft, GraduationCap, CheckCircle2 } from "lucide-react";
+import { ArrowRight, ArrowLeft, CheckCircle2 } from "lucide-react";
 import type { Route } from "./+types/destinations.$slug";
-
-const BRAND = { navy: "#0B1B3A", pink: "#FF4D6D" };
+import { UkDestinationView } from "~/education/components/destinations/UkDestinationView";
+import { UK_SEO, UK_SCHEMA_GRAPH } from "~/education/lib/ukDestinationData";
 
 export function loader({ params }: Route.LoaderArgs) {
-  const destination = getDestinationBySlug(params.slug);
-  return { destination };
+  const slug = params.slug;
+  const destination = getDestinationBySlug(slug);
+  return { destination, slug };
 }
 
 export function meta(args: Route.MetaArgs) {
+  const slug = args?.params?.slug;
+  if (slug === "uk") {
+    const title = UK_SEO.title;
+    const description = UK_SEO.metaDescription;
+    const pathname = "/education/destinations/uk";
+    return [
+      { title },
+      { name: "description", content: description },
+      ...pageMeta({ title, description, pathname }),
+      {
+        "script:ld+json": UK_SCHEMA_GRAPH,
+      },
+    ];
+  }
+
   const destination = args?.data?.destination as Destination | null | undefined;
   if (!destination) {
     return [{ title: "Destination not found | ProConsulting" }];
@@ -30,7 +46,11 @@ export function meta(args: Route.MetaArgs) {
   ];
 }
 
-export function links(args: Route.LinksArgs) {
+export function links(args?: any) {
+  const slug = args?.params?.slug;
+  if (slug === "uk") {
+    return [{ rel: "canonical", href: UK_SEO.canonicalUrl }];
+  }
   const pathname = args?.location?.pathname ?? (args?.params ? `/education/destinations/${args.params.slug}` : "");
   return pathname ? canonicalLink(pathname) : [];
 }
@@ -91,18 +111,15 @@ function DestinationContent({ destination }: { destination: Destination }) {
         <section className="bg-white">
           <div className="max-w-7xl mx-auto px-6 py-8 md:py-10">
             <div className="relative overflow-hidden rounded-3xl border border-slate-200/80 bg-slate-100 shadow-sm">
-              {/* Blurred backdrop (fills space, adds visual energy) */}
               <img
                 src={destination.image}
                 alt=""
                 aria-hidden="true"
                 className="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-30"
               />
-              {/* Soft brand glow */}
               <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_55%_at_50%_20%,rgba(255,77,109,0.25),transparent_60%)]" />
               <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-white/20 to-white/60" />
 
-              {/* Foreground image: not cropped, centered */}
               <div className="relative h-64 md:h-80 flex items-center justify-center p-4 md:p-6">
                 <img
                   src={destination.image}
@@ -151,15 +168,25 @@ function DestinationContent({ destination }: { destination: Destination }) {
         </div>
       </section>
 
-
-
       <Footer />
     </>
   );
 }
 
 export default function DestinationSlugPage() {
-  const { destination } = useLoaderData<typeof loader>();
+  const { destination, slug } = useLoaderData<typeof loader>();
+
+  if (slug === "uk") {
+    return (
+      <>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(UK_SCHEMA_GRAPH) }}
+        />
+        <UkDestinationView />
+      </>
+    );
+  }
 
   if (!destination) {
     return (
