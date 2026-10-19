@@ -3,7 +3,7 @@
 import { Link, useLoaderData } from "react-router";
 import { Navbar } from "~/education/components/ui/Navbar";
 import { Footer } from "~/education/components/ui/footer";
-import { getDestinationBySlug, type Destination } from "~/education/lib/destinations";
+import { getDestinationBySlug, resolveDestinationSlug, type Destination } from "~/education/lib/destinations";
 import { pageMeta, canonicalLink } from "~/education/lib/seo";
 import { ArrowRight, ArrowLeft, CheckCircle2 } from "lucide-react";
 import type { Route } from "./+types/destinations.$slug";
@@ -15,24 +15,26 @@ import { ItalyDestinationView } from "~/education/components/destinations/ItalyD
 import { ITALY_SEO, ITALY_SCHEMA_GRAPH } from "~/education/lib/italyDestinationData";
 
 export function loader({ params }: Route.LoaderArgs) {
-  const slug = params.slug;
+  const rawSlug = params.slug || "";
+  const slug = resolveDestinationSlug(rawSlug);
   const destination = getDestinationBySlug(slug);
   if (!destination && slug !== "uk" && slug !== "germany" && slug !== "italy") {
     throw new Response("Destination not found", { status: 404 });
   }
-  return { destination, slug };
+  return { destination, slug, rawSlug };
 }
 
 export function meta(args: Route.MetaArgs) {
-  const slug = args?.params?.slug;
+  const rawSlug = args?.params?.slug || "";
+  const slug = resolveDestinationSlug(rawSlug);
   if (slug === "uk") {
     const title = UK_SEO.title;
     const description = UK_SEO.metaDescription;
-    const pathname = "/education/destinations/uk";
+    const pathname = "/education/destinations/study-in-uk-from-pakistan";
     return [
       { title },
       { name: "description", content: description },
-      { tagName: "link", rel: "canonical", href: UK_SEO.canonicalUrl },
+      { tagName: "link", rel: "canonical", href: `https://proconsulting.uk${pathname}` },
       ...pageMeta({ title, description, pathname }),
       {
         "script:ld+json": UK_SCHEMA_GRAPH,
@@ -43,11 +45,11 @@ export function meta(args: Route.MetaArgs) {
   if (slug === "germany") {
     const title = GERMANY_SEO.title;
     const description = GERMANY_SEO.metaDescription;
-    const pathname = "/education/destinations/germany";
+    const pathname = "/education/destinations/study-in-Germany-from-pakistan";
     return [
       { title },
       { name: "description", content: description },
-      { tagName: "link", rel: "canonical", href: GERMANY_SEO.canonicalUrl },
+      { tagName: "link", rel: "canonical", href: `https://proconsulting.uk${pathname}` },
       ...pageMeta({ title, description, pathname }),
       {
         "script:ld+json": GERMANY_SCHEMA_GRAPH,
@@ -58,11 +60,11 @@ export function meta(args: Route.MetaArgs) {
   if (slug === "italy") {
     const title = ITALY_SEO.title;
     const description = ITALY_SEO.metaDescription;
-    const pathname = "/education/destinations/italy";
+    const pathname = "/education/destinations/study-in-italy-from-pakistan";
     return [
       { title },
       { name: "description", content: description },
-      { tagName: "link", rel: "canonical", href: ITALY_SEO.canonicalUrl },
+      { tagName: "link", rel: "canonical", href: `https://proconsulting.uk${pathname}` },
       ...pageMeta({ title, description, pathname }),
       {
         "script:ld+json": ITALY_SCHEMA_GRAPH,
@@ -76,28 +78,30 @@ export function meta(args: Route.MetaArgs) {
   }
   const title = `Study in ${destination.name} | ProConsulting`;
   const description = destination.description;
-  const pathname = `/education/destinations/${slug}`;
+  const pathname = destination.link;
   return [
     { title },
     { name: "description", content: description },
-    { tagName: "link", rel: "canonical", href: `https://proconsulting.uk/education/destinations/${slug}` },
+    { tagName: "link", rel: "canonical", href: `https://proconsulting.uk${pathname}` },
     ...pageMeta({ title, description, pathname }),
   ];
 }
 
 export function links(args?: any) {
-  const slug = args?.params?.slug;
+  const rawSlug = args?.params?.slug || "";
+  const slug = resolveDestinationSlug(rawSlug);
   if (slug === "uk") {
-    return [{ rel: "canonical", href: UK_SEO.canonicalUrl }];
+    return [{ rel: "canonical", href: "https://proconsulting.uk/education/destinations/study-in-uk-from-pakistan" }];
   }
   if (slug === "germany") {
-    return [{ rel: "canonical", href: GERMANY_SEO.canonicalUrl }];
+    return [{ rel: "canonical", href: "https://proconsulting.uk/education/destinations/study-in-Germany-from-pakistan" }];
   }
   if (slug === "italy") {
-    return [{ rel: "canonical", href: ITALY_SEO.canonicalUrl }];
+    return [{ rel: "canonical", href: "https://proconsulting.uk/education/destinations/study-in-italy-from-pakistan" }];
   }
-  const pathname = args?.location?.pathname ?? (args?.params ? `/education/destinations/${args.params.slug}` : "");
-  return pathname ? canonicalLink(pathname) : [];
+  const destination = getDestinationBySlug(rawSlug);
+  const pathname = destination ? destination.link : `/education/destinations/${slug}`;
+  return [{ rel: "canonical", href: `https://proconsulting.uk${pathname}` }];
 }
 
 function DestinationContent({ destination }: { destination: Destination }) {

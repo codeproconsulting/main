@@ -280,30 +280,30 @@ export function GermanyDestinationView() {
         </section>
 
         {/* ========================================================================= */}
-        {/* 3. WHICH GERMANY ROUTE (White; anchor #routes) */}
+        {/* 3. WHICH GERMANY ROUTE (Brand Navy; anchor #routes) */}
         {/* ========================================================================= */}
-        <section id="routes" className="scroll-mt-36 bg-white py-16 sm:py-20 lg:py-24 border-b border-slate-100">
+        <section id="routes" className="scroll-mt-36 bg-[#0B1B3A] text-white py-16 sm:py-20 lg:py-24 border-y border-slate-800">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl mb-12">
-              <span className="text-xs font-bold uppercase tracking-wider text-[#FF4D6D] bg-[#FF4D6D]/10 px-2.5 py-1 rounded-md mb-3 inline-block">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#FF4D6D] bg-[#FF4D6D]/15 px-2.5 py-1 rounded-md mb-3 inline-block">
                 Pathway Assessment
               </span>
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#0B1B3A] tracking-tight">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight">
                 Which Germany route should you explore?
               </h2>
             </div>
 
             {/* Three broad horizontal rows */}
             <div className="space-y-4">
-              <div className="p-6 sm:p-7 rounded-2xl bg-slate-50 border border-slate-200/90 flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="p-6 sm:p-7 rounded-2xl bg-slate-900/80 border border-slate-700/80 flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="space-y-1.5 max-w-3xl">
                   <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-[#0B1B3A]" />
-                    <h3 className="text-base sm:text-lg font-bold text-slate-900">
+                    <span className="w-2 h-2 rounded-full bg-[#FF4D6D]" />
+                    <h3 className="text-base sm:text-lg font-bold text-white">
                       Starting a bachelor's degree?
                     </h3>
                   </div>
-                  <p className="text-sm sm:text-base text-slate-700 leading-relaxed">
+                  <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
                     Your school qualification, subjects and any university study already completed determine the entry route. Do not assume an HSSC, A-level or another certificate automatically gives the same access as every other qualification.
                   </p>
                 </div>
@@ -316,15 +316,15 @@ export function GermanyDestinationView() {
                 </a>
               </div>
 
-              <div className="p-6 sm:p-7 rounded-2xl bg-slate-50 border border-slate-200/90 flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="p-6 sm:p-7 rounded-2xl bg-slate-900/80 border border-slate-700/80 flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="space-y-1.5 max-w-3xl">
                   <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-[#0B1B3A]" />
-                    <h3 className="text-base sm:text-lg font-bold text-slate-900">
+                    <span className="w-2 h-2 rounded-full bg-[#FF4D6D]" />
+                    <h3 className="text-base sm:text-lg font-bold text-white">
                       Planning a master's degree?
                     </h3>
                   </div>
-                  <p className="text-sm sm:text-base text-slate-700 leading-relaxed">
+                  <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
                     Start with your completed degree, institution, transcript and intended specialisation. A recognised qualification matters, but so does the academic relationship between your previous study and the new programme.
                   </p>
                 </div>
@@ -337,15 +337,15 @@ export function GermanyDestinationView() {
                 </a>
               </div>
 
-              <div className="p-6 sm:p-7 rounded-2xl bg-slate-50 border border-slate-200/90 flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="p-6 sm:p-7 rounded-2xl bg-slate-900/80 border border-slate-700/80 flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="space-y-1.5 max-w-3xl">
                   <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-[#0B1B3A]" />
-                    <h3 className="text-base sm:text-lg font-bold text-slate-900">
+                    <span className="w-2 h-2 rounded-full bg-[#FF4D6D]" />
+                    <h3 className="text-base sm:text-lg font-bold text-white">
                       Not ready on language or entry requirements?
                     </h3>
                   </div>
-                  <p className="text-sm sm:text-base text-slate-700 leading-relaxed">
+                  <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
                     Investigate the specific preparation required. That might involve language study, further academic preparation or, where applicable, Studienkolleg. A preparation route is not an admission guarantee.
                   </p>
                 </div>
@@ -360,8 +360,8 @@ export function GermanyDestinationView() {
             </div>
 
             {/* Uncertainty paragraph */}
-            <div className="mt-8 p-6 rounded-2xl bg-white border border-slate-200 text-slate-800 text-sm sm:text-base leading-relaxed">
-              <strong className="text-[#0B1B3A]">Unsure which applies?</strong> Share your qualification names and study history in the assessment. The first job is to identify the questions that need answering, not to push you towards a convenient intake.
+            <div className="mt-8 p-6 rounded-2xl bg-slate-900/60 border border-slate-700/80 text-slate-200 text-sm sm:text-base leading-relaxed">
+              <strong className="text-[#FF4D6D]">Unsure which applies?</strong> Share your qualification names and study history in the assessment. The first job is to identify the questions that need answering, not to push you towards a convenient intake.
             </div>
           </div>
         </section>
@@ -568,58 +568,59 @@ export function GermanyDestinationView() {
         {/* ========================================================================= */}
         {/* 7. APPLICATION ROUTES (White; anchor #applications) */}
         {/* ========================================================================= */}
-        <section id="applications" className="scroll-mt-36 bg-white py-16 sm:py-20 lg:py-24 border-b border-slate-100">
+        {/* ========================================================================= */}
+        <section id="applications" className="scroll-mt-36 bg-[#0B1B3A] text-white py-16 sm:py-20 lg:py-24 border-y border-slate-800">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl mb-12">
-              <span className="text-xs font-bold uppercase tracking-wider text-[#FF4D6D] bg-[#FF4D6D]/10 px-2.5 py-1 rounded-md mb-3 inline-block">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#FF4D6D] bg-[#FF4D6D]/15 px-2.5 py-1 rounded-md mb-3 inline-block">
                 Application Channels
               </span>
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#0B1B3A] tracking-tight">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight">
                 Direct application, uni-assist or VPD?
               </h2>
             </div>
 
             {/* Three-step horizontal flow highlighting alternatives */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-              <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200/90">
-                <div className="text-xs font-bold text-[#0B1B3A] uppercase tracking-wider mb-1">
+              <div className="p-6 rounded-2xl bg-slate-900/80 border border-slate-700/80">
+                <div className="text-xs font-bold text-[#FF4D6D] uppercase tracking-wider mb-1">
                   Channel A
                 </div>
-                <h3 className="text-base font-bold text-slate-900 mb-2">
+                <h3 className="text-base font-bold text-white mb-2">
                   Direct university portal
                 </h3>
-                <p className="text-xs text-slate-600 leading-relaxed">
+                <p className="text-xs text-slate-300 leading-relaxed">
                   Some universities manage international applications entirely through their own proprietary online admissions portal.
                 </p>
               </div>
 
-              <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200/90">
+              <div className="p-6 rounded-2xl bg-slate-900/80 border border-slate-700/80">
                 <div className="text-xs font-bold text-[#FF4D6D] uppercase tracking-wider mb-1">
                   Channel B
                 </div>
-                <h3 className="text-base font-bold text-slate-900 mb-2">
+                <h3 className="text-base font-bold text-white mb-2">
                   uni-assist centralised application
                 </h3>
-                <p className="text-xs text-slate-600 leading-relaxed">
+                <p className="text-xs text-slate-300 leading-relaxed">
                   Many universities mandate submitting certificates, attestations and fees directly through uni-assist for initial credential evaluation.
                 </p>
               </div>
 
-              <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200/90">
-                <div className="text-xs font-bold text-emerald-600 uppercase tracking-wider mb-1">
+              <div className="p-6 rounded-2xl bg-slate-900/80 border border-slate-700/80">
+                <div className="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-1">
                   Channel C
                 </div>
-                <h3 className="text-base font-bold text-slate-900 mb-2">
+                <h3 className="text-base font-bold text-white mb-2">
                   VPD + University application
                 </h3>
-                <p className="text-xs text-slate-600 leading-relaxed">
+                <p className="text-xs text-slate-300 leading-relaxed">
                   You obtain preliminary review documentation (VPD) from uni-assist, then submit the actual application directly to the university portal before deadline.
                 </p>
               </div>
             </div>
 
             {/* Copy */}
-            <div className="space-y-4 text-slate-700 text-base leading-relaxed max-w-4xl">
+            <div className="space-y-4 text-slate-300 text-base leading-relaxed max-w-4xl">
               <p>
                 The university's instructions determine where you apply. Some applications go directly to the university. Others go through uni-assist. Even a university that uses uni-assist may use different procedures for different applicants or programmes.
               </p>
@@ -629,7 +630,7 @@ export function GermanyDestinationView() {
               <p>
                 Keep a separate checklist for each programme: portal, documents, language evidence, fees and deadlines. A VPD is not universal, and submitting to the wrong portal can leave an application incomplete.
               </p>
-              <div className="p-5 rounded-xl bg-slate-50 border-l-4 border-[#0B1B3A] text-slate-800 text-sm sm:text-base font-medium">
+              <div className="p-5 rounded-xl bg-slate-900/60 border border-slate-700/80 border-l-4 border-l-[#FF4D6D] text-slate-200 text-sm sm:text-base font-medium">
                 For Pakistan, uni-assist's country guidance includes school certificates and subjects/grades, applicable degree documents with HEC attestation stamps, and the minimum grade required for the degree to be awarded. Follow the current document instructions for your case.
               </div>
             </div>
@@ -783,18 +784,18 @@ export function GermanyDestinationView() {
         </section>
 
         {/* ========================================================================= */}
-        {/* 11. VISA PREPARATION (White; anchor #visa) */}
+        {/* 11. VISA PREPARATION (Brand Navy; anchor #visa) */}
         {/* ========================================================================= */}
-        <section id="visa" className="scroll-mt-36 bg-white py-16 sm:py-20 lg:py-24 border-b border-slate-100">
+        <section id="visa" className="scroll-mt-36 bg-[#0B1B3A] text-white py-16 sm:py-20 lg:py-24 border-y border-slate-800">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#FF4D6D] bg-[#FF4D6D]/10 px-2.5 py-1 rounded-md inline-block">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#FF4D6D] bg-[#FF4D6D]/15 px-2.5 py-1 rounded-md inline-block">
               Official Embassy Route
             </span>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#0B1B3A] tracking-tight">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight">
               Visa preparation follows the official process
             </h2>
 
-            <div className="bg-slate-50 rounded-2xl border border-slate-200/90 p-7 sm:p-9 shadow-xs space-y-5 text-slate-700 text-base sm:text-lg leading-relaxed border-l-4 border-l-[#0B1B3A]">
+            <div className="bg-slate-900/80 rounded-2xl border border-slate-700/80 p-7 sm:p-9 shadow-xs space-y-5 text-slate-300 text-base sm:text-lg leading-relaxed border-l-4 border-l-[#FF4D6D]">
               <p>
                 Pakistani applicants should follow the German Missions in Pakistan's current student-visa instructions and the relevant Consular Services Portal process. The responsible mission depends on residence jurisdiction; check that before submitting.
               </p>
@@ -803,12 +804,12 @@ export function GermanyDestinationView() {
                 Your admission documents, educational history, financing and other required evidence must be consistent. The mission currently highlights past degree certificates, transcripts and tuition-payment evidence where applicable as mandatory, even if a portal field appears optional.
               </p>
 
-              <p className="font-semibold text-slate-900">
+              <p className="font-semibold text-white">
                 An offer letter is not a visa approval. Appointments, document requests and decisions are controlled by the authorities. Avoid non-refundable travel commitments based on an expected decision date, and check arrangements with your university if arrival may be delayed.
               </p>
 
-              <div className="pt-4 border-t border-slate-200 flex flex-wrap items-center gap-4 text-xs">
-                <span className="font-bold text-[#0B1B3A]">Official Embassy Instructions:</span>
+              <div className="pt-4 border-t border-slate-700/80 flex flex-wrap items-center gap-4 text-xs">
+                <span className="font-bold text-white">Official Embassy Instructions:</span>
                 <a
                   href="https://pakistan.diplo.de/pk-en/service/2-study-visa-seite-1676104"
                   target="_blank"

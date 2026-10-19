@@ -58,7 +58,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
         : now;
       urls.push(`  <url><loc>${escapeXml(loc)}</loc><lastmod>${lastmod}</lastmod></url>`);
     }
-  } catch {}
+  } catch { }
 
   const eduServices = getEducationServiceSlugs();
   for (const slug of eduServices) {
@@ -88,14 +88,14 @@ export async function loader({ request }: LoaderFunctionArgs) {
         typeof post.published_at === "string"
           ? post.published_at
           : typeof postAny.publishedAt === "string"
-          ? (postAny.publishedAt as string)
-          : "";
+            ? (postAny.publishedAt as string)
+            : "";
       const lastmod = published
         ? new Date(published).toISOString().slice(0, 10)
         : now;
       urls.push(`  <url><loc>${escapeXml(loc)}</loc><lastmod>${lastmod}</lastmod></url>`);
     }
-  } catch {}
+  } catch { }
 
   const immServices = getImmigrationServiceSlugs();
   for (const slug of immServices) {

@@ -521,35 +521,38 @@ export function UkDestinationView() {
         {/* ========================================================================= */}
         {/* SECTION 06: FINANCIAL EVIDENCE (Subtle surface; anchor #visa) */}
         {/* ========================================================================= */}
-        <section id="visa" className="scroll-mt-36 bg-slate-50/70 py-16 sm:py-20 lg:py-24 border-b border-slate-200/80">
+        {/* ========================================================================= */}
+        {/* SECTION 06: FINANCIAL EVIDENCE (Brand Navy; anchor #visa) */}
+        {/* ========================================================================= */}
+        <section id="visa" className="scroll-mt-36 bg-[#0B1B3A] text-white py-16 sm:py-20 lg:py-24 border-y border-slate-800">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#FF4D6D] bg-[#FF4D6D]/10 px-2.5 py-1 rounded-md mb-3 inline-block">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#FF4D6D] bg-[#FF4D6D]/15 px-2.5 py-1 rounded-md mb-3 inline-block">
               Visa Compliance
             </span>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#0B1B3A] tracking-tight mb-8">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight mb-8">
               Financial evidence needs planning, not a last-minute balance
             </h2>
 
-            <div className="bg-white rounded-2xl border border-slate-200/90 p-7 sm:p-9 shadow-xs space-y-6 text-slate-700 text-base sm:text-lg leading-relaxed border-l-4 border-l-[#0B1B3A]">
+            <div className="bg-slate-900/80 rounded-2xl border border-slate-700/80 p-7 sm:p-9 shadow-xs space-y-6 text-slate-300 text-base sm:text-lg leading-relaxed border-l-4 border-l-[#FF4D6D]">
               <p>
                 A Student visa application may require evidence of tuition funding and money for living costs. The amount and evidence depend on your circumstances and the rules applying when you submit.
               </p>
 
               <p>
-                For personal funds, UKVI guidance sets requirements for how long the money must be held and how recent the evidence must be. Account access, the account holder and the form of evidence also matter. A large balance on one day is not a complete financial plan.
+                For personal funds, UKVI guidance sets requirements for how long the money must be held (28 consecutive days) and how recent the evidence must be. Account access, the account holder and the form of evidence also matter. A large balance on one day is not a complete financial plan.
               </p>
 
               <p>
                 If you use a parent's funds, check the consent and relationship evidence required. Loans and official sponsorship have their own documentary requirements. A family promise of support is not the same as compliant evidence.
               </p>
 
-              <p className="font-semibold text-slate-900">
+              <p className="font-semibold text-white">
                 Check the official financial guidance before moving money or choosing an application date. Keep your genuine funding arrangements clear and verifiable. Never submit altered statements or documents you cannot explain.
               </p>
 
               {/* Official Source Links */}
-              <div className="pt-6 border-t border-slate-100 flex flex-wrap items-center gap-4 text-xs">
-                <span className="font-bold text-[#0B1B3A]">Official UKVI Guidance:</span>
+              <div className="pt-6 border-t border-slate-700/80 flex flex-wrap items-center gap-4 text-xs">
+                <span className="font-bold text-white">Official UKVI Guidance:</span>
                 <a
                   href="https://www.gov.uk/guidance/financial-evidence-for-student-and-child-student-route-applicants"
                   target="_blank"
@@ -574,34 +577,34 @@ export function UkDestinationView() {
         </section>
 
         {/* ========================================================================= */}
-        {/* SECTION 07: PROCESS (White; anchor #process) */}
+        {/* SECTION 07: PROCESS (Brand Navy; anchor #process) */}
         {/* ========================================================================= */}
-        <section id="process" className="scroll-mt-36 bg-white py-16 sm:py-20 lg:py-24 border-b border-slate-100">
+        <section id="process" className="scroll-mt-36 bg-[#0B1B3A] text-white py-16 sm:py-20 lg:py-24 border-y border-slate-800">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-2xl mx-auto mb-14">
-              <span className="text-xs font-bold uppercase tracking-wider text-[#FF4D6D] bg-[#FF4D6D]/10 px-2.5 py-1 rounded-md mb-3 inline-block">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#FF4D6D] bg-[#FF4D6D]/15 px-2.5 py-1 rounded-md mb-3 inline-block">
                 Step-by-Step Roadmap
               </span>
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#0B1B3A] tracking-tight">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight">
                 From your profile to a prepared application
               </h2>
-              <p className="text-slate-600 text-sm sm:text-base mt-2">
+              <p className="text-slate-300 text-sm sm:text-base mt-2">
                 A structured, transparent planning sequence with no arbitrary day counts or unrealistic guarantees.
               </p>
             </div>
 
             {/* Vertical 5-Step Timeline */}
-            <div className="relative border-l-2 border-slate-200 ml-4 sm:ml-6 space-y-10">
+            <div className="relative border-l-2 border-slate-700 ml-4 sm:ml-6 space-y-10">
               {/* Step 1 */}
               <div className="relative pl-7 sm:pl-9">
-                <div className="absolute -left-[17px] top-1 w-8 h-8 rounded-full bg-[#0B1B3A] text-white flex items-center justify-center text-xs font-bold ring-4 ring-white">
+                <div className="absolute -left-[17px] top-1 w-8 h-8 rounded-full bg-[#FF4D6D] text-white flex items-center justify-center text-xs font-bold ring-4 ring-[#0B1B3A]">
                   1
                 </div>
                 <div>
-                  <h3 className="text-lg sm:text-xl font-bold text-[#0B1B3A] mb-2">
+                  <h3 className="text-lg sm:text-xl font-bold text-white mb-2">
                     First: establish your starting point
                   </h3>
-                  <p className="text-slate-700 text-base leading-relaxed">
+                  <p className="text-slate-300 text-base leading-relaxed">
                     Share your academic history, intended subject, English-language position, preferred intake and realistic funding range. Mention previous refusals or other relevant immigration history accurately.
                   </p>
                 </div>
@@ -609,14 +612,14 @@ export function UkDestinationView() {
 
               {/* Step 2 */}
               <div className="relative pl-7 sm:pl-9">
-                <div className="absolute -left-[17px] top-1 w-8 h-8 rounded-full bg-[#0B1B3A] text-white flex items-center justify-center text-xs font-bold ring-4 ring-white">
+                <div className="absolute -left-[17px] top-1 w-8 h-8 rounded-full bg-[#FF4D6D] text-white flex items-center justify-center text-xs font-bold ring-4 ring-[#0B1B3A]">
                   2
                 </div>
                 <div>
-                  <h3 className="text-lg sm:text-xl font-bold text-[#0B1B3A] mb-2">
+                  <h3 className="text-lg sm:text-xl font-bold text-white mb-2">
                     Next: compare suitable options
                   </h3>
-                  <p className="text-slate-700 text-base leading-relaxed">
+                  <p className="text-slate-300 text-base leading-relaxed">
                     Review course fit, entry conditions, location and total cost together. A shortlist should show trade-offs, not simply present the most expensive or most familiar institution.
                   </p>
                 </div>
@@ -624,14 +627,14 @@ export function UkDestinationView() {
 
               {/* Step 3 */}
               <div className="relative pl-7 sm:pl-9">
-                <div className="absolute -left-[17px] top-1 w-8 h-8 rounded-full bg-[#0B1B3A] text-white flex items-center justify-center text-xs font-bold ring-4 ring-white">
+                <div className="absolute -left-[17px] top-1 w-8 h-8 rounded-full bg-[#FF4D6D] text-white flex items-center justify-center text-xs font-bold ring-4 ring-[#0B1B3A]">
                   3
                 </div>
                 <div>
-                  <h3 className="text-lg sm:text-xl font-bold text-[#0B1B3A] mb-2">
+                  <h3 className="text-lg sm:text-xl font-bold text-white mb-2">
                     Then: manage offers and outstanding conditions
                   </h3>
-                  <p className="text-slate-700 text-base leading-relaxed">
+                  <p className="text-slate-300 text-base leading-relaxed">
                     Prepare the documents each university requests. Track offer conditions, deposit decisions and deadlines so that accepting an offer is an informed step rather than a rushed payment.
                   </p>
                 </div>
@@ -639,14 +642,14 @@ export function UkDestinationView() {
 
               {/* Step 4 */}
               <div className="relative pl-7 sm:pl-9">
-                <div className="absolute -left-[17px] top-1 w-8 h-8 rounded-full bg-[#0B1B3A] text-white flex items-center justify-center text-xs font-bold ring-4 ring-white">
+                <div className="absolute -left-[17px] top-1 w-8 h-8 rounded-full bg-[#FF4D6D] text-white flex items-center justify-center text-xs font-bold ring-4 ring-[#0B1B3A]">
                   4
                 </div>
                 <div>
-                  <h3 className="text-lg sm:text-xl font-bold text-[#0B1B3A] mb-2">
+                  <h3 className="text-lg sm:text-xl font-bold text-white mb-2">
                     Before a visa application: check the CAS and evidence
                   </h3>
-                  <p className="text-slate-700 text-base leading-relaxed">
+                  <p className="text-slate-300 text-base leading-relaxed">
                     The education provider issues the CAS; a consultant cannot issue one. Check its details against your passport and offer. Review financial evidence and any other requirements relevant to you, such as tuberculosis testing or ATAS.
                   </p>
                 </div>
@@ -654,14 +657,14 @@ export function UkDestinationView() {
 
               {/* Step 5 */}
               <div className="relative pl-7 sm:pl-9">
-                <div className="absolute -left-[17px] top-1 w-8 h-8 rounded-full bg-[#0B1B3A] text-white flex items-center justify-center text-xs font-bold ring-4 ring-white">
+                <div className="absolute -left-[17px] top-1 w-8 h-8 rounded-full bg-[#FF4D6D] text-white flex items-center justify-center text-xs font-bold ring-4 ring-[#0B1B3A]">
                   5
                 </div>
                 <div>
-                  <h3 className="text-lg sm:text-xl font-bold text-[#0B1B3A] mb-2">
+                  <h3 className="text-lg sm:text-xl font-bold text-white mb-2">
                     Before travel: confirm the practical details
                   </h3>
-                  <p className="text-slate-700 text-base leading-relaxed">
+                  <p className="text-slate-300 text-base leading-relaxed">
                     Wait for the appropriate immigration permission. Check your status instructions, accommodation arrangements, university arrival requirements and travel dates before making commitments you cannot recover.
                   </p>
                 </div>
@@ -980,18 +983,18 @@ export function UkDestinationView() {
         </section>
 
         {/* ========================================================================= */}
-        {/* SECTION 13: ASSESSMENT & CONTACT (White; anchor #assessment) */}
+        {/* SECTION 13: ASSESSMENT & CONTACT (Brand Navy; anchor #assessment) */}
         {/* ========================================================================= */}
-        <section id="assessment" className="scroll-mt-36 bg-white py-16 sm:py-20 lg:py-24">
+        <section id="assessment" className="scroll-mt-36 bg-[#0B1B3A] text-white py-16 sm:py-20 lg:py-24 border-t border-slate-800">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
             <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-[#FF4D6D] bg-[#FF4D6D]/10 px-2.5 py-1 rounded-md mb-3 inline-block">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#FF4D6D] bg-[#FF4D6D]/15 px-2.5 py-1 rounded-md mb-3 inline-block">
                 Start Your Evaluation
               </span>
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#0B1B3A] tracking-tight">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight">
                 Get a plan you and your family can question
               </h2>
-              <p className="text-base sm:text-lg text-slate-700 mt-4 leading-relaxed">
+              <p className="text-base sm:text-lg text-slate-300 mt-4 leading-relaxed">
                 Tell us where you are starting. We can begin with an unfinished shortlist, an existing offer or a funding question that needs a clearer answer.
               </p>
             </div>
@@ -1007,53 +1010,53 @@ export function UkDestinationView() {
             </div>
 
             {/* Assessment Specification Panel */}
-            <div className="p-7 sm:p-9 rounded-2xl bg-slate-50/90 border border-slate-200/90 shadow-2xs space-y-6 text-sm text-slate-700">
-              <div className="border-b border-slate-200 pb-4">
-                <h3 className="text-xl font-bold text-[#0B1B3A]">
+            <div className="p-7 sm:p-9 rounded-2xl bg-slate-900/80 border border-slate-700/80 shadow-2xs space-y-6 text-sm text-slate-300">
+              <div className="border-b border-slate-700 pb-4">
+                <h3 className="text-xl font-bold text-white">
                   Your UK assessment
                 </h3>
-                <p className="text-xs text-slate-500 mt-1">
+                <p className="text-xs text-slate-400 mt-1">
                   Required information mapped directly to our UK study assessment consultation:
                 </p>
               </div>
 
               <div className="space-y-4">
-                <div className="p-3.5 rounded-lg bg-white border border-slate-200">
-                  <span className="font-semibold text-slate-900 block mb-1">Personal &amp; Contact:</span>
-                  <span className="text-slate-600">Full name • Email address • Mobile / WhatsApp number • City of residence</span>
+                <div className="p-3.5 rounded-lg bg-slate-800/80 border border-slate-700">
+                  <span className="font-semibold text-white block mb-1">Personal &amp; Contact:</span>
+                  <span className="text-slate-300">Full name • Email address • Mobile / WhatsApp number • City of residence</span>
                 </div>
 
-                <div className="p-3.5 rounded-lg bg-white border border-slate-200">
-                  <span className="font-semibold text-slate-900 block mb-1">Enquirer Identity:</span>
-                  <span className="text-slate-600">I am enquiring as: Student / Parent or guardian</span>
+                <div className="p-3.5 rounded-lg bg-slate-800/80 border border-slate-700">
+                  <span className="font-semibold text-white block mb-1">Enquirer Identity:</span>
+                  <span className="text-slate-300">I am enquiring as: Student / Parent or guardian</span>
                 </div>
 
-                <div className="p-3.5 rounded-lg bg-white border border-slate-200">
-                  <span className="font-semibold text-slate-900 block mb-1">Academic Background &amp; Intent:</span>
-                  <span className="text-slate-600">Highest qualification and completion status • Intended subject • Intended study level • Preferred intake, if known</span>
+                <div className="p-3.5 rounded-lg bg-slate-800/80 border border-slate-700">
+                  <span className="font-semibold text-white block mb-1">Academic Background &amp; Intent:</span>
+                  <span className="text-slate-300">Highest qualification and completion status • Intended subject • Intended study level • Preferred intake, if known</span>
                 </div>
 
-                <div className="p-3.5 rounded-lg bg-white border border-slate-200">
-                  <span className="font-semibold text-slate-900 block mb-1">Funding &amp; English Evidence:</span>
-                  <span className="text-slate-600">English-language evidence, if available • Estimated total study budget and currency • Funding source</span>
+                <div className="p-3.5 rounded-lg bg-slate-800/80 border border-slate-700">
+                  <span className="font-semibold text-white block mb-1">Funding &amp; English Evidence:</span>
+                  <span className="text-slate-300">English-language evidence, if available • Estimated total study budget and currency • Funding source</span>
                 </div>
 
-                <div className="p-3.5 rounded-lg bg-white border border-slate-200">
-                  <span className="font-semibold text-slate-900 block mb-1">Background Details:</span>
-                  <span className="text-slate-600">Existing offer or previous refusal to discuss, if relevant • Preferred contact method • Your main question</span>
+                <div className="p-3.5 rounded-lg bg-slate-800/80 border border-slate-700">
+                  <span className="font-semibold text-white block mb-1">Background Details:</span>
+                  <span className="text-slate-300">Existing offer or previous refusal to discuss, if relevant • Preferred contact method • Your main question</span>
                 </div>
 
-                <div className="p-3.5 rounded-lg bg-white border border-slate-200">
-                  <span className="font-semibold text-slate-900 block mb-1">Target Destination:</span>
-                  <span className="text-slate-900 font-bold">Destination: United Kingdom</span>
+                <div className="p-3.5 rounded-lg bg-slate-800/80 border border-slate-700">
+                  <span className="font-semibold text-white block mb-1">Target Destination:</span>
+                  <span className="text-[#FF4D6D] font-bold">Destination: United Kingdom</span>
                 </div>
               </div>
 
-              <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900">
+              <div className="p-4 rounded-xl bg-amber-950/40 border border-amber-600/60 text-xs text-amber-200">
                 <strong>Document security:</strong> Please do not upload passports, bank statements or other sensitive documents at this initial stage.
               </div>
 
-              <p className="text-xs text-slate-500 leading-relaxed">
+              <p className="text-xs text-slate-400 leading-relaxed">
                 By submitting, you ask ProConsulting to contact you about this assessment. Read our{" "}
                 <Link to="/education/privacy-policy" className="text-[#FF4D6D] underline">
                   Privacy Policy
@@ -1064,14 +1067,14 @@ export function UkDestinationView() {
               <div className="pt-2">
                 <Link
                   to={UK_SEO.ctaHref}
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg text-sm font-bold text-white bg-[#0B1B3A] hover:bg-slate-800 transition-colors"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg text-sm font-bold text-white bg-[#FF4D6D] hover:bg-[#e03b5b] transition-colors"
                 >
                   <span>Submit: Get free UK assessment</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
 
-              <p className="text-xs text-slate-500 italic">
+              <p className="text-xs text-slate-400 italic">
                 After submission, we will use your details to contact you about your enquiry. This is not an admission, scholarship or visa application.
               </p>
             </div>

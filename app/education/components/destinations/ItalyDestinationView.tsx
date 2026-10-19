@@ -25,6 +25,7 @@ import {
   ITALY_OFFICIAL_SOURCES,
   ITALY_SEO,
 } from "~/education/lib/italyDestinationData";
+import { ItalyBudgetTool } from "./ItalyBudgetTool";
 
 export function ItalyDestinationView() {
   const [activeAnchor, setActiveAnchor] = useState<string>("overview");
@@ -574,20 +575,20 @@ export function ItalyDestinationView() {
       {/* 05 · PREPARE TWO DOCUMENT FILES—NOT ONE GENERIC CHECKLIST */}
       <section
         id="documents"
-        className="py-16 md:py-24 bg-white border-b border-slate-200/80 scroll-mt-16"
+        className="py-16 md:py-24 bg-[#0B1B3A] text-white border-y border-slate-800 scroll-mt-16"
       >
         <div className="max-w-[1200px] mx-auto px-5 sm:px-6">
           <div className="max-w-[760px] mb-12">
             <span
               aria-hidden="true"
-              className="block text-4xl sm:text-5xl font-black text-slate-200 mb-1"
+              className="block text-4xl sm:text-5xl font-black text-white/20 mb-1"
             >
               05
             </span>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#0B1B3A] tracking-tight">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight">
               Prepare two document files—not one generic checklist
             </h2>
-            <p className="text-slate-600 mt-3 text-base sm:text-lg">
+            <p className="text-slate-300 mt-3 text-base sm:text-lg">
               University admissions evaluate academic merit; regional scholarship bodies evaluate household finances.
               Keep their checklists strictly separated.
             </p>
@@ -596,20 +597,20 @@ export function ItalyDestinationView() {
           {/* Two open document columns with vertical hairline */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 relative">
             {/* File 1: Academic file */}
-            <div className="space-y-4">
-              <div className="flex items-center gap-2.5 pb-3 border-b-2 border-slate-900">
+            <div className="p-6 sm:p-7 rounded-2xl bg-slate-900/80 border border-slate-700/80 space-y-4">
+              <div className="flex items-center gap-2.5 pb-3 border-b border-slate-700">
                 <GraduationCap className="w-5 h-5 text-[#FF4D6D]" />
-                <h3 className="text-xl font-bold text-[#0B1B3A]">
+                <h3 className="text-xl font-bold text-white">
                   Your academic file
                 </h3>
               </div>
-              <p className="text-sm sm:text-base text-slate-700 leading-relaxed">
+              <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
                 Your academic file may include qualifications, transcripts,
                 identity documents, programme-specific materials and language
                 evidence. The university decides what it needs to assess your
                 application.
               </p>
-              <ul className="space-y-2 text-xs sm:text-sm text-slate-600 pt-2">
+              <ul className="space-y-2 text-xs sm:text-sm text-slate-300 pt-2">
                 <li className="flex items-start gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#FF4D6D] shrink-0 mt-2" />
                   <span>Secondary certificates (HSSC / A-Levels / IB)</span>
@@ -630,20 +631,20 @@ export function ItalyDestinationView() {
             </div>
 
             {/* File 2: Household financial file */}
-            <div className="space-y-4 md:border-l md:border-slate-200 md:pl-10">
-              <div className="flex items-center gap-2.5 pb-3 border-b-2 border-slate-900">
+            <div className="p-6 sm:p-7 rounded-2xl bg-slate-900/80 border border-slate-700/80 space-y-4">
+              <div className="flex items-center gap-2.5 pb-3 border-b border-slate-700">
                 <Scale className="w-5 h-5 text-[#FF4D6D]" />
-                <h3 className="text-xl font-bold text-[#0B1B3A]">
+                <h3 className="text-xl font-bold text-white">
                   Your household financial file
                 </h3>
               </div>
-              <p className="text-sm sm:text-base text-slate-700 leading-relaxed">
+              <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
                 Your household financial file may require evidence of family
                 composition, income and assets for the periods specified by the
                 scholarship body. Records about property, savings or the absence of
                 particular income may need official supporting documents.
               </p>
-              <ul className="space-y-2 text-xs sm:text-sm text-slate-600 pt-2">
+              <ul className="space-y-2 text-xs sm:text-sm text-slate-300 pt-2">
                 <li className="flex items-start gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#FF4D6D] shrink-0 mt-2" />
                   <span>Family registration certificate (FRC) verifying composition</span>
@@ -665,7 +666,7 @@ export function ItalyDestinationView() {
           </div>
 
           {/* Caveats full-width below */}
-          <div className="mt-10 p-6 rounded-2xl bg-slate-50 border border-slate-200 space-y-3 text-xs sm:text-sm text-slate-700">
+          <div className="mt-8 p-6 rounded-2xl bg-slate-900/60 border border-slate-700/80 space-y-3 text-xs sm:text-sm text-slate-300">
             <p>
               Translations and legalisation or permitted apostille procedures must
               follow the requirements of the receiving authority. Do not assume the
@@ -678,7 +679,7 @@ export function ItalyDestinationView() {
               institution or relevant authority requires either for your case before
               paying for it.
             </p>
-            <p className="font-semibold text-[#0B1B3A]">
+            <p className="font-semibold text-white">
               The practical goal is a file that answers the right questions—not a
               folder full of expensive documents nobody requested.
             </p>
@@ -769,6 +770,11 @@ export function ItalyDestinationView() {
               rely on speculative part-time earnings to close an essential funding gap.
             </p>
           </div>
+
+          {/* Interactive Italy Budget & Regional Scholarship Tool */}
+          <div className="mt-10">
+            <ItalyBudgetTool />
+          </div>
         </div>
       </section>
 
@@ -813,19 +819,19 @@ export function ItalyDestinationView() {
       </section>
 
       {/* 08 · WHAT YOUR ITALY PLAN SHOULD CONTAIN */}
-      <section className="py-16 md:py-24 bg-slate-50/60 border-b border-slate-200/80">
+      <section className="py-16 md:py-24 bg-[#0B1B3A] text-white border-y border-slate-800">
         <div className="max-w-[1200px] mx-auto px-5 sm:px-6">
           <div className="max-w-[760px] mb-12">
             <span
               aria-hidden="true"
-              className="block text-4xl sm:text-5xl font-black text-slate-200 mb-1"
+              className="block text-4xl sm:text-5xl font-black text-white/20 mb-1"
             >
               08
             </span>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#0B1B3A] tracking-tight">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight">
               What your Italy plan should contain
             </h2>
-            <p className="text-slate-600 mt-3 text-base sm:text-lg">
+            <p className="text-slate-300 mt-3 text-base sm:text-lg">
               Useful guidance should leave you with decisions you can understand and
               documents you can act on. Depending on the paid scope you approve,
               assistance can cover:
@@ -834,62 +840,62 @@ export function ItalyDestinationView() {
 
           {/* Numbered Typographic List across 2 cols */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
-            <div className="p-5 rounded-2xl bg-white border border-slate-200 flex items-start gap-4 shadow-sm">
-              <span className="w-8 h-8 rounded-lg bg-slate-100 text-[#0B1B3A] flex items-center justify-center font-bold text-sm shrink-0">
+            <div className="p-5 rounded-2xl bg-slate-900/80 border border-slate-700/80 flex items-start gap-4 shadow-sm">
+              <span className="w-8 h-8 rounded-lg bg-[#FF4D6D] text-white flex items-center justify-center font-bold text-sm shrink-0">
                 1
               </span>
-              <p className="text-sm sm:text-base text-slate-700 leading-snug pt-0.5">
+              <p className="text-sm sm:text-base text-slate-200 leading-snug pt-0.5">
                 A programme shortlist with academic and language requirements to verify.
               </p>
             </div>
 
-            <div className="p-5 rounded-2xl bg-white border border-slate-200 flex items-start gap-4 shadow-sm">
-              <span className="w-8 h-8 rounded-lg bg-slate-100 text-[#0B1B3A] flex items-center justify-center font-bold text-sm shrink-0">
+            <div className="p-5 rounded-2xl bg-slate-900/80 border border-slate-700/80 flex items-start gap-4 shadow-sm">
+              <span className="w-8 h-8 rounded-lg bg-[#FF4D6D] text-white flex items-center justify-center font-bold text-sm shrink-0">
                 2
               </span>
-              <p className="text-sm sm:text-base text-slate-700 leading-snug pt-0.5">
+              <p className="text-sm sm:text-base text-slate-200 leading-snug pt-0.5">
                 A university application checklist, including conditions attached to an offer.
               </p>
             </div>
 
-            <div className="p-5 rounded-2xl bg-white border border-slate-200 flex items-start gap-4 shadow-sm">
-              <span className="w-8 h-8 rounded-lg bg-slate-100 text-[#0B1B3A] flex items-center justify-center font-bold text-sm shrink-0">
+            <div className="p-5 rounded-2xl bg-slate-900/80 border border-slate-700/80 flex items-start gap-4 shadow-sm">
+              <span className="w-8 h-8 rounded-lg bg-[#FF4D6D] text-white flex items-center justify-center font-bold text-sm shrink-0">
                 3
               </span>
-              <p className="text-sm sm:text-base text-slate-700 leading-snug pt-0.5">
+              <p className="text-sm sm:text-base text-slate-200 leading-snug pt-0.5">
                 A regional scholarship checklist tied to the appropriate published call.
               </p>
             </div>
 
-            <div className="p-5 rounded-2xl bg-white border border-slate-200 flex items-start gap-4 shadow-sm">
-              <span className="w-8 h-8 rounded-lg bg-slate-100 text-[#0B1B3A] flex items-center justify-center font-bold text-sm shrink-0">
+            <div className="p-5 rounded-2xl bg-slate-900/80 border border-slate-700/80 flex items-start gap-4 shadow-sm">
+              <span className="w-8 h-8 rounded-lg bg-[#FF4D6D] text-white flex items-center justify-center font-bold text-sm shrink-0">
                 4
               </span>
-              <p className="text-sm sm:text-base text-slate-700 leading-snug pt-0.5">
+              <p className="text-sm sm:text-base text-slate-200 leading-snug pt-0.5">
                 A deadline tracker separating admissions, benefits, pre-enrolment and visa actions.
               </p>
             </div>
 
-            <div className="p-5 rounded-2xl bg-white border border-slate-200 flex items-start gap-4 shadow-sm">
-              <span className="w-8 h-8 rounded-lg bg-slate-100 text-[#0B1B3A] flex items-center justify-center font-bold text-sm shrink-0">
+            <div className="p-5 rounded-2xl bg-slate-900/80 border border-slate-700/80 flex items-start gap-4 shadow-sm">
+              <span className="w-8 h-8 rounded-lg bg-[#FF4D6D] text-white flex items-center justify-center font-bold text-sm shrink-0">
                 5
               </span>
-              <p className="text-sm sm:text-base text-slate-700 leading-snug pt-0.5">
+              <p className="text-sm sm:text-base text-slate-200 leading-snug pt-0.5">
                 A budget worksheet distinguishing confirmed costs from uncertain support.
               </p>
             </div>
 
-            <div className="p-5 rounded-2xl bg-white border border-slate-200 flex items-start gap-4 shadow-sm">
-              <span className="w-8 h-8 rounded-lg bg-slate-100 text-[#0B1B3A] flex items-center justify-center font-bold text-sm shrink-0">
+            <div className="p-5 rounded-2xl bg-slate-900/80 border border-slate-700/80 flex items-start gap-4 shadow-sm">
+              <span className="w-8 h-8 rounded-lg bg-[#FF4D6D] text-white flex items-center justify-center font-bold text-sm shrink-0">
                 6
               </span>
-              <p className="text-sm sm:text-base text-slate-700 leading-snug pt-0.5">
+              <p className="text-sm sm:text-base text-slate-200 leading-snug pt-0.5">
                 A visa preparation checklist based on the competent authority’s current instructions.
               </p>
             </div>
           </div>
 
-          <div className="p-5 rounded-2xl bg-white border border-slate-200 text-xs sm:text-sm text-slate-600">
+          <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-700/80 text-xs sm:text-sm text-slate-300">
             The free assessment starts the conversation; it is not a promise that
             every application service is included. Ask for the exact deliverables,
             responsibilities and exclusions in writing before choosing paid support.
@@ -1143,7 +1149,7 @@ export function ItalyDestinationView() {
               <details
                 key={faq.id}
                 className="group py-5 text-left focus-within:outline-none"
-                defaultOpen={index === 0}
+                open={index === 0}
               >
                 <summary className="flex items-center justify-between gap-4 cursor-pointer list-none font-bold text-base sm:text-lg text-[#0B1B3A] group-hover:text-[#FF4D6D] transition-colors focus-visible:ring-2 focus-visible:ring-[#FF4D6D] focus-visible:rounded-lg p-1">
                   <span>
@@ -1161,22 +1167,22 @@ export function ItalyDestinationView() {
       </section>
 
       {/* 14 · GET A CLEARER ANSWER BEFORE YOU COMMIT */}
-      <section className="py-16 md:py-24 bg-slate-50/70 border-b border-slate-200/80">
+      <section className="py-16 md:py-24 bg-[#0B1B3A] text-white border-t border-slate-800">
         <div className="max-w-[1200px] mx-auto px-5 sm:px-6">
           <div className="max-w-[800px] space-y-6">
             <div>
               <span
                 aria-hidden="true"
-                className="block text-4xl sm:text-5xl font-black text-slate-200"
+                className="block text-4xl sm:text-5xl font-black text-white/20"
               >
                 14
               </span>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0B1B3A] tracking-tight mt-1">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight mt-1">
                 Get a clearer answer before you commit
               </h2>
             </div>
 
-            <p className="text-base sm:text-lg text-slate-700 leading-relaxed">
+            <p className="text-base sm:text-lg text-slate-300 leading-relaxed">
               Bring your study goals, qualifications and honest budget. Let’s
               identify the questions that matter for your Italy plan—and the
               costs or requirements you should resolve before applying.
@@ -1192,14 +1198,14 @@ export function ItalyDestinationView() {
               </Link>
             </div>
 
-            <p className="text-xs sm:text-sm text-slate-500">
+            <p className="text-xs sm:text-sm text-slate-400">
               Share basic details only at this stage. Do not send passport scans,
               bank statements or family financial documents through an initial
               enquiry.
             </p>
 
             {/* Mandatory Protected Honesty Sentence (2nd occurrence) */}
-            <div className="p-4 rounded-xl bg-white border-l-2 border-[#FF4D6D] text-xs sm:text-sm font-semibold text-[#0B1B3A] shadow-sm">
+            <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-700/80 border-l-4 border-l-[#FF4D6D] text-xs sm:text-sm font-semibold text-white shadow-sm">
               No consultant can guarantee a scholarship, admission or visa, and we do not.
             </div>
           </div>

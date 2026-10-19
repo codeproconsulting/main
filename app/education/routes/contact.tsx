@@ -126,26 +126,26 @@ export async function action({ request }: ActionFunctionArgs) {
         destination === "uk"
           ? "uk"
           : destination === "germany"
-          ? "germany"
-          : destination === "italy"
-          ? "italy"
-          : undefined,
+            ? "germany"
+            : destination === "italy"
+              ? "italy"
+              : undefined,
       originPath:
         destination === "uk"
-          ? "/education/destinations/uk"
+          ? "/education/destinations/study-in-uk-from-pakistan"
           : destination === "germany"
-          ? "/education/destinations/germany"
-          : destination === "italy"
-          ? "/education/destinations/italy"
-          : originPath,
+            ? "/education/destinations/study-in-Germany-from-pakistan"
+            : destination === "italy"
+              ? "/education/destinations/study-in-italy-from-pakistan"
+              : originPath,
       serviceContext:
         destination === "uk"
           ? "UK study assessment"
           : destination === "germany"
-          ? "Germany study assessment"
-          : destination === "italy"
-          ? "Italy study assessment"
-          : serviceContext,
+            ? "Germany study assessment"
+            : destination === "italy"
+              ? "Italy study assessment"
+              : serviceContext,
     };
 
     const saved = saveApplicant(applicantData);
@@ -193,10 +193,10 @@ export default function Contact() {
     targetCountry: isUkContext
       ? "United Kingdom"
       : isGermanyContext
-      ? "Germany"
-      : isItalyContext
-      ? "Italy"
-      : queryCountry || "United Kingdom",
+        ? "Germany"
+        : isItalyContext
+          ? "Italy"
+          : queryCountry || "United Kingdom",
     targetDegree: "Master's / Postgraduate (1 or 2 Years)",
     targetIntake: "September / Fall 2026",
     budgetRange: "£10,000 - £16,000 / year ($13k - $20k)",
@@ -208,24 +208,24 @@ export default function Contact() {
     destination: isUkContext
       ? "uk"
       : isGermanyContext
-      ? "germany"
-      : isItalyContext
-      ? "italy"
-      : "",
+        ? "germany"
+        : isItalyContext
+          ? "italy"
+          : "",
     originPath: isUkContext
-      ? "/education/destinations/uk"
+      ? "/education/destinations/study-in-uk-from-pakistan"
       : isGermanyContext
-      ? "/education/destinations/germany"
-      : isItalyContext
-      ? "/education/destinations/italy"
-      : "",
+        ? "/education/destinations/study-in-Germany-from-pakistan"
+        : isItalyContext
+          ? "/education/destinations/study-in-italy-from-pakistan"
+          : "",
     serviceContext: isUkContext
       ? "UK study assessment"
       : isGermanyContext
-      ? "Germany study assessment"
-      : isItalyContext
-      ? "Italy study assessment"
-      : "Study abroad consultation",
+        ? "Germany study assessment"
+        : isItalyContext
+          ? "Italy study assessment"
+          : "Study abroad consultation",
   });
 
   const handleChange = (
@@ -376,10 +376,10 @@ export default function Contact() {
                 {isUkContext
                   ? "UK Study Assessment & Planning Consultation"
                   : isGermanyContext
-                  ? "Germany Study Assessment & Planning Consultation"
-                  : isItalyContext
-                  ? "Italy Study Assessment & Planning Consultation"
-                  : "1-on-1 Free Profile Evaluation & Visa Assessment"}
+                    ? "Germany Study Assessment & Planning Consultation"
+                    : isItalyContext
+                      ? "Italy Study Assessment & Planning Consultation"
+                      : "1-on-1 Free Profile Evaluation & Visa Assessment"}
               </div>
 
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-tight mb-4">
@@ -414,10 +414,10 @@ export default function Contact() {
                 {isUkContext
                   ? "Tell us where you are starting. We can begin with an unfinished shortlist, an existing offer or a funding question that needs a clearer answer."
                   : isGermanyContext
-                  ? "Tell us where you are starting. We will use these details to discuss your Germany study options and the requirements that need checking. Do not upload identity or financial documents here."
-                  : isItalyContext
-                  ? "Tell us where you are starting. We will use these details to discuss your Italy study options, regional scholarship rules, Universitaly pre-enrolment and visa preparation. Do not upload identity or financial documents here."
-                  : "Complete the quick profile assessment below. Our certified senior education consultants will evaluate your admission chances, match matching global universities, and map your study visa roadmap."}
+                    ? "Tell us where you are starting. We will use these details to discuss your Germany study options and the requirements that need checking. Do not upload identity or financial documents here."
+                    : isItalyContext
+                      ? "Tell us where you are starting. We will use these details to discuss your Italy study options, regional scholarship rules, Universitaly pre-enrolment and visa preparation. Do not upload identity or financial documents here."
+                      : "Complete the quick profile assessment below. Our certified senior education consultants will evaluate your admission chances, match matching global universities, and map your study visa roadmap."}
               </p>
             </div>
 
@@ -439,22 +439,20 @@ export default function Contact() {
                         onClick={() => {
                           if (s.num < step) setStep(s.num);
                         }}
-                        className={`flex items-center gap-2 p-2.5 sm:p-3 rounded-xl border text-left transition-all ${
-                          isActive
+                        className={`flex items-center gap-2 p-2.5 sm:p-3 rounded-xl border text-left transition-all ${isActive
                             ? "bg-white/20 border-white text-white shadow-md ring-2 ring-pink-500/40"
                             : isCompleted
-                            ? "bg-white/10 border-emerald-400/50 text-emerald-300 cursor-pointer"
-                            : "bg-white/5 border-white/10 text-slate-400 opacity-60 cursor-not-allowed"
-                        }`}
+                              ? "bg-white/10 border-emerald-400/50 text-emerald-300 cursor-pointer"
+                              : "bg-white/5 border-white/10 text-slate-400 opacity-60 cursor-not-allowed"
+                          }`}
                       >
                         <span
-                          className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
-                            isCompleted
+                          className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${isCompleted
                               ? "bg-emerald-500 text-white"
                               : isActive
-                              ? "bg-[#FF4D6D] text-white"
-                              : "bg-white/20 text-white"
-                          }`}
+                                ? "bg-[#FF4D6D] text-white"
+                                : "bg-white/20 text-white"
+                            }`}
                         >
                           {isCompleted ? (
                             <CheckCircle2 className="w-3.5 h-3.5" />
@@ -840,7 +838,7 @@ export default function Contact() {
                             </select>
                           )}
                           <input type="hidden" name="destination" value={isUkContext ? "uk" : isGermanyContext ? "germany" : isItalyContext ? "italy" : ""} />
-                          <input type="hidden" name="originPath" value={isUkContext ? "/education/destinations/uk" : isGermanyContext ? "/education/destinations/germany" : isItalyContext ? "/education/destinations/italy" : ""} />
+                          <input type="hidden" name="originPath" value={isUkContext ? "/education/destinations/study-in-uk-from-pakistan" : isGermanyContext ? "/education/destinations/study-in-Germany-from-pakistan" : isItalyContext ? "/education/destinations/study-in-italy-from-pakistan" : ""} />
                           <input type="hidden" name="serviceContext" value={isUkContext ? "UK study assessment" : isGermanyContext ? "Germany study assessment" : isItalyContext ? "Italy study assessment" : ""} />
                         </div>
 
@@ -1083,10 +1081,10 @@ export default function Contact() {
                                 {isUkContext
                                   ? "Get free UK assessment"
                                   : isGermanyContext
-                                  ? "Get free Germany assessment"
-                                  : isItalyContext
-                                  ? "Get free Italy assessment"
-                                  : "Submit Free Assessment"}
+                                    ? "Get free Germany assessment"
+                                    : isItalyContext
+                                      ? "Get free Italy assessment"
+                                      : "Submit Free Assessment"}
                               </span>
                               <CheckCircle2 className="w-4 h-4" />
                             </>
@@ -1122,10 +1120,10 @@ export default function Contact() {
                           {isItalyContext || applicantResult?.destination === "italy"
                             ? "Your Italy enquiry has been received"
                             : isGermanyContext || applicantResult?.destination === "germany"
-                            ? "Your Germany enquiry has been received"
-                            : isUkContext || applicantResult?.destination === "uk"
-                            ? "Your UK assessment enquiry has been received"
-                            : "Your Free Assessment Has Been Submitted!"}
+                              ? "Your Germany enquiry has been received"
+                              : isUkContext || applicantResult?.destination === "uk"
+                                ? "Your UK assessment enquiry has been received"
+                                : "Your Free Assessment Has Been Submitted!"}
                         </h2>
 
                         <p className="text-slate-600 max-w-lg mx-auto text-sm sm:text-base">
