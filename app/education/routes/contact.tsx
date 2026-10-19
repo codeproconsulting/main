@@ -129,7 +129,9 @@ export async function action({ request }: ActionFunctionArgs) {
             ? "germany"
             : destination === "italy"
               ? "italy"
-              : undefined,
+              : destination === "new-zealand"
+                ? "new-zealand"
+                : undefined,
       originPath:
         destination === "uk"
           ? "/education/destinations/study-in-uk"
@@ -137,7 +139,9 @@ export async function action({ request }: ActionFunctionArgs) {
             ? "/education/destinations/study-in-germany"
             : destination === "italy"
               ? "/education/destinations/study-in-italy"
-              : originPath,
+              : destination === "new-zealand"
+                ? "/education/destinations/study-in-new-zealand"
+                : originPath,
       serviceContext:
         destination === "uk"
           ? "UK study assessment"
@@ -145,7 +149,9 @@ export async function action({ request }: ActionFunctionArgs) {
             ? "Germany study assessment"
             : destination === "italy"
               ? "Italy study assessment"
-              : serviceContext,
+              : destination === "new-zealand"
+                ? "New Zealand study assessment"
+                : serviceContext,
     };
 
     const saved = saveApplicant(applicantData);
@@ -173,6 +179,12 @@ export default function Contact() {
   const isItalyContext =
     rawDest === "italy" ||
     queryCountry?.toLowerCase() === "italy";
+  const isNewZealandContext =
+    rawDest === "new-zealand" ||
+    rawDest === "new zealand" ||
+    rawDest === "nz" ||
+    queryCountry?.toLowerCase() === "new zealand" ||
+    queryCountry?.toLowerCase() === "new-zealand";
 
   const [step, setStep] = useState<number>(1);
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -196,7 +208,9 @@ export default function Contact() {
         ? "Germany"
         : isItalyContext
           ? "Italy"
-          : queryCountry || "United Kingdom",
+          : isNewZealandContext
+            ? "New Zealand"
+            : queryCountry || "United Kingdom",
     targetDegree: "Master's / Postgraduate (1 or 2 Years)",
     targetIntake: "September / Fall 2026",
     budgetRange: "£10,000 - £16,000 / year ($13k - $20k)",
@@ -211,21 +225,27 @@ export default function Contact() {
         ? "germany"
         : isItalyContext
           ? "italy"
-          : "",
+          : isNewZealandContext
+            ? "new-zealand"
+            : "",
     originPath: isUkContext
       ? "/education/destinations/study-in-uk"
       : isGermanyContext
         ? "/education/destinations/study-in-germany"
         : isItalyContext
           ? "/education/destinations/study-in-italy"
-          : "",
+          : isNewZealandContext
+            ? "/education/destinations/study-in-new-zealand"
+            : "",
     serviceContext: isUkContext
       ? "UK study assessment"
       : isGermanyContext
         ? "Germany study assessment"
         : isItalyContext
           ? "Italy study assessment"
-          : "Study abroad consultation",
+          : isNewZealandContext
+            ? "New Zealand study assessment"
+            : "Study abroad consultation",
   });
 
   const handleChange = (
@@ -816,6 +836,14 @@ export default function Contact() {
                               </span>
                               <input type="hidden" name="targetCountry" value="Italy" />
                             </div>
+                          ) : isNewZealandContext ? (
+                            <div className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-semibold text-sm flex items-center justify-between">
+                              <span>Study destination: New Zealand</span>
+                              <span className="text-xs font-semibold text-[#FF4D6D] bg-[#FF4D6D]/10 px-2.5 py-0.5 rounded-full">
+                                New Zealand Study Assessment
+                              </span>
+                              <input type="hidden" name="targetCountry" value="New Zealand" />
+                            </div>
                           ) : (
                             <select
                               name="targetCountry"
@@ -824,6 +852,7 @@ export default function Contact() {
                               className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 focus:outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-500/20 text-sm bg-white"
                             >
                               <option value="United Kingdom">United Kingdom (UK)</option>
+                              <option value="New Zealand">New Zealand</option>
                               <option value="Australia">Australia</option>
                               <option value="Canada">Canada</option>
                               <option value="United States">United States (USA)</option>
@@ -837,9 +866,9 @@ export default function Contact() {
                               </option>
                             </select>
                           )}
-                          <input type="hidden" name="destination" value={isUkContext ? "uk" : isGermanyContext ? "germany" : isItalyContext ? "italy" : ""} />
-                          <input type="hidden" name="originPath" value={isUkContext ? "/education/destinations/study-in-uk" : isGermanyContext ? "/education/destinations/study-in-germany" : isItalyContext ? "/education/destinations/study-in-italy" : ""} />
-                          <input type="hidden" name="serviceContext" value={isUkContext ? "UK study assessment" : isGermanyContext ? "Germany study assessment" : isItalyContext ? "Italy study assessment" : ""} />
+                          <input type="hidden" name="destination" value={isUkContext ? "uk" : isGermanyContext ? "germany" : isItalyContext ? "italy" : isNewZealandContext ? "new-zealand" : ""} />
+                          <input type="hidden" name="originPath" value={isUkContext ? "/education/destinations/study-in-uk" : isGermanyContext ? "/education/destinations/study-in-germany" : isItalyContext ? "/education/destinations/study-in-italy" : isNewZealandContext ? "/education/destinations/study-in-new-zealand" : ""} />
+                          <input type="hidden" name="serviceContext" value={isUkContext ? "UK study assessment" : isGermanyContext ? "Germany study assessment" : isItalyContext ? "Italy study assessment" : isNewZealandContext ? "New Zealand study assessment" : ""} />
                         </div>
 
                         <div>

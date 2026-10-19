@@ -1,6 +1,6 @@
 "use client";
 
-import { Link, useLoaderData } from "react-router";
+import { Link, useLoaderData, redirect } from "react-router";
 import { Navbar } from "~/education/components/ui/Navbar";
 import { Footer } from "~/education/components/ui/footer";
 import { getDestinationBySlug, resolveDestinationSlug, type Destination } from "~/education/lib/destinations";
@@ -13,12 +13,20 @@ import { GermanyDestinationView } from "~/education/components/destinations/Germ
 import { GERMANY_SEO, GERMANY_SCHEMA_GRAPH } from "~/education/lib/germanyDestinationData";
 import { ItalyDestinationView } from "~/education/components/destinations/ItalyDestinationView";
 import { ITALY_SEO, ITALY_SCHEMA_GRAPH } from "~/education/lib/italyDestinationData";
+import { NewZealandDestinationView } from "~/education/components/destinations/NewZealandDestinationView";
+import { NEW_ZEALAND_SEO, NEW_ZEALAND_SCHEMA_GRAPH } from "~/education/lib/newZealandDestinationData";
 
 export function loader({ params }: Route.LoaderArgs) {
-  const rawSlug = params.slug || "";
+  const rawSlug = (params.slug || "").trim().toLowerCase();
+
+  // 301 redirect legacy New Zealand URLs to single canonical public URL
+  if (rawSlug === "new-zealand" || rawSlug === "study-in-new-zealand-from-pakistan") {
+    return redirect("/education/destinations/study-in-new-zealand", { status: 301 });
+  }
+
   const slug = resolveDestinationSlug(rawSlug);
   const destination = getDestinationBySlug(slug);
-  if (!destination && slug !== "uk" && slug !== "germany" && slug !== "italy") {
+  if (!destination && slug !== "uk" && slug !== "germany" && slug !== "italy" && slug !== "new-zealand") {
     throw new Response("Destination not found", { status: 404 });
   }
   return { destination, slug, rawSlug };
@@ -72,6 +80,21 @@ export function meta(args: Route.MetaArgs) {
     ];
   }
 
+  if (slug === "new-zealand") {
+    const title = NEW_ZEALAND_SEO.title;
+    const description = NEW_ZEALAND_SEO.metaDescription;
+    const pathname = "/education/destinations/study-in-new-zealand";
+    return [
+      { title },
+      { name: "description", content: description },
+      { tagName: "link", rel: "canonical", href: `https://proconsulting.uk${pathname}` },
+      ...pageMeta({ title, description, pathname }),
+      {
+        "script:ld+json": NEW_ZEALAND_SCHEMA_GRAPH,
+      },
+    ];
+  }
+
   const destination = args?.data?.destination as Destination | null | undefined;
   if (!destination) {
     return [{ title: "Destination not found | ProConsulting" }];
@@ -98,6 +121,9 @@ export function links(args?: any) {
   }
   if (slug === "italy") {
     return [{ rel: "canonical", href: "https://proconsulting.uk/education/destinations/study-in-italy" }];
+  }
+  if (slug === "new-zealand") {
+    return [{ rel: "canonical", href: "https://proconsulting.uk/education/destinations/study-in-new-zealand" }];
   }
   const destination = getDestinationBySlug(rawSlug);
   const pathname = destination ? destination.link : `/education/destinations/${slug}`;
@@ -257,6 +283,18 @@ export default function DestinationSlugPage() {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(ITALY_SCHEMA_GRAPH) }}
         />
         <ItalyDestinationView />
+      </>
+    );
+  }
+
+  if (slug === "new-zealand") {
+    return (
+      <>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(NEW_ZEALAND_SCHEMA_GRAPH) }}
+        />
+        <NewZealandDestinationView />
       </>
     );
   }
