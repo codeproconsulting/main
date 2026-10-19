@@ -15,6 +15,8 @@ import { ItalyDestinationView } from "~/education/components/destinations/ItalyD
 import { ITALY_SEO, ITALY_SCHEMA_GRAPH } from "~/education/lib/italyDestinationData";
 import { NewZealandDestinationView } from "~/education/components/destinations/NewZealandDestinationView";
 import { NEW_ZEALAND_SEO, NEW_ZEALAND_SCHEMA_GRAPH } from "~/education/lib/newZealandDestinationData";
+import { CanadaDestinationView } from "~/education/components/destinations/CanadaDestinationView";
+import { CANADA_SEO, CANADA_SCHEMA_GRAPH } from "~/education/lib/canadaDestinationData";
 
 export function loader({ params }: Route.LoaderArgs) {
   const rawSlug = (params.slug || "").trim().toLowerCase();
@@ -24,9 +26,14 @@ export function loader({ params }: Route.LoaderArgs) {
     return redirect("/education/destinations/study-in-new-zealand", { status: 301 });
   }
 
+  // 301 redirect legacy Canada URLs to single canonical public URL
+  if (rawSlug === "canada" || rawSlug === "study-in-canada-from-pakistan") {
+    return redirect("/education/destinations/study-in-canada", { status: 301 });
+  }
+
   const slug = resolveDestinationSlug(rawSlug);
   const destination = getDestinationBySlug(slug);
-  if (!destination && slug !== "uk" && slug !== "germany" && slug !== "italy" && slug !== "new-zealand") {
+  if (!destination && slug !== "uk" && slug !== "germany" && slug !== "italy" && slug !== "new-zealand" && slug !== "canada") {
     throw new Response("Destination not found", { status: 404 });
   }
   return { destination, slug, rawSlug };
@@ -91,6 +98,21 @@ export function meta(args: Route.MetaArgs) {
       ...pageMeta({ title, description, pathname }),
       {
         "script:ld+json": NEW_ZEALAND_SCHEMA_GRAPH,
+      },
+    ];
+  }
+
+  if (slug === "canada") {
+    const title = CANADA_SEO.title;
+    const description = CANADA_SEO.metaDescription;
+    const pathname = "/education/destinations/study-in-canada";
+    return [
+      { title },
+      { name: "description", content: description },
+      { tagName: "link", rel: "canonical", href: `https://proconsulting.uk${pathname}` },
+      ...pageMeta({ title, description, pathname }),
+      {
+        "script:ld+json": CANADA_SCHEMA_GRAPH,
       },
     ];
   }
@@ -295,6 +317,18 @@ export default function DestinationSlugPage() {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(NEW_ZEALAND_SCHEMA_GRAPH) }}
         />
         <NewZealandDestinationView />
+      </>
+    );
+  }
+
+  if (slug === "canada") {
+    return (
+      <>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(CANADA_SCHEMA_GRAPH) }}
+        />
+        <CanadaDestinationView />
       </>
     );
   }

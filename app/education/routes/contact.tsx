@@ -131,7 +131,9 @@ export async function action({ request }: ActionFunctionArgs) {
               ? "italy"
               : destination === "new-zealand"
                 ? "new-zealand"
-                : undefined,
+                : destination === "canada"
+                  ? "canada"
+                  : undefined,
       originPath:
         destination === "uk"
           ? "/education/destinations/study-in-uk"
@@ -141,7 +143,9 @@ export async function action({ request }: ActionFunctionArgs) {
               ? "/education/destinations/study-in-italy"
               : destination === "new-zealand"
                 ? "/education/destinations/study-in-new-zealand"
-                : originPath,
+                : destination === "canada"
+                  ? "/education/destinations/study-in-canada"
+                  : originPath,
       serviceContext:
         destination === "uk"
           ? "UK study assessment"
@@ -151,7 +155,9 @@ export async function action({ request }: ActionFunctionArgs) {
               ? "Italy study assessment"
               : destination === "new-zealand"
                 ? "New Zealand study assessment"
-                : serviceContext,
+                : destination === "canada"
+                  ? "Canada study assessment and application guidance"
+                  : serviceContext,
     };
 
     const saved = saveApplicant(applicantData);
@@ -185,6 +191,9 @@ export default function Contact() {
     rawDest === "nz" ||
     queryCountry?.toLowerCase() === "new zealand" ||
     queryCountry?.toLowerCase() === "new-zealand";
+  const isCanadaContext =
+    rawDest === "canada" ||
+    queryCountry?.toLowerCase() === "canada";
 
   const [step, setStep] = useState<number>(1);
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -210,7 +219,9 @@ export default function Contact() {
           ? "Italy"
           : isNewZealandContext
             ? "New Zealand"
-            : queryCountry || "United Kingdom",
+            : isCanadaContext
+              ? "Canada"
+              : queryCountry || "United Kingdom",
     targetDegree: "Master's / Postgraduate (1 or 2 Years)",
     targetIntake: "September / Fall 2026",
     budgetRange: "£10,000 - £16,000 / year ($13k - $20k)",
@@ -399,7 +410,9 @@ export default function Contact() {
                     ? "Germany Study Assessment & Planning Consultation"
                     : isItalyContext
                       ? "Italy Study Assessment & Planning Consultation"
-                      : "1-on-1 Free Profile Evaluation & Visa Assessment"}
+                      : isCanadaContext
+                        ? "Canada Study Assessment & Planning Consultation"
+                        : "1-on-1 Free Profile Evaluation & Visa Assessment"}
               </div>
 
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-tight mb-4">
@@ -414,6 +427,10 @@ export default function Contact() {
                 ) : isItalyContext ? (
                   <>
                     Study in Italy: <span className="text-[#FF4D6D]">Free Assessment</span>
+                  </>
+                ) : isCanadaContext ? (
+                  <>
+                    Study in Canada: <span className="text-[#FF4D6D]">Free Assessment</span>
                   </>
                 ) : (
                   <>
@@ -437,7 +454,9 @@ export default function Contact() {
                     ? "Tell us where you are starting. We will use these details to discuss your Germany study options and the requirements that need checking. Do not upload identity or financial documents here."
                     : isItalyContext
                       ? "Tell us where you are starting. We will use these details to discuss your Italy study options, regional scholarship rules, Universitaly pre-enrolment and visa preparation. Do not upload identity or financial documents here."
-                      : "Complete the quick profile assessment below. Our certified senior education consultants will evaluate your admission chances, match matching global universities, and map your study visa roadmap."}
+                      : isCanadaContext
+                        ? "Tell us where you are starting. We will use these details to discuss your Canada study options, DLI and PGWP checks, realistic funding advice and study permit preparation."
+                        : "Complete the quick profile assessment below. Our certified senior education consultants will evaluate your admission chances, match matching global universities, and map your study visa roadmap."}
               </p>
             </div>
 
@@ -541,7 +560,7 @@ export default function Contact() {
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        {(isUkContext || isGermanyContext || isItalyContext) && (
+                        {(isUkContext || isGermanyContext || isItalyContext || isNewZealandContext || isCanadaContext) && (
                           <div className="md:col-span-2 p-4 rounded-xl bg-slate-50 border border-slate-200">
                             <label className="block text-sm font-semibold text-slate-800 mb-2">
                               I am enquiring as: <span className="text-pink-500">*</span>
@@ -844,6 +863,14 @@ export default function Contact() {
                               </span>
                               <input type="hidden" name="targetCountry" value="New Zealand" />
                             </div>
+                          ) : isCanadaContext ? (
+                            <div className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-semibold text-sm flex items-center justify-between">
+                              <span>Study destination: Canada</span>
+                              <span className="text-xs font-semibold text-[#FF4D6D] bg-[#FF4D6D]/10 px-2.5 py-0.5 rounded-full">
+                                Canada Study Assessment
+                              </span>
+                              <input type="hidden" name="targetCountry" value="Canada" />
+                            </div>
                           ) : (
                             <select
                               name="targetCountry"
@@ -866,9 +893,9 @@ export default function Contact() {
                               </option>
                             </select>
                           )}
-                          <input type="hidden" name="destination" value={isUkContext ? "uk" : isGermanyContext ? "germany" : isItalyContext ? "italy" : isNewZealandContext ? "new-zealand" : ""} />
-                          <input type="hidden" name="originPath" value={isUkContext ? "/education/destinations/study-in-uk" : isGermanyContext ? "/education/destinations/study-in-germany" : isItalyContext ? "/education/destinations/study-in-italy" : isNewZealandContext ? "/education/destinations/study-in-new-zealand" : ""} />
-                          <input type="hidden" name="serviceContext" value={isUkContext ? "UK study assessment" : isGermanyContext ? "Germany study assessment" : isItalyContext ? "Italy study assessment" : isNewZealandContext ? "New Zealand study assessment" : ""} />
+                          <input type="hidden" name="destination" value={isUkContext ? "uk" : isGermanyContext ? "germany" : isItalyContext ? "italy" : isNewZealandContext ? "new-zealand" : isCanadaContext ? "canada" : ""} />
+                          <input type="hidden" name="originPath" value={isUkContext ? "/education/destinations/study-in-uk" : isGermanyContext ? "/education/destinations/study-in-germany" : isItalyContext ? "/education/destinations/study-in-italy" : isNewZealandContext ? "/education/destinations/study-in-new-zealand" : isCanadaContext ? "/education/destinations/study-in-canada" : ""} />
+                          <input type="hidden" name="serviceContext" value={isUkContext ? "UK study assessment" : isGermanyContext ? "Germany study assessment" : isItalyContext ? "Italy study assessment" : isNewZealandContext ? "New Zealand study assessment" : isCanadaContext ? "Canada study assessment and application guidance" : ""} />
                         </div>
 
                         <div>
