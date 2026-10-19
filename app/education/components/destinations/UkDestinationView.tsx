@@ -16,13 +16,14 @@ import {
   HelpCircle,
   Phone,
   MapPin,
+  Clock,
+  Briefcase,
+  Award,
 } from "lucide-react";
 import { Navbar } from "~/education/components/ui/Navbar";
 import { Footer } from "~/education/components/ui/footer";
-import { UkBudgetWorksheet } from "./UkBudgetWorksheet";
 import {
   UK_FAQS,
-  UK_OFFICIAL_SOURCES,
   UK_SEO,
 } from "~/education/lib/ukDestinationData";
 
@@ -37,7 +38,7 @@ export function UkDestinationView() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const anchors = ["courses", "budget", "offers", "visa", "process", "faq"];
+      const anchors = ["courses", "offers", "visa", "process", "faq"];
       const headerOffset = 140;
 
       for (let i = anchors.length - 1; i >= 0; i--) {
@@ -69,7 +70,6 @@ export function UkDestinationView() {
 
   const navLinks = [
     { id: "courses", label: "Courses" },
-    { id: "budget", label: "Budget" },
     { id: "offers", label: "Offers" },
     { id: "visa", label: "Visa evidence" },
     { id: "process", label: "Process" },
@@ -107,17 +107,17 @@ export function UkDestinationView() {
               {/* Left Column (7 cols): Headline, Deck, CTA */}
               <div className="lg:col-span-7 space-y-6">
                 <div>
-                  <span className="inline-block text-xs sm:text-sm font-semibold tracking-wide text-slate-600 bg-slate-100 px-3.5 py-1.5 rounded-full mb-4">
-                    For Pakistani students and the families backing them
+                  <span className="inline-block text-xs sm:text-sm font-semibold tracking-wide text-slate-700 bg-slate-100 px-3.5 py-1.5 rounded-full mb-4">
+                    Study in the United Kingdom · Advisory for Students &amp; Families
                   </span>
                   <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[52px] font-extrabold text-[#0B1B3A] tracking-tight leading-[1.12]">
-                    Study in the UK from Pakistan
+                    Study in the UK
                   </h1>
                 </div>
 
                 {/* MANDATORY FIRST PUBLIC PARAGRAPH */}
                 <p className="text-lg sm:text-xl font-medium text-slate-800 leading-relaxed">
-                  Study in the UK from Pakistan with a course your ambitions—and your family budget—can support.
+                  Study in the UK with a course that fits your academic ambitions and your family budget.
                 </p>
 
                 {/* Supporting Slogan & Explanation */}
@@ -146,62 +146,55 @@ export function UkDestinationView() {
                 </div>
               </div>
 
-              {/* Right Column (5 cols): Editorial Decision Sheet */}
+              {/* Right Column (5 cols): Destination Visual Hero Card */}
               <div className="lg:col-span-5">
-                <div className="bg-slate-50/90 rounded-2xl border border-slate-200/90 p-6 sm:p-7 shadow-xs">
-                  <div className="flex items-center justify-between pb-4 border-b border-slate-200">
-                    <div className="flex items-center gap-2">
-                      <GraduationCap className="w-5 h-5 text-[#FF4D6D]" />
-                      <span className="text-xs font-bold uppercase tracking-wider text-[#0B1B3A]">
-                        UK Planning Framework
-                      </span>
-                    </div>
-                    <span className="text-[11px] font-semibold text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200">
-                      Standard
-                    </span>
+                <div className="relative rounded-3xl overflow-hidden border border-slate-200/90 shadow-2xl bg-slate-950 group">
+                  <img
+                    src="/destinations/UK.webp"
+                    alt="Study in the UK - British universities and iconic architecture"
+                    className="w-full h-[370px] sm:h-[430px] object-cover transition-transform duration-700 group-hover:scale-105"
+                    loading="eager"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0B1B3A] via-[#0B1B3A]/40 to-black/20" />
+
+                  {/* Floating Top Badge */}
+                  <div className="absolute top-4 left-4 flex items-center gap-2.5 bg-white/95 backdrop-blur-md px-3.5 py-1.5 rounded-full shadow-lg border border-white/40">
+                    <img src="https://flagcdn.com/w40/gb.png" alt="UK flag" className="w-5 h-3.5 object-cover rounded-xs" />
+                    <span className="text-xs font-bold text-[#0B1B3A]">United Kingdom</span>
+                    <span className="text-[11px] font-semibold text-[#FF4D6D] bg-[#FF4D6D]/10 px-2 py-0.5 rounded-full">Top Choice</span>
                   </div>
 
-                  <div className="divide-y divide-slate-200/70 text-sm">
-                    <div className="py-4">
-                      <div className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">
-                        1. Academic Value &amp; Fit
-                      </div>
-                      <p className="font-semibold text-slate-900">
-                        Course modules, teaching structure and professional recognition
-                      </p>
-                      <p className="text-xs text-slate-600 mt-1">
-                        Prioritizing what you will actually learn over brand prestige alone.
+                  {/* Bottom Overlay Info with Modern Structured Badges */}
+                  <div className="absolute bottom-0 inset-x-0 p-6 text-white space-y-3">
+                    <div>
+                      <h3 className="text-xl font-bold tracking-tight text-white">
+                        Study in the UK
+                      </h3>
+                      <p className="text-xs sm:text-sm text-slate-200 mt-1 leading-relaxed">
+                        World-recognised degrees, 1-year master's programmes, and post-study Graduate visa options.
                       </p>
                     </div>
 
-                    <div className="py-4">
-                      <div className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">
-                        2. Family Budget Reality
+                    <div className="pt-1 grid grid-cols-3 gap-2">
+                      <div className="flex flex-col items-start gap-1 bg-white/10 backdrop-blur-md border border-white/15 p-2 rounded-xl">
+                        <div className="w-5 h-5 rounded-md bg-blue-500/20 text-blue-300 flex items-center justify-center">
+                          <GraduationCap className="w-3 h-3" />
+                        </div>
+                        <span className="text-[11px] font-medium text-slate-100">3-Yr Bachelors</span>
                       </div>
-                      <p className="font-semibold text-slate-900">
-                        Tuition, deposit timing and realistic living costs
-                      </p>
-                      <p className="text-xs text-slate-600 mt-1">
-                        Separating upfront deposit requirements from Student visa financial thresholds.
-                      </p>
-                    </div>
-
-                    <div className="py-4">
-                      <div className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">
-                        3. Compliance &amp; CAS Checks
+                      <div className="flex flex-col items-start gap-1 bg-white/10 backdrop-blur-md border border-white/15 p-2 rounded-xl">
+                        <div className="w-5 h-5 rounded-md bg-amber-500/20 text-amber-300 flex items-center justify-center">
+                          <Clock className="w-3 h-3" />
+                        </div>
+                        <span className="text-[11px] font-medium text-slate-100">1-Yr Masters</span>
                       </div>
-                      <p className="font-semibold text-slate-900">
-                        Genuine financial holding periods &amp; institution checks
-                      </p>
-                      <p className="text-xs text-slate-600 mt-1">
-                        Meeting official UKVI requirements with verifiable family or student documentation.
-                      </p>
+                      <div className="flex flex-col items-start gap-1 bg-white/10 backdrop-blur-md border border-white/15 p-2 rounded-xl">
+                        <div className="w-5 h-5 rounded-md bg-emerald-500/20 text-emerald-300 flex items-center justify-center">
+                          <Briefcase className="w-3 h-3" />
+                        </div>
+                        <span className="text-[11px] font-medium text-slate-100">Graduate Visa</span>
+                      </div>
                     </div>
-                  </div>
-
-                  <div className="pt-4 mt-2 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
-                    <span>Evidence-based guidance</span>
-                    <span className="font-medium text-[#0B1B3A]">ProConsulting Education</span>
                   </div>
                 </div>
               </div>
@@ -355,86 +348,7 @@ export function UkDestinationView() {
           </div>
         </section>
 
-        {/* ========================================================================= */}
-        {/* SECTION 04: BUDGET (Subtle surface; anchor #budget) */}
-        {/* ========================================================================= */}
-        <section id="budget" className="scroll-mt-36 bg-slate-50/70 py-16 sm:py-20 lg:py-24 border-b border-slate-200/80">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14">
-              {/* Cost Explanation Left (5 cols) */}
-              <div className="lg:col-span-5 space-y-6">
-                <div>
-                  <span className="text-xs font-bold uppercase tracking-wider text-[#FF4D6D] bg-[#FF4D6D]/10 px-2.5 py-1 rounded-md mb-3 inline-block">
-                    Financial Planning
-                  </span>
-                  <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#0B1B3A] tracking-tight">
-                    Turn a shortlist into a family budget
-                  </h2>
-                </div>
 
-                <div className="space-y-4 text-slate-700 text-sm sm:text-base leading-relaxed">
-                  <p>
-                    Start with the university's published international tuition for your exact course and intake. Then check deposits, payment schedules and refund conditions directly with the institution.
-                  </p>
-                  <p>
-                    Add accommodation, food, local travel, study materials, flights, visa-related charges and the immigration health surcharge. Include an emergency reserve and consider how changes between pounds and Pakistani rupees could affect affordability.
-                  </p>
-                  <p>
-                    London and other UK locations can mean different living costs. The visa maintenance requirement also distinguishes London from elsewhere. That requirement is an evidence threshold, not a personalised estimate of everything you will spend.
-                  </p>
-                  <p className="font-semibold text-slate-900">
-                    Separate the total cost from the timing of payments. Money needed for a deposit may be due before funds are needed for a visa application. Do not count the same money twice.
-                  </p>
-                </div>
-
-                {/* Worksheet Criteria Checklist */}
-                <div className="p-5 rounded-xl bg-white border border-slate-200/90 shadow-2xs space-y-3">
-                  <h3 className="font-bold text-[#0B1B3A] text-sm sm:text-base">
-                    Your UK budget worksheet
-                  </h3>
-                  <p className="text-xs text-slate-600">
-                    For each shortlisted course, record:
-                  </p>
-                  <ul className="space-y-2 text-xs text-slate-700">
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-[#FF4D6D] shrink-0 mt-0.5" />
-                      <span>Course, institution, location and intended intake.</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-[#FF4D6D] shrink-0 mt-0.5" />
-                      <span>Tuition, deposit, payment dates and refund conditions.</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-[#FF4D6D] shrink-0 mt-0.5" />
-                      <span>Any scholarship confirmed in writing, including its conditions.</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-[#FF4D6D] shrink-0 mt-0.5" />
-                      <span>Estimated living costs, travel and visa-related spending.</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-[#FF4D6D] shrink-0 mt-0.5" />
-                      <span>Funds available now, who controls them and any remaining gap.</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-[#FF4D6D] shrink-0 mt-0.5" />
-                      <span>The source and date checked for every figure.</span>
-                    </li>
-                  </ul>
-
-                  <p className="text-xs text-slate-800 font-medium pt-2 border-t border-slate-100">
-                    Keep uncertain funding separate from confirmed money. If the plan only works with a scholarship you have not secured, treat that as a funding gap—not an affordable offer.
-                  </p>
-                </div>
-              </div>
-
-              {/* Functional Interactive Worksheet Right (7 cols) */}
-              <div className="lg:col-span-7">
-                <UkBudgetWorksheet />
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* ========================================================================= */}
         {/* SECTION 05: OFFERS (White; anchor #offers) */}
@@ -986,9 +900,9 @@ export function UkDestinationView() {
         {/* SECTION 13: ASSESSMENT & CONTACT (Brand Navy; anchor #assessment) */}
         {/* ========================================================================= */}
         <section id="assessment" className="scroll-mt-36 bg-[#0B1B3A] text-white py-16 sm:py-20 lg:py-24 border-t border-slate-800">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
             <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-[#FF4D6D] bg-[#FF4D6D]/15 px-2.5 py-1 rounded-md mb-3 inline-block">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#FF4D6D] bg-[#FF4D6D]/15 px-3 py-1 rounded-full mb-3 inline-block">
                 Start Your Evaluation
               </span>
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight">
@@ -999,84 +913,17 @@ export function UkDestinationView() {
               </p>
             </div>
 
-            <div>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
               <Link
                 to={UK_SEO.ctaHref}
-                className="inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl text-base font-bold text-white bg-[#FF4D6D] hover:bg-[#e03b5b] shadow-md transition-all"
+                className="inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl text-base font-bold text-white bg-[#FF4D6D] hover:bg-[#e03b5b] shadow-md transition-all hover:scale-[1.01]"
               >
                 <span>{UK_SEO.ctaText}</span>
                 <ArrowRight className="w-5 h-5" />
               </Link>
-            </div>
-
-            {/* Assessment Specification Panel */}
-            <div className="p-7 sm:p-9 rounded-2xl bg-slate-900/80 border border-slate-700/80 shadow-2xs space-y-6 text-sm text-slate-300">
-              <div className="border-b border-slate-700 pb-4">
-                <h3 className="text-xl font-bold text-white">
-                  Your UK assessment
-                </h3>
-                <p className="text-xs text-slate-400 mt-1">
-                  Required information mapped directly to our UK study assessment consultation:
-                </p>
-              </div>
-
-              <div className="space-y-4">
-                <div className="p-3.5 rounded-lg bg-slate-800/80 border border-slate-700">
-                  <span className="font-semibold text-white block mb-1">Personal &amp; Contact:</span>
-                  <span className="text-slate-300">Full name • Email address • Mobile / WhatsApp number • City of residence</span>
-                </div>
-
-                <div className="p-3.5 rounded-lg bg-slate-800/80 border border-slate-700">
-                  <span className="font-semibold text-white block mb-1">Enquirer Identity:</span>
-                  <span className="text-slate-300">I am enquiring as: Student / Parent or guardian</span>
-                </div>
-
-                <div className="p-3.5 rounded-lg bg-slate-800/80 border border-slate-700">
-                  <span className="font-semibold text-white block mb-1">Academic Background &amp; Intent:</span>
-                  <span className="text-slate-300">Highest qualification and completion status • Intended subject • Intended study level • Preferred intake, if known</span>
-                </div>
-
-                <div className="p-3.5 rounded-lg bg-slate-800/80 border border-slate-700">
-                  <span className="font-semibold text-white block mb-1">Funding &amp; English Evidence:</span>
-                  <span className="text-slate-300">English-language evidence, if available • Estimated total study budget and currency • Funding source</span>
-                </div>
-
-                <div className="p-3.5 rounded-lg bg-slate-800/80 border border-slate-700">
-                  <span className="font-semibold text-white block mb-1">Background Details:</span>
-                  <span className="text-slate-300">Existing offer or previous refusal to discuss, if relevant • Preferred contact method • Your main question</span>
-                </div>
-
-                <div className="p-3.5 rounded-lg bg-slate-800/80 border border-slate-700">
-                  <span className="font-semibold text-white block mb-1">Target Destination:</span>
-                  <span className="text-[#FF4D6D] font-bold">Destination: United Kingdom</span>
-                </div>
-              </div>
-
-              <div className="p-4 rounded-xl bg-amber-950/40 border border-amber-600/60 text-xs text-amber-200">
-                <strong>Document security:</strong> Please do not upload passports, bank statements or other sensitive documents at this initial stage.
-              </div>
-
-              <p className="text-xs text-slate-400 leading-relaxed">
-                By submitting, you ask ProConsulting to contact you about this assessment. Read our{" "}
-                <Link to="/education/privacy-policy" className="text-[#FF4D6D] underline">
-                  Privacy Policy
-                </Link>{" "}
-                to understand how your information is handled. Marketing choices are separate and optional.
-              </p>
-
-              <div className="pt-2">
-                <Link
-                  to={UK_SEO.ctaHref}
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg text-sm font-bold text-white bg-[#FF4D6D] hover:bg-[#e03b5b] transition-colors"
-                >
-                  <span>Submit: Get free UK assessment</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-              </div>
-
-              <p className="text-xs text-slate-400 italic">
-                After submission, we will use your details to contact you about your enquiry. This is not an admission, scholarship or visa application.
-              </p>
+              <span className="text-xs sm:text-sm text-slate-400">
+                Initial profile consultation is free. Direct, realistic guidance with no hidden conditions.
+              </span>
             </div>
 
             {/* Speak to ProConsulting */}
@@ -1087,7 +934,7 @@ export function UkDestinationView() {
 
               <div className="flex items-start gap-3 text-sm text-slate-700">
                 <MapPin className="w-5 h-5 text-[#FF4D6D] shrink-0 mt-0.5" />
-                <span>Vista Building Second Floor Office 203–204 I-8 Markaz Islamabad</span>
+                <span>Vista Building Second Floor Office 203-204 I-8 Markaz Islamabad</span>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
@@ -1119,39 +966,7 @@ export function UkDestinationView() {
               </p>
             </div>
 
-            {/* Official Guidance Source Registry */}
-            <div className="pt-8 border-t border-slate-200">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                  Official UK Guidance Sources
-                </h4>
-                <span className="text-xs text-slate-500">
-                  Guidance last reviewed: {UK_SEO.lastReviewedDate}
-                </span>
-              </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                {UK_OFFICIAL_SOURCES.map((src) => (
-                  <a
-                    key={src.id}
-                    href={src.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-3 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors flex items-start justify-between gap-2 group"
-                  >
-                    <div>
-                      <span className="font-semibold text-slate-800 group-hover:text-[#FF4D6D] transition-colors block">
-                        {src.name}
-                      </span>
-                      <span className="text-slate-500 text-[11px] mt-0.5 line-clamp-1">
-                        {src.description}
-                      </span>
-                    </div>
-                    <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#FF4D6D] shrink-0 mt-0.5" />
-                  </a>
-                ))}
-              </div>
-            </div>
           </div>
         </section>
       </main>

@@ -13,19 +13,18 @@ import {
   ShieldCheck,
   BookOpen,
   FileText,
-  Layers,
   GraduationCap,
   Scale,
   Landmark,
+  Award,
+  Globe,
 } from "lucide-react";
 import { Navbar } from "~/education/components/ui/Navbar";
 import { Footer } from "~/education/components/ui/footer";
 import {
   ITALY_FAQS,
-  ITALY_OFFICIAL_SOURCES,
   ITALY_SEO,
 } from "~/education/lib/italyDestinationData";
-import { ItalyBudgetTool } from "./ItalyBudgetTool";
 
 export function ItalyDestinationView() {
   const [activeAnchor, setActiveAnchor] = useState<string>("overview");
@@ -39,7 +38,6 @@ export function ItalyDestinationView() {
         "decisions",
         "scholarships",
         "documents",
-        "budget",
         "process",
         "faqs",
       ];
@@ -125,16 +123,7 @@ export function ItalyDestinationView() {
               >
                 Documents
               </a>
-              <a
-                href="#budget"
-                className={`hover:text-[#FF4D6D] transition-colors ${
-                  activeAnchor === "budget"
-                    ? "text-[#FF4D6D] font-semibold border-b-2 border-[#FF4D6D] py-4"
-                    : "py-4"
-                }`}
-              >
-                Budgeting
-              </a>
+
               <a
                 href="#process"
                 className={`hover:text-[#FF4D6D] transition-colors ${
@@ -194,44 +183,46 @@ export function ItalyDestinationView() {
             <div className="lg:col-span-7 space-y-6">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold uppercase tracking-wider">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#FF4D6D]" />
-                Study in Italy · Guidance for Pakistani students and parents
+                Study in Italy · Academic Guidance &amp; Admissions
               </div>
 
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#0B1B3A] tracking-tight leading-[1.12]">
-                Study in Italy from Pakistan—with a plan beyond the scholarship
+                Study in Italy
               </h1>
 
               <div className="space-y-4 text-base sm:text-lg text-slate-700 leading-relaxed font-normal">
                 <p>
-                  Study in Italy from Pakistan with a clear view of your course
-                  options, family budget and application responsibilities.
-                  ProConsulting helps you connect university requirements,
-                  regional scholarship rules, Universitaly pre-enrolment and
-                  visa preparation—without treating any one approval as a
-                  promise of the next.
+                  Study in Italy with a clear view of your course options, family budget and application responsibilities. ProConsulting helps you connect university requirements, regional scholarship rules, Universitaly pre-enrolment and visa preparation, without treating any one approval as a promise of the next.
                 </p>
                 <p className="text-slate-600 text-sm sm:text-base">
-                  Start with your academic profile and the funds your family can
-                  actually access. Then decide whether Italy makes sense for you.
+                  Start with your academic profile and the funds your family can actually access. Then decide whether Italy makes sense for you.
                 </p>
               </div>
 
-              {/* 4 Value Bullets */}
+              {/* 4 Value Bullets with Modern Refined Styling */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 pb-1">
                 <div className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-800">
-                  <CheckCircle2 className="w-4 h-4 text-[#FF4D6D] shrink-0 mt-0.5" />
+                  <div className="w-5 h-5 rounded-md bg-[#FF4D6D]/10 text-[#FF4D6D] flex items-center justify-center shrink-0 mt-0.5">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                  </div>
                   <span>Programme fit before application volume</span>
                 </div>
                 <div className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-800">
-                  <CheckCircle2 className="w-4 h-4 text-[#FF4D6D] shrink-0 mt-0.5" />
-                  <span>Scholarship eligibility checked against the relevant call</span>
+                  <div className="w-5 h-5 rounded-md bg-[#FF4D6D]/10 text-[#FF4D6D] flex items-center justify-center shrink-0 mt-0.5">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                  </div>
+                  <span>Scholarship eligibility checked against the call</span>
                 </div>
                 <div className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-800">
-                  <CheckCircle2 className="w-4 h-4 text-[#FF4D6D] shrink-0 mt-0.5" />
-                  <span>Document requirements separated by receiving authority</span>
+                  <div className="w-5 h-5 rounded-md bg-[#FF4D6D]/10 text-[#FF4D6D] flex items-center justify-center shrink-0 mt-0.5">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                  </div>
+                  <span>Document requirements separated by authority</span>
                 </div>
                 <div className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-800">
-                  <CheckCircle2 className="w-4 h-4 text-[#FF4D6D] shrink-0 mt-0.5" />
+                  <div className="w-5 h-5 rounded-md bg-[#FF4D6D]/10 text-[#FF4D6D] flex items-center justify-center shrink-0 mt-0.5">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                  </div>
                   <span>Costs considered before a funding decision</span>
                 </div>
               </div>
@@ -263,46 +254,54 @@ export function ItalyDestinationView() {
               </div>
             </div>
 
-            {/* Right 5 cols: Licensed real campus photography & route visual */}
-            <div className="lg:col-span-5 space-y-4">
-              <div className="relative rounded-2xl overflow-hidden border border-slate-200/90 shadow-md bg-slate-100">
+            {/* Right Column (5 cols): Destination Visual Hero Card */}
+            <div className="lg:col-span-5">
+              <div className="relative rounded-3xl overflow-hidden border border-slate-200/90 shadow-2xl bg-slate-950 group">
                 <img
                   src="/destinations/Italy.webp"
-                  alt="Historic Italian university campus architecture and courtyard in Italy"
-                  className="w-full h-64 sm:h-72 object-cover"
+                  alt="Study in Italy - Historic universities and European heritage"
+                  className="w-full h-[370px] sm:h-[430px] object-cover transition-transform duration-700 group-hover:scale-105"
                   loading="eager"
-                  width={600}
-                  height={400}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0B1B3A]/80 via-transparent to-transparent flex items-end p-5">
-                  <p className="text-xs text-white/95 font-medium">
-                    Italian Higher Education: Academic rigor, historic faculties, and regional student support.
-                  </p>
-                </div>
-              </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0B1B3A] via-[#0B1B3A]/40 to-black/20" />
 
-              {/* Four-step summary card */}
-              <div className="p-5 rounded-2xl border border-slate-200 bg-slate-50/70 space-y-3 text-xs">
-                <div className="font-bold text-[#0B1B3A] text-sm uppercase tracking-wider flex items-center gap-2">
-                  <Layers className="w-4 h-4 text-[#FF4D6D]" />
-                  <span>The Four Independent Decisions</span>
+                {/* Floating Top Badge */}
+                <div className="absolute top-4 left-4 flex items-center gap-2.5 bg-white/95 backdrop-blur-md px-3.5 py-1.5 rounded-full shadow-lg border border-white/40">
+                  <img src="https://flagcdn.com/w40/it.png" alt="Italy flag" className="w-5 h-3.5 object-cover rounded-xs" />
+                  <span className="text-xs font-bold text-[#0B1B3A]">Italy</span>
+                  <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">Regional Scholarships</span>
                 </div>
-                <div className="space-y-2 text-slate-700">
-                  <div className="flex items-center justify-between pb-1.5 border-b border-slate-200/70">
-                    <span className="font-semibold">1. University Admission</span>
-                    <span className="text-[11px] text-slate-500">Academic Board</span>
+
+                {/* Bottom Overlay Info with Modern Structured Badges */}
+                <div className="absolute bottom-0 inset-x-0 p-6 text-white space-y-3">
+                  <div>
+                    <h3 className="text-xl font-bold tracking-tight text-white">
+                      Study in Italy
+                    </h3>
+                    <p className="text-xs sm:text-sm text-slate-200 mt-1 leading-relaxed">
+                      Historic public faculties, growing English-taught degrees, low tuition fees, and regional DSU scholarship opportunities.
+                    </p>
                   </div>
-                  <div className="flex items-center justify-between pb-1.5 border-b border-slate-200/70">
-                    <span className="font-semibold">2. Regional Scholarship</span>
-                    <span className="text-[11px] text-slate-500">Regional Body (DSU / ER.GO)</span>
-                  </div>
-                  <div className="flex items-center justify-between pb-1.5 border-b border-slate-200/70">
-                    <span className="font-semibold">3. Universitaly Pre-enrolment</span>
-                    <span className="text-[11px] text-slate-500">Institution Validation</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold">4. Study Visa Application</span>
-                    <span className="text-[11px] text-slate-500">Diplomatic / Consular Mission</span>
+
+                  <div className="pt-1 grid grid-cols-3 gap-2">
+                    <div className="flex flex-col items-start gap-1 bg-white/10 backdrop-blur-md border border-white/15 p-2 rounded-xl">
+                      <div className="w-5 h-5 rounded-md bg-emerald-500/20 text-emerald-300 flex items-center justify-center">
+                        <Award className="w-3 h-3" />
+                      </div>
+                      <span className="text-[11px] font-medium text-slate-100">DSU / ER.GO</span>
+                    </div>
+                    <div className="flex flex-col items-start gap-1 bg-white/10 backdrop-blur-md border border-white/15 p-2 rounded-xl">
+                      <div className="w-5 h-5 rounded-md bg-blue-500/20 text-blue-300 flex items-center justify-center">
+                        <Building2 className="w-3 h-3" />
+                      </div>
+                      <span className="text-[11px] font-medium text-slate-100">Universitaly</span>
+                    </div>
+                    <div className="flex flex-col items-start gap-1 bg-white/10 backdrop-blur-md border border-white/15 p-2 rounded-xl">
+                      <div className="w-5 h-5 rounded-md bg-amber-500/20 text-amber-300 flex items-center justify-center">
+                        <Globe className="w-3 h-3" />
+                      </div>
+                      <span className="text-[11px] font-medium text-slate-100">Schengen Area</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -572,7 +571,7 @@ export function ItalyDestinationView() {
         </div>
       </section>
 
-      {/* 05 · PREPARE TWO DOCUMENT FILES—NOT ONE GENERIC CHECKLIST */}
+      {/* 05 · PREPARE TWO DOCUMENT FILES INSTEAD OF ONE GENERIC CHECKLIST */}
       <section
         id="documents"
         className="py-16 md:py-24 bg-[#0B1B3A] text-white border-y border-slate-800 scroll-mt-16"
@@ -586,7 +585,7 @@ export function ItalyDestinationView() {
               05
             </span>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight">
-              Prepare two document files—not one generic checklist
+              Prepare two document files instead of one generic checklist
             </h2>
             <p className="text-slate-300 mt-3 text-base sm:text-lg">
               University admissions evaluate academic merit; regional scholarship bodies evaluate household finances.
@@ -680,103 +679,14 @@ export function ItalyDestinationView() {
               paying for it.
             </p>
             <p className="font-semibold text-white">
-              The practical goal is a file that answers the right questions—not a
+              The practical goal is a file that answers the right questions, rather than a
               folder full of expensive documents nobody requested.
             </p>
           </div>
         </div>
       </section>
 
-      {/* 06 · BUDGET BEFORE THE SCHOLARSHIP RESULT */}
-      <section
-        id="budget"
-        className="py-16 md:py-24 bg-slate-50/60 border-b border-slate-200/80 scroll-mt-16"
-      >
-        <div className="max-w-[1200px] mx-auto px-5 sm:px-6">
-          <div className="max-w-[760px] mb-12">
-            <span
-              aria-hidden="true"
-              className="block text-4xl sm:text-5xl font-black text-slate-200 mb-1"
-            >
-              06
-            </span>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#0B1B3A] tracking-tight">
-              Budget before the scholarship result
-            </h2>
-            <p className="text-slate-600 mt-3 text-base sm:text-lg">
-              A sensible Italy plan has two views: your costs without an award,
-              and your revised costs if a specific benefit is confirmed. Keep
-              uncertain funding out of money you need immediately.
-            </p>
-          </div>
 
-          {/* Two Planning Scenarios Comparison */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-3">
-              <span className="text-xs font-bold uppercase tracking-wider text-[#FF4D6D] block">
-                Scenario A · Planning Baseline
-              </span>
-              <h3 className="text-xl font-bold text-[#0B1B3A]">
-                Costs Without an Award
-              </h3>
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                The essential baseline your family must be ready to fund independently:
-              </p>
-              <ul className="space-y-1.5 text-xs text-slate-700 pt-2">
-                <li>• University regional tuition fee or regional tax</li>
-                <li>• Application and document evaluation charges (if applicable)</li>
-                <li>• Document translations, attestations and legalisations</li>
-                <li>• Visa fees, medical insurance, flights and arrival funds</li>
-                <li>• 2–3 months of initial accommodation deposits and living costs</li>
-              </ul>
-            </div>
-
-            <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-3">
-              <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 block">
-                Scenario B · Conditional Adjustments
-              </span>
-              <h3 className="text-xl font-bold text-[#0B1B3A]">
-                Costs If Benefit Is Confirmed
-              </h3>
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                How finances adjust only after published rankings and award activation:
-              </p>
-              <ul className="space-y-1.5 text-xs text-slate-700 pt-2">
-                <li>• Tuition reduction or full regional fee waiver</li>
-                <li>• University canteen meal card or allowance</li>
-                <li>• Subsidised student hall or housing rent stipend</li>
-                <li>• Cash scholarship paid in staggered termly instalments</li>
-                <li>• Note: Cash instalments require credit milestones later in the year</li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="p-6 rounded-2xl bg-white border border-slate-200 space-y-3 text-xs sm:text-sm text-slate-700">
-            <p>
-              Allow for university charges, applications where applicable, document
-              preparation, language tests where required, visa-related expenses,
-              travel, accommodation deposits and initial living costs. Check whether
-              any payment is refundable before committing.
-            </p>
-            <p>
-              Scholarship application dates, rankings, benefit activation and cash
-              instalments are different events. Some payments depend on later academic
-              progress or other conditions. A result may arrive after expenses have
-              already fallen due.
-            </p>
-            <p className="font-semibold text-[#0B1B3A]">
-              Parents should be able to see which funds are accessible, when payments
-              are due and what happens if funding is delayed or not awarded. Do not
-              rely on speculative part-time earnings to close an essential funding gap.
-            </p>
-          </div>
-
-          {/* Interactive Italy Budget & Regional Scholarship Tool */}
-          <div className="mt-10">
-            <ItalyBudgetTool />
-          </div>
-        </div>
-      </section>
 
       {/* 07 · ENGLISH-TAUGHT DOES NOT MEAN EVIDENCE-FREE */}
       <section className="py-16 md:py-24 bg-white border-b border-slate-200/80">
@@ -1005,7 +915,7 @@ export function ItalyDestinationView() {
                   Next, discuss whether your academic profile and accessible funds
                   support a credible Italy route. If documents, language preparation or
                   the budget need attention first, that should be part of the
-                  conversation—not hidden until after you commit.
+                  conversation, not hidden until after you commit.
                 </p>
               </div>
             </div>
@@ -1184,7 +1094,7 @@ export function ItalyDestinationView() {
 
             <p className="text-base sm:text-lg text-slate-300 leading-relaxed">
               Bring your study goals, qualifications and honest budget. Let’s
-              identify the questions that matter for your Italy plan—and the
+              identify the questions that matter for your Italy plan, and the
               costs or requirements you should resolve before applying.
             </p>
 
@@ -1199,9 +1109,7 @@ export function ItalyDestinationView() {
             </div>
 
             <p className="text-xs sm:text-sm text-slate-400">
-              Share basic details only at this stage. Do not send passport scans,
-              bank statements or family financial documents through an initial
-              enquiry.
+              Initial profile evaluations are complimentary. We discuss your academic qualifications, regional scholarship calls and application requirements to give you a clear roadmap.
             </p>
 
             {/* Mandatory Protected Honesty Sentence (2nd occurrence) */}
@@ -1226,7 +1134,7 @@ export function ItalyDestinationView() {
               Contact ProConsulting
             </h2>
             <p className="text-sm text-slate-600 mt-1">
-              Vista Building, Second Floor, Office 203–204, I-8 Markaz, Islamabad.
+              Vista Building, Second Floor, Office 203-204, I-8 Markaz, Islamabad.
             </p>
           </div>
 
@@ -1254,36 +1162,7 @@ export function ItalyDestinationView() {
             </a>
           </div>
 
-          {/* Official Information Utility Area */}
-          <div className="pt-10 border-t border-slate-200">
-            <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-2">
-              Official Italy Guidance Sources
-            </h3>
-            <p className="text-xs text-slate-500 mb-6 max-w-2xl">
-              Verified public guidance published by Italian higher education authorities and diplomatic missions. External links are informational only; they do not imply official partnership or endorsement.
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {ITALY_OFFICIAL_SOURCES.map((source) => (
-                <a
-                  key={source.id}
-                  href={source.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-4 rounded-xl border border-slate-200 bg-white hover:border-[#FF4D6D]/40 transition-colors block text-left group"
-                >
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-xs font-bold text-[#0B1B3A] group-hover:text-[#FF4D6D] transition-colors">
-                      {source.name}
-                    </span>
-                    <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#FF4D6D] transition-colors shrink-0" />
-                  </div>
-                  <p className="text-xs text-slate-500 leading-relaxed">
-                    {source.description}
-                  </p>
-                </a>
-              ))}
-            </div>
-          </div>
+
         </div>
       </section>
 

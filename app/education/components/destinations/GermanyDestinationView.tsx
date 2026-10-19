@@ -14,13 +14,13 @@ import {
   Phone,
   ShieldCheck,
   BookOpen,
+  Briefcase,
+  Award,
 } from "lucide-react";
 import { Navbar } from "~/education/components/ui/Navbar";
 import { Footer } from "~/education/components/ui/footer";
-import { GermanyBudgetTool } from "./GermanyBudgetTool";
 import {
   GERMANY_FAQS,
-  GERMANY_OFFICIAL_SOURCES,
   GERMANY_SEO,
 } from "~/education/lib/germanyDestinationData";
 
@@ -30,7 +30,7 @@ export function GermanyDestinationView() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const anchors = ["routes", "bachelor", "master", "fees", "applications", "budget", "visa", "faq"];
+      const anchors = ["routes", "bachelor", "master", "fees", "applications", "visa", "faq"];
       const headerOffset = 140;
 
       for (let i = anchors.length - 1; i >= 0; i--) {
@@ -66,7 +66,6 @@ export function GermanyDestinationView() {
     { id: "master", label: "Master's" },
     { id: "fees", label: "Fees" },
     { id: "applications", label: "Applications" },
-    { id: "budget", label: "Budget" },
     { id: "visa", label: "Visa" },
     { id: "faq", label: "FAQs" },
   ];
@@ -102,17 +101,17 @@ export function GermanyDestinationView() {
               {/* Left Column (7 cols): Headline, Deck, CTA */}
               <div className="lg:col-span-7 space-y-6">
                 <div>
-                  <span className="inline-block text-xs sm:text-sm font-semibold tracking-wide text-slate-600 bg-slate-100 px-3.5 py-1.5 rounded-full mb-4">
-                    Study options for Pakistani students
+                  <span className="inline-block text-xs sm:text-sm font-semibold tracking-wide text-slate-700 bg-slate-100 px-3.5 py-1.5 rounded-full mb-4">
+                    Study in Germany · University Advisory &amp; Degree Planning
                   </span>
                   <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[52px] font-extrabold text-[#0B1B3A] tracking-tight leading-[1.12]">
-                    Study in Germany from Pakistan
+                    Study in Germany
                   </h1>
                 </div>
 
                 {/* MANDATORY FIRST PUBLIC PARAGRAPH */}
                 <p className="text-lg sm:text-xl font-medium text-slate-800 leading-relaxed">
-                  Study in Germany from Pakistan with a degree that fits your qualifications, your subject and your family's budget—not just a country with a reputation for low tuition. ProConsulting helps you understand your Germany study route before you commit to applications, deposits or travel plans.
+                  Study in Germany with a degree that fits your qualifications, your subject and your family budget, rather than choosing solely for low tuition. ProConsulting helps you understand your Germany study route before you commit to applications, deposits or travel plans.
                 </p>
 
                 {/* Supporting Paragraph */}
@@ -136,74 +135,55 @@ export function GermanyDestinationView() {
                 </div>
               </div>
 
-              {/* Right Column (5 cols): Quiet Typographic Route Diagram */}
+              {/* Right Column (5 cols): Destination Visual Hero Card */}
               <div className="lg:col-span-5">
-                <div className="bg-slate-50/90 rounded-2xl border border-slate-200/90 p-6 sm:p-7 shadow-xs">
-                  <div className="flex items-center justify-between pb-4 border-b border-slate-200">
-                    <div className="flex items-center gap-2">
-                      <GraduationCap className="w-5 h-5 text-[#FF4D6D]" />
-                      <span className="text-xs font-bold uppercase tracking-wider text-[#0B1B3A]">
-                        Germany Route Architecture
-                      </span>
-                    </div>
-                    <span className="text-[11px] font-semibold text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200">
-                      Orientation
-                    </span>
+                <div className="relative rounded-3xl overflow-hidden border border-slate-200/90 shadow-2xl bg-slate-950 group">
+                  <img
+                    src="/destinations/Germany.webp"
+                    alt="Study in Germany - Leading public research universities and historic campuses"
+                    className="w-full h-[370px] sm:h-[430px] object-cover transition-transform duration-700 group-hover:scale-105"
+                    loading="eager"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0B1B3A] via-[#0B1B3A]/40 to-black/20" />
+
+                  {/* Floating Top Badge */}
+                  <div className="absolute top-4 left-4 flex items-center gap-2.5 bg-white/95 backdrop-blur-md px-3.5 py-1.5 rounded-full shadow-lg border border-white/40">
+                    <img src="https://flagcdn.com/w40/de.png" alt="Germany flag" className="w-5 h-3.5 object-cover rounded-xs" />
+                    <span className="text-xs font-bold text-[#0B1B3A]">Germany</span>
+                    <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">Tuition-Free Options</span>
                   </div>
 
-                  <div className="divide-y divide-slate-200/70 text-sm">
-                    <div className="py-4">
-                      <div className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">
-                        1. Qualification Check
-                      </div>
-                      <p className="font-semibold text-slate-900">
-                        HZB Evaluation &amp; Subject Eligibility
-                      </p>
-                      <p className="text-xs text-slate-600 mt-1">
-                        Direct admission, subject-restricted access, or preparatory Studienkolleg pathway.
+                  {/* Bottom Overlay Info with Modern Structured Badges */}
+                  <div className="absolute bottom-0 inset-x-0 p-6 text-white space-y-3">
+                    <div>
+                      <h3 className="text-xl font-bold tracking-tight text-white">
+                        Study in Germany
+                      </h3>
+                      <p className="text-xs sm:text-sm text-slate-200 mt-1 leading-relaxed">
+                        World-class engineering, natural sciences, tuition-free public universities, and 18-month job search visas.
                       </p>
                     </div>
 
-                    <div className="py-4">
-                      <div className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">
-                        2. Programme Prerequisite Match
+                    <div className="pt-1 grid grid-cols-3 gap-2">
+                      <div className="flex flex-col items-start gap-1 bg-white/10 backdrop-blur-md border border-white/15 p-2 rounded-xl">
+                        <div className="w-5 h-5 rounded-md bg-emerald-500/20 text-emerald-300 flex items-center justify-center">
+                          <Building2 className="w-3 h-3" />
+                        </div>
+                        <span className="text-[11px] font-medium text-slate-100">Public Unis</span>
                       </div>
-                      <p className="font-semibold text-slate-900">
-                        Consecutive Course &amp; Module Fit
-                      </p>
-                      <p className="text-xs text-slate-600 mt-1">
-                        Transcript-level module alignment and verified language evidence (IELTS / German).
-                      </p>
-                    </div>
-
-                    <div className="py-4">
-                      <div className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">
-                        3. Budget &amp; Financing Evidence
+                      <div className="flex flex-col items-start gap-1 bg-white/10 backdrop-blur-md border border-white/15 p-2 rounded-xl">
+                        <div className="w-5 h-5 rounded-md bg-blue-500/20 text-blue-300 flex items-center justify-center">
+                          <Award className="w-3 h-3" />
+                        </div>
+                        <span className="text-[11px] font-medium text-slate-100">English Tracks</span>
                       </div>
-                      <p className="font-semibold text-slate-900">
-                        Blocked Account or Official Sponsorship
-                      </p>
-                      <p className="text-xs text-slate-600 mt-1">
-                        Separating semester contributions from living-cost proof accepted by the German mission.
-                      </p>
-                    </div>
-
-                    <div className="py-4">
-                      <div className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">
-                        4. Application &amp; Visa Submission
+                      <div className="flex flex-col items-start gap-1 bg-white/10 backdrop-blur-md border border-white/15 p-2 rounded-xl">
+                        <div className="w-5 h-5 rounded-md bg-amber-500/20 text-amber-300 flex items-center justify-center">
+                          <Briefcase className="w-3 h-3" />
+                        </div>
+                        <span className="text-[11px] font-medium text-slate-100">18-Mo Stay</span>
                       </div>
-                      <p className="font-semibold text-slate-900">
-                        Direct / uni-assist / VPD to Digital Visa
-                      </p>
-                      <p className="text-xs text-slate-600 mt-1">
-                        Correct portal routing, HEC attested credentials, and mission jurisdiction.
-                      </p>
                     </div>
-                  </div>
-
-                  <div className="pt-4 mt-2 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
-                    <span>Evidence-based advisory</span>
-                    <span className="font-medium text-[#0B1B3A]">ProConsulting Education</span>
                   </div>
                 </div>
               </div>
@@ -272,7 +252,7 @@ export function GermanyDestinationView() {
                   A successful plan connects four things: academic eligibility, a suitable programme, an affordable budget and a credible visa application. Missing one can mean spending money on a route that does not fit.
                 </p>
                 <p className="font-semibold text-slate-900">
-                  If you want to study in Germany from Pakistan, compare requirements before comparing university names. An attractive course title does not tell you whether your previous subjects meet its entry rules.
+                  If you want to study in Germany, compare requirements before comparing university names. An attractive course title does not tell you whether your previous subjects meet its entry rules.
                 </p>
               </div>
             </div>
@@ -496,7 +476,7 @@ export function GermanyDestinationView() {
 
               <div className="space-y-4">
                 <p>
-                  A degree title alone cannot establish eligibility. Neither can a single advertised CGPA threshold across Germany. Changing fields may be possible for certain programmes, but it must be justified by that programme's rules—not by a general promise from a consultant.
+                  A degree title alone cannot establish eligibility. Neither can a single advertised CGPA threshold across Germany. Changing fields may be possible for certain programmes, but it must be justified by that programme's rules, not by a general promise from a consultant.
                 </p>
                 <p className="font-semibold text-slate-900">
                   If your degree is unfinished, check whether the university accepts provisional applications and what must be completed before enrolment. Do not assume every institution accepts final-semester applicants.
@@ -637,77 +617,7 @@ export function GermanyDestinationView() {
           </div>
         </section>
 
-        {/* ========================================================================= */}
-        {/* 8. BUDGET (Subtle surface; anchor #budget) */}
-        {/* ========================================================================= */}
-        <section id="budget" className="scroll-mt-36 bg-slate-50/70 py-16 sm:py-20 lg:py-24 border-b border-slate-200/80">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14">
-              {/* Left Column (5 cols): Narrative + Checklist Ledger */}
-              <div className="lg:col-span-5 space-y-6">
-                <div>
-                  <span className="text-xs font-bold uppercase tracking-wider text-[#FF4D6D] bg-[#FF4D6D]/10 px-2.5 py-1 rounded-md mb-3 inline-block">
-                    Financial Planning
-                  </span>
-                  <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#0B1B3A] tracking-tight">
-                    Build a budget your family can understand
-                  </h2>
-                </div>
 
-                <div className="space-y-4 text-slate-700 text-sm sm:text-base leading-relaxed">
-                  <p>
-                    Separate money you spend from funds you must demonstrate. Visa funding evidence is not a university tuition fee and is not a payment to ProConsulting. A blocked account, where used, holds funds for living expenses under withdrawal conditions; provider charges are separate.
-                  </p>
-                  <p>
-                    The German mission in Pakistan publishes accepted financing routes and current requirements. These include a blocked account, a qualifying declaration of commitment and qualifying official scholarship evidence. Confirm which evidence is accepted for your circumstances before transferring money.
-                  </p>
-                </div>
-
-                {/* Family Budget Checklist Ledger */}
-                <div className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs space-y-3">
-                  <h3 className="font-bold text-[#0B1B3A] text-sm sm:text-base">
-                    Use this budget checklist with your family:
-                  </h3>
-                  <ul className="space-y-2.5 text-xs text-slate-700">
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-[#FF4D6D] shrink-0 mt-0.5" />
-                      <span>Tuition, where applicable, and recurring semester contributions.</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-[#FF4D6D] shrink-0 mt-0.5" />
-                      <span>Application charges, document preparation, translations and attestations.</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-[#FF4D6D] shrink-0 mt-0.5" />
-                      <span>Language preparation, examinations and any required preparatory study.</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-[#FF4D6D] shrink-0 mt-0.5" />
-                      <span>Visa-related charges, insurance, travel and arrival expenses.</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-[#FF4D6D] shrink-0 mt-0.5" />
-                      <span>Rent, deposit, utilities, food, transport and study materials.</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-[#FF4D6D] shrink-0 mt-0.5" />
-                      <span>Funding evidence, account charges and a contingency reserve.</span>
-                    </li>
-                  </ul>
-
-                  <p className="text-xs text-slate-800 font-medium pt-3 border-t border-slate-100">
-                    Avoid counting blocked-account funds twice as both additional fees and living expenditure. Equally, do not assume the official minimum will cover every city's actual costs. Keep a separate estimate for initial cash needs and recurring expenses.
-                  </p>
-                </div>
-              </div>
-
-              {/* Right Column (7 cols): Germany Budget Tool */}
-              <div className="lg:col-span-7">
-                <GermanyBudgetTool />
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* ========================================================================= */}
         {/* 9. SCHOLARSHIPS (White) */}
@@ -718,7 +628,7 @@ export function GermanyDestinationView() {
               Scholarship Realities
             </span>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#0B1B3A] tracking-tight">
-              Scholarships help—but need their own plan
+              Scholarships help, but need their own plan
             </h2>
 
             <div className="space-y-5 text-slate-700 text-base sm:text-lg leading-relaxed">
@@ -731,7 +641,7 @@ export function GermanyDestinationView() {
               </p>
 
               <p>
-                If you plan to study in Germany from Pakistan, build a route that remains understandable even if a scholarship does not come through. Do not make an essential payment on the assumption that an unconfirmed award will arrive later.
+                If you plan to study in Germany, build a route that remains understandable even if a scholarship does not come through. Do not make an essential payment on the assumption that an unconfirmed award will arrive later.
               </p>
 
               {/* EXACT PROTECTED HONESTY SENTENCE */}
@@ -941,8 +851,8 @@ export function GermanyDestinationView() {
               </Link>
             </div>
 
-            <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900 leading-relaxed">
-              <strong>Notice:</strong> The initial assessment is free. Any paid support must be explained and agreed separately. Do not send passport scans, bank statements or payment details through an initial enquiry.
+            <div className="p-4 rounded-xl bg-white border border-slate-200 text-xs text-slate-600 leading-relaxed shadow-2xs">
+              <strong>Free profile evaluation:</strong> An initial assessment is complimentary. We discuss your academic credentials, language requirements and blocked-account planning to outline realistic options.
             </div>
 
             {/* Contact ProConsulting */}
@@ -953,7 +863,7 @@ export function GermanyDestinationView() {
 
               <div className="flex items-start gap-3 text-sm text-slate-700">
                 <MapPin className="w-5 h-5 text-[#FF4D6D] shrink-0 mt-0.5" />
-                <span>Vista Building, Second Floor, Office 203–204, I-8 Markaz, Islamabad.</span>
+                <span>Vista Building, Second Floor, Office 203-204, I-8 Markaz, Islamabad.</span>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
@@ -981,39 +891,7 @@ export function GermanyDestinationView() {
               </div>
             </div>
 
-            {/* Official Guidance Source Registry */}
-            <div className="pt-8 border-t border-slate-200">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                  Official Germany Guidance Sources
-                </h4>
-                <span className="text-xs text-slate-500">
-                  Guidance last reviewed: {GERMANY_SEO.lastReviewedDate}
-                </span>
-              </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                {GERMANY_OFFICIAL_SOURCES.map((src) => (
-                  <a
-                    key={src.id}
-                    href={src.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-3 rounded-lg border border-slate-200 hover:bg-white transition-colors flex items-start justify-between gap-2 group bg-slate-50"
-                  >
-                    <div>
-                      <span className="font-semibold text-slate-800 group-hover:text-[#FF4D6D] transition-colors block">
-                        {src.name}
-                      </span>
-                      <span className="text-slate-500 text-[11px] mt-0.5 line-clamp-1">
-                        {src.description}
-                      </span>
-                    </div>
-                    <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#FF4D6D] shrink-0 mt-0.5" />
-                  </a>
-                ))}
-              </div>
-            </div>
           </div>
         </section>
       </main>

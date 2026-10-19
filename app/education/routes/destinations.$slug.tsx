@@ -30,7 +30,7 @@ export function meta(args: Route.MetaArgs) {
   if (slug === "uk") {
     const title = UK_SEO.title;
     const description = UK_SEO.metaDescription;
-    const pathname = "/education/destinations/study-in-uk-from-pakistan";
+    const pathname = "/education/destinations/study-in-uk";
     return [
       { title },
       { name: "description", content: description },
@@ -45,7 +45,7 @@ export function meta(args: Route.MetaArgs) {
   if (slug === "germany") {
     const title = GERMANY_SEO.title;
     const description = GERMANY_SEO.metaDescription;
-    const pathname = "/education/destinations/study-in-Germany-from-pakistan";
+    const pathname = "/education/destinations/study-in-germany";
     return [
       { title },
       { name: "description", content: description },
@@ -60,7 +60,7 @@ export function meta(args: Route.MetaArgs) {
   if (slug === "italy") {
     const title = ITALY_SEO.title;
     const description = ITALY_SEO.metaDescription;
-    const pathname = "/education/destinations/study-in-italy-from-pakistan";
+    const pathname = "/education/destinations/study-in-italy";
     return [
       { title },
       { name: "description", content: description },
@@ -91,13 +91,13 @@ export function links(args?: any) {
   const rawSlug = args?.params?.slug || "";
   const slug = resolveDestinationSlug(rawSlug);
   if (slug === "uk") {
-    return [{ rel: "canonical", href: "https://proconsulting.uk/education/destinations/study-in-uk-from-pakistan" }];
+    return [{ rel: "canonical", href: "https://proconsulting.uk/education/destinations/study-in-uk" }];
   }
   if (slug === "germany") {
-    return [{ rel: "canonical", href: "https://proconsulting.uk/education/destinations/study-in-Germany-from-pakistan" }];
+    return [{ rel: "canonical", href: "https://proconsulting.uk/education/destinations/study-in-germany" }];
   }
   if (slug === "italy") {
-    return [{ rel: "canonical", href: "https://proconsulting.uk/education/destinations/study-in-italy-from-pakistan" }];
+    return [{ rel: "canonical", href: "https://proconsulting.uk/education/destinations/study-in-italy" }];
   }
   const destination = getDestinationBySlug(rawSlug);
   const pathname = destination ? destination.link : `/education/destinations/${slug}`;

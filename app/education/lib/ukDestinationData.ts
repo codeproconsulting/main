@@ -12,11 +12,11 @@ export interface UkOfficialSource {
 }
 
 export const UK_SEO = {
-  title: "Study in the UK from Pakistan | ProConsulting",
+  title: "Study in the UK | ProConsulting",
   metaDescription:
-    "Plan to study in the UK from Pakistan with guidance on course choices, costs, admission requirements, CAS and student visa preparation. Get a free assessment.",
-  h1: "Study in the UK from Pakistan",
-  canonicalUrl: "https://proconsulting.uk/education/destinations/uk",
+    "Plan your higher education in the United Kingdom with guidance on course choices, costs, admission requirements, CAS and Student visa preparation. Get a free assessment.",
+  h1: "Study in the UK",
+  canonicalUrl: "https://proconsulting.uk/education/destinations/study-in-uk",
   ctaText: "Get free UK assessment",
   ctaHref: "/education/contact?destination=uk",
   lastReviewedDate: "18 October 2026",

@@ -132,11 +132,11 @@ export async function action({ request }: ActionFunctionArgs) {
               : undefined,
       originPath:
         destination === "uk"
-          ? "/education/destinations/study-in-uk-from-pakistan"
+          ? "/education/destinations/study-in-uk"
           : destination === "germany"
-            ? "/education/destinations/study-in-Germany-from-pakistan"
+            ? "/education/destinations/study-in-germany"
             : destination === "italy"
-              ? "/education/destinations/study-in-italy-from-pakistan"
+              ? "/education/destinations/study-in-italy"
               : originPath,
       serviceContext:
         destination === "uk"
@@ -213,11 +213,11 @@ export default function Contact() {
           ? "italy"
           : "",
     originPath: isUkContext
-      ? "/education/destinations/study-in-uk-from-pakistan"
+      ? "/education/destinations/study-in-uk"
       : isGermanyContext
-        ? "/education/destinations/study-in-Germany-from-pakistan"
+        ? "/education/destinations/study-in-germany"
         : isItalyContext
-          ? "/education/destinations/study-in-italy-from-pakistan"
+          ? "/education/destinations/study-in-italy"
           : "",
     serviceContext: isUkContext
       ? "UK study assessment"
@@ -838,7 +838,7 @@ export default function Contact() {
                             </select>
                           )}
                           <input type="hidden" name="destination" value={isUkContext ? "uk" : isGermanyContext ? "germany" : isItalyContext ? "italy" : ""} />
-                          <input type="hidden" name="originPath" value={isUkContext ? "/education/destinations/study-in-uk-from-pakistan" : isGermanyContext ? "/education/destinations/study-in-Germany-from-pakistan" : isItalyContext ? "/education/destinations/study-in-italy-from-pakistan" : ""} />
+                          <input type="hidden" name="originPath" value={isUkContext ? "/education/destinations/study-in-uk" : isGermanyContext ? "/education/destinations/study-in-germany" : isItalyContext ? "/education/destinations/study-in-italy" : ""} />
                           <input type="hidden" name="serviceContext" value={isUkContext ? "UK study assessment" : isGermanyContext ? "Germany study assessment" : isItalyContext ? "Italy study assessment" : ""} />
                         </div>
 
@@ -1041,9 +1041,6 @@ export default function Contact() {
                         </div>
 
                         <div className="md:col-span-2 space-y-2 pt-1">
-                          <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900">
-                            Please do not upload passports, bank statements or other sensitive documents at this initial stage.
-                          </div>
                           <p className="text-xs text-slate-500 leading-relaxed">
                             By submitting, you ask ProConsulting to contact you about this assessment. Read our{" "}
                             <Link to="/education/privacy-policy" className="text-[#FF4D6D] underline font-medium">

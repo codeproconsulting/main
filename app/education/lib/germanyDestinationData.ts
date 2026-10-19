@@ -12,11 +12,11 @@ export interface GermanyOfficialSource {
 }
 
 export const GERMANY_SEO = {
-  title: "Study in Germany from Pakistan | ProConsulting",
+  title: "Study in Germany | ProConsulting",
   metaDescription:
-    "Explore study in Germany from Pakistan: academic eligibility, public and private university costs, application routes and funding evidence. Get a free assessment.",
-  h1: "Study in Germany from Pakistan",
-  canonicalUrl: "https://proconsulting.uk/education/destinations/germany",
+    "Explore higher education in Germany: academic eligibility, public and private university costs, application routes and funding evidence. Get a free assessment.",
+  h1: "Study in Germany",
+  canonicalUrl: "https://proconsulting.uk/education/destinations/study-in-germany",
   ctaText: "Get free Germany assessment",
   ctaHref: "/education/contact?destination=germany",
   lastReviewedDate: "18 October 2026",

@@ -12,11 +12,11 @@ export interface ItalyOfficialSource {
 }
 
 export const ITALY_SEO = {
-  title: "Study in Italy from Pakistan | ProConsulting",
+  title: "Study in Italy | ProConsulting",
   metaDescription:
-    "Plan to study in Italy from Pakistan with guidance on courses, regional scholarships, documents, Universitaly and visa preparation. Get a free assessment.",
-  h1: "Study in Italy from Pakistan—with a plan beyond the scholarship",
-  canonicalUrl: "https://proconsulting.uk/education/destinations/italy",
+    "Plan to study in Italy with guidance on university admissions, regional scholarships, documents, Universitaly and visa preparation. Get a free assessment.",
+  h1: "Study in Italy",
+  canonicalUrl: "https://proconsulting.uk/education/destinations/study-in-italy",
   ctaText: "Get free Italy assessment",
   ctaHref: "/education/contact?destination=italy",
   lastReviewedDate: "18 October 2026",
