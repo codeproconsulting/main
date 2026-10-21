@@ -808,7 +808,7 @@ export function CanadaDestinationView() {
                   Compare the UK
                 </Link>
                 <Link
-                  to="/education/destinations/australia"
+                  to="/education/destinations/study-in-australia"
                   className="px-4 py-2 rounded-lg bg-slate-800/80 border border-slate-700 text-sm font-semibold text-white hover:border-[#FF4D6D] transition-colors"
                 >
                   Compare Australia

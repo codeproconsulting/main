@@ -19,9 +19,23 @@ import { CanadaDestinationView } from "~/education/components/destinations/Canad
 import { CANADA_SEO, CANADA_SCHEMA_GRAPH } from "~/education/lib/canadaDestinationData";
 import { SwedenDestinationView } from "~/education/components/destinations/SwedenDestinationView";
 import { SWEDEN_SEO, SWEDEN_SCHEMA_GRAPH } from "~/education/lib/swedenDestinationData";
+import { AustraliaDestinationView } from "~/education/components/destinations/AustraliaDestinationView";
+import { AUSTRALIA_SEO, AUSTRALIA_SCHEMA_GRAPH } from "~/education/lib/australiaDestinationData";
+import { SpainDestinationView } from "~/education/components/destinations/SpainDestinationView";
+import { SPAIN_SEO, SPAIN_SCHEMA_GRAPH } from "~/education/lib/spainDestinationData";
 
 export function loader({ params }: Route.LoaderArgs) {
   const rawSlug = (params.slug || "").trim().toLowerCase();
+
+  // 301 redirect legacy Spain URLs to single canonical public URL
+  if (rawSlug === "spain" || rawSlug === "study-in-spain-from-pakistan") {
+    return redirect("/education/destinations/study-in-spain", { status: 301 });
+  }
+
+  // 301 redirect legacy Australia URLs to single canonical public URL
+  if (rawSlug === "australia" || rawSlug === "study-in-australia-from-pakistan") {
+    return redirect("/education/destinations/study-in-australia", { status: 301 });
+  }
 
   // 301 redirect legacy New Zealand URLs to single canonical public URL
   if (rawSlug === "new-zealand" || rawSlug === "study-in-new-zealand-from-pakistan") {
@@ -40,7 +54,7 @@ export function loader({ params }: Route.LoaderArgs) {
 
   const slug = resolveDestinationSlug(rawSlug);
   const destination = getDestinationBySlug(slug);
-  if (!destination && slug !== "uk" && slug !== "germany" && slug !== "italy" && slug !== "new-zealand" && slug !== "canada" && slug !== "sweden") {
+  if (!destination && slug !== "uk" && slug !== "germany" && slug !== "italy" && slug !== "new-zealand" && slug !== "canada" && slug !== "sweden" && slug !== "australia" && slug !== "spain") {
     throw new Response("Destination not found", { status: 404 });
   }
   return { destination, slug, rawSlug };
@@ -139,6 +153,36 @@ export function meta(args: Route.MetaArgs) {
     ];
   }
 
+  if (slug === "australia") {
+    const title = AUSTRALIA_SEO.title;
+    const description = AUSTRALIA_SEO.metaDescription;
+    const pathname = "/education/destinations/study-in-australia";
+    return [
+      { title },
+      { name: "description", content: description },
+      { tagName: "link", rel: "canonical", href: `https://proconsulting.uk${pathname}` },
+      ...pageMeta({ title, description, pathname }),
+      {
+        "script:ld+json": AUSTRALIA_SCHEMA_GRAPH,
+      },
+    ];
+  }
+
+  if (slug === "spain") {
+    const title = SPAIN_SEO.title;
+    const description = SPAIN_SEO.metaDescription;
+    const pathname = "/education/destinations/study-in-spain";
+    return [
+      { title },
+      { name: "description", content: description },
+      { tagName: "link", rel: "canonical", href: `https://proconsulting.uk${pathname}` },
+      ...pageMeta({ title, description, pathname }),
+      {
+        "script:ld+json": SPAIN_SCHEMA_GRAPH,
+      },
+    ];
+  }
+
   const destination = args?.data?.destination as Destination | null | undefined;
   if (!destination) {
     return [{ title: "Destination not found | ProConsulting" }];
@@ -168,6 +212,12 @@ export function links(args?: any) {
   }
   if (slug === "new-zealand") {
     return [{ rel: "canonical", href: "https://proconsulting.uk/education/destinations/study-in-new-zealand" }];
+  }
+  if (slug === "australia") {
+    return [{ rel: "canonical", href: "https://proconsulting.uk/education/destinations/study-in-australia" }];
+  }
+  if (slug === "spain") {
+    return [{ rel: "canonical", href: "https://proconsulting.uk/education/destinations/study-in-spain" }];
   }
   const destination = getDestinationBySlug(rawSlug);
   const pathname = destination ? destination.link : `/education/destinations/${slug}`;
@@ -363,6 +413,30 @@ export default function DestinationSlugPage() {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(SWEDEN_SCHEMA_GRAPH) }}
         />
         <SwedenDestinationView />
+      </>
+    );
+  }
+
+  if (slug === "australia") {
+    return (
+      <>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(AUSTRALIA_SCHEMA_GRAPH) }}
+        />
+        <AustraliaDestinationView />
+      </>
+    );
+  }
+
+  if (slug === "spain") {
+    return (
+      <>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(SPAIN_SCHEMA_GRAPH) }}
+        />
+        <SpainDestinationView />
       </>
     );
   }
