@@ -23,11 +23,33 @@ import { AustraliaDestinationView } from "~/education/components/destinations/Au
 import { AUSTRALIA_SEO, AUSTRALIA_SCHEMA_GRAPH } from "~/education/lib/australiaDestinationData";
 import { SpainDestinationView } from "~/education/components/destinations/SpainDestinationView";
 import { SPAIN_SEO, SPAIN_SCHEMA_GRAPH } from "~/education/lib/spainDestinationData";
+import { FranceDestinationView } from "~/education/components/destinations/FranceDestinationView";
+import { FRANCE_SEO, FRANCE_SCHEMA_GRAPH } from "~/education/lib/franceDestinationData";
+import { HungaryDestinationView } from "~/education/components/destinations/HungaryDestinationView";
+import { HUNGARY_SEO, HUNGARY_SCHEMA_GRAPH } from "~/education/lib/hungaryDestinationData";
+import { IrelandDestinationView } from "~/education/components/destinations/IrelandDestinationView";
+import { IRELAND_SEO, IRELAND_SCHEMA_GRAPH } from "~/education/lib/irelandDestinationData";
 
 export function loader({ params }: Route.LoaderArgs) {
   const rawSlug = (params.slug || "").trim().toLowerCase();
 
+  // 301 redirect legacy Ireland URLs to single canonical public URL
+  if (rawSlug === "ireland" || rawSlug === "study-in-ireland-from-pakistan") {
+    return redirect("/education/destinations/study-in-ireland", { status: 301 });
+  }
+
+  // 301 redirect legacy Hungary URLs to single canonical public URL
+  if (rawSlug === "hungary" || rawSlug === "study-in-hungary-from-pakistan") {
+    return redirect("/education/destinations/study-in-hungary", { status: 301 });
+  }
+
+  // 301 redirect legacy France URLs to single canonical public URL
+  if (rawSlug === "france" || rawSlug === "study-in-france-from-pakistan") {
+    return redirect("/education/destinations/study-in-france", { status: 301 });
+  }
+
   // 301 redirect legacy Spain URLs to single canonical public URL
+
   if (rawSlug === "spain" || rawSlug === "study-in-spain-from-pakistan") {
     return redirect("/education/destinations/study-in-spain", { status: 301 });
   }
@@ -54,7 +76,7 @@ export function loader({ params }: Route.LoaderArgs) {
 
   const slug = resolveDestinationSlug(rawSlug);
   const destination = getDestinationBySlug(slug);
-  if (!destination && slug !== "uk" && slug !== "germany" && slug !== "italy" && slug !== "new-zealand" && slug !== "canada" && slug !== "sweden" && slug !== "australia" && slug !== "spain") {
+  if (!destination && slug !== "uk" && slug !== "germany" && slug !== "italy" && slug !== "new-zealand" && slug !== "canada" && slug !== "sweden" && slug !== "australia" && slug !== "spain" && slug !== "france" && slug !== "hungary" && slug !== "ireland") {
     throw new Response("Destination not found", { status: 404 });
   }
   return { destination, slug, rawSlug };
@@ -183,6 +205,51 @@ export function meta(args: Route.MetaArgs) {
     ];
   }
 
+  if (slug === "france") {
+    const title = FRANCE_SEO.title;
+    const description = FRANCE_SEO.metaDescription;
+    const pathname = "/education/destinations/study-in-france";
+    return [
+      { title },
+      { name: "description", content: description },
+      { tagName: "link", rel: "canonical", href: `https://proconsulting.uk${pathname}` },
+      ...pageMeta({ title, description, pathname }),
+      {
+        "script:ld+json": FRANCE_SCHEMA_GRAPH,
+      },
+    ];
+  }
+
+  if (slug === "hungary") {
+    const title = HUNGARY_SEO.title;
+    const description = HUNGARY_SEO.metaDescription;
+    const pathname = "/education/destinations/study-in-hungary";
+    return [
+      { title },
+      { name: "description", content: description },
+      { tagName: "link", rel: "canonical", href: `https://proconsulting.uk${pathname}` },
+      ...pageMeta({ title, description, pathname }),
+      {
+        "script:ld+json": HUNGARY_SCHEMA_GRAPH,
+      },
+    ];
+  }
+
+  if (slug === "ireland") {
+    const title = IRELAND_SEO.title;
+    const description = IRELAND_SEO.metaDescription;
+    const pathname = "/education/destinations/study-in-ireland";
+    return [
+      { title },
+      { name: "description", content: description },
+      { tagName: "link", rel: "canonical", href: `https://proconsulting.uk${pathname}` },
+      ...pageMeta({ title, description, pathname }),
+      {
+        "script:ld+json": IRELAND_SCHEMA_GRAPH,
+      },
+    ];
+  }
+
   const destination = args?.data?.destination as Destination | null | undefined;
   if (!destination) {
     return [{ title: "Destination not found | ProConsulting" }];
@@ -218,6 +285,15 @@ export function links(args?: any) {
   }
   if (slug === "spain") {
     return [{ rel: "canonical", href: "https://proconsulting.uk/education/destinations/study-in-spain" }];
+  }
+  if (slug === "france") {
+    return [{ rel: "canonical", href: "https://proconsulting.uk/education/destinations/study-in-france" }];
+  }
+  if (slug === "hungary") {
+    return [{ rel: "canonical", href: "https://proconsulting.uk/education/destinations/study-in-hungary" }];
+  }
+  if (slug === "ireland") {
+    return [{ rel: "canonical", href: "https://proconsulting.uk/education/destinations/study-in-ireland" }];
   }
   const destination = getDestinationBySlug(rawSlug);
   const pathname = destination ? destination.link : `/education/destinations/${slug}`;
@@ -437,6 +513,42 @@ export default function DestinationSlugPage() {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(SPAIN_SCHEMA_GRAPH) }}
         />
         <SpainDestinationView />
+      </>
+    );
+  }
+
+  if (slug === "france") {
+    return (
+      <>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(FRANCE_SCHEMA_GRAPH) }}
+        />
+        <FranceDestinationView />
+      </>
+    );
+  }
+
+  if (slug === "hungary") {
+    return (
+      <>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(HUNGARY_SCHEMA_GRAPH) }}
+        />
+        <HungaryDestinationView />
+      </>
+    );
+  }
+
+  if (slug === "ireland") {
+    return (
+      <>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(IRELAND_SCHEMA_GRAPH) }}
+        />
+        <IrelandDestinationView />
       </>
     );
   }
