@@ -29,9 +29,30 @@ import { HungaryDestinationView } from "~/education/components/destinations/Hung
 import { HUNGARY_SEO, HUNGARY_SCHEMA_GRAPH } from "~/education/lib/hungaryDestinationData";
 import { IrelandDestinationView } from "~/education/components/destinations/IrelandDestinationView";
 import { IRELAND_SEO, IRELAND_SCHEMA_GRAPH } from "~/education/lib/irelandDestinationData";
+import { MalaysiaDestinationView } from "~/education/components/destinations/MalaysiaDestinationView";
+import { MALAYSIA_SEO, MALAYSIA_SCHEMA_GRAPH } from "~/education/lib/malaysiaDestinationData";
+import { FinlandDestinationView } from "~/education/components/destinations/FinlandDestinationView";
+import { FINLAND_SEO, FINLAND_SCHEMA_GRAPH } from "~/education/lib/finlandDestinationData";
+import { DenmarkDestinationView } from "~/education/components/destinations/DenmarkDestinationView";
+import { DENMARK_SEO, DENMARK_SCHEMA_GRAPH } from "~/education/lib/denmarkDestinationData";
 
 export function loader({ params }: Route.LoaderArgs) {
   const rawSlug = (params.slug || "").trim().toLowerCase();
+
+  // 301 redirect legacy Denmark URLs to single canonical public URL
+  if (rawSlug === "denmark" || rawSlug === "study-in-denmark-from-pakistan") {
+    return redirect("/education/destinations/study-in-denmark", { status: 301 });
+  }
+
+  // 301 redirect legacy Finland URLs to single canonical public URL
+  if (rawSlug === "finland" || rawSlug === "study-in-finland-from-pakistan") {
+    return redirect("/education/destinations/study-in-finland", { status: 301 });
+  }
+
+  // 301 redirect legacy Malaysia URLs to single canonical public URL
+  if (rawSlug === "malaysia" || rawSlug === "study-in-malaysia-from-pakistan") {
+    return redirect("/education/destinations/study-in-malaysia", { status: 301 });
+  }
 
   // 301 redirect legacy Ireland URLs to single canonical public URL
   if (rawSlug === "ireland" || rawSlug === "study-in-ireland-from-pakistan") {
@@ -76,7 +97,7 @@ export function loader({ params }: Route.LoaderArgs) {
 
   const slug = resolveDestinationSlug(rawSlug);
   const destination = getDestinationBySlug(slug);
-  if (!destination && slug !== "uk" && slug !== "germany" && slug !== "italy" && slug !== "new-zealand" && slug !== "canada" && slug !== "sweden" && slug !== "australia" && slug !== "spain" && slug !== "france" && slug !== "hungary" && slug !== "ireland") {
+  if (!destination && slug !== "uk" && slug !== "germany" && slug !== "italy" && slug !== "new-zealand" && slug !== "canada" && slug !== "sweden" && slug !== "australia" && slug !== "spain" && slug !== "france" && slug !== "hungary" && slug !== "ireland" && slug !== "malaysia" && slug !== "finland" && slug !== "denmark") {
     throw new Response("Destination not found", { status: 404 });
   }
   return { destination, slug, rawSlug };
@@ -250,6 +271,63 @@ export function meta(args: Route.MetaArgs) {
     ];
   }
 
+  if (slug === "malaysia") {
+    const title = MALAYSIA_SEO.title;
+    const description = MALAYSIA_SEO.metaDescription;
+    const pathname = "/education/destinations/study-in-malaysia";
+    return [
+      { title },
+      { name: "description", content: description },
+      { tagName: "link", rel: "canonical", href: `https://proconsulting.uk${pathname}` },
+      ...pageMeta({ title, description, pathname }),
+      { property: "og:image", content: "https://proconsulting.uk/og/study-in-malaysia.svg" },
+      { property: "og:image:alt", content: "Study in Malaysia" },
+      { name: "twitter:image", content: "https://proconsulting.uk/og/study-in-malaysia.svg" },
+      { name: "twitter:image:alt", content: "Study in Malaysia" },
+      {
+        "script:ld+json": MALAYSIA_SCHEMA_GRAPH,
+      },
+    ];
+  }
+
+  if (slug === "finland") {
+    const title = FINLAND_SEO.title;
+    const description = FINLAND_SEO.metaDescription;
+    const pathname = "/education/destinations/study-in-finland";
+    return [
+      { title },
+      { name: "description", content: description },
+      { tagName: "link", rel: "canonical", href: `https://proconsulting.uk${pathname}` },
+      ...pageMeta({ title, description, pathname }),
+      { property: "og:image", content: "https://proconsulting.uk/og/study-in-finland.svg" },
+      { property: "og:image:alt", content: "Study in Finland" },
+      { name: "twitter:image", content: "https://proconsulting.uk/og/study-in-finland.svg" },
+      { name: "twitter:image:alt", content: "Study in Finland" },
+      {
+        "script:ld+json": FINLAND_SCHEMA_GRAPH,
+      },
+    ];
+  }
+
+  if (slug === "denmark") {
+    const title = DENMARK_SEO.title;
+    const description = DENMARK_SEO.metaDescription;
+    const pathname = "/education/destinations/study-in-denmark";
+    return [
+      { title },
+      { name: "description", content: description },
+      { tagName: "link", rel: "canonical", href: `https://proconsulting.uk${pathname}` },
+      ...pageMeta({ title, description, pathname }),
+      { property: "og:image", content: "https://proconsulting.uk/og/study-in-denmark.svg" },
+      { property: "og:image:alt", content: "Study in Denmark" },
+      { name: "twitter:image", content: "https://proconsulting.uk/og/study-in-denmark.svg" },
+      { name: "twitter:image:alt", content: "Study in Denmark" },
+      {
+        "script:ld+json": DENMARK_SCHEMA_GRAPH,
+      },
+    ];
+  }
+
   const destination = args?.data?.destination as Destination | null | undefined;
   if (!destination) {
     return [{ title: "Destination not found | ProConsulting" }];
@@ -294,6 +372,15 @@ export function links(args?: any) {
   }
   if (slug === "ireland") {
     return [{ rel: "canonical", href: "https://proconsulting.uk/education/destinations/study-in-ireland" }];
+  }
+  if (slug === "malaysia") {
+    return [{ rel: "canonical", href: "https://proconsulting.uk/education/destinations/study-in-malaysia" }];
+  }
+  if (slug === "finland") {
+    return [{ rel: "canonical", href: "https://proconsulting.uk/education/destinations/study-in-finland" }];
+  }
+  if (slug === "denmark") {
+    return [{ rel: "canonical", href: "https://proconsulting.uk/education/destinations/study-in-denmark" }];
   }
   const destination = getDestinationBySlug(rawSlug);
   const pathname = destination ? destination.link : `/education/destinations/${slug}`;
@@ -549,6 +636,42 @@ export default function DestinationSlugPage() {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(IRELAND_SCHEMA_GRAPH) }}
         />
         <IrelandDestinationView />
+      </>
+    );
+  }
+
+  if (slug === "malaysia") {
+    return (
+      <>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(MALAYSIA_SCHEMA_GRAPH) }}
+        />
+        <MalaysiaDestinationView />
+      </>
+    );
+  }
+
+  if (slug === "finland") {
+    return (
+      <>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(FINLAND_SCHEMA_GRAPH) }}
+        />
+        <FinlandDestinationView />
+      </>
+    );
+  }
+
+  if (slug === "denmark") {
+    return (
+      <>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(DENMARK_SCHEMA_GRAPH) }}
+        />
+        <DenmarkDestinationView />
       </>
     );
   }
