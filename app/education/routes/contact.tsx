@@ -280,6 +280,11 @@ export default function Contact() {
     rawDest === "study-in-denmark" ||
     queryCountry?.toLowerCase() === "denmark";
 
+  const rawService = searchParams.get("service")?.toLowerCase();
+  const isAdmissionService = rawService === "admission";
+  const isVisaService = rawService === "visa";
+  const isInterviewPrepService = rawService === "interview-prep";
+
   const [step, setStep] = useState<number>(1);
   const [errorMessage, setErrorMessage] = useState<string>("");
 
@@ -362,64 +367,76 @@ export default function Contact() {
                               : isDenmarkContext
                                 ? "denmark"
                                 : "",
-    originPath: isUkContext
-      ? "/education/destinations/study-in-uk"
-      : isGermanyContext
-        ? "/education/destinations/study-in-germany"
-        : isItalyContext
-          ? "/education/destinations/study-in-italy"
-          : isNewZealandContext
-            ? "/education/destinations/study-in-new-zealand"
-            : isCanadaContext
-              ? "/education/destinations/study-in-canada"
-              : isSwedenContext
-                ? "/education/destinations/study-in-sweden"
-                : isAustraliaContext
-                  ? "/education/destinations/study-in-australia"
-                  : isSpainContext
-                    ? "/education/destinations/study-in-spain"
-                    : isFranceContext
-                      ? "/education/destinations/study-in-france"
-                      : isHungaryContext
-                        ? "/education/destinations/study-in-hungary"
-                        : isIrelandContext
-                          ? "/education/destinations/study-in-ireland"
-                          : isMalaysiaContext
-                            ? "/education/destinations/study-in-malaysia"
-                            : isFinlandContext
-                              ? "/education/destinations/study-in-finland"
-                              : isDenmarkContext
-                                ? "/education/destinations/study-in-denmark"
-                                : "",
-    serviceContext: isUkContext
-      ? "UK study assessment"
-      : isGermanyContext
-        ? "Germany study assessment"
-        : isItalyContext
-          ? "Italy study assessment"
-          : isNewZealandContext
-            ? "New Zealand study assessment"
-            : isCanadaContext
-              ? "Canada study assessment and application guidance"
-              : isSwedenContext
-                ? "Sweden study application guidance"
-                : isAustraliaContext
-                  ? "Australia study assessment"
-                  : isSpainContext
-                    ? "Spain study assessment"
-                    : isFranceContext
-                      ? "France study assessment"
-                      : isHungaryContext
-                        ? "Hungary study assessment and planning guidance"
-                        : isIrelandContext
-                          ? "Ireland study assessment and planning guidance"
-                          : isMalaysiaContext
-                            ? "Malaysia study assessment and application guidance"
-                            : isFinlandContext
-                              ? "Finland study assessment and application guidance"
-                              : isDenmarkContext
-                                ? "Denmark study application guidance"
-                                : "Study abroad consultation",
+    originPath: isAdmissionService
+      ? "/education/services/admission"
+      : isVisaService
+        ? "/education/services/visa"
+        : isInterviewPrepService
+          ? "/education/services/interview-prep"
+          : isUkContext
+            ? "/education/destinations/study-in-uk"
+            : isGermanyContext
+              ? "/education/destinations/study-in-germany"
+              : isItalyContext
+                ? "/education/destinations/study-in-italy"
+                : isNewZealandContext
+                  ? "/education/destinations/study-in-new-zealand"
+                  : isCanadaContext
+                    ? "/education/destinations/study-in-canada"
+                    : isSwedenContext
+                      ? "/education/destinations/study-in-sweden"
+                      : isAustraliaContext
+                        ? "/education/destinations/study-in-australia"
+                        : isSpainContext
+                          ? "/education/destinations/study-in-spain"
+                          : isFranceContext
+                            ? "/education/destinations/study-in-france"
+                            : isHungaryContext
+                              ? "/education/destinations/study-in-hungary"
+                              : isIrelandContext
+                                ? "/education/destinations/study-in-ireland"
+                                : isMalaysiaContext
+                                  ? "/education/destinations/study-in-malaysia"
+                                  : isFinlandContext
+                                    ? "/education/destinations/study-in-finland"
+                                    : isDenmarkContext
+                                      ? "/education/destinations/study-in-denmark"
+                                      : "",
+    serviceContext: isAdmissionService
+      ? "Admission guidance"
+      : isVisaService
+        ? "Student visa support"
+        : isInterviewPrepService
+          ? "Interview preparation"
+          : isUkContext
+            ? "UK study assessment"
+            : isGermanyContext
+              ? "Germany study assessment"
+              : isItalyContext
+                ? "Italy study assessment"
+                : isNewZealandContext
+                  ? "New Zealand study assessment"
+                  : isCanadaContext
+                    ? "Canada study assessment and application guidance"
+                    : isSwedenContext
+                      ? "Sweden study application guidance"
+                      : isAustraliaContext
+                        ? "Australia study assessment"
+                        : isSpainContext
+                          ? "Spain study assessment"
+                          : isFranceContext
+                            ? "France study assessment"
+                            : isHungaryContext
+                              ? "Hungary study assessment and planning guidance"
+                              : isIrelandContext
+                                ? "Ireland study assessment and planning guidance"
+                                : isMalaysiaContext
+                                  ? "Malaysia study assessment and application guidance"
+                                  : isFinlandContext
+                                    ? "Finland study assessment and application guidance"
+                                    : isDenmarkContext
+                                      ? "Denmark study application guidance"
+                                      : "Study abroad consultation",
   });
 
   const handleChange = (
@@ -567,33 +584,39 @@ export default function Contact() {
             <div className="text-center max-w-3xl mx-auto">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs md:text-sm font-semibold text-pink-300 mb-4">
                 <span className="w-2 h-2 rounded-full bg-pink-400 animate-pulse" />
-                {isUkContext
-                  ? "UK Study Assessment & Planning Consultation"
-                  : isGermanyContext
-                    ? "Germany Study Assessment & Planning Consultation"
-                    : isItalyContext
-                      ? "Italy Study Assessment & Planning Consultation"
-                      : isCanadaContext
-                        ? "Canada Study Assessment & Planning Consultation"
-                        : isSwedenContext
-                          ? "Sweden Study Assessment & Planning Consultation"
-                          : isAustraliaContext
-                            ? "Australia Study Assessment & Planning Consultation"
-                            : isSpainContext
-                              ? "Spain Study Assessment & Planning Consultation"
-                              : isFranceContext
-                                ? "France Study Assessment & Planning Consultation"
-                                : isHungaryContext
-                                  ? "Hungary Study Assessment & Planning Consultation"
-                                  : isIrelandContext
-                                    ? "Ireland Study Assessment & Planning Consultation"
-                                    : isMalaysiaContext
-                                      ? "Malaysia Study Assessment & Planning Consultation"
-                                      : isFinlandContext
-                                        ? "Finland Study Assessment & Planning Consultation"
-                                        : isDenmarkContext
-                                          ? "Denmark Study Assessment & Planning Consultation"
-                                          : "1-on-1 Free Profile Evaluation & Visa Assessment"}
+                {isAdmissionService
+                  ? "Admission Guidance Assessment & Course Consultation"
+                  : isVisaService
+                    ? "Student Visa Assessment & Consultation"
+                    : isInterviewPrepService
+                      ? "Interview Preparation Assessment"
+                      : isUkContext
+                        ? "UK Study Assessment & Planning Consultation"
+                        : isGermanyContext
+                          ? "Germany Study Assessment & Planning Consultation"
+                          : isItalyContext
+                            ? "Italy Study Assessment & Planning Consultation"
+                            : isCanadaContext
+                              ? "Canada Study Assessment & Planning Consultation"
+                              : isSwedenContext
+                                ? "Sweden Study Assessment & Planning Consultation"
+                                : isAustraliaContext
+                                  ? "Australia Study Assessment & Planning Consultation"
+                                  : isSpainContext
+                                    ? "Spain Study Assessment & Planning Consultation"
+                                    : isFranceContext
+                                      ? "France Study Assessment & Planning Consultation"
+                                      : isHungaryContext
+                                        ? "Hungary Study Assessment & Planning Consultation"
+                                        : isIrelandContext
+                                          ? "Ireland Study Assessment & Planning Consultation"
+                                          : isMalaysiaContext
+                                            ? "Malaysia Study Assessment & Planning Consultation"
+                                            : isFinlandContext
+                                              ? "Finland Study Assessment & Planning Consultation"
+                                              : isDenmarkContext
+                                                ? "Denmark Study Assessment & Planning Consultation"
+                                                : "1-on-1 Free Profile Evaluation & Visa Assessment"}
               </div>
 
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-tight mb-4">
