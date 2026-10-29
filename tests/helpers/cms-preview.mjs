@@ -1,16 +1,20 @@
 // Isolated local preview: in-memory synthetic data only; never connects to a real Appwrite endpoint.
 import http from 'node:http';
 import {spawn} from 'node:child_process';
-const stores=Object.fromEntries(['posts','revisions','activities','locks','staff'].map(k=>[k,new Map()]));
+const stores=Object.fromEntries(['posts','revisions','activities','locks','staff','media'].map(k=>[k,new Map()]));
 stores.staff.set('synthetic-publisher',{$id:'synthetic-publisher',name:'Synthetic Publisher',role:'publisher',active:true,teamId:''});
+const files=new Map();
 const send=(response,status,value)=>{response.writeHead(status,{'Content-Type':'application/json'});response.end(JSON.stringify(value));};
 const server=http.createServer(async(request,response)=>{
  try{
-  const url=new URL(request.url,'http://127.0.0.1:4175');let raw='';for await(const chunk of request){raw+=chunk;if(raw.length>1500000)return send(response,413,{});}const body=raw?JSON.parse(raw):{};
+  const url=new URL(request.url,'http://127.0.0.1:4175');const chunks=[];let size=0;for await(const chunk of request){chunks.push(chunk);size+=chunk.length;if(size>6*1024*1024)return send(response,413,{});}const raw=Buffer.concat(chunks);
+  const storage=url.pathname.match(/^\/v1\/storage\/buckets\/crm-media\/files(?:\/([^/]+))?(?:\/(view|download))?$/);
+  if(storage){const[,id,view]=storage;if(request.method==='POST'){const form=await new Response(raw,{headers:{'Content-Type':request.headers['content-type']}}).formData();const file=form.get('file'),key=form.get('fileId');files.set(key,{bytes:Buffer.from(await file.arrayBuffer()),mime:file.type});return send(response,201,{$id:key,$permissions:[]});}if(request.method==='DELETE'){files.delete(id);response.writeHead(204);return response.end();}const file=files.get(id);if(!file)return send(response,404,{});if(view){response.writeHead(200,{'Content-Type':file.mime});return response.end(file.bytes);}return send(response,200,{$id:id});}
+  const body=raw.length?JSON.parse(raw.toString()):{};
   if(url.pathname==='/v1/account/sessions/email'&&request.method==='POST'){if(body.email!=='publisher@example.invalid'||body.password!=='synthetic-preview-password')return send(response,401,{});return send(response,201,{secret:'synthetic-preview-session',expire:'2030-01-01T00:00:00.000Z'});}
   if(url.pathname==='/v1/account'){if(request.headers['x-appwrite-session']!=='synthetic-preview-session')return send(response,401,{});return send(response,200,{$id:'synthetic-publisher'});}
   if(url.pathname==='/v1/account/sessions/current'&&request.method==='DELETE'){response.writeHead(204);return response.end();}
-  const match=url.pathname.match(/^\/v1\/databases\/preview\/collections\/(posts|revisions|activities|locks|staff)\/documents(?:\/([^/]+))?$/);if(!match)return send(response,404,{});
+  const match=url.pathname.match(/^\/v1\/databases\/preview\/collections\/(posts|revisions|activities|locks|staff|media)\/documents(?:\/([^/]+))?$/);if(!match)return send(response,404,{});
   const [,collection,id]=match,store=stores[collection];
   if(request.method==='GET'){if(id)return store.has(id)?send(response,200,store.get(id)):send(response,404,{});let documents=[...store.values()];for(const q of url.searchParams.getAll('queries[]').map(JSON.parse)){if(q.method==='equal')documents=documents.filter(d=>q.values.includes(d[q.attribute]));if(q.method==='orderDesc')documents.sort((a,b)=>String(b[q.attribute]??'').localeCompare(String(a[q.attribute]??'')));}const total=documents.length;const queries=url.searchParams.getAll('queries[]').map(JSON.parse),offset=queries.find(q=>q.method==='offset')?.values[0]||0,limit=queries.find(q=>q.method==='limit')?.values[0]||100;return send(response,200,{documents:documents.slice(offset,offset+limit),total});}
   if(request.method==='POST'){if(store.has(body.documentId))return send(response,409,{});const doc={...body.data,$id:body.documentId,$createdAt:new Date().toISOString(),$updatedAt:new Date().toISOString()};store.set(doc.$id,doc);return send(response,201,doc);}

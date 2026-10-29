@@ -47,3 +47,9 @@ User requirement, 29 October 2026: comprehensive delivery may span many sessions
 ## ADR-011: Separate scheduled publishing from reminder activation
 
 The dedicated publishing runner can be enabled independently, after rollout checks, without enabling staged reminder workflows. Both publishing and dashboard edits use the same private post lock. Revision snapshots are deterministic and audit intents precede mutation. Crash-left locks deliberately block rather than expire automatically; operational recovery and pending-intent reconciliation are explicit in the publishing runbook. Production activation remains a separate gate.
+
+## 29 October — first-day CRM isolation and private media
+
+Use a certificate-only HTTP bootstrap, then the final HTTPS vhost; never forward staff login over HTTP while requesting a certificate. Start only `proconsulting-crm` during trial to preserve the existing website and Appwrite edge. Include framework root-data and manifest paths in proxy routing. No second edge may bind occupied VPS ports.
+
+Media starts private at both application and schema-default levels. Server routes mediate public image streaming; bucket grants remain private. Durable pre-upload IDs allow operator reconciliation after ambiguous network failures. No automatic orphan sweep or full image decoder is claimed. Next bounded feature is REMIND-01; public cutover remains separately gated.

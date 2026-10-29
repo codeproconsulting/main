@@ -12,8 +12,8 @@ Only **one feature** is the active session focus. “Code staged” means implem
 | CMS-02 | Ghost draft import and public-read readiness | Verified locally | Five acceptance checks pass; 32 tests/build/typecheck pass; no public cutover |
 | CMS-03 | Visual editor, revisions, scheduled publishing | Verified locally | Six acceptance checks passed; 48 tests/build/typecheck and isolated browser workflow pass; production runner disabled, recovery limits documented |
 | CMS-04 | Public content migration cutover | Planned | Historical URLs/redirects, media review, untagged post decision, publication reconciliation, provider switch and rollback rehearsal |
-| MEDIA-01 | Editorial image uploads/publication | **Next session; code staged** | Provision metadata schema, verify bucket and upload, private/public boundary, URL use |
-| REMIND-01 | In-app background reminders | Code staged | Delivery deduplication, restart/crash handling, cancellation/reschedule/reassignment, operational heartbeat |
+| MEDIA-01 | Editorial image uploads/publication | Verified locally + isolated Appwrite | Upload/permission/failure tests and browser toggle flow pass; private schema/default and real disposable storage check verified. Public website route rollout and VPS checks remain separate |
+| REMIND-01 | In-app background reminders | **Next session; code staged** | Delivery deduplication, restart/crash handling, cancellation/reschedule/reassignment, operational heartbeat |
 | CASE-01 | Applications and immigration cases | Code staged | Multi-application workflow, stage validation, access and ownership transfer tests |
 | CAL-01 | Appointment booking | Code staged | Conflict/concurrency, rescheduling, timezones, cancellation and no-show tests |
 | DOC-01 | Private client documents | Code staged | Upload limits/signatures, antivirus behavior, authorized streaming, review/expiry/checklists, orphan reconciliation |

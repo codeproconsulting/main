@@ -1,96 +1,78 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-10-29-03",
+  "sessionId": "2026-10-29-04",
   "sessionStatus": "completed",
-  "activeFeature": "CMS-03",
-  "objective": "Verify and harden visual authoring, revision restore, and scheduled publication with isolated tests and a local browser workflow.",
+  "activeFeature": "MEDIA-01",
+  "objective": "Harden editorial media boundaries and provide a first-day HTTPS CRM subdomain deployment path.",
   "scope": [
-    "Visual editor selection, paste, source mode and sanitized preview",
-    "Publisher/editor boundaries for live and scheduled articles",
-    "Revision snapshots and stale-safe restore",
-    "Scheduled publishing cancellation, retry and lock behavior"
+    "Media upload validation, private storage and explicit visibility",
+    "Isolated media permission/failure tests and Appwrite verification",
+    "CRM Nginx bootstrap/TLS routing and first-day operator runbook"
   ],
   "outOfScope": [
-    "Production publishing, Ghost cutover, or VPS worker activation",
-    "Unrelated CRM modules and messaging providers"
+    "Public Ghost cutover or real article publication",
+    "VPS deployment and unaccepted CRM modules"
   ],
   "acceptance": [
     {
-      "id": "CMS03-A",
-      "description": "Editors cannot publish or change live/scheduled articles; publishers can perform valid transitions",
+      "id": "MEDIA01-A",
+      "description": "Media uploads enforce supported types, size and alternative text; failed metadata writes are recoverable",
       "status": "passed",
-      "evidence": "Focused CMS tests pass: editors may draft/review but cannot publish, schedule, unschedule or modify protected live/scheduled content."
+      "evidence": "Nine focused media tests cover upload text/type/signature/size limits, bounded multipart parsing and compensation/lost acknowledgments."
     },
     {
-      "id": "CMS03-B",
-      "description": "Publication rejects empty content and invalid dates; publish-now and rescheduling are correct",
+      "id": "MEDIA01-B",
+      "description": "Only publishers change visibility; private assets are inaccessible publicly and unpublishing revokes future requests",
       "status": "passed",
-      "evidence": "Focused tests pass for empty sanitized content, invalid/past/missing-timezone schedules, UTC normalization, publish-now and date preservation. Browser confirmed saved timestamps refresh correctly."
+      "evidence": "Service tests verify editor/publisher boundaries, no-store public bytes, revocation, stale/concurrent visibility checks and audit failure. Isolated built-app browser upload/publish/unpublish passed."
     },
     {
-      "id": "CMS03-C",
-      "description": "Snapshots and restores preserve URL/state, detect stale edits, and tolerate retry without duplicate history",
+      "id": "MEDIA01-C",
+      "description": "Metadata schema/private bucket and isolated real storage upload/download/cleanup verified",
       "status": "passed",
-      "evidence": "Focused tests pass for deterministic snapshots after failed writes, stale/foreign/unauthorized restore rejection, preserved URL/state/metadata, and pre-mutation audit failure. Browser restored an earlier bold body successfully."
+      "evidence": "Provisioned only private media collection/attributes/index; private bucket flags/limits verified. Real synthetic PNG upload/private metadata/byte-identical download/anonymous denial passed; both records removed."
     },
     {
-      "id": "CMS03-D",
-      "description": "Scheduled publication rechecks current state under the shared lock and handles cancellation, contention, failure and restart safely",
+      "id": "MEDIA01-D",
+      "description": "First-day subdomain guide covers DNS, safe TLS bootstrap, process persistence, login, smoke checks and rollback",
       "status": "passed",
-      "evidence": "Scheduler tests pass for cancellation/rescheduling, contention/concurrent workers, retry, lost acknowledgment and invalid records. Crash-left locks deliberately fail closed with operator recovery documented. Live posts schedule index/query passed read-only; worker not activated."
+      "evidence": "Certificate-only HTTP bootstrap, final HTTPS vhost with React Router data/manifest paths and complete runbook written. All 13 shell command blocks pass bash syntax. Actual nginx -t/DNS/TLS/reboot remain VPS gates."
     },
     {
-      "id": "CMS03-E",
-      "description": "Isolated browser workflow verifies typing/cursor, formatting, source sanitization, saved state and revision restore",
+      "id": "MEDIA01-E",
+      "description": "Feature tests, typecheck/build and continuation notes reflect actual verification",
       "status": "passed",
-      "evidence": "Built-app browser workflow passed against in-memory synthetic API: typing/cursor, bold, plaintext paste, unsafe source sanitization, save feedback, revision restore, schedule normalization, publish-now, Undo/Redo. Fixed visible text clearing and stale form values found during these checks."
-    },
-    {
-      "id": "CMS03-F",
-      "description": "Feature tests, typecheck and production build pass; checkpoint and next steps are recorded",
-      "status": "passed",
-      "evidence": "Final session:verify passed typecheck, all 48 tests, and production build. Vault links and source credential scan passed. Production/provider activation remains separate."
+      "evidence": "Final session:verify passed typecheck, all 57 tests and production build. Isolated browser and live synthetic storage checks passed. Vault links, source credential scan, Git whitespace and all 13 runbook shell blocks checked. Nginx/VPS checks remain explicitly separate."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Archive this completed CMS-03 state and start a bounded MEDIA-01 session. Provision only editorial media metadata as needed; do not activate other modules.",
+      "action": "Archive this completed MEDIA-01 state and start a bounded REMIND-01 session. Verify in-app reminder deduplication, cancellation/reschedule/reassignment, retries/crash behavior and heartbeat before enabling any worker.",
       "files": [
-        "context-vault/Feature Ledger.md",
-        "app/admin/media.tsx",
-        "app/routes/media.ts",
-        "scripts/appwrite-schema.mjs",
-        "scripts/setup-storage.mjs"
+        "scripts/worker.mjs",
+        "app/admin/notifications.tsx",
+        "context-vault/Feature Ledger.md"
       ]
     },
     {
       "order": 2,
-      "action": "Define and verify media upload size/signature checks, editor versus publisher permissions, private preview, explicit publish/unpublish visibility and failure compensation using isolated records. Verify actual Appwrite storage behavior before declaring media ready.",
+      "action": "Keep VPS deployment and public CMS-04 cutover separate. When VPS edge/access is available, execute the first-day runbook including nginx -t, DNS/TLS and reboot smoke checks. Do not expose staged modules as an accepted full release.",
       "files": [
-        "app/admin/storage.server.ts",
-        "app/admin/media-download.ts",
-        "tests"
-      ]
-    },
-    {
-      "order": 3,
-      "action": "Keep publishing/reminder workers and Ghost cutover disabled until rollout gates pass. For main merge, isolate accepted work from staged modules and retain rollback refs.",
-      "files": [
-        "docs/SCHEDULED-PUBLISHING.md",
-        "docs/RELEASE-AND-ROLLBACK.md",
-        "context-vault/Feature Ledger.md"
+        "deploy/CRM-DEPLOYMENT.md",
+        "deploy/nginx/crm.proconsulting.uk.conf",
+        "docs/RELEASE-AND-ROLLBACK.md"
       ]
     }
   ],
   "knownRisks": [
-    "New operations, document, media, reminder, and team modules have code but have not received feature-level end-to-end verification; they must not be labeled complete.",
-    "Media metadata collection exists in local schema but was added after the most recent remote setup; provision and verify before using the media page.",
-    "Remote locks fail closed after a process crash; stale-lock recovery and worker crash/retry behavior need a dedicated verification session.",
-    "Two private buckets were created with antivirus enabled, but actual upload/scan/download behavior is not yet verified.",
-    "Development work is checkpointed on codex/crm-workspace. It contains explicitly staged modules; do not merge into main or deploy before their acceptance checks pass.",
-    "Publishing locks deliberately fail closed after a process crash. Lost acknowledgments can leave pending audit intents requiring reconciliation; operator recovery is documented and automatic lease recovery is not implemented."
+    "Cases, calendar, private documents, reminders, team and reporting modules remain staged and require feature acceptance.",
+    "Nginx is unavailable locally; target-server nginx -t, active edge discovery, DNS/TLS, PM2 reboot and staff smoke checks are outstanding. No VPS deployment performed.",
+    "Public image URLs require the accepted application build on the public website; Ghost remains the current blog provider.",
+    "Failed upload/audit acknowledgments may require manual reconciliation; crash-left locks fail closed. Already downloaded/in-flight images cannot be recalled.",
+    "Current media list caps at 100 items; pagination/search/metadata editing are follow-up enhancements.",
+    "Development branch contains unaccepted modules; keep wholesale main merge/deployment gated."
   ],
   "externalState": {
     "database": "proconsulting",
@@ -103,36 +85,39 @@
     "ownerPassword": "owner must set via Appwrite Console",
     "gitBranch": "codex/crm-workspace",
     "integratedUpstream": "origin/main through 407977c (16 commits)",
-    "githubCheckpoint": "CMS-02 checkpoint 3e0db13 already pushed; CMS-03 checkpoint is being committed on codex/crm-workspace; main not merged",
+    "githubCheckpoint": "CMS-03 f915b9c pushed; MEDIA-01 + first-day runbook checkpoint prepared on codex/crm-workspace; main unchanged",
     "mainMergePolicy": "User authorizes feature-tested merges with rollback references. The current development branch still includes unaccepted modules, so no whole-branch main merge has been performed.",
     "rollbackReference": "rollback/main-2026-10-29-407977c preserves the existing main baseline for release recovery",
     "scheduleIndex": "posts schedule(status,publishedAt) available; live due query passed read-only with zero due posts",
     "publishingWorker": "Dedicated opt-in runner added; not activated on VPS",
-    "browserTestData": "Disposable in-memory CMS records only; preview processes stopped; real imported drafts unchanged"
+    "browserTestData": "Disposable in-memory media browser workflow passed; preview processes stopped",
+    "mediaSchema": "Private media collection/attributes/index provisioned; published defaults false (live default check passed)",
+    "mediaStorage": "Private bucket config and real disposable file/metadata round trip verified; synthetic resources removed",
+    "nginx": "Bootstrap and HTTPS templates prepared; target-server validation not performed"
   },
   "checks": [
     {
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-10-29T08:36:28.881Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-K2IzwJ/typecheck.log"
+      "checkedAt": "2026-10-29T11:58:39.493Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ORMt2e/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-10-29T08:36:29.676Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-K2IzwJ/test.log"
+      "checkedAt": "2026-10-29T11:58:40.554Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ORMt2e/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-10-29T08:36:34.443Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-K2IzwJ/build.log"
+      "checkedAt": "2026-10-29T11:58:45.429Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ORMt2e/build.log"
     }
   ],
-  "updatedAt": "2026-10-29T08:38:10.479Z",
-  "verifiedSourceFingerprint": "a8ff6ec151713667a357c4f2ee5a34111bd875413d9a9c6a7830dbd017ee4eda"
+  "updatedAt": "2026-10-29T11:59:00.873Z",
+  "verifiedSourceFingerprint": "8e9b6e08387b55fc1e72f2bfc4ff2f1b5c180b63630590d518eead978dc4ea60"
 }

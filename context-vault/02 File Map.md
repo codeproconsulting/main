@@ -57,3 +57,13 @@ Use [[Feature Ledger]] for actual acceptance state; this file map describes code
 - `tests/helpers/cms-preview.mjs`: disposable in-memory CMS browser fixture.
 - `tests/manual/CMS-03-browser.md`: actual browser acceptance steps and observed regressions.
 - `docs/SCHEDULED-PUBLISHING.md`: activation and fail-closed recovery runbook.
+
+## MEDIA-01 and first-day deployment additions
+
+- `app/admin/media.server.ts`: editorial policy, private uploads, visibility locking/audits, public image responses and bounded multipart parsing.
+- `scripts/setup-storage.mjs`: scoped bucket verification; does not silently replace mismatched security settings.
+- `scripts/verify-media-storage.mjs`: opt-in synthetic real storage/metadata exercise and cleanup.
+- `tests/media.test.mjs`, `tests/fixtures/synthetic-media.png`, `tests/manual/MEDIA-01-browser.md`: boundary/failure checks and actual browser evidence.
+- `docs/EDITORIAL-MEDIA.md`: visibility and interrupted-upload recovery limits.
+- `deploy/nginx/crm.proconsulting.uk.bootstrap.conf`: ACME-only HTTP; final `.conf` serves HTTPS after certificate issuance.
+- `deploy/CRM-DEPLOYMENT.md`: complete first-day CRM-only installation, DNS/TLS, process persistence, acceptance and rollback.
