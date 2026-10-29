@@ -1,7 +1,7 @@
 import { AppwriteError,createDocument,getDocument } from "./appwrite.server";
 import { rateLimit } from "./rate-limit.server";
 import type { Lead } from "~/admin/domain";
-const allowed = ['city','currentEducation','majorSubject','gradeScore','passingYear','targetDegree','targetIntake','budgetRange','needScholarship','englishTest','hasRefusal','studyGap','notes','message','countryOfResidence','serviceType','blogSlug','blogTitle'];
+const allowed = ['city','currentEducation','majorSubject','gradeScore','passingYear','targetDegree','targetIntake','budgetRange','needScholarship','englishTest','hasRefusal','studyGap','notes','message','countryOfResidence','serviceType','blogSlug','blogTitle','enquiringAs','destination','originPath','serviceContext'];
 export async function captureLead(request:Request,input:Record<string,unknown>) {
  const origin=request.headers.get('Origin');
  if(!origin||origin!==new URL(request.url).origin)throw new Response('Request origin rejected',{status:403});

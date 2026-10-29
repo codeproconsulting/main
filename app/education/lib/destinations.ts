@@ -17,31 +17,184 @@ export type Destination = {
 };
 
 export const destinations: Destination[] = [
-  { id: 1, name: "UK", flagIcon: "https://flagcdn.com/w40/gb.png", image: "/destinations/UK.webp", link: "/education/destinations/uk", description: "World-class universities, short courses, and strong post-study work options.", tag: "World-class rankings", longDescription: "The United Kingdom is home to some of the world's most prestigious universities, including Oxford, Cambridge, and institutions across London, Edinburgh, and Manchester. UK degrees are recognised globally and often completed in three years for undergraduates, with one-year master's programmes widely available. The Graduate Route allows international students to stay and work for two years (or three for PhD graduates) after completing their degree. From business and law to engineering and the arts, UK institutions offer a huge range of courses taught in English, with strong links to industry and research.", highlights: ["Short, intensive degrees (e.g. 3-year BA, 1-year MSc)", "Graduate Route: 2–3 years post-study work", "Globally recognised qualifications", "Diverse cities and strong student support"] },
-  { id: 2, name: "New Zealand", flagIcon: "https://flagcdn.com/w40/nz.png", image: "/destinations/new_zealand.webp", link: "/education/destinations/new-zealand", description: "Small class sizes, practical learning, and a safe, friendly environment.", tag: "Safe & friendly", longDescription: "New Zealand offers a high quality of life, stunning landscapes, and universities that rank among the world's best. Class sizes are typically smaller than in larger countries, so you get more direct contact with lecturers and a practical, hands-on approach to learning. International students can work part-time during term and full-time in holidays, and may be eligible for post-study work rights. New Zealand is known for its welcoming culture, safety, and focus on work–life balance, making it an attractive choice for students who want both a strong education and a great lifestyle.", highlights: ["Small class sizes and practical learning", "Post-study work and part-time work options", "Safe, welcoming, English-speaking environment", "Strong in agriculture, tourism, and tech"] },
-  { id: 3, name: "France", flagIcon: "https://flagcdn.com/w40/fr.png", image: "/destinations/France.webp", link: "/education/destinations/france", description: "Prestigious grandes écoles, arts, and innovation in the heart of Europe.", tag: "Culture & excellence", longDescription: "France combines world-famous culture with top-tier education. Grandes écoles and universities offer programmes in business, engineering, arts, and humanities, with a growing number of courses taught in English. Tuition at public universities remains relatively low for EU and international students, and major cities like Paris, Lyon, and Toulouse are hubs for innovation and research. Studying in France means access to the wider EU job market, rich cultural life, and a high quality of life.", highlights: ["Grandes écoles and renowned universities", "Affordable public university tuition", "Many English-taught programmes", "EU access and vibrant student cities"] },
-  { id: 4, name: "Spain", flagIcon: "https://flagcdn.com/w40/es.png", image: "/destinations/Spain.webp", link: "/education/destinations/spain", description: "Vibrant student life, affordable tuition, and Spanish language programmes.", tag: "Sun & study", longDescription: "Spain offers vibrant cities, a warm climate, and universities that attract students from across Europe and the world. Tuition fees are generally affordable, and living costs in many cities are lower than in northern Europe. You can study in Spanish or choose from a growing number of English-taught degrees in business, engineering, and tourism. From Barcelona and Madrid to Valencia and Seville, Spain combines strong academic options with a relaxed, social student lifestyle.", highlights: ["Affordable tuition and cost of living", "Spanish and English-taught programmes", "Vibrant student life and culture", "EU member with Schengen access"] },
-  { id: 5, name: "Australia", flagIcon: "https://flagcdn.com/w40/au.png", image: "/destinations/Australia.webp", link: "/education/destinations/australia", description: "Leading universities, relaxed lifestyle, and post-study work rights.", tag: "Work rights", longDescription: "Australia is a top choice for international students seeking high-ranked universities, a relaxed lifestyle, and clear post-study work pathways. Institutions in Sydney, Melbourne, Brisbane, and Perth offer a wide range of programmes, with strong emphasis on research and employability. The Temporary Graduate visa allows eligible graduates to stay and work for two to six years depending on qualification level. Australia's diverse society, outdoor lifestyle, and English-speaking environment make it easy to settle in.", highlights: ["Post-study work visa (2–6 years depending on level)", "Top-ranked universities and research", "English-speaking, multicultural society", "Strong employment and quality of life"] },
-  { id: 6, name: "Ireland", flagIcon: "https://flagcdn.com/w40/ie.png", image: "/destinations/Ireland.webp", link: "/education/destinations/ireland", description: "English-speaking EU hub with strong tech and pharma links.", tag: "EU gateway", longDescription: "Ireland is the only English-speaking country in the eurozone and a major hub for tech, pharma, and finance. Universities in Dublin, Cork, and Galway offer internationally recognised degrees and close ties to global companies with European HQs in Ireland. Graduates can access the Irish and wider EU job market, and the Third Level Graduate Scheme allows non-EU students to stay and seek employment after finishing their studies. Friendly, safe, and well connected, Ireland is ideal for students who want an English-language education with a strong EU career angle.", highlights: ["English-speaking EU member", "Tech, pharma, and finance hub", "Graduate scheme for post-study stay", "Globally recognised universities"] },
-  { id: 7, name: "Sweden", flagIcon: "https://flagcdn.com/w40/se.png", image: "/destinations/Sweden.webp", link: "/education/destinations/sweden", description: "Innovation, sustainability, and many English-taught programmes.", tag: "Innovation", longDescription: "Sweden is known for innovation, sustainability, and a high standard of living. Universities in Stockholm, Lund, Uppsala, and Gothenburg offer hundreds of English-taught master's programmes and a collaborative, research-driven approach to learning. Although tuition applies for non-EU students, scholarships are available, and the quality of education and quality of life are consistently ranked among the world's best. Sweden's strong focus on equality, design, and technology makes it a great fit for students in engineering, business, and the sciences.", highlights: ["Many English-taught master's programmes", "Innovation and sustainability focus", "High quality of life and equality", "Strong research and industry links"] },
+  { id: 1, name: "UK", flagIcon: "https://flagcdn.com/w40/gb.png", image: "/destinations/UK.webp", link: "/education/destinations/study-in-uk", description: "Plan your UK studies with clear course comparisons, funding checks and Student visa preparation.", tag: "UK Universities", longDescription: "The United Kingdom offers world-recognised degrees across leading universities. Degrees are typically three years for undergraduate programmes, with one-year master's degrees widely available. From business and law to computing and engineering, UK higher education institutions offer courses taught in English with strong research and academic traditions.", highlights: ["Structured degrees (e.g. 3-year BA, 1-year MSc)", "Post-study Graduate visa options subject to rules in force", "Globally recognised qualifications", "Diverse cities and academic support"] },
+  { id: 2, name: "New Zealand", flagIcon: "https://flagcdn.com/w40/nz.png", image: "/destinations/new_zealand.webp", link: "/education/destinations/study-in-new-zealand", description: "Compare New Zealand courses, family costs, funding and visa steps with ProConsulting.", tag: "Safe & friendly", longDescription: "New Zealand offers a high quality of life, stunning landscapes, and universities that rank among the world's best. Class sizes are typically smaller than in larger countries, so you get more direct contact with lecturers and a practical, hands-on approach to learning. International students can work part-time during term and full-time in holidays, and may be eligible for post-study work rights. New Zealand is known for its welcoming culture, safety, and focus on work-life balance, making it an attractive choice for students who want both a strong education and a great lifestyle.", highlights: ["Small class sizes and practical learning", "Post-study work and part-time work options", "Safe, welcoming, English-speaking environment", "Strong in agriculture, tourism, and tech"] },
+  { id: 3, name: "France", flagIcon: "https://flagcdn.com/w40/fr.png", image: "/destinations/France.webp", link: "/education/destinations/study-in-france", description: "Compare French courses, degree recognition, fees, funding and application routes with ProConsulting.", tag: "Degrees & Études", longDescription: "A course can look right until the fees or degree details change your plans. Start with the award, language and full cost before choosing a French institution. ProConsulting helps you compare your options and understand the next application step. Bring your study goals and questions to a free assessment.", highlights: ["National degrees vs institutional awards", "Études en France and direct application routes", "Transparent non-EU fee and budget checks", "Campus France review and long-stay visa guidance"] },
+  { id: 4, name: "Spain", flagIcon: "https://flagcdn.com/w40/es.png", image: "/destinations/Spain.webp", link: "/education/destinations/study-in-spain", description: "Compare Spanish courses, degree types, tuition, language needs and study visa steps with ProConsulting.", tag: "European degrees", longDescription: "A course can look affordable until you check the award, language and housing costs. Start with those details before you pay a deposit. ProConsulting helps you compare Spanish study options against your grades, goals and family budget. We can discuss admission steps, funding questions and the study visa route that fits your plans.", highlights: ["Official Máster Universitario vs títulos propios", "English-taught vs Spanish daily life checks", "Transparent public and private fee guidance", "Study visa and stay authorization support"] },
+  { id: 5, name: "Australia", flagIcon: "https://flagcdn.com/w40/au.png", image: "/destinations/Australia.webp", link: "/education/destinations/study-in-australia", description: "Compare Australian courses, tuition, living costs and Student visa steps with ProConsulting.", tag: "Course fit & costs", longDescription: "A course can look right until the full cost becomes clear. Before you pay a deposit, check what you will study. Check what your family can fund and what the visa requires. ProConsulting helps you compare Australian study options against your grades and plans. Start with course fit, then review costs, entry rules and next steps.", highlights: ["Course fit and CRICOS validation", "Transparent living and visa fund checks", "Clear Genuine Student guidance", "Post-study and family rule checks"] },
+  { id: 6, name: "Ireland", flagIcon: "https://flagcdn.com/w40/ie.png", image: "/destinations/Ireland.webp", link: "/education/destinations/study-in-ireland", description: "Compare Irish courses, eligible programmes, housing costs, funding and student visa steps with ProConsulting.", tag: "Eligible Degrees", longDescription: "A course offer does not tell you whether housing, funding and visa plans will work. Check those together before committing to study in Ireland. ProConsulting helps you compare courses and understand the next application step. Start with a free assessment of your study plans.", highlights: ["ILEP and TrustEd Ireland register checks", "Housing costs and payment timing", "Government of Ireland scholarship checks", "Third Level Graduate Programme planning"] },
+  { id: 7, name: "Sweden", flagIcon: "https://flagcdn.com/w40/se.png", image: "/destinations/Sweden.webp", link: "/education/destinations/study-in-sweden", description: "Innovation, sustainability, and many English-taught programmes.", tag: "Innovation", longDescription: "Sweden is known for innovation, sustainability, and a high standard of living. Universities in Stockholm, Lund, Uppsala, and Gothenburg offer hundreds of English-taught master's programmes and a collaborative, research-driven approach to learning. Although tuition applies for non-EU students, scholarships are available, and the quality of education and quality of life are consistently ranked among the world's best. Sweden's strong focus on equality, design, and technology makes it a great fit for students in engineering, business, and the sciences.", highlights: ["Many English-taught master's programmes", "Innovation and sustainability focus", "High quality of life and equality", "Strong research and industry links"] },
   { id: 8, name: "Malta", flagIcon: "https://flagcdn.com/w40/mt.png", image: "/destinations/Malta.webp", link: "/education/destinations/malta", description: "Sun, sea, and English-medium education in the Mediterranean.", tag: "Mediterranean", longDescription: "Malta offers English-medium education in a sunny, safe EU country with a rich history and a growing number of international students. The University of Malta and private institutions provide degrees in business, hospitality, and other fields, often at competitive fees. As an EU member, Malta allows free movement and work rights across the bloc. Small size, year-round sunshine, and a relaxed Mediterranean lifestyle make Malta an attractive option for students who want an English-language degree in a compact, friendly environment.", highlights: ["English-medium education in the EU", "Sunny, safe, Mediterranean lifestyle", "Competitive fees and EU work rights", "Growing international student community"] },
   { id: 9, name: "Cyprus", flagIcon: "https://flagcdn.com/w40/cy.png", image: "/destinations/Cyprus.webp", link: "/education/destinations/cyprus", description: "Affordable EU degrees and a growing international student community.", tag: "Affordable EU", longDescription: "Cyprus combines EU membership with affordable tuition and living costs and a warm, welcoming environment. Universities in Nicosia, Limassol, and other cities offer programmes in business, health, engineering, and more, many in English. International students benefit from EU recognition of degrees and the chance to live in a safe, Mediterranean country. Cyprus is increasingly popular with students looking for value, sunshine, and an English-taught EU degree.", highlights: ["Affordable tuition and cost of living", "EU-recognised degrees, many in English", "Safe, sunny, Mediterranean setting", "Growing international student base"] },
   { id: 10, name: "Dubai", flagIcon: "https://flagcdn.com/w40/ae.png", image: "/destinations/Dubai.webp", link: "/education/destinations/dubai", description: "Global hub with branch campuses and business-focused programmes.", tag: "Global hub", longDescription: "Dubai has become a major education hub, hosting branch campuses of universities from the UK, Australia, and elsewhere. Programmes in business, engineering, and hospitality are tailored to a global, career-focused audience, and the city's tax-free environment and strategic location attract students and professionals from around the world. Studying in Dubai can open doors to internships and jobs in the UAE and the wider Gulf region, with a modern, multicultural lifestyle.", highlights: ["Branch campuses of international universities", "Business, engineering, and hospitality focus", "Global city with strong job market", "Tax-free, multicultural environment"] },
   { id: 11, name: "USA", flagIcon: "https://flagcdn.com/w40/us.png", image: "/destinations/USA.webp", link: "/education/destinations/usa", description: "The world's largest higher education system and top research.", tag: "Top research", longDescription: "The United States has the world's largest and most diverse higher education system, with thousands of colleges and universities offering every imaginable field of study. From Ivy League and top public research universities to liberal arts colleges and specialised schools, the USA leads in research, innovation, and global rankings. Flexible degree structures, generous funding and scholarship options, and strong career services make it a prime destination for ambitious students. Post-study work options (e.g. OPT) allow graduates to gain experience in the US job market.", highlights: ["Largest and most diverse higher education system", "World-leading research and rankings", "Flexible degrees and scholarship opportunities", "OPT and other post-study work options"] },
-  { id: 12, name: "Denmark", flagIcon: "https://flagcdn.com/w40/dk.png", image: "/destinations/Denmark.webp", link: "/education/destinations/denmark", description: "Quality of life, design, and English-taught degrees.", tag: "Quality of life", longDescription: "Denmark consistently ranks among the best countries for quality of life, happiness, and education. Universities in Copenhagen, Aarhus, and elsewhere offer many English-taught programmes in design, engineering, sustainability, and business. Teaching style is often collaborative and project-based. Although tuition applies for non-EU/EEA students, scholarships exist, and the high standard of living and strong welfare system make Denmark an attractive long-term base for study and career.", highlights: ["High quality of life and happiness rankings", "English-taught programmes in design and more", "Collaborative, project-based learning", "Strong welfare and work–life balance"] },
-  { id: 13, name: "Italy", flagIcon: "https://flagcdn.com/w40/it.png", image: "/destinations/Italy.webp", link: "/education/destinations/italy", description: "Art, architecture, and historic universities across the country.", tag: "Art & history", longDescription: "Italy is home to some of the world's oldest universities and unrivalled heritage in art, architecture, design, and engineering. From Milan and Rome to Florence, Bologna, and Turin, institutions offer programmes in Italian and a growing number in English. Tuition at public universities is often relatively low, and living in Italy means access to EU mobility and a unique cultural and lifestyle experience. Ideal for students of design, arts, humanities, and engineering.", highlights: ["Historic universities and arts heritage", "Affordable public university tuition", "Growing English-taught offer", "EU member with rich culture and lifestyle"] },
-  { id: 14, name: "Hungary", flagIcon: "https://flagcdn.com/w40/hu.png", image: "/destinations/Hungary.webp", link: "/education/destinations/hungary", description: "Affordable EU study, medicine and engineering in English.", tag: "Affordable EU", longDescription: "Hungary offers affordable tuition and living costs within the EU, with a strong tradition in medicine, dentistry, engineering, and business. Budapest and other cities host universities that teach in English and attract thousands of international students each year. Degrees are EU-recognised, and the central European location makes travel and cultural exchange easy. Hungary is a practical choice for students seeking quality, value, and an English-medium degree in the heart of Europe.", highlights: ["Affordable tuition and cost of living", "Strong medicine, dentistry, and engineering in English", "EU-recognised degrees", "Central European location and culture"] },
+  { id: 12, name: "Denmark", flagIcon: "https://flagcdn.com/w40/dk.png", image: "/destinations/Denmark.webp", link: "/education/destinations/study-in-denmark", description: "Compare Denmark courses, funding questions and study application steps with ProConsulting. Start with a free assessment.", tag: "Subject Fit & Fees", longDescription: "An appealing course title can hide a subject gap. Before you spend on a Danish application, check whether your previous study matches the programme you want. ProConsulting helps you compare course requirements with your academic history.", highlights: ["Subject history and entry fit checks", "Danish institution types and award checks", "Realistic tuition, housing and living budgets", "Residence permit and family regulation guidance"] },
+  { id: 13, name: "Italy", flagIcon: "https://flagcdn.com/w40/it.png", image: "/destinations/Italy.webp", link: "/education/destinations/study-in-italy", description: "Plan study in Italy with guidance on university admission, regional scholarships, documents, budgets and visa steps.", tag: "Scholarships & Culture", longDescription: "Italy is home to some of the world's oldest universities and unrivalled heritage in art, architecture, design, and engineering. From Milan and Rome to Florence, Bologna, and Turin, institutions offer programmes in Italian and a growing number in English. Tuition at public universities is often relatively low, and living in Italy means access to EU mobility and a unique cultural and lifestyle experience. Ideal for students of design, arts, humanities, and engineering.", highlights: ["English-taught degree options", "Regional scholarship (DSU / ER.GO) guidance", "Universitaly pre-enrolment support", "Transparent budgeting and visa preparation"] },
+  { id: 14, name: "Hungary", flagIcon: "https://flagcdn.com/w40/hu.png", image: "/destinations/Hungary.webp", link: "/education/destinations/study-in-hungary", description: "Plan study in Hungary around course recognition, real costs, scholarship conditions and residence requirements.", tag: "Course & Funding", longDescription: "An English-taught course can still leave big questions about recognition, funding and life after graduation. Answer those before paying for a place in Hungary. ProConsulting helps you compare courses and understand the next application step. Start with a free assessment of your study plans.", highlights: ["Exact qualification & professional recognition", "Tuition vs full living and deposit checks", "Stipendium Hungaricum vs self-funding", "Study residence and family rule checks"] },
   { id: 15, name: "Turkey", flagIcon: "https://flagcdn.com/w40/tr.png", image: "/destinations/Turkey.webp", link: "/education/destinations/turkey", description: "Bridge between Europe and Asia with growing international programmes.", tag: "Crossroads", longDescription: "Turkey sits at the crossroads of Europe and Asia and has invested heavily in higher education and internationalisation. Universities in Istanbul, Ankara, and Izmir offer a growing number of programmes in English in fields such as business, engineering, and international relations. Tuition and living costs are often lower than in Western Europe, and the country's rich history, culture, and strategic position make it an interesting option for students seeking an international experience and career links to both Europe and the wider region.", highlights: ["Growing English-taught programmes", "Strategic location between Europe and Asia", "Affordable costs and rich culture", "Strong focus on internationalisation"] },
-  { id: 16, name: "Canada", flagIcon: "https://flagcdn.com/w40/ca.png", image: "/destinations/Canada.webp", link: "/education/destinations/canada", description: "Safe, welcoming, with quality education and immigration pathways.", tag: "Pathway to PR", longDescription: "Canada is known for safety, diversity, and high-quality education with clear pathways to work and permanent residence. Universities and colleges across Toronto, Vancouver, Montreal, and other cities offer a wide range of programmes, and the Post-Graduation Work Permit allows eligible graduates to gain Canadian work experience. Many international students use their study and work experience as a step toward permanent residence. Canada's welcoming policies and multicultural society make it one of the most popular study destinations globally.", highlights: ["Pathways to work and permanent residence", "Post-Graduation Work Permit for graduates", "Safe, diverse, high-quality education", "Strong universities and colleges nationwide"] },
-  { id: 17, name: "Finland", flagIcon: "https://flagcdn.com/w40/fi.png", image: "/destinations/Finland.webp", link: "/education/destinations/finland", description: "World-leading education system and innovation.", tag: "Education leader", longDescription: "Finland is renowned for its education system, innovation, and quality of life. Universities and universities of applied sciences offer programmes in English in technology, design, business, and environmental sciences. Although tuition applies for non-EU students, scholarships are available, and the teaching approach is practical and collaborative. Finland's focus on equality, sustainability, and research makes it a strong choice for students interested in tech, design, and applied sciences.", highlights: ["World-leading education and innovation", "English-taught programmes in tech and design", "Scholarships for international students", "High quality of life and equality"] },
-  { id: 18, name: "Germany", flagIcon: "https://flagcdn.com/w40/de.png", image: "/destinations/Germany.webp", link: "/education/destinations/germany", description: "Low or no tuition fees and strong engineering and research.", tag: "Tuition-free options", longDescription: "Germany is one of the most popular study destinations in Europe, offering low or no tuition fees at public universities for domestic and international students alike. Institutions in Berlin, Munich, Hamburg, and across the country are leaders in engineering, natural sciences, and research. A growing number of programmes are taught in English, especially at master's level. Strong economy, central EU location, and post-study work options make Germany an excellent choice for career-focused students.", highlights: ["Low or no tuition at public universities", "Top engineering and research", "Many English-taught programmes", "Strong economy and EU job market access"] },
+  { id: 16, name: "Canada", flagIcon: "https://flagcdn.com/w40/ca.png", image: "/destinations/Canada.webp", link: "/education/destinations/study-in-canada", description: "Plan your Canadian studies with course-fit guidance, DLI and PGWP checks, realistic funding advice and study permit preparation.", tag: "Top Universities", longDescription: "Canada is known for safety, diversity, and high-quality education with clear pathways to work and permanent residence. Universities and colleges across Toronto, Vancouver, Montreal, and other cities offer a wide range of programmes, and the Post-Graduation Work Permit allows eligible graduates to gain Canadian work experience. Many international students use their study and work experience as a step toward permanent residence. Canada's welcoming policies and multicultural society make it one of the most popular study destinations globally.", highlights: ["Pathways to work and permanent residence", "Post-Graduation Work Permit for graduates", "Safe, diverse, high-quality education", "Strong universities and colleges nationwide"] },
+  { id: 17, name: "Finland", flagIcon: "https://flagcdn.com/w40/fi.png", image: "/destinations/Finland.webp", link: "/education/destinations/study-in-finland", description: "Compare Finland courses, funding questions and study application steps with ProConsulting. Start with a free assessment.", tag: "University vs UAS", longDescription: "A university ranking cannot tell you whether a course suits your next step. In Finland, the choice between a university and a university of applied sciences deserves a closer look. ProConsulting helps you compare your academic background, course options and funding position.", highlights: ["University vs University of Applied Sciences (UAS)", "Joint and separate Studyinfo application routes", "Tuition waiver vs actual living cost planning", "Migri student residence permit support"] },
+  { id: 18, name: "Germany", flagIcon: "https://flagcdn.com/w40/de.png", image: "/destinations/Germany.webp", link: "/education/destinations/study-in-germany", description: "Explore Germany study options: bachelor’s and master’s eligibility, tuition exceptions, funding and visa steps.", tag: "Tuition-Free Options", longDescription: "Germany offers strong academic pathways across public universities, universities of applied sciences and private institutions. Many state programmes charge no tuition fees, with only semester contributions required. From engineering and natural sciences to business and humanities, German institutions provide world-class degrees with recognized post-study opportunities.", highlights: ["Tuition-free options at most public universities", "Recognised bachelor's and master's degree pathways", "Clear blocked-account and visa financing guidance", "English-taught and German-taught study options"] },
   { id: 19, name: "Lithuania", flagIcon: "https://flagcdn.com/w40/lt.png", image: "/destinations/Lithuania.webp", link: "/education/destinations/lithuania", description: "Affordable EU study and a growing English-taught offer.", tag: "Affordable EU", longDescription: "Lithuania offers affordable EU education with a growing number of English-taught programmes in Vilnius, Kaunas, and other cities. Tuition and living costs are among the lowest in the EU, while degrees are fully recognised across the bloc. Fields such as business, IT, and health are well represented. Lithuania is a practical choice for students who want an EU degree, modern facilities, and a safe, compact country with easy access to the rest of Europe.", highlights: ["Affordable tuition and living in the EU", "Growing English-taught programmes", "EU-recognised degrees", "Safe, modern, well-connected"] },
-  { id: 20, name: "Malaysia", flagIcon: "https://flagcdn.com/w40/my.png", image: "/destinations/Malaysia.webp", link: "/education/destinations/malaysia", description: "Rising hub with twinning programmes and lower costs.", tag: "Value & growth", longDescription: "Malaysia has emerged as a popular study destination in Asia, offering twinning and branch campus programmes with UK and Australian universities at a fraction of the cost of studying in those countries. Kuala Lumpur and other cities host a mix of local and international institutions in business, engineering, and hospitality. English is widely used in higher education. Malaysia appeals to students who want internationally recognised qualifications, a multicultural environment, and lower tuition and living costs.", highlights: ["Twinning and branch campuses (UK, Australian partners)", "Lower tuition and living costs", "English-medium education", "Multicultural and growing hub"] },
+  { id: 20, name: "Malaysia", flagIcon: "https://flagcdn.com/w40/my.png", image: "/destinations/Malaysia.webp", link: "/education/destinations/study-in-malaysia", description: "Compare Malaysia courses, funding questions and study application steps with ProConsulting. Start with a free assessment.", tag: "Award & Route Checks", longDescription: "A familiar university name does not answer every question about a Malaysian course. The campus, award and any transfer arrangement can change what you are actually buying. ProConsulting helps you compare the course, awarding institution and full study plan.", highlights: ["Exact qualification & award checks", "Malaysian vs branch campus differences", "Transparent multi-stage cost comparison", "EMGS and student pass sequence support"] },
 ];
 
-/** Get destination by URL slug (e.g. "uk" -> UK, "new-zealand" -> New Zealand). */
+/**
+ * Resolves raw URL slug into canonical destination slug.
+ * Handles queries like "study in italy", "study in uk", "study in germany", "study in sweden",
+ * legacy queries with "from pakistan", URI encoded versions, and kebab-cased slugs.
+ */
+export function resolveDestinationSlug(rawSlug: string = ""): string {
+  if (!rawSlug) return "";
+  let decoded = "";
+  try {
+    decoded = decodeURIComponent(rawSlug).trim().toLowerCase();
+  } catch {
+    decoded = rawSlug.trim().toLowerCase();
+  }
+
+  // Normalize separators (dashes, underscores, pluses) to spaces
+  const normalized = decoded.replace(/[-_+]/g, " ").replace(/\s+/g, " ").trim();
+
+  if (
+    normalized === "uk" ||
+    normalized.includes("study in uk") ||
+    normalized.includes("study in the uk") ||
+    normalized.includes("united kingdom")
+  ) {
+    return "uk";
+  }
+
+  if (
+    normalized === "germany" ||
+    normalized.includes("study in germany") ||
+    normalized.includes("deutschland")
+  ) {
+    return "germany";
+  }
+
+  if (
+    normalized === "italy" ||
+    normalized.includes("study in italy") ||
+    normalized.includes("study in the italy") ||
+    normalized.includes("italia")
+  ) {
+    return "italy";
+  }
+
+  if (
+    normalized === "sweden" ||
+    normalized === "swedan" ||
+    normalized.includes("study in sweden") ||
+    normalized.includes("study in swedan")
+  ) {
+    return "sweden";
+  }
+
+  if (
+    normalized === "new zealand" ||
+    normalized === "new-zealand" ||
+    normalized === "nz" ||
+    normalized.includes("study in new zealand") ||
+    normalized.includes("new zealand")
+  ) {
+    return "new-zealand";
+  }
+
+  if (
+    normalized === "canada" ||
+    normalized.includes("study in canada")
+  ) {
+    return "canada";
+  }
+
+  if (
+    normalized === "australia" ||
+    normalized.includes("study in australia")
+  ) {
+    return "australia";
+  }
+
+  if (
+    normalized === "spain" ||
+    normalized.includes("study in spain") ||
+    normalized.includes("espana")
+  ) {
+    return "spain";
+  }
+
+  if (
+    normalized === "france" ||
+    normalized.includes("study in france")
+  ) {
+    return "france";
+  }
+
+  if (
+    normalized === "hungary" ||
+    normalized.includes("study in hungary")
+  ) {
+    return "hungary";
+  }
+
+  if (
+    normalized === "ireland" ||
+    normalized.includes("study in ireland")
+  ) {
+    return "ireland";
+  }
+
+  if (
+    normalized === "malaysia" ||
+    normalized.includes("study in malaysia")
+  ) {
+    return "malaysia";
+  }
+
+  if (
+    normalized === "finland" ||
+    normalized.includes("study in finland")
+  ) {
+    return "finland";
+  }
+
+  if (
+    normalized === "denmark" ||
+    normalized.includes("study in denmark")
+  ) {
+    return "denmark";
+  }
+
+  // Check against all destinations
+  for (const d of destinations) {
+    const slugName = d.link.replace(/^\/education\/destinations\//, "").toLowerCase();
+    const dName = d.name.toLowerCase();
+    if (
+      normalized === slugName ||
+      normalized === dName ||
+      normalized.includes(`study in ${dName}`) ||
+      normalized.includes(`study in ${slugName}`)
+    ) {
+      return slugName;
+    }
+  }
+
+  // Fallback to normalized kebab case
+  return decoded.replace(/\s+/g, "-");
+}
+
+/** Get destination by URL slug (e.g. "uk" -> UK, "study-in-uk-from-pakistan" -> UK, "study-in-sweden-from-pakistan" -> Sweden). */
 export function getDestinationBySlug(slug: string): Destination | undefined {
-  return destinations.find((d) => d.link === `/education/destinations/${slug}`);
+  const resolved = resolveDestinationSlug(slug);
+  return destinations.find((d) => {
+    const linkSlug = d.link.replace(/^\/education\/destinations\//, "");
+    return (
+      resolveDestinationSlug(linkSlug) === resolved ||
+      d.name.toLowerCase() === resolved ||
+      linkSlug.toLowerCase() === resolved ||
+      d.link === `/education/destinations/${resolved}`
+    );
+  });
 }
 
 /** All destination slugs for sitemap etc. */

@@ -8,26 +8,70 @@ import { Globe, GraduationCap, ArrowRight } from "lucide-react";
 import type { Route } from "./+types/destinations";
 import { pageMeta, canonicalLink } from "~/education/lib/seo";
 
-const TITLE = "Study Destinations | ProConsulting";
+const TITLE = "Study Abroad Destinations for Pakistani Students | ProConsulting";
 const DESCRIPTION =
-  "Explore study abroad destinations: UK, USA, Canada, Australia, New Zealand, France, Spain, Ireland, Germany, Dubai, and more. Expert guidance for your academic journey.";
+  "Compare study abroad destinations and explore country-specific guidance on courses, costs, applications and scholarships for Pakistani students.";
+const CANONICAL_URL = "https://proconsulting.uk/education/destinations";
+
+const DESTINATIONS_SCHEMA = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "CollectionPage",
+      "@id": "https://proconsulting.uk/education/destinations#webpage",
+      "url": CANONICAL_URL,
+      "name": TITLE,
+      "description": DESCRIPTION,
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "Proconsulting",
+        "url": "https://proconsulting.uk"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://proconsulting.uk/education/destinations#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://proconsulting.uk/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Destinations",
+          "item": CANONICAL_URL
+        }
+      ]
+    }
+  ]
+};
 
 export function meta(args: Route.MetaArgs) {
-  const pathname = args?.location?.pathname ?? "/education/destinations";
+  const pathname = "/education/destinations";
   return [
     { title: TITLE },
     { name: "description", content: DESCRIPTION },
     ...pageMeta({ title: TITLE, description: DESCRIPTION, pathname }),
+    {
+      "script:ld+json": DESTINATIONS_SCHEMA,
+    },
   ];
 }
 
-export function links(args?: { location?: { pathname: string }; params?: { slug?: string } }) {
-  return canonicalLink(args?.location?.pathname ?? "/education/destinations");
+export function links() {
+  return [{ rel: "canonical", href: CANONICAL_URL }];
 }
 
 export default function Destinations() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(DESTINATIONS_SCHEMA) }}
+      />
       <Navbar />
 
       {/* Title area – light header */}
@@ -45,11 +89,11 @@ export default function Destinations() {
                 <span className="text-xs font-semibold uppercase tracking-[0.2em]">Study Abroad</span>
               </div>
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 tracking-tight">
-                Choose your destination
+                Study Abroad Destinations for Pakistani Students
               </h1>
               <div className="mt-2 w-16 h-1 rounded-full bg-[#FF4D6D]" />
               <p className="mt-5 text-slate-600 text-lg max-w-2xl leading-relaxed">
-                World-class universities, vibrant cultures, and life-changing experiences. We guide you from application to arrival.
+                Compare study abroad destinations by academic fit, total cost, language requirements and application steps—not just a country name. Explore the country pages to decide what deserves a closer look.
               </p>
             </div>
             <Link

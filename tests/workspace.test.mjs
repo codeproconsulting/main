@@ -125,3 +125,10 @@ test('CSV exports neutralize spreadsheet formulas and quote embedded text',async
  assert.equal(reports.csvCell('=HYPERLINK("https://example.invalid")'),'"\'=HYPERLINK(""https://example.invalid"")"');
  assert.equal(reports.csvCell('normal,"value"'),'"normal,""value"""');
 });
+
+test('upstream assessment attribution survives unified CRM intake',async()=>{
+ let saved;globalThis.fetch=async(_url,options)=>{saved=JSON.parse(options.body).data;return reply({...saved,$id:'33333333-3333-4333-8333-333333333333'});};
+ const req=request('/education/contact',{method:'POST',headers:{Origin:'http://localhost:5173'}});
+ await intake.captureLead(req,{fullName:'Synthetic Contact',email:'synthetic@example.invalid',phone:'+441234567890',submissionId:'33333333-3333-4333-8333-333333333333',source:'/education/contact',service:'Education',enquiringAs:'Parent',destination:'denmark',originPath:'/education/destinations/study-in-denmark',serviceContext:'Denmark study assessment'});
+ const details=JSON.parse(saved.details);assert.equal(details.enquiringAs,'Parent');assert.equal(details.destination,'denmark');assert.equal(details.originPath,'/education/destinations/study-in-denmark');assert.equal(details.serviceContext,'Denmark study assessment');
+});

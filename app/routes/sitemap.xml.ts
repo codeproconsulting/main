@@ -17,7 +17,6 @@ const STATIC_PATHS = [
   "/education",
   "/education/about",
   "/education/contact",
-  "/education/apply",
   "/education/destinations",
   "/education/courses",
   "/education/universities",
@@ -38,13 +37,13 @@ const STATIC_PATHS = [
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
-  const base = getBaseUrl() || url.origin;
+  const base = getBaseUrl() || "https://proconsulting.uk";
 
   const now = new Date().toISOString().slice(0, 10);
   const urls: string[] = [];
 
   for (const path of STATIC_PATHS) {
-    const loc = `${base}${path}`;
+    const loc = path === "" ? `${base}/` : `${base}${path}`;
     urls.push(`  <url><loc>${escapeXml(loc)}</loc><lastmod>${now}</lastmod></url>`);
   }
 
@@ -53,12 +52,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
     const eduPosts = await getEducationPosts();
     for (const post of eduPosts) {
       const loc = `${base}/education/blog/${post.slug}`;
-      const lastmod = post.publishedAt
-        ? new Date(post.publishedAt).toISOString().slice(0, 10)
+      const published = typeof post.publishedAt === "string" ? post.publishedAt : "";
+      const lastmod = published
+        ? new Date(published).toISOString().slice(0, 10)
         : now;
       urls.push(`  <url><loc>${escapeXml(loc)}</loc><lastmod>${lastmod}</lastmod></url>`);
     }
-  } catch {}
+  } catch { }
 
   const eduServices = getEducationServiceSlugs();
   for (const slug of eduServices) {
@@ -88,7 +88,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
         : now;
       urls.push(`  <url><loc>${escapeXml(loc)}</loc><lastmod>${lastmod}</lastmod></url>`);
     }
-  } catch {}
+  } catch { }
 
   const immServices = getImmigrationServiceSlugs();
   for (const slug of immServices) {

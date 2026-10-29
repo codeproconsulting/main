@@ -99,7 +99,7 @@
     "Remote locks fail closed after a process crash; stale-lock recovery and worker crash/retry behavior need a dedicated verification session.",
     "Rich editor, scheduling, revision restore, appointment conflicts, staff deactivation, uploads/downloads, exports, and worker delivery need focused tests beyond the original foundation suite.",
     "Two private buckets were created with antivirus enabled, but actual upload/scan/download behavior is not yet verified.",
-    "The repository contains uncommitted changes spanning earlier work; do not reset or discard them when resuming."
+    "Development work is checkpointed on codex/crm-workspace. It contains explicitly staged modules; do not merge into main or deploy before their acceptance checks pass."
   ],
   "externalState": {
     "database": "proconsulting",
@@ -109,31 +109,33 @@
     "blogProvider": "Ghost unchanged",
     "productionDeployment": "not performed",
     "workerOnVPS": "not started",
-    "ownerPassword": "owner must set via Appwrite Console"
+    "ownerPassword": "owner must set via Appwrite Console",
+    "gitBranch": "codex/crm-workspace",
+    "integratedUpstream": "origin/main through 407977c (16 commits)"
   },
   "checks": [
     {
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-10-29T07:51:41.504Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-o2fuf1/typecheck.log"
+      "checkedAt": "2026-10-29T07:55:37.712Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-TfuwZn/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-10-29T07:51:41.959Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-o2fuf1/test.log"
+      "checkedAt": "2026-10-29T07:55:38.212Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-TfuwZn/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-10-29T07:51:45.774Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-o2fuf1/build.log"
+      "checkedAt": "2026-10-29T07:55:43.898Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-TfuwZn/build.log"
     }
   ],
-  "updatedAt": "2026-10-29T07:52:11.554Z",
-  "verifiedSourceFingerprint": "355213618bcc74fa8aca73ef7c033f94bc659d7272f687ff51782c61e97fc2b4"
+  "updatedAt": "2026-10-29T07:56:47.398Z",
+  "verifiedSourceFingerprint": "9743360ca0550d457a601abe6371fbd6c64d075c2c4a9182035b12312c465725"
 }

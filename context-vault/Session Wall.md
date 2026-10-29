@@ -62,13 +62,13 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 - Remote locks fail closed after a process crash; stale-lock recovery and worker crash/retry behavior need a dedicated verification session.
 - Rich editor, scheduling, revision restore, appointment conflicts, staff deactivation, uploads/downloads, exports, and worker delivery need focused tests beyond the original foundation suite.
 - Two private buckets were created with antivirus enabled, but actual upload/scan/download behavior is not yet verified.
-- The repository contains uncommitted changes spanning earlier work; do not reset or discard them when resuming.
+- Development work is checkpointed on codex/crm-workspace. It contains explicitly staged modules; do not merge into main or deploy before their acceptance checks pass.
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-10-29T07:51:41.504Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-o2fuf1/typecheck.log`
-- **passed**: `npm run test` (2026-10-29T07:51:41.959Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-o2fuf1/test.log`
-- **passed**: `npm run build` (2026-10-29T07:51:45.774Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-o2fuf1/build.log`
+- **passed**: `npm run typecheck` (2026-10-29T07:55:37.712Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-TfuwZn/typecheck.log`
+- **passed**: `npm run test` (2026-10-29T07:55:38.212Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-TfuwZn/test.log`
+- **passed**: `npm run build` (2026-10-29T07:55:43.898Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-TfuwZn/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -82,5 +82,7 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **productionDeployment**: not performed
 - **workerOnVPS**: not started
 - **ownerPassword**: owner must set via Appwrite Console
+- **gitBranch**: codex/crm-workspace
+- **integratedUpstream**: origin/main through 407977c (16 commits)
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

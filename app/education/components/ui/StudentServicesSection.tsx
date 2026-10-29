@@ -1,7 +1,7 @@
 "use client";
 
 import { Link } from "react-router";
-import { ArrowRight, Target, ScrollText, FileCheck, AppWindow } from "lucide-react";
+import { ArrowRight, Target, ScrollText, FileCheck, AppWindow, GraduationCap } from "lucide-react";
 
 const BRAND = {
   navy: "#0B1B3A",
@@ -41,6 +41,14 @@ const services = [
       "We offer exam preparation courses for students who wish to study in the UK, Australia, Canada, USA and other top study destinations.",
     icon: AppWindow,
     link: "/education/services/test-prep",
+  },
+  {
+    id: 5,
+    title: "Scholarships & Funding",
+    description:
+      "Find scholarships that match your academic profile, degree, and budget. Profile evaluation, shortlist, and action plan with no false guarantees.",
+    icon: GraduationCap,
+    link: "/education/services/scholarships",
   },
 ];
 

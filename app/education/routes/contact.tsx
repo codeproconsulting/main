@@ -38,25 +38,71 @@ const BRAND = {
   gold: "#FFA700",
 };
 
+const TITLE = "Free Study Abroad Assessment | ProConsulting";
+const DESCRIPTION =
+  "Discuss your qualifications, study goals and budget with ProConsulting. Request a free initial study abroad assessment and understand your next steps.";
+const CANONICAL_URL = "https://proconsulting.uk/education/contact";
+
+const CONTACT_SCHEMA = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "ContactPage",
+      "@id": "https://proconsulting.uk/education/contact#webpage",
+      "url": CANONICAL_URL,
+      "name": TITLE,
+      "description": DESCRIPTION,
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "Proconsulting",
+        "url": "https://proconsulting.uk"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://proconsulting.uk/education/contact#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://proconsulting.uk/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Free Assessment",
+          "item": CANONICAL_URL
+        }
+      ]
+    }
+  ]
+};
+
 export function meta(args?: Route.MetaArgs) {
-  const pathname = args?.location?.pathname ?? "/education/contact";
-  const title = "Free Visa Assessment & Study Abroad Consultation | ProConsulting";
-  const description =
-    "Get an instant 100% free study abroad and visa assessment. Profile evaluation, university matching, scholarship checks, and visa readiness advisory.";
+  const pathname = "/education/contact";
   return [
-    { title },
-    { name: "description", content: description },
-    ...pageMeta({ title, description, pathname }),
+    { title: TITLE },
+    { name: "description", content: DESCRIPTION },
+    ...pageMeta({ title: TITLE, description: DESCRIPTION, pathname }),
+    {
+      "script:ld+json": CONTACT_SCHEMA,
+    },
   ];
 }
 
-export function links(args?: any) {
-  return canonicalLink(args?.location?.pathname ?? "/education/contact");
+export function links() {
+  return [{ rel: "canonical", href: CANONICAL_URL }];
 }
 
 export async function action({ request }: ActionFunctionArgs) {
   try {
     const formData = await request.formData();
+    const destination = (formData.get("destination") as string) || "";
+    const originPath = (formData.get("originPath") as string) || "";
+    const serviceContext = (formData.get("serviceContext") as string) || "";
+    const enquiringAs = (formData.get("enquiringAs") as string) || "Student";
+
     const applicantData = {
       fullName: (formData.get("fullName") as string) || "",
       email: (formData.get("email") as string) || "",
@@ -66,7 +112,7 @@ export async function action({ request }: ActionFunctionArgs) {
       majorSubject: (formData.get("majorSubject") as string) || "",
       gradeScore: (formData.get("gradeScore") as string) || "",
       passingYear: (formData.get("passingYear") as string) || "",
-      targetCountry: (formData.get("targetCountry") as string) || "",
+      targetCountry: (formData.get("targetCountry") as string) || (destination === "uk" ? "United Kingdom" : (destination === "germany" ? "Germany" : (destination === "france" ? "France" : (destination === "hungary" ? "Hungary" : (destination === "ireland" ? "Ireland" : ""))))),
       targetDegree: (formData.get("targetDegree") as string) || "",
       targetIntake: (formData.get("targetIntake") as string) || "",
       budgetRange: (formData.get("budgetRange") as string) || "",
@@ -75,6 +121,97 @@ export async function action({ request }: ActionFunctionArgs) {
       hasRefusal: (formData.get("hasRefusal") as string) || "",
       studyGap: (formData.get("studyGap") as string) || "",
       notes: (formData.get("notes") as string) || "",
+      enquiringAs,
+      destination:
+        destination === "uk"
+          ? "uk"
+          : destination === "germany"
+            ? "germany"
+            : destination === "italy"
+              ? "italy"
+              : destination === "new-zealand"
+                ? "new-zealand"
+                : destination === "canada"
+                  ? "canada"
+                  : destination === "sweden"
+                    ? "sweden"
+                    : destination === "australia"
+                      ? "australia"
+                      : destination === "spain"
+                        ? "spain"
+                        : destination === "france"
+                          ? "france"
+                          : destination === "hungary"
+                            ? "hungary"
+                            : destination === "ireland"
+                              ? "ireland"
+                              : destination === "malaysia"
+                                ? "malaysia"
+                                : destination === "finland"
+                                  ? "finland"
+                                  : destination === "denmark"
+                                    ? "denmark"
+                                    : undefined,
+      originPath:
+        destination === "uk"
+          ? "/education/destinations/study-in-uk"
+          : destination === "germany"
+            ? "/education/destinations/study-in-germany"
+            : destination === "italy"
+              ? "/education/destinations/study-in-italy"
+              : destination === "new-zealand"
+                ? "/education/destinations/study-in-new-zealand"
+                : destination === "canada"
+                  ? "/education/destinations/study-in-canada"
+                  : destination === "sweden"
+                    ? "/education/destinations/study-in-sweden"
+                    : destination === "australia"
+                      ? "/education/destinations/study-in-australia"
+                      : destination === "spain"
+                        ? "/education/destinations/study-in-spain"
+                        : destination === "france"
+                          ? "/education/destinations/study-in-france"
+                          : destination === "hungary"
+                            ? "/education/destinations/study-in-hungary"
+                            : destination === "ireland"
+                              ? "/education/destinations/study-in-ireland"
+                              : destination === "malaysia"
+                                ? "/education/destinations/study-in-malaysia"
+                                : destination === "finland"
+                                  ? "/education/destinations/study-in-finland"
+                                  : destination === "denmark"
+                                    ? "/education/destinations/study-in-denmark"
+                                    : originPath,
+      serviceContext:
+        destination === "uk"
+          ? "UK study assessment"
+          : destination === "germany"
+            ? "Germany study assessment"
+            : destination === "italy"
+              ? "Italy study assessment"
+              : destination === "new-zealand"
+                ? "New Zealand study assessment"
+                : destination === "canada"
+                  ? "Canada study assessment and application guidance"
+                  : destination === "sweden"
+                    ? "Sweden study application guidance"
+                    : destination === "australia"
+                      ? "Australia study assessment and application guidance"
+                      : destination === "spain"
+                        ? "Spain study assessment and application guidance"
+                        : destination === "france"
+                          ? "France study assessment and application guidance"
+                          : destination === "hungary"
+                            ? "Hungary study assessment and planning guidance"
+                            : destination === "ireland"
+                              ? "Ireland study assessment and planning guidance"
+                              : destination === "malaysia"
+                                ? "Malaysia study assessment and application guidance"
+                                : destination === "finland"
+                                  ? "Finland study assessment and application guidance"
+                                  : destination === "denmark"
+                                    ? "Denmark study application guidance"
+                                    : serviceContext,
     };
 
     const lead = await captureLead(request, { ...applicantData, submissionId: formData.get("submissionId"), source: new URL(request.url).pathname, service: "Education" });
@@ -91,13 +228,70 @@ export default function Contact() {
   const isSubmitting = fetcher.state === "submitting";
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
+  const rawDest = searchParams.get("destination")?.toLowerCase();
   const queryCountry = searchParams.get("country");
+  const isUkContext =
+    rawDest === "uk" ||
+    queryCountry?.toLowerCase() === "uk" ||
+    queryCountry?.toLowerCase() === "united kingdom";
+  const isGermanyContext =
+    rawDest === "germany" ||
+    queryCountry?.toLowerCase() === "germany";
+  const isItalyContext =
+    rawDest === "italy" ||
+    queryCountry?.toLowerCase() === "italy";
+  const isNewZealandContext =
+    rawDest === "new-zealand" ||
+    rawDest === "new zealand" ||
+    rawDest === "nz" ||
+    queryCountry?.toLowerCase() === "new zealand" ||
+    queryCountry?.toLowerCase() === "new-zealand";
+  const isCanadaContext =
+    rawDest === "canada" ||
+    queryCountry?.toLowerCase() === "canada";
+  const isSwedenContext =
+    rawDest === "sweden" ||
+    rawDest === "swedan" ||
+    queryCountry?.toLowerCase() === "sweden";
+  const isAustraliaContext =
+    rawDest === "australia" ||
+    queryCountry?.toLowerCase() === "australia";
+  const isSpainContext =
+    rawDest === "spain" ||
+    queryCountry?.toLowerCase() === "spain";
+  const isFranceContext =
+    rawDest === "france" ||
+    queryCountry?.toLowerCase() === "france";
+  const isHungaryContext =
+    rawDest === "hungary" ||
+    queryCountry?.toLowerCase() === "hungary";
+  const isIrelandContext =
+    rawDest === "ireland" ||
+    queryCountry?.toLowerCase() === "ireland";
+  const isMalaysiaContext =
+    rawDest === "malaysia" ||
+    rawDest === "study-in-malaysia" ||
+    queryCountry?.toLowerCase() === "malaysia";
+  const isFinlandContext =
+    rawDest === "finland" ||
+    rawDest === "study-in-finland" ||
+    queryCountry?.toLowerCase() === "finland";
+  const isDenmarkContext =
+    rawDest === "denmark" ||
+    rawDest === "study-in-denmark" ||
+    queryCountry?.toLowerCase() === "denmark";
+
+  const rawService = searchParams.get("service")?.toLowerCase();
+  const isAdmissionService = rawService === "admission";
+  const isVisaService = rawService === "visa";
+  const isInterviewPrepService = rawService === "interview-prep";
 
   const [step, setStep] = useState<number>(1);
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   const [form, setForm] = useState({
     // Step 1: Contact
+    enquiringAs: "Student",
     fullName: "",
     email: "",
     phone: "",
@@ -108,7 +302,35 @@ export default function Contact() {
     gradeScore: "",
     passingYear: "2025",
     // Step 3: Study Intent & Budget
-    targetCountry: queryCountry || "United Kingdom",
+    targetCountry: isUkContext
+      ? "United Kingdom"
+      : isGermanyContext
+        ? "Germany"
+        : isItalyContext
+          ? "Italy"
+          : isNewZealandContext
+            ? "New Zealand"
+            : isCanadaContext
+              ? "Canada"
+              : isSwedenContext
+                ? "Sweden"
+                : isAustraliaContext
+                  ? "Australia"
+                  : isSpainContext
+                    ? "Spain"
+                    : isFranceContext
+                      ? "France"
+                      : isHungaryContext
+                        ? "Hungary"
+                        : isIrelandContext
+                          ? "Ireland"
+                          : isMalaysiaContext
+                            ? "Malaysia"
+                            : isFinlandContext
+                              ? "Finland"
+                              : isDenmarkContext
+                                ? "Denmark"
+                                : queryCountry || "United Kingdom",
     targetDegree: "Master's / Postgraduate (1 or 2 Years)",
     targetIntake: "September / Fall 2026",
     budgetRange: "£10,000 - £16,000 / year ($13k - $20k)",
@@ -117,6 +339,105 @@ export default function Contact() {
     hasRefusal: "No Refusals (Clean Travel / Visa Record)",
     studyGap: "No Study Gap (Fresh Graduate / Currently Enrolled)",
     notes: "",
+    destination: isUkContext
+      ? "uk"
+      : isGermanyContext
+        ? "germany"
+        : isItalyContext
+          ? "italy"
+          : isNewZealandContext
+            ? "new-zealand"
+            : isCanadaContext
+              ? "canada"
+              : isSwedenContext
+                ? "sweden"
+                : isAustraliaContext
+                  ? "australia"
+                  : isSpainContext
+                    ? "spain"
+                    : isFranceContext
+                      ? "france"
+                      : isHungaryContext
+                        ? "hungary"
+                        : isIrelandContext
+                          ? "ireland"
+                          : isMalaysiaContext
+                            ? "malaysia"
+                            : isFinlandContext
+                              ? "finland"
+                              : isDenmarkContext
+                                ? "denmark"
+                                : "",
+    originPath: isAdmissionService
+      ? "/education/services/admission"
+      : isVisaService
+        ? "/education/services/visa"
+        : isInterviewPrepService
+          ? "/education/services/interview-prep"
+          : isUkContext
+            ? "/education/destinations/study-in-uk"
+            : isGermanyContext
+              ? "/education/destinations/study-in-germany"
+              : isItalyContext
+                ? "/education/destinations/study-in-italy"
+                : isNewZealandContext
+                  ? "/education/destinations/study-in-new-zealand"
+                  : isCanadaContext
+                    ? "/education/destinations/study-in-canada"
+                    : isSwedenContext
+                      ? "/education/destinations/study-in-sweden"
+                      : isAustraliaContext
+                        ? "/education/destinations/study-in-australia"
+                        : isSpainContext
+                          ? "/education/destinations/study-in-spain"
+                          : isFranceContext
+                            ? "/education/destinations/study-in-france"
+                            : isHungaryContext
+                              ? "/education/destinations/study-in-hungary"
+                              : isIrelandContext
+                                ? "/education/destinations/study-in-ireland"
+                                : isMalaysiaContext
+                                  ? "/education/destinations/study-in-malaysia"
+                                  : isFinlandContext
+                                    ? "/education/destinations/study-in-finland"
+                                    : isDenmarkContext
+                                      ? "/education/destinations/study-in-denmark"
+                                      : "",
+    serviceContext: isAdmissionService
+      ? "Admission guidance"
+      : isVisaService
+        ? "Student visa support"
+        : isInterviewPrepService
+          ? "Interview preparation"
+          : isUkContext
+            ? "UK study assessment"
+            : isGermanyContext
+              ? "Germany study assessment"
+              : isItalyContext
+                ? "Italy study assessment"
+                : isNewZealandContext
+                  ? "New Zealand study assessment"
+                  : isCanadaContext
+                    ? "Canada study assessment and application guidance"
+                    : isSwedenContext
+                      ? "Sweden study application guidance"
+                      : isAustraliaContext
+                        ? "Australia study assessment"
+                        : isSpainContext
+                          ? "Spain study assessment"
+                          : isFranceContext
+                            ? "France study assessment"
+                            : isHungaryContext
+                              ? "Hungary study assessment and planning guidance"
+                              : isIrelandContext
+                                ? "Ireland study assessment and planning guidance"
+                                : isMalaysiaContext
+                                  ? "Malaysia study assessment and application guidance"
+                                  : isFinlandContext
+                                    ? "Finland study assessment and application guidance"
+                                    : isDenmarkContext
+                                      ? "Denmark study application guidance"
+                                      : "Study abroad consultation",
   });
 
   const handleChange = (
@@ -181,6 +502,10 @@ export default function Contact() {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(CONTACT_SCHEMA) }}
+      />
       <Navbar />
 
       <main className="flex-1">
@@ -220,12 +545,100 @@ export default function Contact() {
             <div className="text-center max-w-3xl mx-auto">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs md:text-sm font-semibold text-pink-300 mb-4">
                 <span className="w-2 h-2 rounded-full bg-pink-400 animate-pulse" />
-                1-on-1 Free Profile Evaluation &amp; Visa Assessment
+                {isAdmissionService
+                  ? "Admission Guidance Assessment & Course Consultation"
+                  : isVisaService
+                    ? "Student Visa Assessment & Consultation"
+                    : isInterviewPrepService
+                      ? "Interview Preparation Assessment"
+                      : isUkContext
+                        ? "UK Study Assessment & Planning Consultation"
+                        : isGermanyContext
+                          ? "Germany Study Assessment & Planning Consultation"
+                          : isItalyContext
+                            ? "Italy Study Assessment & Planning Consultation"
+                            : isCanadaContext
+                              ? "Canada Study Assessment & Planning Consultation"
+                              : isSwedenContext
+                                ? "Sweden Study Assessment & Planning Consultation"
+                                : isAustraliaContext
+                                  ? "Australia Study Assessment & Planning Consultation"
+                                  : isSpainContext
+                                    ? "Spain Study Assessment & Planning Consultation"
+                                    : isFranceContext
+                                      ? "France Study Assessment & Planning Consultation"
+                                      : isHungaryContext
+                                        ? "Hungary Study Assessment & Planning Consultation"
+                                        : isIrelandContext
+                                          ? "Ireland Study Assessment & Planning Consultation"
+                                          : isMalaysiaContext
+                                            ? "Malaysia Study Assessment & Planning Consultation"
+                                            : isFinlandContext
+                                              ? "Finland Study Assessment & Planning Consultation"
+                                              : isDenmarkContext
+                                                ? "Denmark Study Assessment & Planning Consultation"
+                                                : "1-on-1 Free Profile Evaluation & Visa Assessment"}
               </div>
 
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-tight mb-4">
-                Check Your Study Visa &amp; Scholarship{" "}
-                <span className="text-[#FF4D6D]">Eligibility</span>
+                {isUkContext ? (
+                  <>
+                    Study in the UK: <span className="text-[#FF4D6D]">Free Assessment</span>
+                  </>
+                ) : isGermanyContext ? (
+                  <>
+                    Study in Germany: <span className="text-[#FF4D6D]">Free Assessment</span>
+                  </>
+                ) : isItalyContext ? (
+                  <>
+                    Study in Italy: <span className="text-[#FF4D6D]">Free Assessment</span>
+                  </>
+                ) : isCanadaContext ? (
+                  <>
+                    Study in Canada: <span className="text-[#FF4D6D]">Free Assessment</span>
+                  </>
+                ) : isSwedenContext ? (
+                  <>
+                    Study in Sweden: <span className="text-[#FF4D6D]">Free Assessment</span>
+                  </>
+                ) : isAustraliaContext ? (
+                  <>
+                    Study in Australia: <span className="text-[#FF4D6D]">Free Assessment</span>
+                  </>
+                ) : isSpainContext ? (
+                  <>
+                    Study in Spain: <span className="text-[#FF4D6D]">Free Assessment</span>
+                  </>
+                ) : isFranceContext ? (
+                  <>
+                    Study in France: <span className="text-[#FF4D6D]">Free Assessment</span>
+                  </>
+                ) : isHungaryContext ? (
+                  <>
+                    Study in Hungary: <span className="text-[#FF4D6D]">Free Assessment</span>
+                  </>
+                ) : isIrelandContext ? (
+                  <>
+                    Study in Ireland: <span className="text-[#FF4D6D]">Free Assessment</span>
+                  </>
+                ) : isMalaysiaContext ? (
+                  <>
+                    Study in Malaysia: <span className="text-[#FF4D6D]">Free Assessment</span>
+                  </>
+                ) : isFinlandContext ? (
+                  <>
+                    Study in Finland: <span className="text-[#FF4D6D]">Free Assessment</span>
+                  </>
+                ) : isDenmarkContext ? (
+                  <>
+                    Study in Denmark: <span className="text-[#FF4D6D]">Free Assessment</span>
+                  </>
+                ) : (
+                  <>
+                    Check Your Study Visa &amp; Scholarship{" "}
+                    <span className="text-[#FF4D6D]">Eligibility</span>
+                  </>
+                )}
               </h1>
 
               <div
@@ -236,7 +649,33 @@ export default function Contact() {
               />
 
               <p className="text-base sm:text-lg text-slate-200 leading-relaxed font-normal">
-                Complete the quick profile assessment below. Our certified senior education consultants will evaluate your admission chances, match matching global universities, and map your study visa roadmap.
+                {isUkContext
+                  ? "Tell us where you are starting. We can begin with an unfinished shortlist, an existing offer or a funding question that needs a clearer answer."
+                  : isGermanyContext
+                    ? "Tell us where you are starting. We will use these details to discuss your Germany study options and the requirements that need checking. Do not upload identity or financial documents here."
+                    : isItalyContext
+                      ? "Tell us where you are starting. We will use these details to discuss your Italy study options, regional scholarship rules, Universitaly pre-enrolment and visa preparation. Do not upload identity or financial documents here."
+                      : isCanadaContext
+                        ? "Tell us where you are starting. We will use these details to discuss your Canada study options, DLI and PGWP checks, realistic funding advice and study permit preparation."
+                        : isSwedenContext
+                          ? "Tell us where you are starting. We will use these details to discuss your Swedish course options, admission requirements, maintenance funding and residence permit preparation."
+                          : isAustraliaContext
+                            ? "Tell us where you are starting. We will use these details to discuss your Australian course options, tuition and living costs, and Genuine Student visa preparation."
+                            : isSpainContext
+                              ? "Tell us where you are starting. We will use these details to discuss your Spanish study options, course fit, language demands and study visa preparation."
+                              : isFranceContext
+                                ? "Tell us where you are starting. We will use these details to discuss your French study options, course fit, award status, funding questions and next application steps."
+                                : isHungaryContext
+                                  ? "Tell us where you are starting. We will use these details to discuss your Hungarian study options, course recognition, funding questions and next application steps."
+                                  : isIrelandContext
+                                    ? "Tell us where you are starting. We will use these details to discuss your Irish study options, eligible course checks, housing costs and next application steps."
+                                    : isMalaysiaContext
+                                      ? "Tell us where you are starting. We will use these details to discuss your Malaysian study options, course arrangements, branch campuses, transfer routes and student pass preparation."
+                                       : isFinlandContext
+                                         ? "Tell us where you are starting. We will use these details to discuss your Finnish study options, research vs applied universities, tuition waivers and residence permit preparation."
+                                       : isDenmarkContext
+                                         ? "Tell us where you are starting. We will use these details to discuss your Danish course options, subject-level entry match, tuition fees and residence permit preparation."
+                                       : "Complete the quick profile assessment below. Our certified senior education consultants will evaluate your admission chances, match matching global universities, and map your study visa roadmap."}
               </p>
             </div>
 
@@ -258,22 +697,20 @@ export default function Contact() {
                         onClick={() => {
                           if (s.num < step) setStep(s.num);
                         }}
-                        className={`flex items-center gap-2 p-2.5 sm:p-3 rounded-xl border text-left transition-all ${
-                          isActive
+                        className={`flex items-center gap-2 p-2.5 sm:p-3 rounded-xl border text-left transition-all ${isActive
                             ? "bg-white/20 border-white text-white shadow-md ring-2 ring-pink-500/40"
                             : isCompleted
-                            ? "bg-white/10 border-emerald-400/50 text-emerald-300 cursor-pointer"
-                            : "bg-white/5 border-white/10 text-slate-400 opacity-60 cursor-not-allowed"
-                        }`}
+                              ? "bg-white/10 border-emerald-400/50 text-emerald-300 cursor-pointer"
+                              : "bg-white/5 border-white/10 text-slate-400 opacity-60 cursor-not-allowed"
+                          }`}
                       >
                         <span
-                          className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
-                            isCompleted
+                          className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${isCompleted
                               ? "bg-emerald-500 text-white"
                               : isActive
-                              ? "bg-[#FF4D6D] text-white"
-                              : "bg-white/20 text-white"
-                          }`}
+                                ? "bg-[#FF4D6D] text-white"
+                                : "bg-white/20 text-white"
+                            }`}
                         >
                           {isCompleted ? (
                             <CheckCircle2 className="w-3.5 h-3.5" />
@@ -342,6 +779,38 @@ export default function Contact() {
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        {(isUkContext || isGermanyContext || isItalyContext || isNewZealandContext || isCanadaContext || isSwedenContext || isAustraliaContext || isSpainContext || isFranceContext || isHungaryContext || isIrelandContext || isMalaysiaContext || isFinlandContext || isDenmarkContext) && (
+                          <div className="md:col-span-2 p-4 rounded-xl bg-slate-50 border border-slate-200">
+                            <label className="block text-sm font-semibold text-slate-800 mb-2">
+                              I am enquiring as: <span className="text-pink-500">*</span>
+                            </label>
+                            <div className="flex flex-wrap gap-5">
+                              <label className="inline-flex items-center gap-2 cursor-pointer text-sm font-medium text-slate-800">
+                                <input
+                                  type="radio"
+                                  name="enquiringAs"
+                                  value="Student"
+                                  checked={form.enquiringAs === "Student"}
+                                  onChange={handleChange}
+                                  className="accent-[#FF4D6D] w-4 h-4"
+                                />
+                                <span>Student</span>
+                              </label>
+                              <label className="inline-flex items-center gap-2 cursor-pointer text-sm font-medium text-slate-800">
+                                <input
+                                  type="radio"
+                                  name="enquiringAs"
+                                  value="Parent or guardian"
+                                  checked={form.enquiringAs === "Parent or guardian"}
+                                  onChange={handleChange}
+                                  className="accent-[#FF4D6D] w-4 h-4"
+                                />
+                                <span>Parent or guardian</span>
+                              </label>
+                            </div>
+                          </div>
+                        )}
+
                         <div>
                           <label className="block text-sm font-semibold text-slate-700 mb-1.5">
                             Full Name (as on Passport / CNIC) <span className="text-pink-500">*</span>
@@ -581,25 +1050,148 @@ export default function Contact() {
                           <label className="block text-sm font-semibold text-slate-700 mb-1.5">
                             Preferred Study Destination <span className="text-pink-500">*</span>
                           </label>
-                          <select
-                            name="targetCountry"
-                            value={form.targetCountry}
-                            onChange={handleChange}
-                            className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 focus:outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-500/20 text-sm bg-white"
-                          >
-                            <option value="United Kingdom">United Kingdom (UK)</option>
-                            <option value="Australia">Australia</option>
-                            <option value="Canada">Canada</option>
-                            <option value="United States">United States (USA)</option>
-                            <option value="Germany & Europe">Germany &amp; Europe</option>
-                            <option value="Ireland">Ireland</option>
-                            <option value="Sweden">Sweden</option>
-                            <option value="Turkey">Turkey</option>
-                            <option value="Malaysia">Malaysia</option>
-                            <option value="Open to Counselor Recommendation">
-                              Open to Counselor Recommendation
-                            </option>
-                          </select>
+                          {isUkContext ? (
+                            <div className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-semibold text-sm flex items-center justify-between">
+                              <span>United Kingdom</span>
+                              <span className="text-xs font-semibold text-[#FF4D6D] bg-[#FF4D6D]/10 px-2.5 py-0.5 rounded-full">
+                                UK Study Assessment
+                              </span>
+                              <input type="hidden" name="targetCountry" value="United Kingdom" />
+                            </div>
+                          ) : isGermanyContext ? (
+                            <div className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-semibold text-sm flex items-center justify-between">
+                              <span>Germany</span>
+                              <span className="text-xs font-semibold text-[#FF4D6D] bg-[#FF4D6D]/10 px-2.5 py-0.5 rounded-full">
+                                Germany Study Assessment
+                              </span>
+                              <input type="hidden" name="targetCountry" value="Germany" />
+                            </div>
+                          ) : isItalyContext ? (
+                            <div className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-semibold text-sm flex items-center justify-between">
+                              <span>Italy</span>
+                              <span className="text-xs font-semibold text-[#FF4D6D] bg-[#FF4D6D]/10 px-2.5 py-0.5 rounded-full">
+                                Italy Study Assessment
+                              </span>
+                              <input type="hidden" name="targetCountry" value="Italy" />
+                            </div>
+                          ) : isNewZealandContext ? (
+                            <div className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-semibold text-sm flex items-center justify-between">
+                              <span>Study destination: New Zealand</span>
+                              <span className="text-xs font-semibold text-[#FF4D6D] bg-[#FF4D6D]/10 px-2.5 py-0.5 rounded-full">
+                                New Zealand Study Assessment
+                              </span>
+                              <input type="hidden" name="targetCountry" value="New Zealand" />
+                            </div>
+                          ) : isCanadaContext ? (
+                            <div className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-semibold text-sm flex items-center justify-between">
+                              <span>Study destination: Canada</span>
+                              <span className="text-xs font-semibold text-[#FF4D6D] bg-[#FF4D6D]/10 px-2.5 py-0.5 rounded-full">
+                                Canada Study Assessment
+                              </span>
+                              <input type="hidden" name="targetCountry" value="Canada" />
+                            </div>
+                          ) : isSwedenContext ? (
+                            <div className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-semibold text-sm flex items-center justify-between">
+                              <span>Study destination: Sweden</span>
+                              <span className="text-xs font-semibold text-[#FF4D6D] bg-[#FF4D6D]/10 px-2.5 py-0.5 rounded-full">
+                                Sweden Study Assessment
+                              </span>
+                              <input type="hidden" name="targetCountry" value="Sweden" />
+                            </div>
+                          ) : isAustraliaContext ? (
+                            <div className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-semibold text-sm flex items-center justify-between">
+                              <span>Study destination: Australia</span>
+                              <span className="text-xs font-semibold text-[#FF4D6D] bg-[#FF4D6D]/10 px-2.5 py-0.5 rounded-full">
+                                Australia Study Assessment
+                              </span>
+                              <input type="hidden" name="targetCountry" value="Australia" />
+                            </div>
+                          ) : isSpainContext ? (
+                            <div className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-semibold text-sm flex items-center justify-between">
+                              <span>Study destination: Spain</span>
+                              <span className="text-xs font-semibold text-[#FF4D6D] bg-[#FF4D6D]/10 px-2.5 py-0.5 rounded-full">
+                                Spain Study Assessment
+                              </span>
+                              <input type="hidden" name="targetCountry" value="Spain" />
+                            </div>
+                          ) : isFranceContext ? (
+                            <div className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-semibold text-sm flex items-center justify-between">
+                              <span>Study destination: France</span>
+                              <span className="text-xs font-semibold text-[#FF4D6D] bg-[#FF4D6D]/10 px-2.5 py-0.5 rounded-full">
+                                France Study Assessment
+                              </span>
+                              <input type="hidden" name="targetCountry" value="France" />
+                            </div>
+                          ) : isHungaryContext ? (
+                            <div className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-semibold text-sm flex items-center justify-between">
+                              <span>Study destination: Hungary</span>
+                              <span className="text-xs font-semibold text-[#FF4D6D] bg-[#FF4D6D]/10 px-2.5 py-0.5 rounded-full">
+                                Hungary Study Assessment
+                              </span>
+                              <input type="hidden" name="targetCountry" value="Hungary" />
+                            </div>
+                          ) : isIrelandContext ? (
+                            <div className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-semibold text-sm flex items-center justify-between">
+                              <span>Study destination: Ireland</span>
+                              <span className="text-xs font-semibold text-[#FF4D6D] bg-[#FF4D6D]/10 px-2.5 py-0.5 rounded-full">
+                                Ireland Study Assessment
+                              </span>
+                              <input type="hidden" name="targetCountry" value="Ireland" />
+                            </div>
+                          ) : isMalaysiaContext ? (
+                            <div className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-semibold text-sm flex items-center justify-between">
+                              <span>Study destination: Malaysia</span>
+                              <span className="text-xs font-semibold text-[#FF4D6D] bg-[#FF4D6D]/10 px-2.5 py-0.5 rounded-full">
+                                Malaysia Study Assessment
+                              </span>
+                              <input type="hidden" name="targetCountry" value="Malaysia" />
+                            </div>
+                          ) : isFinlandContext ? (
+                            <div className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-semibold text-sm flex items-center justify-between">
+                              <span>Study destination: Finland</span>
+                              <span className="text-xs font-semibold text-[#FF4D6D] bg-[#FF4D6D]/10 px-2.5 py-0.5 rounded-full">
+                                Finland Study Assessment
+                              </span>
+                              <input type="hidden" name="targetCountry" value="Finland" />
+                            </div>
+                          ) : isDenmarkContext ? (
+                            <div className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-semibold text-sm flex items-center justify-between">
+                              <span>Study destination: Denmark</span>
+                              <span className="text-xs font-semibold text-[#FF4D6D] bg-[#FF4D6D]/10 px-2.5 py-0.5 rounded-full">
+                                Denmark Study Assessment
+                              </span>
+                              <input type="hidden" name="targetCountry" value="Denmark" />
+                            </div>
+                          ) : (
+                            <select
+                              name="targetCountry"
+                              value={form.targetCountry}
+                              onChange={handleChange}
+                              className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 focus:outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-500/20 text-sm bg-white"
+                            >
+                              <option value="United Kingdom">United Kingdom (UK)</option>
+                              <option value="New Zealand">New Zealand</option>
+                              <option value="Australia">Australia</option>
+                              <option value="Spain">Spain</option>
+                              <option value="France">France</option>
+                              <option value="Hungary">Hungary</option>
+                              <option value="Finland">Finland</option>
+                              <option value="Denmark">Denmark</option>
+                              <option value="Ireland">Ireland</option>
+                              <option value="Malaysia">Malaysia</option>
+                              <option value="Canada">Canada</option>
+                              <option value="United States">United States (USA)</option>
+                              <option value="Germany & Europe">Germany &amp; Europe</option>
+                              <option value="Sweden">Sweden</option>
+                              <option value="Turkey">Turkey</option>
+                              <option value="Open to Counselor Recommendation">
+                                Open to Counselor Recommendation
+                              </option>
+                            </select>
+                          )}
+                          <input type="hidden" name="destination" value={isUkContext ? "uk" : isGermanyContext ? "germany" : isItalyContext ? "italy" : isNewZealandContext ? "new-zealand" : isCanadaContext ? "canada" : isSwedenContext ? "sweden" : isAustraliaContext ? "australia" : isSpainContext ? "spain" : isFranceContext ? "france" : isHungaryContext ? "hungary" : isIrelandContext ? "ireland" : isMalaysiaContext ? "malaysia" : ""} />
+                          <input type="hidden" name="originPath" value={isUkContext ? "/education/destinations/study-in-uk" : isGermanyContext ? "/education/destinations/study-in-germany" : isItalyContext ? "/education/destinations/study-in-italy" : isNewZealandContext ? "/education/destinations/study-in-new-zealand" : isCanadaContext ? "/education/destinations/study-in-canada" : isSwedenContext ? "/education/destinations/study-in-sweden" : isAustraliaContext ? "/education/destinations/study-in-australia" : isSpainContext ? "/education/destinations/study-in-spain" : isFranceContext ? "/education/destinations/study-in-france" : isHungaryContext ? "/education/destinations/study-in-hungary" : isIrelandContext ? "/education/destinations/study-in-ireland" : isMalaysiaContext ? "/education/destinations/study-in-malaysia" : ""} />
+                          <input type="hidden" name="serviceContext" value={isUkContext ? "UK study assessment" : isGermanyContext ? "Germany study assessment" : isItalyContext ? "Italy study assessment" : isNewZealandContext ? "New Zealand study assessment" : isCanadaContext ? "Canada study assessment and application guidance" : isSwedenContext ? "Sweden study application guidance" : isAustraliaContext ? "Australia study assessment and application guidance" : isSpainContext ? "Spain study assessment and application guidance" : isFranceContext ? "France study assessment and application guidance" : isHungaryContext ? "Hungary study assessment and planning guidance" : isIrelandContext ? "Ireland study assessment and planning guidance" : isMalaysiaContext ? "Malaysia study assessment and application guidance" : ""} />
                         </div>
 
                         <div>
@@ -799,6 +1391,16 @@ export default function Contact() {
                             className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 focus:outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-500/20 text-sm resize-none"
                           />
                         </div>
+
+                        <div className="md:col-span-2 space-y-2 pt-1">
+                          <p className="text-xs text-slate-500 leading-relaxed">
+                            By submitting, you ask ProConsulting to contact you about this assessment. Read our{" "}
+                            <Link to="/education/privacy-policy" className="text-[#FF4D6D] underline font-medium">
+                              Privacy Policy
+                            </Link>{" "}
+                            to understand how your information is handled. Marketing choices are separate and optional.
+                          </p>
+                        </div>
                       </div>
 
                       <div className="flex items-center justify-between pt-4 border-t border-slate-100">
@@ -824,7 +1426,29 @@ export default function Contact() {
                             </>
                           ) : (
                             <>
-                              <span>Submit Free Assessment</span>
+                              <span>
+                                {isUkContext
+                                  ? "Get free UK assessment"
+                                  : isGermanyContext
+                                    ? "Get free Germany assessment"
+                                    : isItalyContext
+                                      ? "Get free Italy assessment"
+                                      : isAustraliaContext
+                                        ? "Get free Australia assessment"
+                                        : isSpainContext
+                                          ? "Get free Spain assessment"
+                                          : isFranceContext
+                                            ? "Get free France assessment"
+                                            : isHungaryContext
+                                              ? "Get free Hungary assessment"
+                                              : isIrelandContext
+                                                ? "Get free Ireland assessment"
+                                                : isFinlandContext
+                                                  ? "Get free Finland assessment"
+                                                  : isDenmarkContext
+                                                    ? "Get free Denmark assessment"
+                                                    : "Submit Free Assessment"}
+                              </span>
                               <CheckCircle2 className="w-4 h-4" />
                             </>
                           )}
@@ -856,13 +1480,107 @@ export default function Contact() {
                         </div>
 
                         <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-2">
-                          Your Free Assessment Has Been Submitted!
+                          {isItalyContext || applicantResult?.destination === "italy"
+                            ? "Your Italy enquiry has been received"
+                            : isGermanyContext || applicantResult?.destination === "germany"
+                              ? "Your Germany enquiry has been received"
+                              : isUkContext || applicantResult?.destination === "uk"
+                                ? "Your UK assessment enquiry has been received"
+                                : isAustraliaContext || applicantResult?.destination === "australia"
+                                  ? "Your Australia assessment enquiry has been received"
+                                  : isSpainContext || applicantResult?.destination === "spain"
+                                    ? "Your Spain assessment enquiry has been received"
+                                    : isFranceContext || applicantResult?.destination === "france"
+                                      ? "Your France assessment enquiry has been received"
+                                      : isHungaryContext || applicantResult?.destination === "hungary"
+                                        ? "Your Hungary assessment enquiry has been received"
+                                        : isIrelandContext || applicantResult?.destination === "ireland"
+                                          ? "Your Ireland assessment enquiry has been received"
+                                          : isFinlandContext || applicantResult?.destination === "finland"
+                                            ? "Your Finland assessment enquiry has been received"
+                                            : isDenmarkContext || applicantResult?.destination === "denmark"
+                                              ? "Your Denmark assessment enquiry has been received"
+                                              : "Your Free Assessment Has Been Submitted!"}
                         </h2>
 
                         <p className="text-slate-600 max-w-lg mx-auto text-sm sm:text-base">
-                          Thank you, <strong className="text-slate-900">{applicantResult?.fullName || form.fullName}</strong>.
-                          Our senior counseling panel is now evaluating your academic background and matching your eligibility for{" "}
-                          <strong className="text-slate-900">{applicantResult?.targetCountry || form.targetCountry}</strong>.
+                          {isItalyContext || applicantResult?.destination === "italy" ? (
+                            <>
+                              Thank you. We have recorded Italy as your study destination and your preferred contact method. Keep your academic details available for the discussion.
+                              <span className="block mt-2 text-xs text-slate-500 font-medium">
+                                Please do not send sensitive documents until you are told how to share them securely.
+                              </span>
+                            </>
+                          ) : isGermanyContext || applicantResult?.destination === "germany" ? (
+                            <>
+                              Thank you. We have recorded Germany as your study destination and your preferred contact method. Keep your academic details available for the discussion.
+                              <span className="block mt-2 text-xs text-slate-500 font-medium">
+                                Please do not send sensitive documents until you are told how to share them securely.
+                              </span>
+                            </>
+                          ) : isUkContext || applicantResult?.destination === "uk" ? (
+                            <>
+                              ProConsulting will use the details you provided to contact you about your questions.
+                              <span className="block mt-2 text-xs text-slate-500 font-medium">
+                                This is not an admission, scholarship or visa application.
+                              </span>
+                            </>
+                          ) : isAustraliaContext || applicantResult?.destination === "australia" ? (
+                            <>
+                              ProConsulting will use the details you provided to contact you about your Australia study questions.
+                              <span className="block mt-2 text-xs text-slate-500 font-medium">
+                                This is not an admission, scholarship or visa application.
+                              </span>
+                            </>
+                          ) : isSpainContext || applicantResult?.destination === "spain" ? (
+                            <>
+                              ProConsulting will use the details you provided to contact you about your Spain study questions.
+                              <span className="block mt-2 text-xs text-slate-500 font-medium">
+                                This is not an admission, scholarship or visa application.
+                              </span>
+                            </>
+                          ) : isFranceContext || applicantResult?.destination === "france" ? (
+                            <>
+                              ProConsulting will use the details you provided to contact you about your France study questions.
+                              <span className="block mt-2 text-xs text-slate-500 font-medium">
+                                This is not an admission, scholarship or visa application.
+                              </span>
+                            </>
+                          ) : isHungaryContext || applicantResult?.destination === "hungary" ? (
+                            <>
+                              ProConsulting will use the details you provided to contact you about your Hungary study questions.
+                              <span className="block mt-2 text-xs text-slate-500 font-medium">
+                                This is not an admission, scholarship or visa application.
+                              </span>
+                            </>
+                          ) : isIrelandContext || applicantResult?.destination === "ireland" ? (
+                            <>
+                              ProConsulting will use the details you provided to contact you about your Ireland study questions.
+                              <span className="block mt-2 text-xs text-slate-500 font-medium">
+                                This is not an admission, scholarship or visa application.
+                              </span>
+                            </>
+                          ) : isFinlandContext || applicantResult?.destination === "finland" ? (
+                            <>
+                              ProConsulting will use the details you provided to contact you about your Finland study questions.
+                              <span className="block mt-2 text-xs text-slate-500 font-medium">
+                                This is not an admission, scholarship or visa application.
+                              </span>
+                            </>
+                          ) : isDenmarkContext || applicantResult?.destination === "denmark" ? (
+                            <>
+                              ProConsulting will use the details you provided to contact you about your Denmark study questions.
+                              <span className="block mt-2 text-xs text-slate-500 font-medium">
+                                This is not an admission, scholarship or visa application.
+                              </span>
+                            </>
+                          ) : (
+                            <>
+                              Thank you, <strong className="text-slate-900">{applicantResult?.fullName || form.fullName}</strong>.
+                              Our senior counseling panel is now evaluating your academic background and matching your eligibility for{" "}
+                              <strong className="text-slate-900">{applicantResult?.targetCountry || form.targetCountry}</strong>.
+                            </>
+                          )}
                         </p>
                       </div>
 

@@ -22,6 +22,7 @@ Open [[Session Wall]] first when continuing work. It tracks one feature, accepta
 - [[05 Maintenance]] — how to keep this vault current and safe.
 - [[06 Deployment]] — VPS topology, environment variable names, and deployment gates.
 - [[07 Data and Permissions]] — collections, roles, and current access rules.
+- [[09 Git and Background Work]] — checkpoints, GitHub integration, and unattended-work boundaries.
 - [[08 Roadmap]] — delivery phases and next work.
 - [[Changes/2026-10-29]] — the initial implementation journal.
 - [[File Updates]] — generated file changes since the previous inventory.

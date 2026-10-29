@@ -22,6 +22,10 @@ export type Applicant = {
   studyGap: string;
   notes: string;
   status: "New" | "Contacted" | "In Review" | "Enrolled" | "Archived";
+  enquiringAs?: string;
+  destination?: string;
+  originPath?: string;
+  serviceContext?: string;
 };
 
 const DATA_FILE = path.join(process.cwd(), "data", "applicants.json");

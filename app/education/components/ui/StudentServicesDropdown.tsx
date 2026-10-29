@@ -1,15 +1,15 @@
 "use client";
 
 import { Link } from "react-router";
-import { BookOpen, ArrowRight, Target, ScrollText, FileCheck, AppWindow } from "lucide-react";
+import { BookOpen, ArrowRight, Target, ScrollText, FileCheck, AppWindow, GraduationCap } from "lucide-react";
 import { studentServices } from "~/education/lib/studentServices";
 
-const icons = [Target, ScrollText, FileCheck, AppWindow] as const;
+const icons = [Target, ScrollText, FileCheck, AppWindow, GraduationCap] as const;
 
 export function StudentServicesDropdown() {
   return (
     <div className="w-full max-w-7xl mx-auto py-2">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         {studentServices.map((s, index) => {
           const Icon = icons[index] ?? BookOpen;
           return (

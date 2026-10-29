@@ -1,0 +1,54 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background with ProConsulting navy -->
+  <rect width="1200" height="630" fill="#0B1B3A"/>
+  
+  <!-- Subtle decorative grid & circles -->
+  <circle cx="1050" cy="150" r="300" fill="#162D4D" fill-opacity="0.4"/>
+  <circle cx="150" cy="550" r="220" fill="#162D4D" fill-opacity="0.3"/>
+
+  <!-- Brand Wordmark / Header -->
+  <g transform="translate(100, 90)">
+    <rect width="8" height="32" rx="4" fill="#FF4D6D"/>
+    <text x="24" y="24" fill="#FFFFFF" font-family="Inter, -apple-system, sans-serif" font-size="24" font-weight="800" letter-spacing="1">PROCONSULTING</text>
+    <text x="245" y="24" fill="#94A3B8" font-family="Inter, -apple-system, sans-serif" font-size="16" font-weight="500">| Education</text>
+  </g>
+
+  <!-- Tag / Kicker -->
+  <g transform="translate(100, 210)">
+    <rect width="210" height="36" rx="18" fill="#162D4D" stroke="#334155" stroke-width="1.5"/>
+    <circle cx="22" cy="18" r="5" fill="#FF4D6D"/>
+    <text x="36" y="23" fill="#E2E8F0" font-family="Inter, -apple-system, sans-serif" font-size="13" font-weight="600" letter-spacing="0.5">STUDY DESTINATION</text>
+  </g>
+
+  <!-- Title (H1) -->
+  <text x="100" y="325" fill="#FFFFFF" font-family="Inter, -apple-system, sans-serif" font-size="64" font-weight="800" letter-spacing="-1.5">
+    Study in Finland
+  </text>
+
+  <!-- Subtitle / Value Proposition -->
+  <text x="100" y="385" fill="#CBD5E1" font-family="Inter, -apple-system, sans-serif" font-size="22" font-weight="400" line-height="34">
+    Universities vs Universities of Applied Sciences (UAS), Tuition &amp; Residence.
+  </text>
+  <text x="100" y="420" fill="#94A3B8" font-family="Inter, -apple-system, sans-serif" font-size="20" font-weight="400">
+    Choose the right kind of Finnish degree before you commit.
+  </text>
+
+  <!-- Footer bar -->
+  <line x1="100" y1="490" x2="1100" y2="490" stroke="#1E293B" stroke-width="1.5"/>
+
+  <g transform="translate(100, 525)">
+    <text x="0" y="22" fill="#E2E8F0" font-family="Inter, -apple-system, sans-serif" font-size="16" font-weight="600">
+      Free Assessment &amp; Planning Guidance
+    </text>
+    <text x="0" y="44" fill="#64748B" font-family="Inter, -apple-system, sans-serif" font-size="14" font-weight="400">
+      proconsulting.uk/education/destinations/study-in-finland
+    </text>
+  </g>
+
+  <g transform="translate(920, 520)">
+    <rect width="180" height="46" rx="10" fill="#FF4D6D"/>
+    <text x="90" y="29" fill="#FFFFFF" font-family="Inter, -apple-system, sans-serif" font-size="15" font-weight="700" text-anchor="middle">
+      Get Free Assessment
+    </text>
+  </g>
+</svg>
