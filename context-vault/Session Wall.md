@@ -84,5 +84,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **ownerPassword**: owner must set via Appwrite Console
 - **gitBranch**: codex/crm-workspace
 - **integratedUpstream**: origin/main through 407977c (16 commits)
+- **githubCheckpoint**: Pushed codex/crm-workspace through merge checkpoint 27013ec; origin/main through 407977c is integrated; main not changed
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

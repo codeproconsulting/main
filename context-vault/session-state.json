@@ -111,7 +111,8 @@
     "workerOnVPS": "not started",
     "ownerPassword": "owner must set via Appwrite Console",
     "gitBranch": "codex/crm-workspace",
-    "integratedUpstream": "origin/main through 407977c (16 commits)"
+    "integratedUpstream": "origin/main through 407977c (16 commits)",
+    "githubCheckpoint": "Pushed codex/crm-workspace through merge checkpoint 27013ec; origin/main through 407977c is integrated; main not changed"
   },
   "checks": [
     {
@@ -136,6 +137,6 @@
       "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-TfuwZn/build.log"
     }
   ],
-  "updatedAt": "2026-10-29T07:56:47.398Z",
+  "updatedAt": "2026-10-29T07:58:10.516Z",
   "verifiedSourceFingerprint": "9743360ca0550d457a601abe6371fbd6c64d075c2c4a9182035b12312c465725"
 }

@@ -8,7 +8,7 @@ updated: 2026-10-29
 
 The user requested pulling new GitHub work and periodic commit/push checkpoints. Fetch before substantial implementation, inspect upstream changes, preserve local work in a commit, integrate with focused conflict review, rerun checks, and push the development branch. Keep source and the session wall together.
 
-The branch is `codex/crm-workspace`. The initial implementation checkpoint is `46baa46`. Integration includes the 16 main commits through `407977c`, preserving public destination, service, location, and assessment changes. Main remains the public-site baseline; staged CRM modules should not be merged or deployed just because they compile.
+The branch is `codex/crm-workspace`. The initial implementation checkpoint is `46baa46`; the verified upstream merge checkpoint is `27013ec`. Both were pushed to GitHub. The repository now uses its existing project-specific ProConsulting SSH identity through local Git configuration, without changing global SSH configuration. Integration includes the 16 main commits through `407977c`, preserving public destination, service, location, and assessment changes. Main remains the public-site baseline; staged CRM modules should not be merged or deployed just because they compile.
 
 Never commit `.env`, API keys, private original exports/settings, applicant records, or ignored migration reports. Do not force push. Keep the current feature and unfinished acceptance criteria in [[Session Wall]].
 
