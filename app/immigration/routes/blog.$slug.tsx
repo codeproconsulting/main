@@ -1,88 +1,34 @@
+import { BlogRouteError } from "~/components/ui/BlogRouteError";
 "use client";
 
-import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router";
+import { Link, useLoaderData } from "react-router";
 import { Navbar } from "~/immigration/components/ui/Navbar";
 import { Footer } from "~/immigration/components/ui/footer";
-import { getPostBySlug, getCoverImageUrl, getCoverImageAlt, getPrimaryAuthorName, type GhostPost } from "~/immigration/lib/ghost-api";
+import { normalize, getCoverImageUrl, getCoverImageAlt, getPrimaryAuthorName, type GhostPost } from "~/immigration/lib/ghost-api";
 import { GhostHtmlContent } from "~/immigration/components/ui/GhostHtmlContent";
+import type { LoaderFunctionArgs } from "react-router";
+import { loadArticle } from "~/lib/blog-loaders.server";
 import { ArrowLeft, Loader2 } from "lucide-react";
 
-export function meta() {
-  return [{ title: "Post | ProConsulting Immigration" }];
+export async function loader({ params }: LoaderFunctionArgs) {
+  return { post: normalize(await loadArticle("immigration", params.slug)) };
+}
+
+export function meta({ data }: { data?: { post: GhostPost } }) {
+  if (!data?.post) return [{ title: "Article unavailable | ProConsulting Immigration" }];
+  const post = data.post;
+  return [
+    { title: `${post.meta_title || post.title} | ProConsulting Immigration` },
+    { name: "description", content: post.meta_description || post.excerpt },
+    { property: "og:type", content: "article" },
+    { property: "og:title", content: post.meta_title || post.title },
+    { property: "og:image", content: getCoverImageUrl(post) },
+    { tagName: "link", rel: "canonical", href: `https://proconsulting.uk/immigration/blog/${post.slug}` },
+  ];
 }
 
 export default function BlogPost() {
-  const { slug } = useParams<{ slug: string }>();
-  const [post, setPost] = useState<GhostPost | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!slug) {
-      setLoading(false);
-      return;
-    }
-    getPostBySlug(slug)
-      .then(setPost)
-      .catch((e) => setError(e instanceof Error ? e.message : "Failed to load post"))
-      .finally(() => setLoading(false));
-  }, [slug]);
-
-  useEffect(() => {
-    if (!post) return;
-    const title = post.meta_title || post.title;
-    document.title = `${title} | ProConsulting Immigration`;
-    const desc = post.meta_description || post.excerpt;
-    let metaEl = document.querySelector('meta[name="description"]');
-    if (desc) {
-      if (!metaEl) {
-        metaEl = document.createElement("meta");
-        metaEl.setAttribute("name", "description");
-        document.head.appendChild(metaEl);
-      }
-      metaEl.setAttribute("content", desc);
-    }
-    return () => {
-      document.title = "ProConsulting Immigration";
-    };
-  }, [post]);
-
-  if (loading) {
-    return (
-      <>
-        <Navbar />
-        <div className="min-h-screen flex items-center justify-center">
-          <Loader2 className="w-10 h-10 animate-spin text-[#0B1B3A]" />
-        </div>
-        <Footer />
-      </>
-    );
-  }
-
-  if (error || !post) {
-    return (
-      <>
-        <Navbar />
-        <main className="min-h-screen border-b border-slate-200/80 bg-slate-50/50">
-          <div className="max-w-7xl mx-auto px-6 pt-12 pb-10 md:pt-16 md:pb-14">
-            <nav className="flex items-center gap-2 text-sm text-slate-500 mb-6" aria-label="Breadcrumb">
-              <Link to="/" className="hover:text-[#0B1B3A] transition-colors">Home</Link>
-              <span aria-hidden>/</span>
-              <Link to="/immigration/blog" className="hover:text-[#0B1B3A] transition-colors">Blog</Link>
-              <span aria-hidden>/</span>
-              <span className="text-slate-500">Post not found</span>
-            </nav>
-            <p className="text-red-600 mb-4">{error ?? "Post not found"}</p>
-            <Link to="/immigration/blog" className="inline-flex items-center gap-2 text-slate-500 hover:text-[#FF4D6D] font-medium transition-colors">
-              <ArrowLeft className="w-4 h-4" /> Back to blog
-            </Link>
-          </div>
-        </main>
-        <Footer />
-      </>
-    );
-  }
+  const { post } = useLoaderData<typeof loader>();
 
   const publishedDate = post.published_at
     ? new Date(post.published_at).toLocaleDateString("en-GB", {
@@ -144,3 +90,5 @@ export default function BlogPost() {
     </>
   );
 }
+
+export function ErrorBoundary() { return <BlogRouteError section="immigration"/>; }

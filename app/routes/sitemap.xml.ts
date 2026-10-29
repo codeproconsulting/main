@@ -1,11 +1,10 @@
 import type { LoaderFunctionArgs } from "react-router";
-import { getPosts as getEducationPosts } from "~/education/lib/ghost-api";
+import { loadAllPosts } from "~/lib/blog-loaders.server";
 import { getAllServiceSlugs as getEducationServiceSlugs } from "~/education/lib/servicesData";
 import { getAllDestinationSlugs as getEducationDestinationSlugs } from "~/education/lib/destinations";
 import { getAllCourseSlugs } from "~/education/lib/courses";
 import { getBaseUrl } from "~/education/lib/seo";
 
-import { getPosts as getImmigrationPosts } from "~/immigration/lib/ghost-api";
 import { getAllServiceSlugs as getImmigrationServiceSlugs } from "~/immigration/lib/servicesData";
 import { getAllDestinationSlugs as getImmigrationDestinationSlugs } from "~/immigration/lib/destinations";
 
@@ -49,7 +48,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   // Education dynamic paths
   try {
-    const eduPosts = await getEducationPosts();
+    const eduPosts = await loadAllPosts("education");
     for (const post of eduPosts) {
       const loc = `${base}/education/blog/${post.slug}`;
       const published = typeof post.publishedAt === "string" ? post.publishedAt : "";
@@ -58,7 +57,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
         : now;
       urls.push(`  <url><loc>${escapeXml(loc)}</loc><lastmod>${lastmod}</lastmod></url>`);
     }
-  } catch { }
+  } catch { throw new Response("Sitemap temporarily unavailable", { status: 503, headers: { "Retry-After": "60" } }); }
 
   const eduServices = getEducationServiceSlugs();
   for (const slug of eduServices) {
@@ -80,15 +79,15 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   // Immigration dynamic paths
   try {
-    const immPosts = await getImmigrationPosts();
+    const immPosts = await loadAllPosts("immigration");
     for (const post of immPosts) {
       const loc = `${base}/immigration/blog/${post.slug}`;
-      const lastmod = typeof post.published_at === "string"
-        ? new Date(post.published_at).toISOString().slice(0, 10)
+      const lastmod = typeof post.publishedAt === "string"
+        ? new Date(post.publishedAt).toISOString().slice(0, 10)
         : now;
       urls.push(`  <url><loc>${escapeXml(loc)}</loc><lastmod>${lastmod}</lastmod></url>`);
     }
-  } catch { }
+  } catch { throw new Response("Sitemap temporarily unavailable", { status: 503, headers: { "Retry-After": "60" } }); }
 
   const immServices = getImmigrationServiceSlugs();
   for (const slug of immServices) {

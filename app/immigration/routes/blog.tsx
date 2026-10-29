@@ -1,11 +1,12 @@
+import { BlogRouteError } from "~/components/ui/BlogRouteError";
 "use client";
 
-import { useEffect, useState } from "react";
-import { Link } from "react-router";
+import { Link, useLoaderData } from "react-router";
 import { Navbar } from "~/immigration/components/ui/Navbar";
 import { Footer } from "~/immigration/components/ui/footer";
-import { getPosts, getCoverImageUrl, getCoverImageAlt, type GhostPost } from "~/immigration/lib/ghost-api";
-import { ArrowRight, Calendar, Loader2 } from "lucide-react";
+import { normalize, getCoverImageUrl, getCoverImageAlt, type GhostPost } from "~/immigration/lib/ghost-api";
+import { loadListing } from "~/lib/blog-loaders.server";
+import { ArrowRight, Calendar } from "lucide-react";
 
 export function meta() {
   return [
@@ -17,17 +18,13 @@ export function meta() {
   ];
 }
 
-export default function Blog() {
-  const [posts, setPosts] = useState<GhostPost[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+export async function loader() {
+  const result = await loadListing("immigration", 1, 100);
+  return { posts: result.docs.map(normalize) };
+}
 
-  useEffect(() => {
-    getPosts()
-      .then(setPosts)
-      .catch((e) => setError(e instanceof Error ? e.message : "Failed to load posts"))
-      .finally(() => setLoading(false));
-  }, []);
+export default function Blog() {
+  const { posts } = useLoaderData<typeof loader>();
 
   return (
     <>
@@ -56,26 +53,13 @@ export default function Blog() {
 
         <section className="py-16 md:py-20 bg-white">
           <div className="max-w-7xl mx-auto px-6">
-            {loading && (
-              <div className="flex justify-center py-20">
-                <Loader2 className="w-10 h-10 animate-spin text-[#0B1B3A]" />
-              </div>
-            )}
-            {error && (
-              <div className="text-center py-20 rounded-2xl border border-slate-200 bg-slate-50/50 p-8">
-                <p className="text-red-600 mb-4">{error}</p>
-                <p className="text-slate-500 text-sm">
-                  Ensure VITE_GHOST_URL and VITE_GHOST_CONTENT_API_KEY are set in .env (see README for Ghost setup).
-                </p>
-              </div>
-            )}
-            {!loading && !error && posts.length === 0 && (
+            {posts.length === 0 && (
               <div className="text-center py-20 text-slate-600 rounded-2xl border border-slate-200 bg-slate-50/50 p-8">
-                <p>No posts yet. Add posts in your Ghost admin to see them here.</p>
-                <p className="mt-2 text-sm">Create a Custom Integration in Ghost Admin and set the Content API key in .env.</p>
+                <p>New immigration articles will appear here soon.</p>
+                <p className="mt-2 text-sm">Explore our immigration services while you wait.</p>
               </div>
             )}
-            {!loading && !error && posts.length > 0 && (
+            {posts.length > 0 && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {posts.map((post) => {
                   const coverUrl = getCoverImageUrl(post);
@@ -127,3 +111,5 @@ export default function Blog() {
     </>
   );
 }
+
+export function ErrorBoundary() { return <BlogRouteError section="immigration"/>; }

@@ -8,7 +8,7 @@ This note distinguishes **code written**, **checks passed**, **remote resources 
 
 ## Current session and continuation
 
-**Read [[Session Wall]] and [[Feature Ledger]] first.** The active feature is CMS-02, Ghost migration/public content validation. All later modules written during this session are staged and require their own acceptance work. Historical foundation verification below applies to its recorded checkpoint, not automatically to all subsequent changes.
+**Read [[Session Wall]] and [[Feature Ledger]] first.** CMS-02 public-readiness work is complete; the next feature is CMS-03, visual editor/revisions/scheduling acceptance. All later modules written during this session are staged and require their own acceptance work. Historical foundation verification below applies to its recorded checkpoint, not automatically to all subsequent changes.
 
 ## Implemented in the working tree
 
@@ -42,10 +42,14 @@ No SSH connection or VPS filesystem change has been performed. The DNS record, a
 
 Unified Ghost/Appwrite public content API, private Ghost source preservation/draft import, visual editor/revisions/scheduling, background reminders, cases, appointments, private documents, media, staff access, and operational reports/export now have implementation code. The draft import reconciles 30 posts and one page with zero source/identity/date/authorship/sanitization problems. Imported posts remain drafts and the public provider remains Ghost.
 
-Feature-level verification gaps, unprovisioned media metadata, stale-lock recovery, public SSR behavior, and deployment dependencies are recorded in [[Feature Ledger]] and [[Session Wall]]. Private document/editorial buckets were provisioned but actual storage/scan/download behavior still needs validation. No new module is declared production-ready merely because a build passes.
+Feature-level verification gaps, unprovisioned media metadata, stale-lock recovery, production cutover, and deployment dependencies are recorded in [[Feature Ledger]] and [[Session Wall]]. Private document/editorial buckets were provisioned but actual storage/scan/download behavior still needs validation. No new module is declared production-ready merely because a build passes.
 
 ## Remaining planned work
 
 Email/WhatsApp reminder delivery; durable outbox and scheduler; visual rich-text editor; revisions/review scheduling; full Ghost import and public adapter cutover; application and private-document modules; team-scoped manager access; robust distributed transactions; exports and reporting beyond the initial overview.
 
 See [[08 Roadmap]] and [[Changes/2026-10-29]].
+
+## Latest CMS-02 verification
+
+All five readiness criteria passed with 32 tests, typechecking, and a production build. Both blog sections render on the server; missing posts return 404, outages 503, and the sitemap includes all published pages beyond the first 100. A compiled-loader read-only Appwrite check returned zero exposed drafts in both sections. The public provider remains Ghost. Main merges are authorized after feature acceptance, with rollback references and release isolation; the current staged branch is not yet a wholesale release candidate.

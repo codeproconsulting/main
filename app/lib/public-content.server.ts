@@ -18,10 +18,11 @@ export async function readPublicContent(section:string,slug:string,page:number,l
  if(!origin||!process.env.VITE_GHOST_CONTENT_API_KEY)throw new Response("Blog service unavailable",{status:503});
  const url=new URL(origin+"/ghost/api/content/posts/");
  url.searchParams.set("key",process.env.VITE_GHOST_CONTENT_API_KEY);url.searchParams.set("include","authors,tags");url.searchParams.set("formats","html");url.searchParams.set("page",String(page));url.searchParams.set("limit",String(limit));url.searchParams.set("order","published_at DESC");
- const filters=[];if(section)filters.push(`tag:${section}`);if(slug)filters.push(`slug:${slug}`);if(filters.length)url.searchParams.set("filter",filters.join("+"));
+ const filters=[];if(section&&!slug)filters.push(`tag:${section}`);if(slug)filters.push(`slug:${slug}`);if(filters.length)url.searchParams.set("filter",filters.join("+"));
  const response=await fetch(url,{headers:{"Accept-Version":"v5.0"},signal:AbortSignal.timeout(15000)});
  if(!response.ok)throw new Response("Blog service unavailable",{status:503});
  const data=await response.json();
  const docs:PublicPost[]=(data.posts??[]).map((p:any)=>{const html=safeArticle(p.html??"");return {id:p.id,title:p.title,slug:p.slug,section:p.tags?.some((t:any)=>t.slug==="immigration")?"immigration":"education",excerpt:p.custom_excerpt||p.excerpt||"",html,body:html,featureImage:p.feature_image?new URL(p.feature_image,origin).href:"",featureImageAlt:p.feature_image_alt||p.title,publishedAt:p.published_at,updatedAt:p.updated_at,author:p.authors?.map((a:any)=>a.name).join(", ")||"ProConsulting",metaTitle:p.meta_title||"",metaDescription:p.meta_description||""};});
- return {docs,totalDocs:data.meta?.pagination?.total??docs.length};
+ const visible=slug&&section?docs.filter(p=>p.section===section):docs;
+ return {docs:visible,totalDocs:slug?visible.length:(data.meta?.pagination?.total??visible.length)};
 }

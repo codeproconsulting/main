@@ -6,7 +6,7 @@ updated: 2026-10-29
 
 ## Current increment
 
-Resume **CMS-02**, as specified in [[Session Wall]]. Keep one feature active, finish its acceptance checks, and record evidence before selecting another feature. [[Feature Ledger]] distinguishes staged modules from verified and planned work. General typecheck/tests/build checks do not close a feature automatically.
+CMS-02 is verified complete for readiness. Start the next bounded **CMS-03** session, as specified in [[Session Wall]]. Keep one feature active, finish its acceptance checks, and record evidence before selecting another feature. [[Feature Ledger]] distinguishes staged modules from verified and planned work. General typecheck/tests/build checks do not close a feature automatically.
 
 ## Next increments
 

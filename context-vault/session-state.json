@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "project": "ProConsulting",
   "sessionId": "2026-10-29-02",
-  "sessionStatus": "checkpointed",
+  "sessionStatus": "completed",
   "activeFeature": "CMS-02",
   "objective": "Validate the Ghost draft import and unified public content service without switching the live website away from Ghost.",
   "scope": [
@@ -34,13 +34,13 @@
       "id": "CMS02-C",
       "description": "Typecheck, focused regression tests, and production build pass on this source checkpoint",
       "status": "passed",
-      "evidence": "Final session:verify run passed typecheck, test suite, and production build; command timestamps/logs and source fingerprint are recorded below."
+      "evidence": "Typecheck, all 32 tests, and production build passed at the current source fingerprint. No imported draft was published."
     },
     {
       "id": "CMS02-D",
       "description": "Both blog sections render through verified loaders with correct missing-post responses",
-      "status": "pending",
-      "evidence": "Immigration pages still use client effects; education detail currently converts service errors to missing-post state. Correct and test before completion."
+      "status": "passed",
+      "evidence": "Both section listings and articles render server HTML; missing posts return 404, outages return 503, and sitemap includes 105 education plus two immigration fixtures. 32 tests pass. Compiled loader read-only Appwrite check exposes none of the imported drafts."
     },
     {
       "id": "CMS02-E",
@@ -52,44 +52,39 @@
   "nextActions": [
     {
       "order": 1,
-      "action": "Read this state, Session Wall, the feature ledger, and the actual Git diff. Resume CMS-02; do not start another feature.",
+      "action": "Start the next bounded session for CMS-03 (visual editor, revision restore, and scheduled publishing). Preserve completed CMS-02 evidence before replacing this session state.",
       "files": [
-        "context-vault/session-state.json",
         "context-vault/Feature Ledger.md",
-        "app/lib/public-content.server.ts"
+        "app/admin/content.server.ts",
+        "app/admin/rich-editor.tsx",
+        "app/admin/history.tsx",
+        "scripts/worker.mjs"
       ]
     },
     {
       "order": 2,
-      "action": "Convert immigration blog list/detail to server loaders; preserve public paths and add correct 404 versus service-error handling in both sections.",
+      "action": "Define CMS-03 acceptance checks first: editor cursor/paste behavior, role boundaries, revision restore/stale edits, schedule transitions, and worker race/crash behavior. Do not start unrelated CRM modules.",
       "files": [
-        "app/immigration/routes/blog.tsx",
-        "app/immigration/routes/blog.$slug.tsx",
-        "app/education/routes/blog.$slug.tsx"
-      ]
-    },
-    {
-      "order": 3,
-      "action": "Test Appwrite-backed local public rendering and sitemap pagination with synthetic isolated data. Do not publish imported drafts as a testing shortcut.",
-      "files": [
-        "app/routes/api.content.ts",
-        "app/lib/content-client.ts",
+        "app/admin/blog-edit.tsx",
+        "app/admin/preview.ts",
         "tests/workspace.test.mjs"
       ]
     },
     {
-      "order": 4,
-      "action": "Reconcile historical routes/media and decide the untagged TOEFL post's section before any public content switch. Keep the legacy About page private.",
+      "order": 3,
+      "action": "Keep Ghost as the public provider. Historical URL/media reconciliation, the untagged source decision, and production cutover belong to CMS-04 and are not completed by the public-readiness work.",
       "files": [
         "scripts/import-ghost.mjs",
-        "scripts/validate-ghost-import.mjs"
+        "scripts/validate-ghost-import.mjs",
+        "context-vault/Feature Ledger.md"
       ]
     },
     {
-      "order": 5,
-      "action": "Run session:verify, record each acceptance result and remaining gates. Only then close CMS-02 and select the next feature from the ledger.",
+      "order": 4,
+      "action": "As features pass acceptance, prepare an isolated release candidate or finish staged branch acceptance before merging into main. Preserve and push a rollback ref to previous main; follow the release runbook.",
       "files": [
-        "context-vault/session-state.json"
+        "docs/RELEASE-AND-ROLLBACK.md",
+        "AGENTS.md"
       ]
     }
   ],
@@ -112,31 +107,33 @@
     "ownerPassword": "owner must set via Appwrite Console",
     "gitBranch": "codex/crm-workspace",
     "integratedUpstream": "origin/main through 407977c (16 commits)",
-    "githubCheckpoint": "Pushed codex/crm-workspace through merge checkpoint 27013ec; origin/main through 407977c is integrated; main not changed"
+    "githubCheckpoint": "Pushed codex/crm-workspace through merge checkpoint 27013ec; origin/main through 407977c is integrated; main not changed",
+    "mainMergePolicy": "User authorizes feature-tested merges with rollback references. The current development branch still includes unaccepted modules, so no whole-branch main merge has been performed.",
+    "rollbackReference": "rollback/main-2026-10-29-407977c preserves the existing main baseline for release recovery"
   },
   "checks": [
     {
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-10-29T07:55:37.712Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-TfuwZn/typecheck.log"
+      "checkedAt": "2026-10-29T08:11:21.661Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-tdypae/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-10-29T07:55:38.212Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-TfuwZn/test.log"
+      "checkedAt": "2026-10-29T08:11:22.490Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-tdypae/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-10-29T07:55:43.898Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-TfuwZn/build.log"
+      "checkedAt": "2026-10-29T08:11:27.292Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-tdypae/build.log"
     }
   ],
-  "updatedAt": "2026-10-29T07:58:10.516Z",
-  "verifiedSourceFingerprint": "9743360ca0550d457a601abe6371fbd6c64d075c2c4a9182035b12312c465725"
+  "updatedAt": "2026-10-29T08:11:55.825Z",
+  "verifiedSourceFingerprint": "ad083e505a4aef9e0a53ffaf282a897b03f3600e1a7f25d097ca79051dc548a5"
 }

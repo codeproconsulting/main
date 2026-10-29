@@ -1,12 +1,14 @@
+import { BlogRouteError } from "~/components/ui/BlogRouteError";
 "use client";
 
-import { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router";
+import { useState } from "react";
+import { Link, useSearchParams, useLoaderData } from "react-router";
 import { Navbar } from "~/education/components/ui/Navbar";
 import { Footer } from "~/education/components/ui/footer";
-import { getPostsPaginated, getRecentPosts, getCoverImageUrl, getCoverImageAlt, type Post } from "~/education/lib/ghost-api";
+import { getCoverImageUrl, getCoverImageAlt, type Post } from "~/education/lib/ghost-api";
 import { pageMeta, canonicalLink } from "~/education/lib/seo";
-import { ArrowRight, Search, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowRight, Search, ChevronLeft, ChevronRight } from "lucide-react";
+import { loadListing } from "~/lib/blog-loaders.server";
 import type { Route } from "./+types/blog";
 
 const POSTS_PER_PAGE = 8;
@@ -50,34 +52,16 @@ function formatDate(dateStr: string | null | undefined): string {
   });
 }
 
+export async function loader({ request }: Route.LoaderArgs) {
+  const page = Math.max(1, Math.min(10000, Number.parseInt(new URL(request.url).searchParams.get("page") || "1", 10) || 1));
+  const [listing, recent] = await Promise.all([loadListing("education", page, POSTS_PER_PAGE), loadListing("education", 1, 3)]);
+  return { ...listing, recentPosts: recent.docs };
+}
+
 export default function Blog() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const page = Math.max(1, parseInt(searchParams.get("page") ?? "1", 10) || 1);
-
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [recentPosts, setRecentPosts] = useState<Post[]>([]);
-  const [totalPages, setTotalPages] = useState(0);
-  const [totalDocs, setTotalDocs] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { docs: posts, recentPosts, totalPages, totalDocs, page } = useLoaderData<typeof loader>();
   const [searchQuery, setSearchQuery] = useState("");
-
-  useEffect(() => {
-    setLoading(true);
-    setError(null);
-    Promise.all([
-      getPostsPaginated(page, POSTS_PER_PAGE),
-      getRecentPosts(3),
-    ])
-      .then(([paginated, recent]) => {
-        setPosts(paginated.docs);
-        setTotalPages(paginated.totalPages);
-        setTotalDocs(paginated.totalDocs);
-        setRecentPosts(recent);
-      })
-      .catch((e) => setError(e instanceof Error ? e.message : "Failed to load posts"))
-      .finally(() => setLoading(false));
-  }, [page]);
 
   const filteredPosts = searchQuery.trim()
     ? posts.filter((p) => {
@@ -114,25 +98,12 @@ export default function Blog() {
                 </h1>
               </div>
 
-              {loading && (
-                <div className="flex justify-center py-20">
-                  <Loader2 className="w-10 h-10 animate-spin text-[#0B1B3A]" />
-                </div>
-              )}
-              {error && (
-                <div className="rounded-2xl border border-slate-200 bg-slate-50/50 p-8">
-                  <p className="text-red-600 font-medium mb-2">{error}</p>
-                  <p className="text-slate-500 text-sm">
-                    If the message says &quot;must be set&quot;, rebuild on the server after adding the keys to .env: <code className="bg-slate-200 px-1 rounded">npm run build &amp;&amp; pm2 restart education</code>. If it says &quot;Ghost API error: 401&quot;, check the Content API key in Ghost → Settings → Integrations.
-                  </p>
-                </div>
-              )}
-              {!loading && !error && posts.length === 0 && (
+              {posts.length === 0 && (
                 <div className="text-center py-20 text-slate-600 rounded-2xl border border-slate-200 bg-slate-50/50 p-8">
-                  <p>No posts yet. Add posts in Ghost Admin to see them here.</p>
+                  <p>New study abroad articles will appear here soon.</p>
                 </div>
               )}
-              {!loading && !error && (posts.length > 0 || totalDocs > 0) && (
+              {(posts.length > 0 || totalDocs > 0) && (
                 <div className="space-y-8">
                   {filteredPosts.length === 0 ? (
                     <p className="text-slate-600 py-8">No posts match your search.</p>
@@ -343,3 +314,5 @@ export default function Blog() {
     </>
   );
 }
+
+export function ErrorBoundary() { return <BlogRouteError section="education"/>; }

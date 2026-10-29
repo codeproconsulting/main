@@ -1,3 +1,4 @@
+import { BlogRouteError } from "~/components/ui/BlogRouteError";
 "use client";
 
 import { useState, useRef } from "react";
@@ -5,14 +6,13 @@ import { Link, useLoaderData } from "react-router";
 import { Navbar } from "~/education/components/ui/Navbar";
 import { Footer } from "~/education/components/ui/footer";
 import {
-  getPostBySlug,
-  getPosts,
   getCoverImageUrl,
   getCoverImageAlt,
   type Post,
 } from "~/education/lib/ghost-api";
 import { pageMeta, canonicalLink, getAbsoluteUrl, getBaseUrl, SITE_NAME } from "~/education/lib/seo";
 import { GhostHtmlBody, getHeadingsFromHtml } from "~/education/components/ui/GhostHtmlBody";
+import { loadArticle, loadListing } from "~/lib/blog-loaders.server";
 import { submitLead } from "~/lib/submit-lead";
 import {
   ArrowLeft,
@@ -38,11 +38,11 @@ const SIDEBAR_CATEGORIES = [
 ];
 
 export async function loader({ params }: Route.LoaderArgs) {
-  const post = await getPostBySlug(params.slug).catch(() => null);
+  const post = await loadArticle("education", params.slug);
   let relatedPosts: Post[] = [];
   if (post) {
     try {
-      const all = await getPosts(50);
+      const all = (await loadListing("education", 1, 50)).docs;
       relatedPosts = all.filter((p) => p.slug !== post.slug).slice(0, 3);
     } catch {
       // no related posts if API fails
@@ -100,37 +100,9 @@ function estimateReadTime(html: string | null | undefined): number {
 export default function BlogPost() {
   const submissionId = useRef(crypto.randomUUID());
   const { post, relatedPosts } = useLoaderData<typeof loader>();
-  const error = !post ? "Post not found" : null;
   const [leadSubmitting, setLeadSubmitting] = useState(false);
   const [leadSubmitted, setLeadSubmitted] = useState(false);
   const [leadError, setLeadError] = useState<string | null>(null);
-
-  if (error || !post) {
-    return (
-      <>
-        <Navbar />
-        <main className="min-h-screen border-b border-slate-200/80 bg-slate-50/50">
-          <div className="max-w-7xl mx-auto px-6 pt-12 pb-10 md:pt-16 md:pb-14">
-            <nav className="flex items-center gap-2 text-sm text-slate-500 mb-6" aria-label="Breadcrumb">
-              <Link to="/" className="hover:text-[#0B1B3A] transition-colors">Home</Link>
-              <span aria-hidden>/</span>
-              <Link to="/education/blog" className="hover:text-[#0B1B3A] transition-colors">Blog</Link>
-              <span aria-hidden>/</span>
-              <span className="text-slate-500">Post not found</span>
-            </nav>
-            <p className="text-red-600 mb-4">{error ?? "Post not found"}</p>
-            <Link
-              to="/education/blog"
-              className="inline-flex items-center gap-2 text-slate-500 hover:text-[#FF4D6D] font-medium transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" /> Back to blog
-            </Link>
-          </div>
-        </main>
-        <Footer />
-      </>
-    );
-  }
 
   const publishedDate = formatDate(post.publishedAt);
   const coverUrl = getCoverImageUrl(post);
@@ -196,7 +168,7 @@ export default function BlogPost() {
       {blogPostingJsonLd && (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(blogPostingJsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(blogPostingJsonLd).replace(/</g, "\\u003c") }}
         />
       )}
       <main className="min-h-screen bg-white">
@@ -523,3 +495,5 @@ export default function BlogPost() {
     </>
   );
 }
+
+export function ErrorBoundary() { return <BlogRouteError section="education"/>; }
