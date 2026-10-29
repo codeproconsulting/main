@@ -10,3 +10,9 @@ npm-debug.log*
 
 
 .react-router/
+# Local Obsidian window state and caches; keep vault content and core settings tracked.
+context-vault/.obsidian/workspace*.json
+context-vault/.obsidian/cache/
+context-vault/.trash/
+# Private migration manifests and import artifacts.
+migration-reports/

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { Mail, Phone, CheckCircle2, ArrowRight, Loader2, Globe, Send } from "lucide-react";
 import { Navbar } from "~/immigration/components/ui/Navbar";
@@ -8,7 +8,7 @@ import { Footer } from "~/immigration/components/ui/footer";
 import { destinations } from "~/immigration/lib/destinations";
 import type { Route } from "./+types/contact";
 
-const SCRIPT_URL = import.meta.env.VITE_GOOGLE_SHEET_SCRIPT_URL;
+import { submitLead } from "~/lib/submit-lead";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -39,6 +39,7 @@ const initialForm: FormState = {
 };
 
 export default function Contact() {
+  const submissionId = useRef(crypto.randomUUID());
   const [form, setForm] = useState<FormState>(initialForm);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
@@ -58,22 +59,10 @@ export default function Contact() {
       return;
     }
 
-    if (!SCRIPT_URL) {
-      setError("Form submission is not configured yet. Please contact us via email or phone.");
-      return;
-    }
-
     setSubmitting(true);
     try {
-      await fetch(SCRIPT_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "text/plain;charset=UTF-8" },
-        body: JSON.stringify({
-          source: "immigration_site_free_consultation",
-          ...form,
-        }),
-      });
+      await submitLead({ source: "immigration-contact", service: "Immigration", ...form }, submissionId.current);
+      submissionId.current = crypto.randomUUID();
 
       setSuccess("Thank you! Your request has been sent successfully. We will get back to you shortly.");
       setForm(initialForm);

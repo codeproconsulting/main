@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Link, useLoaderData } from "react-router";
 import { Navbar } from "~/education/components/ui/Navbar";
 import { Footer } from "~/education/components/ui/footer";
@@ -13,7 +13,7 @@ import {
 } from "~/education/lib/ghost-api";
 import { pageMeta, canonicalLink, getAbsoluteUrl, getBaseUrl, SITE_NAME } from "~/education/lib/seo";
 import { GhostHtmlBody, getHeadingsFromHtml } from "~/education/components/ui/GhostHtmlBody";
-import { GOOGLE_SHEET_SCRIPT_URL } from "~/education/lib/google-sheet";
+import { submitLead } from "~/lib/submit-lead";
 import {
   ArrowLeft,
   ArrowRight,
@@ -60,7 +60,7 @@ export function meta(args?: Route.MetaArgs) {
   const description = (post.metaDescription || post.excerpt) ?? "";
   const pathname = args?.location?.pathname ?? (args?.params ? `/education/blog/${args.params.slug}` : "");
   const ogImage = getCoverImageUrl(post);
-  const metaTags: Route.MetaArgs["meta"] = [
+  const metaTags = [
     { title },
     { name: "description", content: description },
     ...pageMeta({ title, description, pathname }),
@@ -98,6 +98,7 @@ function estimateReadTime(html: string | null | undefined): number {
 }
 
 export default function BlogPost() {
+  const submissionId = useRef(crypto.randomUUID());
   const { post, relatedPosts } = useLoaderData<typeof loader>();
   const error = !post ? "Post not found" : null;
   const [leadSubmitting, setLeadSubmitting] = useState(false);
@@ -146,8 +147,8 @@ export default function BlogPost() {
 
     const payload = {
       source: "blog-sidebar",
-      blogSlug: post.slug,
-      blogTitle: post.title,
+      blogSlug: post!.slug,
+      blogTitle: post!.title,
       name: (data.get("name") as string) ?? "",
       email: (data.get("email") as string) ?? "",
       phone: (data.get("phone") as string) ?? "",
@@ -156,19 +157,10 @@ export default function BlogPost() {
       date: new Date().toISOString(),
     };
 
-    if (!GOOGLE_SHEET_SCRIPT_URL) {
-      setLeadError("Form is not configured yet. Please try again later.");
-      return;
-    }
-
     setLeadSubmitting(true);
     try {
-      await fetch(GOOGLE_SHEET_SCRIPT_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "text/plain;charset=UTF-8" },
-        body: JSON.stringify(payload),
-      });
+      await submitLead(payload, submissionId.current);
+
       setLeadSubmitted(true);
       form.reset();
       if (typeof window !== "undefined" && (window as any).fbq) {
@@ -386,6 +378,7 @@ export default function BlogPost() {
                           <input
                             id="sidebarPhone"
                             name="phone"
+                            required
                             type="tel"
                             className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-slate-900 focus:border-pink-500 focus:ring-2 focus:ring-pink-500/20 outline-none transition"
                             placeholder="+92 3xx xxxxxxx"

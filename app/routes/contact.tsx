@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Navbar } from "../components/ui/Navbar";
 import { Footer } from "../components/ui/Footer";
+import { submitLead } from "~/lib/submit-lead";
 import { CONTACT, SOCIAL, BRAND } from "../lib/constants";
 import { pageMeta, canonicalLink } from "../lib/seo";
 import type { Route } from "./+types/contact";
@@ -33,12 +34,18 @@ const serviceOptions = [
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setSubmitted(true);
-    if (typeof window !== "undefined" && (window as any).fbq) {
-      (window as any).fbq('track', 'Lead');
-    }
+  const submissionId = useRef(crypto.randomUUID());
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault(); setSubmitting(true); setError("");
+    const form = new FormData(e.currentTarget);
+    try {
+      await submitLead({ ...Object.fromEntries(form), source: "main-contact" }, submissionId.current);
+      setSubmitted(true);
+      if (typeof window !== "undefined" && (window as any).fbq) (window as any).fbq('track', 'Lead');
+    } catch (error) { setError(error instanceof Error ? error.message : "Please retry shortly."); }
+    finally { setSubmitting(false); }
   }
 
   return (
@@ -59,6 +66,7 @@ export default function ContactPage() {
             {/* Form */}
             <div className="lg:col-span-3">
               <form onSubmit={handleSubmit} className="space-y-5">
+                {error && <p role="alert" className="text-red-700">{error}</p>}
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-1">Full Name</label>
                   <input
@@ -113,7 +121,7 @@ export default function ContactPage() {
                   />
                 </div>
                 <button
-                  type="submit"
+                  type="submit" disabled={submitting}
                   className="w-full sm:w-auto rounded-full px-8 py-3 text-base font-semibold text-white transition duration-200 hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#FF4D6D]/50"
                   style={{ backgroundColor: BRAND.pink }}
                 >

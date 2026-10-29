@@ -9,10 +9,10 @@ echo "--- Pulling latest from $BRANCH ---"
 git pull origin $BRANCH
 
 echo "--- Installing & Building ---"
-npm install
+npm ci
 npm run build
 
 echo "--- Restarting PM2 ---"
-pm2 restart proconsulting-main
+pm2 startOrReload deploy/ecosystem.config.cjs --update-env
 
 echo "--- Done! ---"

@@ -5,10 +5,18 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLocation,
+  redirect,
 } from "react-router";
 
 import type { Route } from "./+types/root";
 import "./app.css";
+import "./admin/admin.css";
+export function loader({ request }: Route.LoaderArgs) {
+  const url = new URL(request.url);
+  if (process.env.APP_SURFACE === "dashboard" && !url.pathname.startsWith("/admin") && url.pathname !== "/robots.txt") throw redirect("/admin");
+  return null;
+}
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -37,6 +45,8 @@ export function meta() {
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const { pathname } = useLocation();
+  const privatePage = pathname.startsWith("/admin") || pathname === "/education/admin";
   return (
     <html lang="en">
       <head>
@@ -44,6 +54,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
+        {!privatePage && <>
         {/* Google tag (gtag.js) */}
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-FTJSVLBK6V"></script>
         <script
@@ -90,8 +101,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
           />
         </noscript>
         {/* End Meta Pixel Code */}
+        </>}
       </head>
       <body>
+        {!privatePage && <>
         {/* Google Tag Manager (noscript) */}
         <noscript>
           <iframe
@@ -103,6 +116,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           />
         </noscript>
         {/* End Google Tag Manager (noscript) */}
+        </>}
         {children}
         <ScrollRestoration />
         <Scripts />

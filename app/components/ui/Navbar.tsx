@@ -15,7 +15,7 @@ import {
 import { cn } from "../../lib/utils";
 import { EDUCATION_URL, IMMIGRATION_URL } from "../../lib/constants";
 
-const navLinks = [
+const navLinks: { to: string; label: string; external?: boolean }[] = [
   { to: "/", label: "Home" },
   { to: EDUCATION_URL, label: "Study Abroad" },
 ];

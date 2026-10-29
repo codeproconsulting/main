@@ -1,0 +1,20 @@
+import {createDocument,getDocument,listDocuments,query,updateDocument} from "~/lib/appwrite.server";
+import {caseStages,canManage,canUseCRM,type Staff} from "./domain";
+import {allow,audit,dateField,field,leadFor,serialized} from "./crm.server";
+export type CaseRecord={$id:string;leadId:string;owner:string;kind:string;institution:string;course:string;country:string;intake:string;stage:string;deadline:string;notes:string;version:number};
+export type Appointment={$id:string;leadId:string;owner:string;title:string;startsAt:string;endsAt:string;status:string;location:string;notes:string;version:number};
+
+export async function scopedRecords<T extends {leadId:string}>(staff:Staff,collection:string){allow(canUseCRM(staff));const filters=[query("orderDesc","$createdAt"),query("limit",undefined,[100])];if(!canManage(staff))filters.push(query("equal","owner",[staff.$id]));const result=await listDocuments<T>(collection,filters);const records=[];for(const record of result.documents){try{await leadFor(staff,record.leadId);records.push(record);}catch(error){if(error instanceof Response&&[403,404].includes(error.status))continue;throw error;}}return records;}
+export async function saveCase(staff:Staff,form:FormData){const id=field(form,"id",36),leadId=field(form,"leadId",36);const lead=await leadFor(staff,leadId);return serialized(`lead:${leadId}`,async()=>{
+ const current=id?await getDocument<CaseRecord>("cases",id):null;if(current){allow(current.leadId===leadId);if(current.version!==Number(field(form,"version")))throw new Response("Application changed. Refresh before saving.",{status:409});}
+ const kind=field(form,"kind",30),stage=field(form,"stage",80);if(!["Education","Immigration"].includes(kind)||!caseStages.includes(stage))throw new Response("Invalid application type or stage",{status:400});
+ const payload={leadId,owner:lead.owner,kind,institution:field(form,"institution",300),course:field(form,"course",300),country:field(form,"country",150),intake:field(form,"intake",100),stage,deadline:dateField(field(form,"deadline",40)),notes:field(form,"notes",10000),version:(current?.version??0)+1};
+ const record=current?await updateDocument<CaseRecord>("cases",id,payload):await createDocument("cases",payload);await audit(staff,leadId,"lead",current?"Application updated":"Application created",{caseId:record.$id,stage});return record;
+ });}
+export async function saveAppointment(staff:Staff,form:FormData){const id=field(form,"id",36),leadId=field(form,"leadId",36);const lead=await leadFor(staff,leadId);if(!lead.owner)throw new Response("Assign the lead before booking an appointment.",{status:400});return serialized(`calendar:${lead.owner}`,async()=>{
+ const current=id?await getDocument<Appointment>("appointments",id):null;if(current){allow(current.leadId===leadId);if(current.version!==Number(field(form,"version")))throw new Response("Appointment changed. Refresh before saving.",{status:409});}
+ const startsAt=dateField(field(form,"startsAt",40)),endsAt=dateField(field(form,"endsAt",40)),status=field(form,"status",30),title=field(form,"title",300);
+ if(!title||!startsAt||!endsAt||endsAt<=startsAt||!["Booked","Completed","Cancelled","No show"].includes(status))throw new Response("Enter a valid title, time range, and booking status.",{status:400});
+ if(status==="Booked"){const conflicts=await listDocuments<Appointment>("appointments",[query("equal","owner",[lead.owner]),query("equal","status",["Booked"]),query("lessThan","startsAt",[endsAt]),query("greaterThan","endsAt",[startsAt]),query("limit",undefined,[100])]);if(conflicts.documents.some(a=>a.$id!==id))throw new Response("This counselor already has an appointment during that time.",{status:409});}
+ const payload={leadId,owner:lead.owner,title,startsAt,endsAt,status,location:field(form,"location",1000),notes:field(form,"notes",10000),version:(current?.version??0)+1};const record=current?await updateDocument<Appointment>("appointments",id,payload):await createDocument("appointments",payload);await audit(staff,leadId,"lead","Appointment saved",{appointmentId:record.$id,status,startsAt});return record;
+ });}

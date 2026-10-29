@@ -28,7 +28,7 @@ export function meta(args: Route.MetaArgs) {
   ];
 }
 
-export function links(args: Route.LinksArgs) {
+export function links(args?: { location?: { pathname: string }; params?: { slug?: string } }) {
   return canonicalLink(args?.location?.pathname ?? "/education/courses");
 }
 

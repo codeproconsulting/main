@@ -89,3 +89,9 @@ pm2 logs proconsulting-main --err
 - The Nginx configuration assumes Ghost is running on `localhost:2368`.
 - If your Ghost instance is on a different port or server, update `deploy/nginx/proconsulting.uk.conf`.
 - All blogs (Education/Immigration) fetch content via the Ghost Content API using the key provided in `.env`.
+
+## CRM subdomain
+
+The staff workspace now has a dedicated deployment guide: [CRM-DEPLOYMENT.md](CRM-DEPLOYMENT.md). Its target host is **crm.proconsulting.uk**, with a second loopback process on port 3001. The public website stays on port 3000 and Appwrite keeps its existing host/proxy. Review that guide before using the historical one-shot install script; it does not configure the CRM vhost or account for an existing Traefik edge.
+
+Architecture, file changes, and implementation status are maintained in the repository's `context-vault/`, which can be opened directly in Obsidian.

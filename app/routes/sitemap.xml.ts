@@ -1,4 +1,4 @@
-import type { LoaderFunctionArgs } from "@react-router/node";
+import type { LoaderFunctionArgs } from "react-router";
 import { getPosts as getEducationPosts } from "~/education/lib/ghost-api";
 import { getAllServiceSlugs as getEducationServiceSlugs } from "~/education/lib/servicesData";
 import { getAllDestinationSlugs as getEducationDestinationSlugs } from "~/education/lib/destinations";
@@ -83,8 +83,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
     const immPosts = await getImmigrationPosts();
     for (const post of immPosts) {
       const loc = `${base}/immigration/blog/${post.slug}`;
-      const lastmod = post.publishedAt
-        ? new Date(post.publishedAt).toISOString().slice(0, 10)
+      const lastmod = typeof post.published_at === "string"
+        ? new Date(post.published_at).toISOString().slice(0, 10)
         : now;
       urls.push(`  <url><loc>${escapeXml(loc)}</loc><lastmod>${lastmod}</lastmod></url>`);
     }

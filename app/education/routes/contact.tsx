@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Link, useFetcher, useLocation } from "react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -25,9 +25,9 @@ import type { ActionFunctionArgs } from "react-router";
 import { Navbar } from "~/education/components/ui/Navbar";
 import { Footer } from "~/education/components/ui/footer";
 import { Button } from "~/education/components/ui/button";
-import { GOOGLE_SHEET_SCRIPT_URL } from "~/education/lib/google-sheet";
+import { captureLead } from "~/lib/intake.server";
 import { pageMeta, canonicalLink } from "~/education/lib/seo";
-import { saveApplicant, type Applicant } from "~/education/lib/applicants.server";
+import type { Applicant } from "~/education/lib/applicants.server";
 import type { Route } from "./+types/contact";
 
 const BRAND = {
@@ -77,15 +77,16 @@ export async function action({ request }: ActionFunctionArgs) {
       notes: (formData.get("notes") as string) || "",
     };
 
-    const saved = saveApplicant(applicantData);
+    const lead = await captureLead(request, { ...applicantData, submissionId: formData.get("submissionId"), source: new URL(request.url).pathname, service: "Education" });
+    const saved = { ...applicantData, id: lead.$id, createdAt: lead.$createdAt, status: "New" as const };
     return { success: true, applicant: saved };
   } catch (error) {
-    console.error("Action error:", error);
-    return { success: false, error: "Failed to submit assessment" };
+    return { success: false, error: error instanceof Response ? await error.text() : "We could not save your assessment. Please retry shortly." };
   }
 }
 
 export default function Contact() {
+  const submissionId = useRef(crypto.randomUUID());
   const fetcher = useFetcher<{ success: boolean; applicant?: Applicant; error?: string }>();
   const isSubmitting = fetcher.state === "submitting";
   const location = useLocation();
@@ -169,50 +170,10 @@ export default function Contact() {
     // Submit to React Router Action
     const fd = new FormData();
     Object.entries(form).forEach(([k, v]) => fd.append(k, v));
+    fd.append("submissionId", submissionId.current);
     fetcher.submit(fd, { method: "post" });
 
-    // Client-side fallback backup in localStorage for dashboard
-    try {
-      const existing = JSON.parse(
-        localStorage.getItem("proconsulting_local_applicants") || "[]"
-      );
-      const localBackup = {
-        ...form,
-        id: `PC-${Math.floor(100000 + Math.random() * 900000)}`,
-        createdAt: new Date().toISOString(),
-        status: "New",
-      };
-      existing.unshift(localBackup);
-      localStorage.setItem(
-        "proconsulting_local_applicants",
-        JSON.stringify(existing)
-      );
-    } catch (e) {
-      // ignore
-    }
 
-    // Google Sheets Integration
-    if (GOOGLE_SHEET_SCRIPT_URL) {
-      try {
-        await fetch(GOOGLE_SHEET_SCRIPT_URL, {
-          method: "POST",
-          mode: "no-cors",
-          headers: { "Content-Type": "text/plain;charset=UTF-8" },
-          body: JSON.stringify({
-            ...form,
-            type: "Free Visa & University Assessment",
-            date: new Date().toISOString(),
-          }),
-        });
-      } catch (err) {
-        console.error("Google Sheet submission error:", err);
-      }
-    }
-
-    // Meta Pixel Tracking
-    if (typeof window !== "undefined" && (window as any).fbq) {
-      (window as any).fbq("track", "Lead");
-    }
   };
 
   const isConfirmed = fetcher.data?.success;
@@ -350,10 +311,10 @@ export default function Contact() {
 
               <div className="p-6 sm:p-10">
                 {/* Validation Error Notice */}
-                {errorMessage && (
+                {(errorMessage || fetcher.data?.error) && (
                   <div className="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm flex items-center gap-2.5">
                     <AlertCircle className="w-5 h-5 shrink-0 text-red-500" />
-                    <span>{errorMessage}</span>
+                    <span>{errorMessage || fetcher.data?.error}</span>
                   </div>
                 )}
 

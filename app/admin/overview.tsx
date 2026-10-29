@@ -1,0 +1,18 @@
+import { Link, useLoaderData } from "react-router";
+import type { LoaderFunctionArgs } from "react-router";
+import { ArrowUpRight, UsersRound, Clock3, CheckCheck, BookOpen } from "lucide-react";
+import { requireStaff } from "./auth.server";
+import { leadsFor, tasksFor } from "./crm.server";
+import { canEditContent, canUseCRM, displayDate } from "./domain";
+import { listDocuments, query } from "~/lib/appwrite.server";
+import { Badge, Empty, PageHeading } from "./ui";
+export async function loader({ request }: LoaderFunctionArgs) {
+ const staff = await requireStaff(request);
+ const [leads,tasks,posts] = await Promise.all([canUseCRM(staff) ? leadsFor(staff) : null, canUseCRM(staff) ? tasksFor(staff) : [], canEditContent(staff) ? listDocuments("posts", [query("limit", undefined, [1])]) : null]);
+ return { staff, leads: leads?.documents ?? [], total: leads?.total ?? 0, tasks, postCount: posts?.total ?? 0 };
+}
+export default function Overview() {
+ const { staff, leads, total, tasks, postCount } = useLoaderData<typeof loader>(); const overdue = tasks.filter(t=>Date.parse(t.dueAt)<Date.now());
+ const cards = [...(canUseCRM(staff) ? [{label:"Leads in your scope", value:total, icon:UsersRound, detail:"Across all stages"},{label:"Open follow-ups",value:tasks.length,icon:CheckCheck,detail:"Up to 100 upcoming tasks"},{label:"Overdue follow-ups",value:overdue.length,icon:Clock3,detail:"Needs your attention"}] : []), ...(canEditContent(staff) ? [{label:"Blog posts",value:postCount,icon:BookOpen,detail:"Your content library"}] : [])];
+ return <><PageHeading eyebrow="YOUR WORKSPACE, AT A GLANCE" title={`Good to see you, ${staff.name.split(" ")[0]}.`} description="Keep conversations moving. Make the next step count."/><div className="crm-stats">{cards.map(c=><article className="crm-stat" key={c.label}><div><p>{c.label}</p><c.icon size={19}/></div><strong>{c.value.toString().padStart(2,"0")}</strong><small>{c.detail}</small></article>)}</div><div className="crm-two-col"><section className="crm-panel"><div className="crm-panel-heading"><div><h2>{canUseCRM(staff) ? "Recent enquiries" : "Your publishing workspace"}</h2><p className="crm-muted">Every new conversation starts here.</p></div><Link to={canUseCRM(staff) ? "/admin/leads" : "/admin/blogs"}>View all <ArrowUpRight size={16}/></Link></div>{leads.length ? <div className="crm-list">{leads.slice(0,6).map(l=><Link key={l.$id} to={`/admin/leads/${l.$id}`} className="crm-list-row"><span className="crm-avatar">{l.name.slice(0,2).toUpperCase()}</span><div><strong>{l.name}</strong><small>{l.country || l.service} · {displayDate(l.$createdAt)}</small></div><Badge>{l.stage}</Badge></Link>)}</div> : <Empty title={canUseCRM(staff) ? "Ready for your first enquiry" : "Make room for your next story"}>{canUseCRM(staff) ? "New submissions will appear here once website intake is connected." : "Create and review posts in the blog studio."}</Empty>}</section><section className="crm-panel"><div className="crm-panel-heading"><div><h2>Next on your list</h2><p className="crm-muted">A clear view of what comes next.</p></div></div>{tasks.length ? <div className="crm-list">{tasks.slice(0,5).map(t=><Link className="crm-task-row" to={`/admin/leads/${t.leadId}`} key={t.$id}><span className="crm-task-circle"/><div><strong>{t.title}</strong><small>{displayDate(t.dueAt)}</small></div>{Date.parse(t.dueAt)<Date.now() && <Badge tone="danger">Overdue</Badge>}</Link>)}</div> : <Empty title="A little breathing room">Your scheduled follow-ups will appear here.</Empty>}<div className="crm-tip"><span>MAKE IT A HABIT</span><p>Finish every conversation with a clear next action and a follow-up date.</p></div></section></div></>;
+}

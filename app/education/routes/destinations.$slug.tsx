@@ -30,7 +30,7 @@ export function meta(args: Route.MetaArgs) {
   ];
 }
 
-export function links(args: Route.LinksArgs) {
+export function links(args?: { location?: { pathname: string }; params?: { slug?: string } }) {
   const pathname = args?.location?.pathname ?? (args?.params ? `/education/destinations/${args.params.slug}` : "");
   return pathname ? canonicalLink(pathname) : [];
 }

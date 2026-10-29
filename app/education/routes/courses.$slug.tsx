@@ -89,7 +89,7 @@ const COURSE_DETAILS: Record<string, CourseDetail> = {
   },
 };
 
-function getDetails(course: Course): CourseDetail {
+function getDetails(course: Pick<Course, "slug" | "name" | "description">): CourseDetail {
   const specific = COURSE_DETAILS[course.slug];
   if (specific) return specific;
 
