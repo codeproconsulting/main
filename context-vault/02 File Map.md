@@ -48,3 +48,12 @@ updated: 2026-10-29
 - `team.tsx`, `reports.tsx`, `reports.server.ts`, `export.ts`: staged staff controls, counts, and CSV.
 
 Use [[Feature Ledger]] for actual acceptance state; this file map describes code location, not completion.
+
+## CMS-03 verification additions
+
+- `scripts/publish-scheduled.mjs`: isolated/testable due-publication engine with post locks, deterministic snapshots, and durable audit intents.
+- `scripts/publishing-worker.mjs`: independent opt-in publishing runner; does not send reminders/messages.
+- `tests/cms-workflow.test.mjs` and `tests/scheduled-publishing.test.mjs`: focused role/revision/publication failure tests.
+- `tests/helpers/cms-preview.mjs`: disposable in-memory CMS browser fixture.
+- `tests/manual/CMS-03-browser.md`: actual browser acceptance steps and observed regressions.
+- `docs/SCHEDULED-PUBLISHING.md`: activation and fail-closed recovery runbook.

@@ -1,4 +1,5 @@
 import {createHash,randomUUID} from 'node:crypto';
+import {publishScheduledPosts} from './publish-scheduled.mjs';
 import {api,loadEnvironment,allDocuments,q} from './appwrite-client.mjs';
 loadEnvironment();
 const base=`/databases/${process.env.APPWRITE_DATABASE_ID}/collections`;
@@ -18,12 +19,8 @@ export async function tick(){
   if(current.status!=='Open'||current.dueAt>now||!lead.owner||['Archived','Lost','Not eligible'].includes(lead.stage))return;
   await notify(lead.owner,lead.$id,`Follow-up due: ${current.title}`,`Due ${current.dueAt}. Open the lead to record an outcome.`,`task:${current.$id}:${current.version}:${lead.owner}`);reminders++;
  });}
- const posts=await allDocuments('posts',[q('equal','status',['scheduled']),q('lessThanEqual','publishedAt',[now])]);
- for(const post of posts){await lock(`post:${post.$id}`,async()=>{
-  const current=await api(`${base}/posts/documents/${post.$id}`);
-  if(current.status!=='scheduled'||!current.publishedAt||current.publishedAt>now)return;
-  await api(`${base}/posts/documents/${post.$id}`,'PATCH',{data:{status:'published',version:current.version+1}});published++;
- });}
+ const publication=await publishScheduledPosts({api,allDocuments,databaseId:process.env.APPWRITE_DATABASE_ID,now,onError:({id,status})=>console.error('Scheduled publication needs attention:',id,status)});
+ published=publication.published;
  const appointments=await allDocuments('appointments',[q('equal','status',['Booked']),q('lessThanEqual','startsAt',[new Date(Date.now()+3600000).toISOString()]),q('greaterThan','startsAt',[now])]);
  for(const item of appointments){const lead=await api(`${base}/leads/documents/${item.leadId}`).catch(e=>{if(e.status===404)return null;throw e;});if(lead?.owner)await notify(lead.owner,item.leadId,`Appointment in the next hour: ${item.title}`,item.startsAt,`appointment:${item.$id}:${item.startsAt}:${lead.owner}`);}
  const cases=await allDocuments('cases',[q('lessThanEqual','deadline',[new Date(Date.now()+3*86400000).toISOString()]),q('greaterThan','deadline',[now])]);

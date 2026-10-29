@@ -10,9 +10,9 @@ Only **one feature** is the active session focus. “Code staged” means implem
 | CORE-01 | Staff authentication, lead intake, counselor scope, original dashboard | Verified foundation locally | Production login, proxy, runtime key, and regression checks after subsequent changes |
 | BRAND-01 | Repository logo and pink/blue/navy branding | Verified locally | Preserve throughout all new screens |
 | CMS-02 | Ghost draft import and public-read readiness | Verified locally | Five acceptance checks pass; 32 tests/build/typecheck pass; no public cutover |
-| CMS-03 | Visual editor, reviews, revisions, scheduled publishing | **Next session; code staged** | Browser editing/paste/selection, revision permissions/restore, scheduled-date and concurrency tests |
+| CMS-03 | Visual editor, revisions, scheduled publishing | Verified locally | Six acceptance checks passed; 48 tests/build/typecheck and isolated browser workflow pass; production runner disabled, recovery limits documented |
 | CMS-04 | Public content migration cutover | Planned | Historical URLs/redirects, media review, untagged post decision, publication reconciliation, provider switch and rollback rehearsal |
-| MEDIA-01 | Editorial image uploads/publication | Code staged | Provision metadata schema, verify bucket and upload, private/public boundary, URL use |
+| MEDIA-01 | Editorial image uploads/publication | **Next session; code staged** | Provision metadata schema, verify bucket and upload, private/public boundary, URL use |
 | REMIND-01 | In-app background reminders | Code staged | Delivery deduplication, restart/crash handling, cancellation/reschedule/reassignment, operational heartbeat |
 | CASE-01 | Applications and immigration cases | Code staged | Multi-application workflow, stage validation, access and ownership transfer tests |
 | CAL-01 | Appointment booking | Code staged | Conflict/concurrency, rescheduling, timezones, cancellation and no-show tests |

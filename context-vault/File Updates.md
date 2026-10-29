@@ -1,6 +1,6 @@
 # File updates
 
-Generated snapshot of changes since the previous inventory; Oct 29, 2026, 1:11 p.m. (Asia/Karachi).
+Generated snapshot of changes since the previous inventory; Oct 29, 2026, 1:36 p.m. (Asia/Karachi).
 
 [[02 File Map]] · [[Source Inventory]] · [[05 Maintenance]]
 
@@ -8,4 +8,4 @@ Review these changes and update human-authored architecture/status notes where n
 
 ## Modified
 
-- `scripts/session-wall.mjs`
+- `app/admin/settings.tsx`

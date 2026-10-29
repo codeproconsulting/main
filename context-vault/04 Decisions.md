@@ -43,3 +43,7 @@ User correction, 29 October 2026: ProConsulting is independent of all other Code
 ## ADR-010: One bounded feature per session with explicit handoff
 
 User requirement, 29 October 2026: comprehensive delivery may span many sessions, but each session must focus on a specific feature and resume remaining work accurately. The canonical structured checkpoint is `session-state.json`; `Session Wall.md` is its generated Obsidian view. [[Feature Ledger]] retains the full scope and staged work. Repository instructions require reading these on "continue". Verification records actual commands and source fingerprints, and completion is refused while acceptance or verification remains incomplete. The documentation heartbeat cannot silently advance feature status.
+
+## ADR-011: Separate scheduled publishing from reminder activation
+
+The dedicated publishing runner can be enabled independently, after rollout checks, without enabling staged reminder workflows. Both publishing and dashboard edits use the same private post lock. Revision snapshots are deterministic and audit intents precede mutation. Crash-left locks deliberately block rather than expire automatically; operational recovery and pending-intent reconciliation are explicit in the publishing runbook. Production activation remains a separate gate.

@@ -2,6 +2,8 @@ import {api,loadEnvironment} from './appwrite-client.mjs';
 import {schema} from './appwrite-schema.mjs';
 loadEnvironment();
 const apply=process.argv.includes('--apply');
+const only=process.argv.find(a=>a.startsWith('--only='))?.slice(7);
+if(only&&!Object.hasOwn(schema,only))throw new Error('Unknown collection in --only');
 const db=process.env.APPWRITE_DATABASE_ID;
 if(!db)throw new Error('Set APPWRITE_DATABASE_ID');
 const base=`/databases/${db}`;
@@ -9,6 +11,7 @@ console.log(`${apply?'APPLY':'DRY RUN'}: additive CRM setup for database ${db}`)
 async function ensure(path,createPath,body) {try{return await api(path);}catch(e){if(e.status!==404)throw e;if(!apply){console.log(`Would create: ${path}`);return null;}await api(createPath,'POST',body);console.log(`Created: ${path}`);return null;}}
 await ensure(base,'/databases',{databaseId:db,name:'ProConsulting Workspace',enabled:true});
 for(const [id,definition] of Object.entries(schema)) {
+ if(only&&id!==only)continue;
  const path=`${base}/collections/${id}`;
  const existing=await ensure(path,`${base}/collections`,{collectionId:id,name:id,permissions:[],documentSecurity:true,enabled:true});
  if(existing?.$permissions?.length)throw new Error(`${id} has broad permissions; review before continuing`);

@@ -8,7 +8,7 @@ This note distinguishes **code written**, **checks passed**, **remote resources 
 
 ## Current session and continuation
 
-**Read [[Session Wall]] and [[Feature Ledger]] first.** CMS-02 public-readiness work is complete; the next feature is CMS-03, visual editor/revisions/scheduling acceptance. All later modules written during this session are staged and require their own acceptance work. Historical foundation verification below applies to its recorded checkpoint, not automatically to all subsequent changes.
+**Read [[Session Wall]] and [[Feature Ledger]] first.** CMS-02 public-readiness work is complete. CMS-03 visual editor/revisions/scheduling acceptance is complete locally. The next bounded feature is MEDIA-01; read the Session Wall for exact actions. All later modules written during this session are staged and require their own acceptance work. Historical foundation verification below applies to its recorded checkpoint, not automatically to all subsequent changes.
 
 ## Implemented in the working tree
 
@@ -53,3 +53,9 @@ See [[08 Roadmap]] and [[Changes/2026-10-29]].
 ## Latest CMS-02 verification
 
 All five readiness criteria passed with 32 tests, typechecking, and a production build. Both blog sections render on the server; missing posts return 404, outages 503, and the sitemap includes all published pages beyond the first 100. A compiled-loader read-only Appwrite check returned zero exposed drafts in both sections. The public provider remains Ghost. Main merges are authorized after feature acceptance, with rollback references and release isolation; the current staged branch is not yet a wholesale release candidate.
+
+## CMS-03 verification work
+
+Hardened publisher/editor boundaries, scheduled dates, nonempty content, deterministic revisions, stale-safe restore, pre-mutation audit intents, and an independent scheduled-publication runner. Browser checks found and fixed visible editor clearing and stale form values after save. The isolated browser workflow and focused scheduler/service tests passed; final command results are recorded in [[Session Wall]]. The schedule index is provisioned and its live query passed read-only. Publishing and reminder workers remain disabled on the VPS. See [[Sessions/2026-10-29-03]].
+
+Final CMS-03 verification: six acceptance criteria passed, with 48 automated tests, typecheck, production build, isolated browser checks, vault-link validation, and source credential scan. The preview processes were stopped. No production worker, provider switch, real content publication, or main merge occurred.
