@@ -75,7 +75,7 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **ownerPassword**: owner must set via Appwrite Console
 - **gitBranch**: codex/crm-workspace
 - **integratedUpstream**: origin/main through 407977c (16 commits)
-- **githubCheckpoint**: CMS-03 f915b9c pushed; MEDIA-01 + first-day runbook checkpoint prepared on codex/crm-workspace; main unchanged
+- **githubCheckpoint**: MEDIA-01 and first-day deployment runbook committed and pushed as 0a3151b on codex/crm-workspace; main unchanged
 - **mainMergePolicy**: User authorizes feature-tested merges with rollback references. The current development branch still includes unaccepted modules, so no whole-branch main merge has been performed.
 - **rollbackReference**: rollback/main-2026-10-29-407977c preserves the existing main baseline for release recovery
 - **scheduleIndex**: posts schedule(status,publishedAt) available; live due query passed read-only with zero due posts
