@@ -21,16 +21,16 @@ for(const [id,definition] of Object.entries(schema)) {
   const found=attributes.attributes.find(a=>a.key===key);
   if(found){
    if(found.status==='failed')throw new Error(`${id}.${key} failed: ${found.error}`);
-   // Future media records must fail closed even if an operator omits visibility.
-   if(id==='media'&&key==='published'&&found.default!==false){
-    if(apply){await api(`${path}/attributes/boolean/published`,'PATCH',{required:false,default:false});console.log('media.published: default set to private (existing records unchanged)');}
-    else console.log('Would set media.published default to false (existing records unchanged)');
+   // New media defaults private; new notifications default unread.
+   if(((id==='media'&&key==='published')||(id==='notifications'&&key==='read'))&&found.default!==false){
+    if(apply){await api(`${path}/attributes/boolean/${key}`,'PATCH',{required:false,default:false});console.log(`${id}.${key}: default set to false (existing records unchanged)`);}
+    else console.log(`Would set ${id}.${key} default to false (existing records unchanged)`);
    }
    continue;
   }
   if(!apply){console.log(`Would add: ${id}.${key}`);continue;}
   const kind=typeof type==='number'?'string':type;
-  await api(`${path}/attributes/${kind}`,'POST',{key,required:false,...(kind==='string'?{size:type,default:''}:kind==='integer'?{default:1}:{default:!(id==='media'&&key==='published')})});
+  await api(`${path}/attributes/${kind}`,'POST',{key,required:false,...(kind==='string'?{size:type,default:''}:kind==='integer'?{default:1}:{default:!(((id==='media'&&key==='published')||(id==='notifications'&&key==='read')))})});
  }
  if(!apply)continue;
  for(let attempt=0;attempt<60;attempt++) {

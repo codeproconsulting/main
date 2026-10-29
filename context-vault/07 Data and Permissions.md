@@ -33,3 +33,9 @@ The supplied Ghost export contains 30 posts, one page, one author, three tags, a
 Private `media` records reference private `crm-media` files, carry alt/caption/MIME/SHA256 and default `published=false`. Editors upload/download; only owner/admin/publisher can change visibility. Counselor/manager editorial access is denied. The public route checks metadata on each new request and returns no-store image responses; unpublishing returns 404 subsequently. Previously downloaded or in-flight bytes cannot be recalled.
 
 Upload IDs are recorded before storage calls. Confirmed missing metadata triggers cleanup; ambiguous writes and cleanup failures require manual reconciliation using the pending activity ID, without deleting referenced files. Private media metadata/file permission and anonymous-denial checks passed against actual Appwrite with disposable data. Private client document workflow/scanner internals remain a separate DOC-01 acceptance gate.
+
+## REMIND-01 records and consistency
+
+`notifications` adds task source ID, version and due timestamp; future records default unread. `worker_health` is private and records only operational state/counts/timestamps. The reminder engine checks active CRM assignees; both inbox and read action revalidate exact recipient/current lead ownership and current task generation. Legacy/unknown kinds stay hidden pending verified adapters.
+
+Cycle/lead locks and deterministic notification IDs handle repeated writes and lost acknowledgments without resetting read state. Complete/Cancel/Reschedule and assignment share lead locks. Audit intents can remain pending after an ambiguous task mutation/creation; reconcile before retry. Locked task creation is not a fully idempotent multi-record transaction. Crashed locks require stopping their owner before targeted removal. See the reminder runbook; no automatic sweeping or TTL takeover is claimed.

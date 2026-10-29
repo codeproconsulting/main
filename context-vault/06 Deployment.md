@@ -31,3 +31,9 @@ Install the `crm.proconsulting.uk.bootstrap.conf` vhost first (ACME challenges o
 The complete guide now covers port ownership/Traefik, DNS A/AAAA/CDN, protected environment, Appwrite setup/runtime scopes, owner password, build, `--only proconsulting-crm` PM2 startup, renewal hook, boot persistence, smoke checks, updates and rollback. Command-block shell syntax was checked locally; actual Nginx/VPS validation is pending. No service was deployed.
 
 Media metadata/default and a private synthetic storage round trip are verified, but public-host media URLs require the accepted website build. Keep Ghost delivery until CMS-04.
+
+## Reminder runner readiness
+
+REMIND-01 is verified locally and its private source/health schema is provisioned. `scripts/worker.mjs` now handles due tasks only; the separate publishing worker remains independent, and appointment/case reminders are deliberately gated. `docs/IN-APP-REMINDERS.md` covers opt-in PM2 activation using `--only proconsulting-worker`, health, graceful stop, abandoned locks and rollback. PM2 grants six minutes before forcing this worker to exit. No process on the VPS was started.
+
+A disposable private notification and health record passed actual Appwrite CRUD, unread default, recipient/order/due-task queries and direct anonymous denial, then were removed. The production `worker_health/reminders` row was not written. Production health and staff workflow still require the controlled VPS rollout.

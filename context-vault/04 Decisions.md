@@ -53,3 +53,9 @@ The dedicated publishing runner can be enabled independently, after rollout chec
 Use a certificate-only HTTP bootstrap, then the final HTTPS vhost; never forward staff login over HTTP while requesting a certificate. Start only `proconsulting-crm` during trial to preserve the existing website and Appwrite edge. Include framework root-data and manifest paths in proxy routing. No second edge may bind occupied VPS ports.
 
 Media starts private at both application and schema-default levels. Server routes mediate public image streaming; bucket grants remain private. Durable pre-upload IDs allow operator reconciliation after ambiguous network failures. No automatic orphan sweep or full image decoder is claimed. Next bounded feature is REMIND-01; public cutover remains separately gated.
+
+## 29 October — due-task reminder boundary
+
+Use a deterministic private notification as the durable in-app event, retry at the next 60-second cycle and revalidate state at read time. Do not add an external message provider or claim transactional exactly-once external delivery. Keep publishing independent and leave appointment/case adapters disabled until their parent modules pass. Managers do not implicitly gain access to other staff inboxes.
+
+Preserve abandoned locks instead of guessed expiry takeover; document stop-owner-first recovery. A six-minute PM2 stop grace allows bounded in-flight work to release locks. Expose stale/failed/degraded health to managers, while logging IDs/counts only. Full provider outbox, recurrence/snooze/escalation and task pagination beyond 100 remain separately planned.

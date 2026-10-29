@@ -132,7 +132,7 @@ curl -I http://127.0.0.1:3001/admin/login \
   -H 'X-Forwarded-Proto: https'
 ```
 
-Expected: 200 login page, private/no-store headers. Do not log in over loopback HTTP from a remote browser. Keep `ENABLE_BACKGROUND_WORKER` and `ENABLE_SCHEDULED_PUBLISHING` unset. Worker opt-ins are environment variables on the **PM2 invocation**, not automatically taken from `.env` when the ecosystem file is evaluated. Scheduling a post stores it but will not publish automatically until the dedicated publisher is deliberately enabled after rollout gates.
+Expected: 200 login page, private/no-store headers. Do not log in over loopback HTTP from a remote browser. Keep `ENABLE_BACKGROUND_WORKER` and `ENABLE_SCHEDULED_PUBLISHING` unset during the initial CRM trial. Due-task reminder activation, health and crash recovery are documented separately in `docs/IN-APP-REMINDERS.md`. Worker opt-ins are environment variables on the **PM2 invocation**, not automatically taken from `.env` when the ecosystem file is evaluated. Scheduling a post stores it but will not publish automatically until the dedicated publisher is deliberately enabled after rollout gates.
 
 ## 6. TLS bootstrap: HTTP serves only certificate challenges
 
@@ -208,7 +208,7 @@ Before admitting staff, verify in a browser:
 - Media starts private; editor can upload/preview; publisher explicitly changes visibility. A public image URL needs the accepted app build on the **public website process** too. Starting the CRM alone cannot add `/media/:id` to the old public release. Do not rewrite public-host URLs to the CRM or expose a private bucket to bypass that gate.
 - Check existing `proconsulting.uk` and `appwrite.proconsulting.uk` still work. Before any later public website update, verify public intake persists a synthetic submission to Appwrite and existing Ghost article routes/media remain intact.
 
-Record the exact commit, checks and remaining gaps in the context vault. Current development code includes authoring/revisions, staged cases/calendar/documents/team/reporting and opt-in reminders; inspect the feature ledger for acceptance, not just build success. Managers currently have organization-wide CRM scope. Email/WhatsApp/SMS providers and Ghost cutover remain separate work. Keep `BLOG_PROVIDER=ghost` and real imported drafts private.
+Record the exact commit, checks and remaining gaps in the context vault. Reminder source fields and private worker health are provisioned and feature-tested; the VPS reminder runner is still disabled. Current development code includes authoring/revisions, staged cases/calendar/documents/team/reporting and opt-in reminders; inspect the feature ledger for acceptance, not just build success. Managers currently have organization-wide CRM scope. Email/WhatsApp/SMS providers and Ghost cutover remain separate work. Keep `BLOG_PROVIDER=ghost` and real imported drafts private.
 
 ## 9. Updates, rollback and troubleshooting
 

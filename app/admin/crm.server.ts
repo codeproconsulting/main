@@ -101,22 +101,39 @@ export async function addNote(staff: Staff, id: string, note: string) {
   return audit(staff, id, "lead", "Note added", { note });
 }
 export async function createTask(staff: Staff, id: string, form: FormData) {
-  const lead = await leadFor(staff, id);
-  const title = field(form, "title", 300);
-  const dueAt = dateField(field(form, "dueAt"));
-  if (!title || !dueAt || !lead.owner) throw new Response("Assign this lead and enter a task title and due date.", { status: 400 });
-  const task = await createDocument("tasks", { leadId: id, title, dueAt, owner: lead.owner, status: "Open", outcome: "", version: 1 });
-  await audit(staff, id, "lead", "Follow-up created", { taskId: task.$id, title, dueAt });
-  return task;
+  return serialized(`lead:${id}`,async()=>{
+    const lead = await leadFor(staff, id);
+    const title = field(form, "title", 300),dueAt = dateField(field(form, "dueAt"));
+    if (!title || !dueAt || !lead.owner) throw new Response("Assign this lead and enter a task title and due date.", { status: 400 });
+    const assignee=await getDocument<Staff>("staff",lead.owner);allow(assignee.active&&canUseCRM(assignee));
+    const taskId=randomUUID();
+    const event=await audit(staff,id,"lead","Follow-up creation requested",{state:"pending",taskId,title,dueAt});
+    const task=await createDocument("tasks",{leadId:id,title,dueAt,owner:lead.owner,status:"Open",outcome:"",version:1},taskId);
+    await updateDocument("activities",event.$id,{event:"Follow-up created",details:JSON.stringify({state:"completed",taskId,title,dueAt})});
+    return task;
+  });
 }
-export async function completeTask(staff: Staff, id: string, outcome: string) {
-  const task = await getDocument<Task>("tasks", id);
-  await leadFor(staff, task.leadId);
-  allow(canManage(staff) || task.owner === staff.$id);
-  if (!outcome) throw new Response("Please record the follow-up outcome.", { status: 400 });
-  await updateDocument<Task>("tasks", id, { status: "Completed", outcome, version: task.version + 1 });
-  await audit(staff, task.leadId, "lead", "Follow-up completed", { taskId: id, outcome });
+export async function changeTask(staff:Staff,id:string,intent:string,expectedVersion:string,outcome:string,dueAt=""){
+  allow(canUseCRM(staff));
+  const initial=await getDocument<Task>("tasks",id);
+  return serialized(`lead:${initial.leadId}`,async()=>{
+    const task=await getDocument<Task>("tasks",id);
+    allow(task.leadId===initial.leadId);
+    const lead=await leadFor(staff,task.leadId);
+    allow(canManage(staff)||(task.owner===staff.$id&&lead.owner===staff.$id));
+    if(!expectedVersion||Number(expectedVersion)!==task.version||task.status!=="Open")throw new Response("This follow-up changed. Refresh before saving.",{status:409});
+    if(!["complete","cancel","reschedule"].includes(intent))throw new Response("Unknown follow-up action",{status:400});
+    if(!outcome.trim()||outcome.length>2000)throw new Response("Record an outcome or change reason (up to 2000 characters).",{status:400});
+    const nextDue=intent==="reschedule"?dateField(dueAt):task.dueAt;
+    if(!nextDue)throw new Response("Enter a due date with timezone.",{status:400});
+    const changes={status:intent==="complete"?"Completed":intent==="cancel"?"Cancelled":"Open",dueAt:nextDue,outcome:outcome.trim(),version:task.version+1};
+    const event=await audit(staff,task.leadId,"lead","Follow-up change requested",{state:"pending",taskId:id,intent,before:{status:task.status,dueAt:task.dueAt,version:task.version},after:changes});
+    const updated=await updateDocument<Task>("tasks",id,changes);
+    await updateDocument("activities",event.$id,{event:intent==="complete"?"Follow-up completed":intent==="cancel"?"Follow-up cancelled":"Follow-up rescheduled",details:JSON.stringify({state:"completed",taskId:id,intent,after:changes})});
+    return updated;
+  });
 }
+export async function completeTask(staff:Staff,id:string,outcome:string,expectedVersion:string){return changeTask(staff,id,"complete",expectedVersion,outcome);}
 export async function activityFor(id: string) {
   return (await listDocuments<Activity>("activities", [query("equal", "entityId", [id]), query("orderDesc", "$createdAt"), query("limit", undefined, [100])])).documents;
 }

@@ -13,8 +13,8 @@ Only **one feature** is the active session focus. “Code staged” means implem
 | CMS-03 | Visual editor, revisions, scheduled publishing | Verified locally | Six acceptance checks passed; 48 tests/build/typecheck and isolated browser workflow pass; production runner disabled, recovery limits documented |
 | CMS-04 | Public content migration cutover | Planned | Historical URLs/redirects, media review, untagged post decision, publication reconciliation, provider switch and rollback rehearsal |
 | MEDIA-01 | Editorial image uploads/publication | Verified locally + isolated Appwrite | Upload/permission/failure tests and browser toggle flow pass; private schema/default and real disposable storage check verified. Public website route rollout and VPS checks remain separate |
-| REMIND-01 | In-app background reminders | **Next session; code staged** | Delivery deduplication, restart/crash handling, cancellation/reschedule/reassignment, operational heartbeat |
-| CASE-01 | Applications and immigration cases | Code staged | Multi-application workflow, stage validation, access and ownership transfer tests |
+| REMIND-01 | In-app background reminders | Verified locally + isolated Appwrite schema | Due-task-only delivery, retries/dedup, current-scope inbox, task lifecycle, health and fail-closed recovery tested. VPS activation pending; appointment/case/provider reminders gated |
+| CASE-01 | Applications and immigration cases | **Next session; code staged** | Multi-application workflow, stage validation, access and ownership transfer tests |
 | CAL-01 | Appointment booking | Code staged | Conflict/concurrency, rescheduling, timezones, cancellation and no-show tests |
 | DOC-01 | Private client documents | Code staged | Upload limits/signatures, antivirus behavior, authorized streaming, review/expiry/checklists, orphan reconciliation |
 | TEAM-01 | Team roles and deactivation | Code staged | Self/last-owner protections, lead transfer, session revocation, profile persistence failure tests |

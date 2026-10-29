@@ -1,78 +1,81 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-10-29-04",
+  "sessionId": "2026-10-29-05",
   "sessionStatus": "completed",
-  "activeFeature": "MEDIA-01",
-  "objective": "Harden editorial media boundaries and provide a first-day HTTPS CRM subdomain deployment path.",
+  "activeFeature": "REMIND-01",
+  "objective": "Make due-task in-app reminders retry-safe, scoped to current assignment and schedule, with operator health and recovery.",
   "scope": [
-    "Media upload validation, private storage and explicit visibility",
-    "Isolated media permission/failure tests and Appwrite verification",
-    "CRM Nginx bootstrap/TLS routing and first-day operator runbook"
+    "Due follow-up task reminder delivery and durable deduplication",
+    "Task completion/cancellation/rescheduling and notification invalidation",
+    "Role-scoped reminder inbox, worker heartbeat and recovery",
+    "Feature tests, isolated browser verification and deployment instructions"
   ],
   "outOfScope": [
-    "Public Ghost cutover or real article publication",
-    "VPS deployment and unaccepted CRM modules"
+    "Email/WhatsApp/SMS or other external delivery",
+    "Appointment/application reminder activation before CAL-01/CASE-01 acceptance",
+    "Production worker activation, VPS deployment or Ghost cutover"
   ],
   "acceptance": [
     {
-      "id": "MEDIA01-A",
-      "description": "Media uploads enforce supported types, size and alternative text; failed metadata writes are recoverable",
+      "id": "REMIND01-A",
+      "description": "Due open tasks notify the current active CRM assignee once across retries and concurrent workers",
       "status": "passed",
-      "evidence": "Nine focused media tests cover upload text/type/signature/size limits, bounded multipart parsing and compensation/lost acknowledgments."
+      "evidence": "17 focused engine/runner tests pass for deterministic private delivery, current active CRM assignee, concurrency, retries/lost acknowledgments and preserved read state."
     },
     {
-      "id": "MEDIA01-B",
-      "description": "Only publishers change visibility; private assets are inaccessible publicly and unpublishing revokes future requests",
+      "id": "REMIND01-B",
+      "description": "Completion, cancellation, rescheduling and assignment changes invalidate stale reminders and enforce stale-write checks",
       "status": "passed",
-      "evidence": "Service tests verify editor/publisher boundaries, no-store public bytes, revocation, stale/concurrent visibility checks and audit failure. Isolated built-app browser upload/publish/unpublish passed."
+      "evidence": "12 focused workflow tests pass for Complete/Cancel/Reschedule, current version and permission checks, normalized schedules, audit-first writes and current assignment. Built-app browser lifecycle/invalidation passed."
     },
     {
-      "id": "MEDIA01-C",
-      "description": "Metadata schema/private bucket and isolated real storage upload/download/cleanup verified",
+      "id": "REMIND01-C",
+      "description": "Inbox and read actions revalidate current lead/task scope and never expose another recipient’s notices",
       "status": "passed",
-      "evidence": "Provisioned only private media collection/attributes/index; private bucket flags/limits verified. Real synthetic PNG upload/private metadata/byte-identical download/anonymous denial passed; both records removed."
+      "evidence": "Workflow tests verify recipient/current-owner/source checks, foreign and content-role denial, deleted/legacy records and older-page cursors. Browser confirmed Read leaves task open and stale notices disappear."
     },
     {
-      "id": "MEDIA01-D",
-      "description": "First-day subdomain guide covers DNS, safe TLS bootstrap, process persistence, login, smoke checks and rollback",
+      "id": "REMIND01-D",
+      "description": "Worker health, failure isolation, graceful stop and fail-closed crash recovery are tested and documented",
       "status": "passed",
-      "evidence": "Certificate-only HTTP bootstrap, final HTTPS vhost with React Router data/manifest paths and complete runbook written. All 13 shell command blocks pass bash syntax. Actual nginx -t/DNS/TLS/reboot remain VPS gates."
+      "evidence": "Engine/runner tests cover per-record isolation, health/query failure, contention, fail-closed abandoned locks and safe stop. Added operator health UI, six-minute PM2 stop grace and explicit recovery/rollback runbook."
     },
     {
-      "id": "MEDIA01-E",
-      "description": "Feature tests, typecheck/build and continuation notes reflect actual verification",
+      "id": "REMIND01-E",
+      "description": "Focused tests, isolated browser workflow, schema readiness, typecheck/build and continuation notes pass",
       "status": "passed",
-      "evidence": "Final session:verify passed typecheck, all 57 tests and production build. Isolated browser and live synthetic storage checks passed. Vault links, source credential scan, Git whitespace and all 13 runbook shell blocks checked. Nginx/VPS checks remain explicitly separate."
+      "evidence": "Final session:verify passed all 86 tests, typecheck and production build. Built-app synthetic browser workflow, fixture CLI --once and actual offline CLI SIGTERM shutdown passed. Live disposable schema/query/private-access check passed with cleanup. Vault links, credential scan, whitespace and 15 shell blocks passed."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Archive this completed MEDIA-01 state and start a bounded REMIND-01 session. Verify in-app reminder deduplication, cancellation/reschedule/reassignment, retries/crash behavior and heartbeat before enabling any worker.",
+      "action": "Archive this completed REMIND-01 state and start bounded CASE-01 verification. Check application creation/update, education versus immigration fields/stages, current lead scope, stale writes and assignment transfer. Do not activate case reminders until accepted.",
       "files": [
-        "scripts/worker.mjs",
-        "app/admin/notifications.tsx",
+        "app/admin/operations.server.ts",
+        "app/admin/work.tsx",
         "context-vault/Feature Ledger.md"
       ]
     },
     {
       "order": 2,
-      "action": "Keep VPS deployment and public CMS-04 cutover separate. When VPS edge/access is available, execute the first-day runbook including nginx -t, DNS/TLS and reboot smoke checks. Do not expose staged modules as an accepted full release.",
+      "action": "Keep VPS activation separate. When the target edge/access is available, execute first-day CRM and reminder runbooks with controlled synthetic staff workflows, recorded rollback commit, health and reboot smoke checks. Publishing/Ghost cutover remain separately gated.",
       "files": [
         "deploy/CRM-DEPLOYMENT.md",
-        "deploy/nginx/crm.proconsulting.uk.conf",
+        "docs/IN-APP-REMINDERS.md",
         "docs/RELEASE-AND-ROLLBACK.md"
       ]
     }
   ],
   "knownRisks": [
-    "Cases, calendar, private documents, reminders, team and reporting modules remain staged and require feature acceptance.",
-    "Nginx is unavailable locally; target-server nginx -t, active edge discovery, DNS/TLS, PM2 reboot and staff smoke checks are outstanding. No VPS deployment performed.",
-    "Public image URLs require the accepted application build on the public website; Ghost remains the current blog provider.",
-    "Failed upload/audit acknowledgments may require manual reconciliation; crash-left locks fail closed. Already downloaded/in-flight images cannot be recalled.",
-    "Current media list caps at 100 items; pagination/search/metadata editing are follow-up enhancements.",
-    "Development branch contains unaccepted modules; keep wholesale main merge/deployment gated."
+    "Appointment/case reminders remain disabled until CAL-01/CASE-01 acceptance; external provider delivery is not configured.",
+    "Crash-left cycle/lead locks fail closed; recovery requires stopping their owners before targeted operator removal. No expiry takeover.",
+    "Task creation/change audit acknowledgments can be ambiguous; inspect recorded task ID/current version before retrying to avoid duplicate work.",
+    "Reminder inbox scans 25 stored records per page; task lists still cap at 100. Recurrence/escalation/snooze and provider outbox remain follow-up features.",
+    "Runtime health is stale after three minutes without a recorded cycle; a long cycle or delayed clock can also cause stale status. No external alerting provider is configured.",
+    "VPS deployment, Nginx/TLS/PM2 reboot smoke checks and production worker activation remain unperformed.",
+    "Development branch still contains unaccepted cases/calendar/documents/team/reporting modules; whole-branch main merge is gated."
   ],
   "externalState": {
     "database": "proconsulting",
@@ -85,39 +88,42 @@
     "ownerPassword": "owner must set via Appwrite Console",
     "gitBranch": "codex/crm-workspace",
     "integratedUpstream": "origin/main through 407977c (16 commits)",
-    "githubCheckpoint": "MEDIA-01 and first-day deployment runbook committed and pushed as 0a3151b on codex/crm-workspace; main unchanged",
+    "githubCheckpoint": "REMIND-01 verified checkpoint prepared on codex/crm-workspace; main unchanged",
     "mainMergePolicy": "User authorizes feature-tested merges with rollback references. The current development branch still includes unaccepted modules, so no whole-branch main merge has been performed.",
     "rollbackReference": "rollback/main-2026-10-29-407977c preserves the existing main baseline for release recovery",
     "scheduleIndex": "posts schedule(status,publishedAt) available; live due query passed read-only with zero due posts",
     "publishingWorker": "Dedicated opt-in runner added; not activated on VPS",
-    "browserTestData": "Disposable in-memory media browser workflow passed; preview processes stopped",
+    "browserTestData": "Synthetic in-memory reminders browser workflow and actual CLI --once passed; preview processes stopped",
     "mediaSchema": "Private media collection/attributes/index provisioned; published defaults false (live default check passed)",
     "mediaStorage": "Private bucket config and real disposable file/metadata round trip verified; synthetic resources removed",
-    "nginx": "Bootstrap and HTTPS templates prepared; target-server validation not performed"
+    "nginx": "Bootstrap and HTTPS templates prepared; target-server validation not performed",
+    "reminderSchema": "Notification source/version/due fields, unread=false default and private worker_health collection provisioned",
+    "reminderStorageCheck": "Private synthetic notification/health CRUD, indexed queries and anonymous denial passed; both records removed",
+    "reminderWorker": "Due-task-only runner verified locally, including actual synthetic CLI and SIGTERM idle exit; never activated on VPS"
   },
   "checks": [
     {
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-10-29T11:58:39.493Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ORMt2e/typecheck.log"
+      "checkedAt": "2026-10-29T16:22:03.840Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-JR6Zaj/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-10-29T11:58:40.554Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ORMt2e/test.log"
+      "checkedAt": "2026-10-29T16:22:04.630Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-JR6Zaj/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-10-29T11:58:45.429Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ORMt2e/build.log"
+      "checkedAt": "2026-10-29T16:22:09.483Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-JR6Zaj/build.log"
     }
   ],
-  "updatedAt": "2026-10-29T11:59:29.248Z",
-  "verifiedSourceFingerprint": "8e9b6e08387b55fc1e72f2bfc4ff2f1b5c180b63630590d518eead978dc4ea60"
+  "updatedAt": "2026-10-29T16:24:54.799Z",
+  "verifiedSourceFingerprint": "e43480da390af68bd1ce6a3c9b621fad43b34badd251ec368091abb040c9bbe0"
 }

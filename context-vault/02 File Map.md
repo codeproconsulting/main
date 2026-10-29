@@ -67,3 +67,14 @@ Use [[Feature Ledger]] for actual acceptance state; this file map describes code
 - `docs/EDITORIAL-MEDIA.md`: visibility and interrupted-upload recovery limits.
 - `deploy/nginx/crm.proconsulting.uk.bootstrap.conf`: ACME-only HTTP; final `.conf` serves HTTPS after certificate issuance.
 - `deploy/CRM-DEPLOYMENT.md`: complete first-day CRM-only installation, DNS/TLS, process persistence, acceptance and rollback.
+
+## REMIND-01 additions
+
+- `app/admin/reminder-policy.ts`: shared due-task/current-notice rules without I/O.
+- `scripts/remind-tasks.mjs`: injected due-task engine, deterministic IDs, cycle/lead locks, health and failure isolation.
+- `scripts/reminder-runner.mjs`, `scripts/worker.mjs`: abort-aware loop and due-task-only CLI; publishing remains separate.
+- `app/admin/notifications.server.ts`, `notifications.tsx`: recipient/current-source inbox, cursor paging, Mark read and manager-visible health.
+- `app/admin/crm.server.ts`, `tasks.tsx`: versioned Complete/Cancel/Reschedule and locked task creation.
+- `scripts/verify-reminders.mjs`: opt-in disposable real schema/query/privacy check without invoking production worker.
+- `tests/reminders.test.mjs`, `reminder-workflow.test.mjs`, `manual/REMIND-01-browser.md`: engine, lifecycle, access, recovery and browser evidence.
+- `docs/IN-APP-REMINDERS.md`: activation, scope, consistency limits, health, shutdown and operator recovery.

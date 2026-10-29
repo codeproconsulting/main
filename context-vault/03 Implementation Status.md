@@ -67,3 +67,11 @@ Editorial uploads now enforce media capabilities, supported MIME/basic signature
 The private media metadata collection is provisioned, with new records defaulting to unpublished. The existing media bucket's private/encrypted/antivirus/extension/size configuration was verified. A real synthetic image and private metadata record passed byte-identical download and anonymous denial, then were deleted. Scanner internals and the client-document workflow remain unverified. Final command evidence is in [[Session Wall]] and [[Sessions/2026-10-29-04]].
 
 The subdomain runbook was rewritten with ACME-only bootstrap, final HTTPS routing, environment/scopes, first owner, CRM-only PM2 startup/reboot persistence, smoke checks and rollback. All shell blocks pass syntax checks. Nginx is unavailable on this local machine; target-server syntax, existing edge discovery, certificates, DNS and reboot checks remain required. This is not production deployment or Ghost cutover.
+
+## REMIND-01 verification (supersedes reminder staging status)
+
+Due-task in-app delivery is isolated from publishing/cases/appointments. Deterministic generation/assignee IDs preserve read state and suppress duplicates across retries/lost acknowledgments/concurrency. Each candidate is re-read under the assignment/task lead lock. Inbox and Mark read recheck the current recipient, source version/due date and lead ownership.
+
+Complete/Cancel/Reschedule now require current task version and reason/outcome, record audit intent first and invalidate old notices. Private cycle health, manager setup status and graceful stop handling are implemented, with explicit fail-closed crash recovery. 29 focused engine/runner/workflow tests and actual built-app browser checks passed; the actual CLI was also run against the isolated in-memory API only. Final global verification is recorded in [[Session Wall]].
+
+Notification source fields/unread=false default and private worker_health schema were provisioned. A real disposable private notification/health CRUD, query and anonymous-denial exercise passed, with both records removed. No production health/reminder cycle was run. VPS worker activation, external messaging and case/calendar reminders remain separate gates.
