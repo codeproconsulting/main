@@ -13,6 +13,9 @@ const STATIC_PATHS = [
   "",
   "/about",
   "/contact",
+  "/service-locations",
+  "/service-locations/islamabad",
+  "/service-locations/ielts-preparation-in-islamabad",
   // Education main routes
   "/education",
   "/education/about",

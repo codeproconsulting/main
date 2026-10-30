@@ -3,11 +3,7 @@
 import { Link } from "react-router";
 import { Navbar } from "../components/ui/Navbar";
 import { Footer } from "../components/ui/Footer";
-import {
-  FaArrowRightLong,
-  FaLocationDot,
-  FaArrowUpRightFromSquare,
-} from "react-icons/fa6";
+import { FaArrowRightLong, FaLocationDot } from "react-icons/fa6";
 import { BRAND } from "../lib/constants";
 import { pageMeta, canonicalLink } from "../lib/seo";
 
@@ -58,13 +54,13 @@ export default function ServiceLocationsPage() {
           </div>
         </section>
 
-        {/* Featured Location Showcase (Attractive & Clean) */}
+        {/* Featured Location Showcase */}
         <section className="py-14 md:py-20">
           <div className="max-w-6xl mx-auto px-6">
-            {/* The Islamabad Interactive Card - Clean, Attractive, No extra details */}
+            {/* The Islamabad Featured Location Card */}
             <Link
-              to="/service-locations/ielts-preparation-in-islamabad"
-              className="group block relative bg-white rounded-3xl overflow-hidden border border-slate-200 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1"
+              to="/service-locations/islamabad"
+              className="group block relative bg-white rounded-3xl overflow-hidden border border-slate-200 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-[#FF4D6D]/40"
             >
               <div className="grid grid-cols-1 lg:grid-cols-12 items-stretch">
                 {/* Visual Imagery */}
@@ -75,15 +71,21 @@ export default function ServiceLocationsPage() {
                     className="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-700 ease-out"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent lg:hidden" />
-                  
+
                   {/* Subtle Badge Overlay */}
-                  <div className="absolute top-5 left-5 bg-white/90 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider text-[#0B1B3A] shadow-md flex items-center gap-1.5">
+                  <div className="absolute top-5 left-5 bg-white/95 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider text-[#0B1B3A] shadow-md flex items-center gap-1.5">
                     <FaLocationDot className="text-[#FF4D6D]" />
                     <span>Pakistan • Primary Campus</span>
                   </div>
+
+                  {/* Quick Indicator Badge */}
+                  <div className="absolute bottom-5 left-5 bg-[#0B1B3A]/90 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-semibold text-white shadow-md flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-[#FF4D6D] animate-pulse" />
+                    <span>2 Test Prep Programs Available</span>
+                  </div>
                 </div>
 
-                {/* Content Side: Just Heading, Paragraph & Action */}
+                {/* Content Side */}
                 <div className="lg:col-span-5 p-8 sm:p-10 lg:p-12 flex flex-col justify-between bg-white">
                   <div>
                     <span className="text-xs font-bold uppercase tracking-wider text-[#FF4D6D] mb-2 block">
@@ -97,10 +99,10 @@ export default function ServiceLocationsPage() {
                     </p>
                   </div>
 
-                  {/* Clean CTA Link */}
+                  {/* Clean CTA Link to Islamabad Page */}
                   <div className="pt-6 border-t border-slate-100 flex items-center justify-between">
                     <span className="inline-flex items-center gap-2 text-base font-bold text-[#FF4D6D] group-hover:translate-x-1 transition-transform">
-                      <span>Explore Islamabad Location</span>
+                      <span>Explore Islamabad Campus</span>
                       <FaArrowRightLong className="w-4 h-4" />
                     </span>
                     <span className="w-10 h-10 rounded-full bg-pink-50 text-[#FF4D6D] flex items-center justify-center group-hover:bg-[#FF4D6D] group-hover:text-white transition-all shadow-sm">
