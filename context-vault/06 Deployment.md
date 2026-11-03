@@ -37,3 +37,7 @@ Media metadata/default and a private synthetic storage round trip are verified, 
 REMIND-01 is verified locally and its private source/health schema is provisioned. `scripts/worker.mjs` now handles due tasks only; the separate publishing worker remains independent, and appointment/case reminders are deliberately gated. `docs/IN-APP-REMINDERS.md` covers opt-in PM2 activation using `--only proconsulting-worker`, health, graceful stop, abandoned locks and rollback. PM2 grants six minutes before forcing this worker to exit. No process on the VPS was started.
 
 A disposable private notification and health record passed actual Appwrite CRUD, unread default, recipient/order/due-task queries and direct anonymous denial, then were removed. The production `worker_health/reminders` row was not written. Production health and staff workflow still require the controlled VPS rollout.
+
+## Resend email provider decision
+
+Application email provider: Resend. Activation requires verified sender DNS/domain, sender/reply-to addresses, server-only API/webhook secrets, durable retry/deduplication and delivery/bounce tests. Proposed RESEND_* settings are documented in the deployment guide and are not implemented runtime settings. No provider has been activated.

@@ -371,7 +371,7 @@ Audit assignment, stage changes, merges, exports, role changes, publication, fil
 
 Define retention by enquiry, client case, document, communication, job, and backup type with the business before automatic deletion is enabled. Support consent withdrawal and controlled personal-data export/correction/deletion workflows. Determine applicable policies with the business rather than assuming a universal retention period.
 
-For the VPS, verify RAM/CPU/disk, HTTPS/reverse proxy, Appwrite/worker health, SMTP, storage configuration, backups, firewall, and dependency versions. If Appwrite and the website share a VPS, account for a shared failure domain and resource contention.
+For the VPS, verify RAM/CPU/disk, HTTPS/reverse proxy, Appwrite/worker health, Resend email readiness, storage configuration, backups, firewall, and dependency versions. If Appwrite and the website share a VPS, account for a shared failure domain and resource contention.
 
 Set backup frequency and recovery objectives explicitly; proposed starting targets are daily backups, recovery point within 24 hours, and recovery within four hours, subject to a measured restore rehearsal. Maintain off-host encrypted copies, test restoration of database plus files, and document a recovery runbook. Monitor failed intake, elevated application errors, storage capacity, failed jobs, scheduler heartbeat, email failures, and backup age. Alerts must go to an agreed operational recipient.
 
@@ -437,7 +437,7 @@ Planning and local implementation can proceed without production credentials. Be
 - Production lead sources and an authorized export/access path for each, including Google Sheets.
 - Initial owner/admin email, staff roster, roles, branch/team structure, and counselor visibility preference.
 - Preferred first-response targets, working hours, default timezone, reassignment rules, and reminder channels.
-- Email provider/SMTP configuration and sender domain when email reminders are enabled; WhatsApp/SMS/calendar details only when those integrations begin.
+- Resend API configuration, verified sending domain, sender/reply-to addresses and webhook signing secret when email reminders are enabled; WhatsApp/SMS/calendar details only when those integrations begin.
 - The untagged post's section, the legacy Ghost About page treatment, and any content that must remain restricted.
 - Business retention rules, operational alert recipient, and recovery priorities before launch.
 
@@ -460,3 +460,13 @@ Deployment requires DNS, TLS, inspection of the current edge (Appwrite/Traefik m
 Implementation has started with the protected dashboard, common lead intake, assignment, activity notes, follow-up tasks, sanitized HTML content editing, additive schema scripts, and VPS configuration. The initial Appwrite database/private collections and the requested owner profile have been provisioned. This is a foundation increment, not completion of every feature in the specification. Automated reminders, full Ghost migration/public content cutover, rich-text authoring, applications/documents, and advanced operational modules remain planned. The working implementation and actual verification/deployment state are maintained in `context-vault/`.
 
 The user also requested an Obsidian-compatible context vault with architecture and file updates. `context-vault/00 Home.md` is its entry point. Repository guidance requires updates alongside substantial changes, and a daily documentation-only maintenance heartbeat reviews source drift. The vault excludes environment values, credentials, original Ghost settings, and applicant data.
+
+## Email provider decision — 3 November 2026
+
+The user selected **Resend (resend.com)** for application email delivery. COMMS-01 must implement a server-side Resend API adapter for CRM transactional email/reminders and future invitations, with a durable outbox, retries, delivery-event tracking and failure review. This is a planning decision; no Resend integration or sending is currently enabled. Appwrite-managed authentication emails require separate explicit Appwrite mail configuration; selecting Resend does not configure them automatically.
+
+Before activation: verify the approved sending domain using Resend's supplied DNS records; choose sender and reply-to addresses; configure server-only `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, `RESEND_REPLY_TO_EMAIL` and `RESEND_WEBHOOK_SECRET` (proposed names, not currently consumed by runtime); implement signed webhook verification, replay/deduplication handling, delivered/bounced/complaint tracking and suppression. Keep secrets out of browser builds and Git.
+
+Persist delivery state locally and reuse the same idempotency key/payload on retry. Resend's current provider deduplication window is 24 hours, so the durable outbox must prevent blind resends beyond that window. Test timeouts, retries, webhook replay, bounces and opt-out before activating real recipients. Email remains separate from the verified in-app reminder runner; WhatsApp/SMS providers are still undecided.
+
+References: [Resend idempotency](https://resend.com/changelog/idempotency-keys), [domain verification](https://resend.com/changelog/domain-verification-events), [webhook verification](https://resend.com/changelog/managing-webhooks-via-api).

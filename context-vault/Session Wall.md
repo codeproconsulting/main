@@ -56,7 +56,7 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 - **passed**: `npm run test` (2026-11-03T08:19:47.424Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-4XUCZt/test.log`
 - **passed**: `npm run build` (2026-11-03T08:19:52.290Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-4XUCZt/build.log`
 
-Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
+Source inventory matches verified checkpoint: **NO / not yet verified**. Passing general checks does not automatically complete feature acceptance.
 
 ## External state
 

@@ -22,7 +22,7 @@ Only **one feature** is the active session focus. “Code staged” means implem
 | CRM-02 | Advanced lead operations | Planned | Contact/enquiry separation, duplicate review/merge, manual creation, saved views, bulk actions, phone/email search |
 | CRM-03 | Assignment and team scopes | Planned | Capacity/availability rules, round robin, branches, genuinely team-scoped managers |
 | OPS-01 | Production operations | Planned | Deployment access, existing edge, DNS/TLS, backup/restore, monitoring, narrow runtime key, stale-lock recovery |
-| COMMS-01 | Email/WhatsApp/SMS delivery | Planned | Provider configuration, consent, templates, quiet hours, retries and opt-out; no provider activated |
+| COMMS-01 | Email/WhatsApp/SMS delivery | Planned | Resend selected for email; verify sender/domain, server API/webhook adapter, durable outbox, retries, suppression and delivery tests. WhatsApp/SMS undecided; no provider activated |
 | EXT-01 | Calendar sync, payments, client portal | Planned | Separate requirements and provider setup after core acceptance |
 
 ## Completion rule

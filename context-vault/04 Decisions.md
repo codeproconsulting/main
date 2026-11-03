@@ -59,3 +59,7 @@ Media starts private at both application and schema-default levels. Server route
 Use a deterministic private notification as the durable in-app event, retry at the next 60-second cycle and revalidate state at read time. Do not add an external message provider or claim transactional exactly-once external delivery. Keep publishing independent and leave appointment/case adapters disabled until their parent modules pass. Managers do not implicitly gain access to other staff inboxes.
 
 Preserve abandoned locks instead of guessed expiry takeover; document stop-owner-first recovery. A six-minute PM2 stop grace allows bounded in-flight work to release locks. Expose stale/failed/degraded health to managers, while logging IDs/counts only. Full provider outbox, recurrence/snooze/escalation and task pagination beyond 100 remain separately planned.
+
+## Resend email provider decision
+
+User selected Resend (resend.com) for application email delivery on 3 November 2026. COMMS-01 will use a server-side adapter, durable outbox and verified webhooks; integration remains planned. Appwrite-managed authentication mail needs separate configuration.

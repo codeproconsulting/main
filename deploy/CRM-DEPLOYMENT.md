@@ -235,3 +235,7 @@ Review application and proxy logs without storing credentials/applicant content.
 ## References
 
 Routing and headers follow the [Nginx proxy module](https://nginx.org/en/docs/http/ngx_http_proxy_module.html) and [core request-size/location directives](https://nginx.org/en/docs/http/ngx_http_core_module.html). Certificate issuance/renewal follows the [Certbot webroot and renewal guide](https://eff-certbot.readthedocs.io/en/stable/using.html). Process persistence follows [PM2 startup documentation](https://pm2.keymetrics.io/docs/usage/startup/).
+
+## Planned email delivery: Resend
+
+Resend is the selected application email provider. Before COMMS-01 activation, verify the sender domain/DNS in Resend, confirm sender/reply-to addresses, configure server-only API and webhook secrets, and test the durable outbox, retries and signed delivery/bounce/complaint webhooks. Proposed configuration names: `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, `RESEND_REPLY_TO_EMAIL`, `RESEND_WEBHOOK_SECRET`; runtime does not consume these yet. Do not enable email merely by adding environment variables. Appwrite authentication email setup remains a separate operator configuration. See the email-provider decision in the implementation plan.
