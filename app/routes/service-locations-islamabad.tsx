@@ -204,7 +204,9 @@ export default function IslamabadIeltsPage() {
               <span aria-hidden>/</span>
               <Link to="/service-locations" className="hover:text-white transition-colors">Service Locations</Link>
               <span aria-hidden>/</span>
-              <span className="text-[#FF4D6D] font-medium">Islamabad Campus</span>
+              <Link to="/service-locations/islamabad" className="hover:text-white transition-colors">Islamabad</Link>
+              <span aria-hidden>/</span>
+              <span className="text-[#FF4D6D] font-medium">IELTS Preparation</span>
             </nav>
 
             <div className="max-w-4xl">
