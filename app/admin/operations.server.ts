@@ -5,7 +5,8 @@ export type CaseRecord={$id:string;leadId:string;owner:string;kind:string;instit
 export type Appointment={$id:string;leadId:string;owner:string;title:string;startsAt:string;endsAt:string;status:string;location:string;notes:string;version:number};
 
 export async function scopedRecords<T extends {leadId:string}>(staff:Staff,collection:string){allow(canUseCRM(staff));const filters=[query("orderDesc","$createdAt"),query("limit",undefined,[100])];if(!canManage(staff))filters.push(query("equal","owner",[staff.$id]));const result=await listDocuments<T>(collection,filters);const records=[];for(const record of result.documents){try{await leadFor(staff,record.leadId);records.push(record);}catch(error){if(error instanceof Response&&[403,404].includes(error.status))continue;throw error;}}return records;}
-export async function saveCase(staff:Staff,form:FormData){const id=field(form,"id",36),leadId=field(form,"leadId",36);const lead=await leadFor(staff,leadId);return serialized(`lead:${leadId}`,async()=>{
+export async function saveCase(staff:Staff,form:FormData){const id=field(form,"id",36),leadId=field(form,"leadId",36);return serialized(`lead:${leadId}`,async()=>{
+ const lead=await leadFor(staff,leadId);
  const current=id?await getDocument<CaseRecord>("cases",id):null;if(current){allow(current.leadId===leadId);if(current.version!==Number(field(form,"version")))throw new Response("Application changed. Refresh before saving.",{status:409});}
  const kind=field(form,"kind",30),stage=field(form,"stage",80);if(!["Education","Immigration"].includes(kind)||!caseStages.includes(stage))throw new Response("Invalid application type or stage",{status:400});
  const payload={leadId,owner:lead.owner,kind,institution:field(form,"institution",300),course:field(form,"course",300),country:field(form,"country",150),intake:field(form,"intake",100),stage,deadline:dateField(field(form,"deadline",40)),notes:field(form,"notes",10000),version:(current?.version??0)+1};

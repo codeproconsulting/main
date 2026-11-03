@@ -67,3 +67,10 @@ test('task creation uses the current active lead assignee and writes a recoverab
 test('health distinguishes never-started, healthy, stale, failed and restricted roles',async()=>{
  reset();const manager=staff('manager');assert.equal((await notices.reminderHealth(manager,Date.parse(now))).status,'not started');stores.worker_health.set('reminders',{status:'healthy',finishedAt:now,startedAt:now,lastSuccessAt:now,errorCount:0});assert.equal((await notices.reminderHealth(manager,Date.parse(now))).status,'healthy');assert.equal((await notices.reminderHealth(manager,Date.parse(now)+180001)).status,'stale');stores.worker_health.get('reminders').status='failed';assert.equal((await notices.reminderHealth(manager,Date.parse(now))).status,'failed');await assert.rejects(()=>notices.reminderHealth(staff('counselor')),rejects(403));
 });
+
+test('application save checks current lead scope inside the shared mutation queue',async()=>{
+ reset();const operations=await vite.ssrLoadModule('/app/admin/operations.server.ts');let release;const gate=new Promise(resolve=>release=resolve);
+ const transfer=crm.serialized('lead:lead-one',async()=>{await gate;stores.leads.get('lead-one').owner='counselor-two';});
+ const form=new FormData();form.set('leadId','lead-one');form.set('kind','Education');form.set('stage','Shortlisted');
+ const save=operations.saveCase(staff('counselor'),form);release();await transfer;await assert.rejects(()=>save,rejects(403));
+});

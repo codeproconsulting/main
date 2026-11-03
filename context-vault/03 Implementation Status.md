@@ -75,3 +75,7 @@ Due-task in-app delivery is isolated from publishing/cases/appointments. Determi
 Complete/Cancel/Reschedule now require current task version and reason/outcome, record audit intent first and invalidate old notices. Private cycle health, manager setup status and graceful stop handling are implemented, with explicit fail-closed crash recovery. 29 focused engine/runner/workflow tests and actual built-app browser checks passed; the actual CLI was also run against the isolated in-memory API only. Final global verification is recorded in [[Session Wall]].
 
 Notification source fields/unread=false default and private worker_health schema were provisioned. A real disposable private notification/health CRUD, query and anonymous-denial exercise passed, with both records removed. No production health/reminder cycle was run. VPS worker activation, external messaging and case/calendar reminders remain separate gates.
+
+## CASE-01 started — 3 November
+
+Application authorization now runs inside the shared lead lock; a queued reassignment regression passes. CASE-01 remains incomplete. Newly fetched upstream main through 0397d6d still requires review/integration before more feature work. See [[Sessions/2026-11-03-01]].

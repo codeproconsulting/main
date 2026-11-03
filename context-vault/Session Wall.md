@@ -3,26 +3,24 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-10-29-05]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-03-01]].
 
 ## Resume here
 
-**Session:** 2026-10-29-05
+**Session:** 2026-11-03-01
 
-**Active feature:** REMIND-01
+**Active feature:** CASE-01
 
-**State:** completed
+**State:** in_progress
 
-**Objective:** Make due-task in-app reminders retry-safe, scoped to current assignment and schedule, with operator health and recovery.
+**Objective:** Verify application workflows, current lead scope, stale writes and assignment transfer.
 
-This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
+A user saying **continue** means resume this feature's next unfinished acceptance check. Do not start unrelated modules or repeat completed infrastructure work. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Due follow-up task reminder delivery and durable deduplication
-- Task completion/cancellation/rescheduling and notification invalidation
-- Role-scoped reminder inbox, worker heartbeat and recovery
-- Feature tests, isolated browser verification and deployment instructions
+- Application access and concurrency
+- Application lifecycle and assignment transfer
 
 ## Out of scope
 
@@ -34,19 +32,16 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| REMIND01-A | Due open tasks notify the current active CRM assignee once across retries and concurrent workers | passed | 17 focused engine/runner tests pass for deterministic private delivery, current active CRM assignee, concurrency, retries/lost acknowledgments and preserved read state. |
-| REMIND01-B | Completion, cancellation, rescheduling and assignment changes invalidate stale reminders and enforce stale-write checks | passed | 12 focused workflow tests pass for Complete/Cancel/Reschedule, current version and permission checks, normalized schedules, audit-first writes and current assignment. Built-app browser lifecycle/invalidation passed. |
-| REMIND01-C | Inbox and read actions revalidate current lead/task scope and never expose another recipient’s notices | passed | Workflow tests verify recipient/current-owner/source checks, foreign and content-role denial, deleted/legacy records and older-page cursors. Browser confirmed Read leaves task open and stale notices disappear. |
-| REMIND01-D | Worker health, failure isolation, graceful stop and fail-closed crash recovery are tested and documented | passed | Engine/runner tests cover per-record isolation, health/query failure, contention, fail-closed abandoned locks and safe stop. Added operator health UI, six-minute PM2 stop grace and explicit recovery/rollback runbook. |
-| REMIND01-E | Focused tests, isolated browser workflow, schema readiness, typecheck/build and continuation notes pass | passed | Final session:verify passed all 86 tests, typecheck and production build. Built-app synthetic browser workflow, fixture CLI --once and actual offline CLI SIGTERM shutdown passed. Live disposable schema/query/private-access check passed with cleanup. Vault links, credential scan, whitespace and 15 shell blocks passed. |
+| CASE01-A | Application saves recheck lead ownership inside the shared lock | passed | Added queued reassignment regression test; final check results recorded below. |
+| CASE01-B | Lifecycle, stale edits, assignment transfer and browser workflow verified | pending | Remaining work; feature not complete. |
 
 ## Exact next actions
 
-1. Archive this completed REMIND-01 state and start bounded CASE-01 verification. Check application creation/update, education versus immigration fields/stages, current lead scope, stale writes and assignment transfer. Do not activate case reminders until accepted.
-   Files: `app/admin/operations.server.ts`, `app/admin/work.tsx`, `context-vault/Feature Ledger.md`
+0. Review and integrate newly fetched origin/main through 0397d6d before further CASE-01 work; preserve both public pages and CRM changes and rerun checks.
+   Files: `context-vault/Feature Ledger.md`, `docs/RELEASE-AND-ROLLBACK.md`
 
-2. Keep VPS activation separate. When the target edge/access is available, execute first-day CRM and reminder runbooks with controlled synthetic staff workflows, recorded rollback commit, health and reboot smoke checks. Publishing/Ghost cutover remain separately gated.
-   Files: `deploy/CRM-DEPLOYMENT.md`, `docs/IN-APP-REMINDERS.md`, `docs/RELEASE-AND-ROLLBACK.md`
+1. Finish CASE-01: validate education/immigration fields and stages, audit-first writes, stale edits, assignment transfer and scoped listing; add focused tests and browser workflow.
+   Files: `app/admin/operations.server.ts`, `app/admin/work.tsx`, `app/admin/crm.server.ts`
 
 ## Known risks and unfinished work
 
@@ -60,9 +55,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-10-29T16:22:03.840Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-JR6Zaj/typecheck.log`
-- **passed**: `npm run test` (2026-10-29T16:22:04.630Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-JR6Zaj/test.log`
-- **passed**: `npm run build` (2026-10-29T16:22:09.483Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-JR6Zaj/build.log`
+- **passed**: `npm run typecheck` (2026-11-03T08:19:10.068Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-2Fqdsa/typecheck.log`
+- **passed**: `npm run test` (2026-11-03T08:19:10.998Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-2Fqdsa/test.log`
+- **passed**: `npm run build` (2026-11-03T08:19:15.744Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-2Fqdsa/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -78,7 +73,7 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **ownerPassword**: owner must set via Appwrite Console
 - **gitBranch**: codex/crm-workspace
 - **integratedUpstream**: origin/main through 407977c (16 commits)
-- **githubCheckpoint**: REMIND-01 verified feature pushed as 4bb3b60 on codex/crm-workspace; main unchanged
+- **githubCheckpoint**: CASE-01 ownership-race checkpoint being saved; feature incomplete
 - **mainMergePolicy**: User authorizes feature-tested merges with rollback references. The current development branch still includes unaccepted modules, so no whole-branch main merge has been performed.
 - **rollbackReference**: rollback/main-2026-10-29-407977c preserves the existing main baseline for release recovery
 - **scheduleIndex**: posts schedule(status,publishedAt) available; live due query passed read-only with zero due posts
@@ -90,5 +85,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **reminderSchema**: Notification source/version/due fields, unread=false default and private worker_health collection provisioned
 - **reminderStorageCheck**: Private synthetic notification/health CRUD, indexed queries and anonymous denial passed; both records removed
 - **reminderWorker**: Due-task-only runner verified locally, including actual synthetic CLI and SIGTERM idle exit; never activated on VPS
+- **upstreamPending**: origin/main advanced through 0397d6d; fetched but not integrated
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

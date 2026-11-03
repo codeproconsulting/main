@@ -1,15 +1,13 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-10-29-05",
-  "sessionStatus": "completed",
-  "activeFeature": "REMIND-01",
-  "objective": "Make due-task in-app reminders retry-safe, scoped to current assignment and schedule, with operator health and recovery.",
+  "sessionId": "2026-11-03-01",
+  "sessionStatus": "in_progress",
+  "activeFeature": "CASE-01",
+  "objective": "Verify application workflows, current lead scope, stale writes and assignment transfer.",
   "scope": [
-    "Due follow-up task reminder delivery and durable deduplication",
-    "Task completion/cancellation/rescheduling and notification invalidation",
-    "Role-scoped reminder inbox, worker heartbeat and recovery",
-    "Feature tests, isolated browser verification and deployment instructions"
+    "Application access and concurrency",
+    "Application lifecycle and assignment transfer"
   ],
   "outOfScope": [
     "Email/WhatsApp/SMS or other external delivery",
@@ -18,53 +16,34 @@
   ],
   "acceptance": [
     {
-      "id": "REMIND01-A",
-      "description": "Due open tasks notify the current active CRM assignee once across retries and concurrent workers",
+      "id": "CASE01-A",
+      "description": "Application saves recheck lead ownership inside the shared lock",
       "status": "passed",
-      "evidence": "17 focused engine/runner tests pass for deterministic private delivery, current active CRM assignee, concurrency, retries/lost acknowledgments and preserved read state."
+      "evidence": "Added queued reassignment regression test; final check results recorded below."
     },
     {
-      "id": "REMIND01-B",
-      "description": "Completion, cancellation, rescheduling and assignment changes invalidate stale reminders and enforce stale-write checks",
-      "status": "passed",
-      "evidence": "12 focused workflow tests pass for Complete/Cancel/Reschedule, current version and permission checks, normalized schedules, audit-first writes and current assignment. Built-app browser lifecycle/invalidation passed."
-    },
-    {
-      "id": "REMIND01-C",
-      "description": "Inbox and read actions revalidate current lead/task scope and never expose another recipient’s notices",
-      "status": "passed",
-      "evidence": "Workflow tests verify recipient/current-owner/source checks, foreign and content-role denial, deleted/legacy records and older-page cursors. Browser confirmed Read leaves task open and stale notices disappear."
-    },
-    {
-      "id": "REMIND01-D",
-      "description": "Worker health, failure isolation, graceful stop and fail-closed crash recovery are tested and documented",
-      "status": "passed",
-      "evidence": "Engine/runner tests cover per-record isolation, health/query failure, contention, fail-closed abandoned locks and safe stop. Added operator health UI, six-minute PM2 stop grace and explicit recovery/rollback runbook."
-    },
-    {
-      "id": "REMIND01-E",
-      "description": "Focused tests, isolated browser workflow, schema readiness, typecheck/build and continuation notes pass",
-      "status": "passed",
-      "evidence": "Final session:verify passed all 86 tests, typecheck and production build. Built-app synthetic browser workflow, fixture CLI --once and actual offline CLI SIGTERM shutdown passed. Live disposable schema/query/private-access check passed with cleanup. Vault links, credential scan, whitespace and 15 shell blocks passed."
+      "id": "CASE01-B",
+      "description": "Lifecycle, stale edits, assignment transfer and browser workflow verified",
+      "status": "pending",
+      "evidence": "Remaining work; feature not complete."
     }
   ],
   "nextActions": [
     {
-      "order": 1,
-      "action": "Archive this completed REMIND-01 state and start bounded CASE-01 verification. Check application creation/update, education versus immigration fields/stages, current lead scope, stale writes and assignment transfer. Do not activate case reminders until accepted.",
+      "order": 0,
+      "action": "Review and integrate newly fetched origin/main through 0397d6d before further CASE-01 work; preserve both public pages and CRM changes and rerun checks.",
       "files": [
-        "app/admin/operations.server.ts",
-        "app/admin/work.tsx",
-        "context-vault/Feature Ledger.md"
+        "context-vault/Feature Ledger.md",
+        "docs/RELEASE-AND-ROLLBACK.md"
       ]
     },
     {
-      "order": 2,
-      "action": "Keep VPS activation separate. When the target edge/access is available, execute first-day CRM and reminder runbooks with controlled synthetic staff workflows, recorded rollback commit, health and reboot smoke checks. Publishing/Ghost cutover remain separately gated.",
+      "order": 1,
+      "action": "Finish CASE-01: validate education/immigration fields and stages, audit-first writes, stale edits, assignment transfer and scoped listing; add focused tests and browser workflow.",
       "files": [
-        "deploy/CRM-DEPLOYMENT.md",
-        "docs/IN-APP-REMINDERS.md",
-        "docs/RELEASE-AND-ROLLBACK.md"
+        "app/admin/operations.server.ts",
+        "app/admin/work.tsx",
+        "app/admin/crm.server.ts"
       ]
     }
   ],
@@ -88,7 +67,7 @@
     "ownerPassword": "owner must set via Appwrite Console",
     "gitBranch": "codex/crm-workspace",
     "integratedUpstream": "origin/main through 407977c (16 commits)",
-    "githubCheckpoint": "REMIND-01 verified feature pushed as 4bb3b60 on codex/crm-workspace; main unchanged",
+    "githubCheckpoint": "CASE-01 ownership-race checkpoint being saved; feature incomplete",
     "mainMergePolicy": "User authorizes feature-tested merges with rollback references. The current development branch still includes unaccepted modules, so no whole-branch main merge has been performed.",
     "rollbackReference": "rollback/main-2026-10-29-407977c preserves the existing main baseline for release recovery",
     "scheduleIndex": "posts schedule(status,publishedAt) available; live due query passed read-only with zero due posts",
@@ -99,31 +78,32 @@
     "nginx": "Bootstrap and HTTPS templates prepared; target-server validation not performed",
     "reminderSchema": "Notification source/version/due fields, unread=false default and private worker_health collection provisioned",
     "reminderStorageCheck": "Private synthetic notification/health CRUD, indexed queries and anonymous denial passed; both records removed",
-    "reminderWorker": "Due-task-only runner verified locally, including actual synthetic CLI and SIGTERM idle exit; never activated on VPS"
+    "reminderWorker": "Due-task-only runner verified locally, including actual synthetic CLI and SIGTERM idle exit; never activated on VPS",
+    "upstreamPending": "origin/main advanced through 0397d6d; fetched but not integrated"
   },
   "checks": [
     {
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-10-29T16:22:03.840Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-JR6Zaj/typecheck.log"
+      "checkedAt": "2026-11-03T08:19:10.068Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-2Fqdsa/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-10-29T16:22:04.630Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-JR6Zaj/test.log"
+      "checkedAt": "2026-11-03T08:19:10.998Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-2Fqdsa/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-10-29T16:22:09.483Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-JR6Zaj/build.log"
+      "checkedAt": "2026-11-03T08:19:15.744Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-2Fqdsa/build.log"
     }
   ],
-  "updatedAt": "2026-10-29T16:25:24.127Z",
-  "verifiedSourceFingerprint": "e43480da390af68bd1ce6a3c9b621fad43b34badd251ec368091abb040c9bbe0"
+  "updatedAt": "2026-11-03T08:19:28.132Z",
+  "verifiedSourceFingerprint": "606d85affafbbaa243dda70aaf8db6e9cd0b8d9ad2fbd05f08eec56d0655b28f"
 }
