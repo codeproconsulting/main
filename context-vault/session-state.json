@@ -30,14 +30,6 @@
   ],
   "nextActions": [
     {
-      "order": 0,
-      "action": "Review and integrate newly fetched origin/main through 0397d6d before further CASE-01 work; preserve both public pages and CRM changes and rerun checks.",
-      "files": [
-        "context-vault/Feature Ledger.md",
-        "docs/RELEASE-AND-ROLLBACK.md"
-      ]
-    },
-    {
       "order": 1,
       "action": "Finish CASE-01: validate education/immigration fields and stages, audit-first writes, stale edits, assignment transfer and scoped listing; add focused tests and browser workflow.",
       "files": [
@@ -66,8 +58,8 @@
     "workerOnVPS": "not started",
     "ownerPassword": "owner must set via Appwrite Console",
     "gitBranch": "codex/crm-workspace",
-    "integratedUpstream": "origin/main through 407977c (16 commits)",
-    "githubCheckpoint": "CASE-01 ownership-race checkpoint being saved; feature incomplete",
+    "integratedUpstream": "origin/main through 0397d6d; TOEFL and service-location pages preserved",
+    "githubCheckpoint": "CASE-01 partial fix 913d93b and upstream integration checkpoint; feature incomplete",
     "mainMergePolicy": "User authorizes feature-tested merges with rollback references. The current development branch still includes unaccepted modules, so no whole-branch main merge has been performed.",
     "rollbackReference": "rollback/main-2026-10-29-407977c preserves the existing main baseline for release recovery",
     "scheduleIndex": "posts schedule(status,publishedAt) available; live due query passed read-only with zero due posts",
@@ -78,32 +70,31 @@
     "nginx": "Bootstrap and HTTPS templates prepared; target-server validation not performed",
     "reminderSchema": "Notification source/version/due fields, unread=false default and private worker_health collection provisioned",
     "reminderStorageCheck": "Private synthetic notification/health CRUD, indexed queries and anonymous denial passed; both records removed",
-    "reminderWorker": "Due-task-only runner verified locally, including actual synthetic CLI and SIGTERM idle exit; never activated on VPS",
-    "upstreamPending": "origin/main advanced through 0397d6d; fetched but not integrated"
+    "reminderWorker": "Due-task-only runner verified locally, including actual synthetic CLI and SIGTERM idle exit; never activated on VPS"
   },
   "checks": [
     {
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-03T08:19:10.068Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-2Fqdsa/typecheck.log"
+      "checkedAt": "2026-11-03T08:19:46.562Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-4XUCZt/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-03T08:19:10.998Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-2Fqdsa/test.log"
+      "checkedAt": "2026-11-03T08:19:47.424Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-4XUCZt/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-03T08:19:15.744Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-2Fqdsa/build.log"
+      "checkedAt": "2026-11-03T08:19:52.290Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-4XUCZt/build.log"
     }
   ],
-  "updatedAt": "2026-11-03T08:19:28.132Z",
-  "verifiedSourceFingerprint": "606d85affafbbaa243dda70aaf8db6e9cd0b8d9ad2fbd05f08eec56d0655b28f"
+  "updatedAt": "2026-11-03T08:19:56.182Z",
+  "verifiedSourceFingerprint": "cbb1b1b0873ae5d9a99212a96c971056a8955f2d0190636725e508466cf502b3"
 }

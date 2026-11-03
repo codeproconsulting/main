@@ -6,7 +6,14 @@ Generated snapshot of changes since the previous inventory; Nov 3, 2026, 1:19 p.
 
 Review these changes and update human-authored architecture/status notes where needed. For cumulative history, read the dated notes in Changes/.
 
+## Added
+
+- `app/routes/service-locations-hub-islamabad.tsx`
+- `app/routes/service-locations-toefl-islamabad.tsx`
+
 ## Modified
 
-- `app/admin/operations.server.ts`
-- `tests/reminder-workflow.test.mjs`
+- `app/routes.ts`
+- `app/routes/service-locations-islamabad.tsx`
+- `app/routes/service-locations.tsx`
+- `app/routes/sitemap.xml.ts`

@@ -37,9 +37,6 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 
 ## Exact next actions
 
-0. Review and integrate newly fetched origin/main through 0397d6d before further CASE-01 work; preserve both public pages and CRM changes and rerun checks.
-   Files: `context-vault/Feature Ledger.md`, `docs/RELEASE-AND-ROLLBACK.md`
-
 1. Finish CASE-01: validate education/immigration fields and stages, audit-first writes, stale edits, assignment transfer and scoped listing; add focused tests and browser workflow.
    Files: `app/admin/operations.server.ts`, `app/admin/work.tsx`, `app/admin/crm.server.ts`
 
@@ -55,9 +52,9 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-03T08:19:10.068Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-2Fqdsa/typecheck.log`
-- **passed**: `npm run test` (2026-11-03T08:19:10.998Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-2Fqdsa/test.log`
-- **passed**: `npm run build` (2026-11-03T08:19:15.744Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-2Fqdsa/build.log`
+- **passed**: `npm run typecheck` (2026-11-03T08:19:46.562Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-4XUCZt/typecheck.log`
+- **passed**: `npm run test` (2026-11-03T08:19:47.424Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-4XUCZt/test.log`
+- **passed**: `npm run build` (2026-11-03T08:19:52.290Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-4XUCZt/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -72,8 +69,8 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **workerOnVPS**: not started
 - **ownerPassword**: owner must set via Appwrite Console
 - **gitBranch**: codex/crm-workspace
-- **integratedUpstream**: origin/main through 407977c (16 commits)
-- **githubCheckpoint**: CASE-01 ownership-race checkpoint being saved; feature incomplete
+- **integratedUpstream**: origin/main through 0397d6d; TOEFL and service-location pages preserved
+- **githubCheckpoint**: CASE-01 partial fix 913d93b and upstream integration checkpoint; feature incomplete
 - **mainMergePolicy**: User authorizes feature-tested merges with rollback references. The current development branch still includes unaccepted modules, so no whole-branch main merge has been performed.
 - **rollbackReference**: rollback/main-2026-10-29-407977c preserves the existing main baseline for release recovery
 - **scheduleIndex**: posts schedule(status,publishedAt) available; live due query passed read-only with zero due posts
@@ -85,6 +82,5 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **reminderSchema**: Notification source/version/due fields, unread=false default and private worker_health collection provisioned
 - **reminderStorageCheck**: Private synthetic notification/health CRUD, indexed queries and anonymous denial passed; both records removed
 - **reminderWorker**: Due-task-only runner verified locally, including actual synthetic CLI and SIGTERM idle exit; never activated on VPS
-- **upstreamPending**: origin/main advanced through 0397d6d; fetched but not integrated
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

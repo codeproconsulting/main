@@ -79,3 +79,5 @@ Notification source fields/unread=false default and private worker_health schema
 ## CASE-01 started — 3 November
 
 Application authorization now runs inside the shared lead lock; a queued reassignment regression passes. CASE-01 remains incomplete. Newly fetched upstream main through 0397d6d still requires review/integration before more feature work. See [[Sessions/2026-11-03-01]].
+
+Upstream 0397d6d is now integrated with a merge commit, preserving TOEFL and service-location pages plus CRM routes. Post-merge checks are recorded in the Session Wall. CASE-01 remains in progress.
