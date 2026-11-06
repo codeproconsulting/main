@@ -8,7 +8,7 @@ let vite,crm,notices,stores,failAudit,afterTaskRead;
 const reply=(value,status=200)=>new Response(JSON.stringify(value),{status,headers:{'Content-Type':'application/json'}});
 const rejects=status=>error=>error instanceof Response&&error.status===status;
 function reset(){
- stores={leads:new Map([['lead-one',{$id:'lead-one',owner:'counselor-one',stage:'New',version:1}]]),tasks:new Map([['task-one',{$id:'task-one',leadId:'lead-one',owner:'counselor-one',title:'Synthetic task',status:'Open',dueAt:'2030-01-01T11:00:00.000Z',version:1}]]),staff:new Map([['counselor-one',staff('counselor')],['counselor-two',{$id:'counselor-two',name:'Synthetic two',role:'counselor',active:true}]]),notifications:new Map([['notice-one',{$id:'notice-one',recipient:'counselor-one',entityId:'lead-one',kind:'task',sourceId:'task-one',sourceVersion:1,dueAt:'2030-01-01T11:00:00.000Z',title:'Stored title',body:'Stored body',read:false}]]),activities:new Map(),worker_health:new Map()};failAudit=false;afterTaskRead=null;
+ stores={cases:new Map(),leads:new Map([['lead-one',{$id:'lead-one',owner:'counselor-one',stage:'New',version:1}]]),tasks:new Map([['task-one',{$id:'task-one',leadId:'lead-one',owner:'counselor-one',title:'Synthetic task',status:'Open',dueAt:'2030-01-01T11:00:00.000Z',version:1}]]),staff:new Map([['counselor-one',staff('counselor')],['counselor-two',{$id:'counselor-two',name:'Synthetic two',role:'counselor',active:true}]]),notifications:new Map([['notice-one',{$id:'notice-one',recipient:'counselor-one',entityId:'lead-one',kind:'task',sourceId:'task-one',sourceVersion:1,dueAt:'2030-01-01T11:00:00.000Z',title:'Stored title',body:'Stored body',read:false}]]),activities:new Map(),worker_health:new Map()};failAudit=false;afterTaskRead=null;
 }
 before(async()=>{
  Object.assign(process.env,{NODE_ENV:'test',APPWRITE_ENDPOINT:'http://127.0.0.1/v1',APPWRITE_PROJECT_ID:'synthetic',APPWRITE_API_KEY:'synthetic',APPWRITE_DATABASE_ID:'synthetic'});
@@ -73,4 +73,22 @@ test('application save checks current lead scope inside the shared mutation queu
  const transfer=crm.serialized('lead:lead-one',async()=>{await gate;stores.leads.get('lead-one').owner='counselor-two';});
  const form=new FormData();form.set('leadId','lead-one');form.set('kind','Education');form.set('stage','Shortlisted');
  const save=operations.saveCase(staff('counselor'),form);release();await transfer;await assert.rejects(()=>save,rejects(403));
+});
+
+function applicationForm(changes={}){const f=new FormData();for(const [key,value]of Object.entries({leadId:'lead-one',kind:'Education',stage:'Shortlisted',institution:'Synthetic institution',course:'Synthetic course',country:'UK',...changes}))f.set(key,String(value));return f;}
+test('multiple applications retain independent versions and audit IDs',async()=>{
+ reset();const operations=await vite.ssrLoadModule('/app/admin/operations.server.ts');const a=await operations.saveCase(staff('counselor'),applicationForm());const b=await operations.saveCase(staff('counselor'),applicationForm({kind:'Immigration',institution:'Synthetic category'}));assert.notEqual(a.$id,b.$id);assert.equal(stores.cases.size,2);assert.equal(stores.activities.size,2);for(const event of stores.activities.values())assert.equal(JSON.parse(event.details).state,'completed');
+ const updated=await operations.saveCase(staff('counselor'),applicationForm({id:a.$id,version:1,stage:'Submitted'}));assert.equal(updated.version,2);assert.equal(stores.cases.get(b.$id).version,1);await assert.rejects(()=>operations.saveCase(staff('counselor'),applicationForm({id:a.$id,version:1})),rejects(409));
+});
+test('application audit failure prevents creation and updates',async()=>{
+ reset();const operations=await vite.ssrLoadModule('/app/admin/operations.server.ts');failAudit=true;await assert.rejects(()=>operations.saveCase(staff('counselor'),applicationForm()));assert.equal(stores.cases.size,0);failAudit=false;const saved=await operations.saveCase(staff('counselor'),applicationForm());failAudit=true;await assert.rejects(()=>operations.saveCase(staff('counselor'),applicationForm({id:saved.$id,version:1,stage:'Submitted'})));assert.equal(stores.cases.get(saved.$id).version,1);
+});
+test('application validation and lead binding reject unauthorized or malformed saves',async()=>{
+ reset();const operations=await vite.ssrLoadModule('/app/admin/operations.server.ts');for(const changes of [{kind:'Unknown'},{stage:'Unknown'},{deadline:'2030-01-01T12:00'}])await assert.rejects(()=>operations.saveCase(staff('counselor'),applicationForm(changes)),rejects(400));await assert.rejects(()=>operations.saveCase(staff('editor'),applicationForm()),rejects(403));await assert.rejects(()=>operations.saveCase(stores.staff.get('counselor-two'),applicationForm()),rejects(403));const saved=await operations.saveCase(staff('counselor'),applicationForm());stores.leads.set('other-lead',{$id:'other-lead',owner:'counselor-one'});await assert.rejects(()=>operations.saveCase(staff('counselor'),applicationForm({id:saved.$id,leadId:'other-lead',version:1})),rejects(403));
+});
+test('application lost write acknowledgment retains the committed version and pending audit for recovery',async()=>{
+ reset();const operations=await vite.ssrLoadModule('/app/admin/operations.server.ts');const saved=await operations.saveCase(staff('counselor'),applicationForm());const transport=globalThis.fetch;
+ globalThis.fetch=async(input,options)=>{const response=await transport(input,options);if(options?.method==='PATCH'&&String(input).includes('/collections/cases/'))throw new Error('Synthetic lost acknowledgment');return response;};
+ try{await assert.rejects(()=>operations.saveCase(staff('counselor'),applicationForm({id:saved.$id,version:1,stage:'Submitted'})));}finally{globalThis.fetch=transport;}
+ assert.equal(stores.cases.get(saved.$id).version,2);assert.ok([...stores.activities.values()].some(a=>JSON.parse(a.details).state==='pending'));await assert.rejects(()=>operations.saveCase(staff('counselor'),applicationForm({id:saved.$id,version:1})),rejects(409));
 });

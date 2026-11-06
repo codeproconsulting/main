@@ -33,11 +33,11 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
 | CASE01-A | Application saves recheck lead ownership inside the shared lock | passed | Added queued reassignment regression test; final check results recorded below. |
-| CASE01-B | Lifecycle, stale edits, assignment transfer and browser workflow verified | pending | Remaining work; feature not complete. |
+| CASE01-B | Lifecycle, stale edits, assignment transfer and browser workflow verified | pending | Application lifecycle service tests now cover independent records, stale edits, invalid kind/stage/timezone, foreign lead binding, audit failure and lost acknowledgment. Ownership transfer/scoped listing and browser acceptance remain pending. |
 
 ## Exact next actions
 
-1. Finish CASE-01: validate education/immigration fields and stages, audit-first writes, stale edits, assignment transfer and scoped listing; add focused tests and browser workflow.
+1. Finish CASE-01 ownership transfer and scoped listing (case owner metadata currently remains stale on lead reassignment), education/immigration field/stage policies and browser acceptance. Keep the tested audit-first save and recovery regressions.
    Files: `app/admin/operations.server.ts`, `app/admin/work.tsx`, `app/admin/crm.server.ts`
 
 ## Known risks and unfinished work
@@ -52,11 +52,11 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-03T08:19:46.562Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-4XUCZt/typecheck.log`
-- **passed**: `npm run test` (2026-11-03T08:19:47.424Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-4XUCZt/test.log`
-- **passed**: `npm run build` (2026-11-03T08:19:52.290Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-4XUCZt/build.log`
+- **passed**: `npm run typecheck` (2026-11-06T07:51:27.554Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-yO2xw2/typecheck.log`
+- **passed**: `npm run test` (2026-11-06T07:51:28.381Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-yO2xw2/test.log`
+- **passed**: `npm run build` (2026-11-06T07:51:33.013Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-yO2xw2/build.log`
 
-Source inventory matches verified checkpoint: **NO / not yet verified**. Passing general checks does not automatically complete feature acceptance.
+Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
 ## External state
 
@@ -70,7 +70,7 @@ Source inventory matches verified checkpoint: **NO / not yet verified**. Passing
 - **ownerPassword**: owner must set via Appwrite Console
 - **gitBranch**: codex/crm-workspace
 - **integratedUpstream**: origin/main through 0397d6d; TOEFL and service-location pages preserved
-- **githubCheckpoint**: CASE-01 partial fix 913d93b and upstream integration checkpoint; feature incomplete
+- **githubCheckpoint**: Application audit-first save checkpoint prepared on codex/crm-workspace; CASE-01 remains incomplete
 - **mainMergePolicy**: User authorizes feature-tested merges with rollback references. The current development branch still includes unaccepted modules, so no whole-branch main merge has been performed.
 - **rollbackReference**: rollback/main-2026-10-29-407977c preserves the existing main baseline for release recovery
 - **scheduleIndex**: posts schedule(status,publishedAt) available; live due query passed read-only with zero due posts

@@ -63,3 +63,7 @@ Preserve abandoned locks instead of guessed expiry takeover; document stop-owner
 ## Resend email provider decision
 
 User selected Resend (resend.com) for application email delivery on 3 November 2026. COMMS-01 will use a server-side adapter, durable outbox and verified webhooks; integration remains planned. Appwrite-managed authentication mail needs separate configuration.
+
+## CASE-01 audit recovery — 6 November 2026
+
+Application saves now record a pending intent with case ID and versions before the mutation, then mark it completed. Failed intent prevents the write; lost acknowledgment preserves the committed version and pending recovery evidence. Four added focused regressions cover independent records, validation/access, audit failure and ambiguous writes. Global tests/typecheck/build pass. CASE-01 remains incomplete: ownership transfer/listing, kind-specific policy and browser checks remain. No production deployment or provider activation.

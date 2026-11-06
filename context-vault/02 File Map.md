@@ -78,3 +78,5 @@ Use [[Feature Ledger]] for actual acceptance state; this file map describes code
 - `scripts/verify-reminders.mjs`: opt-in disposable real schema/query/privacy check without invoking production worker.
 - `tests/reminders.test.mjs`, `reminder-workflow.test.mjs`, `manual/REMIND-01-browser.md`: engine, lifecycle, access, recovery and browser evidence.
 - `docs/IN-APP-REMINDERS.md`: activation, scope, consistency limits, health, shutdown and operator recovery.
+
+CASE-01 audit changes: `app/admin/operations.server.ts` records application intents before mutation; `tests/reminder-workflow.test.mjs` includes application lifecycle/access/failure regressions.

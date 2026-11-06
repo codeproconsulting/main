@@ -25,13 +25,13 @@
       "id": "CASE01-B",
       "description": "Lifecycle, stale edits, assignment transfer and browser workflow verified",
       "status": "pending",
-      "evidence": "Remaining work; feature not complete."
+      "evidence": "Application lifecycle service tests now cover independent records, stale edits, invalid kind/stage/timezone, foreign lead binding, audit failure and lost acknowledgment. Ownership transfer/scoped listing and browser acceptance remain pending."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Finish CASE-01: validate education/immigration fields and stages, audit-first writes, stale edits, assignment transfer and scoped listing; add focused tests and browser workflow.",
+      "action": "Finish CASE-01 ownership transfer and scoped listing (case owner metadata currently remains stale on lead reassignment), education/immigration field/stage policies and browser acceptance. Keep the tested audit-first save and recovery regressions.",
       "files": [
         "app/admin/operations.server.ts",
         "app/admin/work.tsx",
@@ -59,7 +59,7 @@
     "ownerPassword": "owner must set via Appwrite Console",
     "gitBranch": "codex/crm-workspace",
     "integratedUpstream": "origin/main through 0397d6d; TOEFL and service-location pages preserved",
-    "githubCheckpoint": "CASE-01 partial fix 913d93b and upstream integration checkpoint; feature incomplete",
+    "githubCheckpoint": "Application audit-first save checkpoint prepared on codex/crm-workspace; CASE-01 remains incomplete",
     "mainMergePolicy": "User authorizes feature-tested merges with rollback references. The current development branch still includes unaccepted modules, so no whole-branch main merge has been performed.",
     "rollbackReference": "rollback/main-2026-10-29-407977c preserves the existing main baseline for release recovery",
     "scheduleIndex": "posts schedule(status,publishedAt) available; live due query passed read-only with zero due posts",
@@ -77,24 +77,24 @@
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-03T08:19:46.562Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-4XUCZt/typecheck.log"
+      "checkedAt": "2026-11-06T07:51:27.554Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-yO2xw2/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-03T08:19:47.424Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-4XUCZt/test.log"
+      "checkedAt": "2026-11-06T07:51:28.381Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-yO2xw2/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-03T08:19:52.290Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-4XUCZt/build.log"
+      "checkedAt": "2026-11-06T07:51:33.013Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-yO2xw2/build.log"
     }
   ],
-  "updatedAt": "2026-11-03T08:27:43.749Z",
-  "verifiedSourceFingerprint": "cbb1b1b0873ae5d9a99212a96c971056a8955f2d0190636725e508466cf502b3"
+  "updatedAt": "2026-11-06T07:52:00.716Z",
+  "verifiedSourceFingerprint": "c4a734383a08cac78feed93a02aae572f8f468b3f0b892a8e77754ce26bafe68"
 }

@@ -1,3 +1,4 @@
+import {randomUUID} from "node:crypto";
 import {createDocument,getDocument,listDocuments,query,updateDocument} from "~/lib/appwrite.server";
 import {caseStages,canManage,canUseCRM,type Staff} from "./domain";
 import {allow,audit,dateField,field,leadFor,serialized} from "./crm.server";
@@ -10,7 +11,10 @@ export async function saveCase(staff:Staff,form:FormData){const id=field(form,"i
  const current=id?await getDocument<CaseRecord>("cases",id):null;if(current){allow(current.leadId===leadId);if(current.version!==Number(field(form,"version")))throw new Response("Application changed. Refresh before saving.",{status:409});}
  const kind=field(form,"kind",30),stage=field(form,"stage",80);if(!["Education","Immigration"].includes(kind)||!caseStages.includes(stage))throw new Response("Invalid application type or stage",{status:400});
  const payload={leadId,owner:lead.owner,kind,institution:field(form,"institution",300),course:field(form,"course",300),country:field(form,"country",150),intake:field(form,"intake",100),stage,deadline:dateField(field(form,"deadline",40)),notes:field(form,"notes",10000),version:(current?.version??0)+1};
- const record=current?await updateDocument<CaseRecord>("cases",id,payload):await createDocument("cases",payload);await audit(staff,leadId,"lead",current?"Application updated":"Application created",{caseId:record.$id,stage});return record;
+ const caseId=current?.$id||randomUUID();
+ const event=await audit(staff,leadId,"lead","Application save requested",{state:"pending",caseId,fromVersion:current?.version??0,toVersion:payload.version,stage});
+ const record=current?await updateDocument<CaseRecord>("cases",caseId,payload):await createDocument("cases",payload,caseId);
+ await updateDocument("activities",event.$id,{event:current?"Application updated":"Application created",details:JSON.stringify({state:"completed",caseId,stage,version:payload.version})});return record;
  });}
 export async function saveAppointment(staff:Staff,form:FormData){const id=field(form,"id",36),leadId=field(form,"leadId",36);const lead=await leadFor(staff,leadId);if(!lead.owner)throw new Response("Assign the lead before booking an appointment.",{status:400});return serialized(`calendar:${lead.owner}`,async()=>{
  const current=id?await getDocument<Appointment>("appointments",id):null;if(current){allow(current.leadId===leadId);if(current.version!==Number(field(form,"version")))throw new Response("Appointment changed. Refresh before saving.",{status:409});}

@@ -81,3 +81,7 @@ Notification source fields/unread=false default and private worker_health schema
 Application authorization now runs inside the shared lead lock; a queued reassignment regression passes. CASE-01 remains incomplete. Newly fetched upstream main through 0397d6d still requires review/integration before more feature work. See [[Sessions/2026-11-03-01]].
 
 Upstream 0397d6d is now integrated with a merge commit, preserving TOEFL and service-location pages plus CRM routes. Post-merge checks are recorded in the Session Wall. CASE-01 remains in progress.
+
+## CASE-01 audit recovery — 6 November 2026
+
+Application saves now record a pending intent with case ID and versions before the mutation, then mark it completed. Failed intent prevents the write; lost acknowledgment preserves the committed version and pending recovery evidence. Four added focused regressions cover independent records, validation/access, audit failure and ambiguous writes. Global tests/typecheck/build pass. CASE-01 remains incomplete: ownership transfer/listing, kind-specific policy and browser checks remain. No production deployment or provider activation.
