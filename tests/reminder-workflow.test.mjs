@@ -110,3 +110,14 @@ test('handoff transfers more than one page of applications including terminal st
  const form=new FormData();for(const [key,value]of Object.entries({version:'1',stage:'New',priority:'Normal',owner:'counselor-two',reason:'Synthetic paginated handoff'}))form.set(key,value);
  await crm.updateLead(staff('manager'),'lead-one',form);assert.equal(stores.cases.size,102);for(const row of stores.cases.values()){assert.equal(row.owner,'counselor-two');assert.equal(row.version,2);}
 });
+
+test('immigration cases reject education-only stages and existing services cannot be changed',async()=>{
+ reset();const operations=await vite.ssrLoadModule('/app/admin/operations.server.ts');for(const stage of ['Conditional offer','Unconditional offer','Deposit paid','Enrolled'])await assert.rejects(()=>operations.saveCase(staff('counselor'),applicationForm({kind:'Immigration',stage})),rejects(400));
+ const saved=await operations.saveCase(staff('counselor'),applicationForm({kind:'Immigration',stage:'Visa preparation'}));await assert.rejects(()=>operations.saveCase(staff('counselor'),applicationForm({id:saved.$id,version:1,kind:'Education'})),rejects(400));assert.equal(stores.cases.get(saved.$id).kind,'Immigration');
+});
+test('interrupted handoff retains old lead scope and retry reconciles application owners',async()=>{
+ reset();for(const id of ['case-a','case-b'])stores.cases.set(id,{$id:id,leadId:'lead-one',owner:'counselor-one',version:1});const form=new FormData();for(const [k,v]of Object.entries({version:'1',stage:'New',priority:'Normal',owner:'counselor-two',reason:'Synthetic recovery'}))form.set(k,v);
+ const transport=globalThis.fetch;globalThis.fetch=async(input,options)=>{if(options?.method==='PATCH'&&String(input).endsWith('/collections/cases/documents/case-b'))return reply({},503);return transport(input,options);};try{await assert.rejects(()=>crm.updateLead(staff('manager'),'lead-one',form));}finally{globalThis.fetch=transport;}
+ assert.equal(stores.leads.get('lead-one').owner,'counselor-one');assert.ok([...stores.activities.values()].some(a=>JSON.parse(a.details).state==='pending'));const operations=await vite.ssrLoadModule('/app/admin/operations.server.ts');assert.equal((await operations.scopedRecords(stores.staff.get('counselor-two'),'cases')).length,0);
+ await crm.updateLead(staff('manager'),'lead-one',form);for(const row of stores.cases.values())assert.equal(row.owner,'counselor-two');assert.equal(stores.leads.get('lead-one').owner,'counselor-two');
+});

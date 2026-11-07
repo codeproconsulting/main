@@ -19,3 +19,6 @@ export function displayDate(value?: string) {
 }
 
 export const caseStages=["Shortlisted","Documents pending","Submitted","Conditional offer","Unconditional offer","Deposit paid","Visa preparation","Visa submitted","Approved","Refused","Enrolled","Withdrawn"];
+
+// Shortlisted remains available for legacy immigration intake records.
+export const caseStagesFor=(kind:string)=>kind==="Immigration"?caseStages.filter(stage=>!["Conditional offer","Unconditional offer","Deposit paid","Enrolled"].includes(stage)):caseStages;

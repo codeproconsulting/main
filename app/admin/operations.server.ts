@@ -1,6 +1,6 @@
 import {randomUUID} from "node:crypto";
 import {createDocument,getDocument,listDocuments,query,updateDocument} from "~/lib/appwrite.server";
-import {caseStages,canManage,canUseCRM,type Staff} from "./domain";
+import {caseStagesFor,canManage,canUseCRM,type Staff} from "./domain";
 import {allow,audit,dateField,field,leadFor,serialized} from "./crm.server";
 export type CaseRecord={$id:string;leadId:string;owner:string;kind:string;institution:string;course:string;country:string;intake:string;stage:string;deadline:string;notes:string;version:number};
 export type Appointment={$id:string;leadId:string;owner:string;title:string;startsAt:string;endsAt:string;status:string;location:string;notes:string;version:number};
@@ -9,7 +9,8 @@ export async function scopedRecords<T extends {leadId:string}>(staff:Staff,colle
 export async function saveCase(staff:Staff,form:FormData){const id=field(form,"id",36),leadId=field(form,"leadId",36);return serialized(`lead:${leadId}`,async()=>{
  const lead=await leadFor(staff,leadId);
  const current=id?await getDocument<CaseRecord>("cases",id):null;if(current){allow(current.leadId===leadId);if(current.version!==Number(field(form,"version")))throw new Response("Application changed. Refresh before saving.",{status:409});}
- const kind=field(form,"kind",30),stage=field(form,"stage",80);if(!["Education","Immigration"].includes(kind)||!caseStages.includes(stage))throw new Response("Invalid application type or stage",{status:400});
+ const kind=field(form,"kind",30),stage=field(form,"stage",80);if(!["Education","Immigration"].includes(kind)||!caseStagesFor(kind).includes(stage))throw new Response("Invalid application type or stage",{status:400});
+ if(current&&current.kind!==kind)throw new Response("Application service cannot be changed. Create a separate application for the other service.",{status:400});
  const payload={leadId,owner:lead.owner,kind,institution:field(form,"institution",300),course:field(form,"course",300),country:field(form,"country",150),intake:field(form,"intake",100),stage,deadline:dateField(field(form,"deadline",40)),notes:field(form,"notes",10000),version:(current?.version??0)+1};
  const caseId=current?.$id||randomUUID();
  const event=await audit(staff,leadId,"lead","Application save requested",{state:"pending",caseId,fromVersion:current?.version??0,toVersion:payload.version,stage});

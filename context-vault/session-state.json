@@ -25,13 +25,13 @@
       "id": "CASE01-B",
       "description": "Lifecycle, stale edits, assignment transfer and browser workflow verified",
       "status": "pending",
-      "evidence": "Paginated application handoff, former/new counselor scope and stale edit regressions pass. Kind-specific policies, interrupted-transfer recovery and browser acceptance remain pending."
+      "evidence": "Service-specific stage validation, immutable service, pagination and interrupted-transfer recovery tests pass. Browser acceptance and required-field completeness review remain pending."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Finish CASE-01 kind-specific stage/field policy, partial transfer failure/reconciliation tests and browser acceptance. Preserve paginated handoff and audit recovery checks.",
+      "action": "Finish CASE-01 browser acceptance and required-field completeness review. Verify both service forms, stage options, record navigation, handoff and stale forms. Preserve tested service-stage, audit and transfer recovery behavior.",
       "files": [
         "app/admin/operations.server.ts",
         "app/admin/work.tsx",
@@ -78,24 +78,24 @@
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-07T04:52:48.143Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-jzIToI/typecheck.log"
+      "checkedAt": "2026-11-07T04:55:21.942Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-wIsR3N/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-07T04:52:49.123Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-jzIToI/test.log"
+      "checkedAt": "2026-11-07T04:55:22.871Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-wIsR3N/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-07T04:52:54.447Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-jzIToI/build.log"
+      "checkedAt": "2026-11-07T04:55:28.056Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-wIsR3N/build.log"
     }
   ],
-  "updatedAt": "2026-11-07T04:53:15.289Z",
-  "verifiedSourceFingerprint": "0ea8d0d4c331dd0166df365cb7e8fcbc3fd097af7e9383d525fcedb6138d3917"
+  "updatedAt": "2026-11-07T04:55:48.995Z",
+  "verifiedSourceFingerprint": "5e27100d585dc7bc99e4c3302ccc6312fca425b5c5eb66ba020bf554ada22d08"
 }

@@ -33,11 +33,11 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
 | CASE01-A | Application saves recheck lead ownership inside the shared lock | passed | Added queued reassignment regression test; final check results recorded below. |
-| CASE01-B | Lifecycle, stale edits, assignment transfer and browser workflow verified | pending | Paginated application handoff, former/new counselor scope and stale edit regressions pass. Kind-specific policies, interrupted-transfer recovery and browser acceptance remain pending. |
+| CASE01-B | Lifecycle, stale edits, assignment transfer and browser workflow verified | pending | Service-specific stage validation, immutable service, pagination and interrupted-transfer recovery tests pass. Browser acceptance and required-field completeness review remain pending. |
 
 ## Exact next actions
 
-1. Finish CASE-01 kind-specific stage/field policy, partial transfer failure/reconciliation tests and browser acceptance. Preserve paginated handoff and audit recovery checks.
+1. Finish CASE-01 browser acceptance and required-field completeness review. Verify both service forms, stage options, record navigation, handoff and stale forms. Preserve tested service-stage, audit and transfer recovery behavior.
    Files: `app/admin/operations.server.ts`, `app/admin/work.tsx`, `app/admin/crm.server.ts`
 
 ## Known risks and unfinished work
@@ -53,9 +53,9 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-07T04:52:48.143Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-jzIToI/typecheck.log`
-- **passed**: `npm run test` (2026-11-07T04:52:49.123Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-jzIToI/test.log`
-- **passed**: `npm run build` (2026-11-07T04:52:54.447Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-jzIToI/build.log`
+- **passed**: `npm run typecheck` (2026-11-07T04:55:21.942Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-wIsR3N/typecheck.log`
+- **passed**: `npm run test` (2026-11-07T04:55:22.871Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-wIsR3N/test.log`
+- **passed**: `npm run build` (2026-11-07T04:55:28.056Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-wIsR3N/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 

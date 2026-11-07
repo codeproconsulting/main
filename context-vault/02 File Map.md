@@ -82,3 +82,5 @@ Use [[Feature Ledger]] for actual acceptance state; this file map describes code
 CASE-01 audit changes: `app/admin/operations.server.ts` records application intents before mutation; `tests/reminder-workflow.test.mjs` includes application lifecycle/access/failure regressions.
 
 Application handoff: `app/admin/crm.server.ts` paginates linked cases on owner change; `tests/reminder-workflow.test.mjs` verifies access/version transfer beyond 100 records.
+
+`app/admin/domain.ts` exports `caseStagesFor`; `operations.server.ts` enforces service-stage compatibility and immutable service; `work.tsx` uses the same stage choices and refreshes selected service when navigating records.

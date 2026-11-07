@@ -67,3 +67,7 @@ User selected Resend (resend.com) for application email delivery on 3 November 2
 ## CASE-01 audit recovery — 6 November 2026
 
 Application saves now record a pending intent with case ID and versions before the mutation, then mark it completed. Failed intent prevents the write; lost acknowledgment preserves the committed version and pending recovery evidence. Four added focused regressions cover independent records, validation/access, audit failure and ambiguous writes. Global tests/typecheck/build pass. CASE-01 remains incomplete: ownership transfer/listing, kind-specific policy and browser checks remain. No production deployment or provider activation.
+
+## CASE-01 service policy and recovery continuation
+
+Added service-specific stage choices to server validation and the application form: immigration excludes education offer/deposit/enrolment stages; Shortlisted remains for legacy intake compatibility. Existing application service cannot be changed; create a separate application instead. Added an interrupted multi-record handoff test: pending audit and old lead owner remain after failure, new counselor access stays blocked, and an intentional retry reconciles application owners. Browser acceptance and required-field completeness review remain open; CASE-01 is not complete.
