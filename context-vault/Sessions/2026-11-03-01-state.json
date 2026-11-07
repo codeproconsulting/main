@@ -1,0 +1,110 @@
+{
+  "formatVersion": 1,
+  "project": "ProConsulting",
+  "sessionId": "2026-11-03-01",
+  "sessionStatus": "completed",
+  "activeFeature": "CASE-01",
+  "objective": "Verify application workflows, current lead scope, stale writes and assignment transfer.",
+  "scope": [
+    "Application access and concurrency",
+    "Application lifecycle and assignment transfer"
+  ],
+  "outOfScope": [
+    "Email/WhatsApp/SMS or other external delivery",
+    "Appointment/application reminder activation before CAL-01/CASE-01 acceptance",
+    "Production worker activation, VPS deployment or Ghost cutover"
+  ],
+  "acceptance": [
+    {
+      "id": "CASE01-A",
+      "description": "Application saves recheck lead ownership inside the shared lock",
+      "status": "passed",
+      "evidence": "Added queued reassignment regression test; final check results recorded below."
+    },
+    {
+      "id": "CASE01-B",
+      "description": "Lifecycle, stale edits, assignment transfer and browser workflow verified",
+      "status": "passed",
+      "evidence": "Required fields/active assignee, service-stage rules, independent applications, stale edits, audit failure/lost acknowledgments, 102-record transfer and partial-transfer retry tests pass. Built-app browser verifies education/immigration creation, fixed service, saved-state navigation, deadline display, list independence and stale-tab rejection. Production rollout remains separate. Final session:verify passed 96 tests, typecheck/build; vault links, source credential-pattern and whitespace checks passed."
+    }
+  ],
+  "nextActions": [
+    {
+      "order": 1,
+      "action": "Archive completed CASE-01 state and start bounded CAL-01 appointment verification: current ownership inside locks, conflict concurrency, timezones, cancellation/reschedule/no-show and browser workflow. Do not activate appointment reminders before acceptance.",
+      "files": [
+        "app/admin/operations.server.ts",
+        "app/admin/work.tsx",
+        "context-vault/Feature Ledger.md"
+      ]
+    },
+    {
+      "order": 2,
+      "action": "Keep case reminder adapter, private documents and production rollout separately gated. Follow application recovery and deployment runbooks; Resend remains the planned email provider.",
+      "files": [
+        "docs/APPLICATION-WORKFLOWS.md",
+        "deploy/CRM-DEPLOYMENT.md"
+      ]
+    }
+  ],
+  "knownRisks": [
+    "Appointment/case reminders remain disabled until CAL-01/CASE-01 acceptance; external provider delivery is not configured.",
+    "Crash-left cycle/lead locks fail closed; recovery requires stopping their owners before targeted operator removal. No expiry takeover.",
+    "Task creation/change audit acknowledgments can be ambiguous; inspect recorded task ID/current version before retrying to avoid duplicate work.",
+    "Reminder inbox scans 25 stored records per page; task lists still cap at 100. Recurrence/escalation/snooze and provider outbox remain follow-up features.",
+    "Runtime health is stale after three minutes without a recorded cycle; a long cycle or delayed clock can also cause stale status. No external alerting provider is configured.",
+    "VPS deployment, Nginx/TLS/PM2 reboot smoke checks and production worker activation remain unperformed.",
+    "Development branch still contains unaccepted calendar/documents/team/reporting modules; whole-branch main merge is gated.",
+    "Application ownership transfer is multi-record and not transactional; an interrupted handoff can leave metadata ahead of the lead owner. Existing current-lead scope checks hide records from the wrong counselor; retry/reconciliation still needs feature acceptance."
+  ],
+  "externalState": {
+    "database": "proconsulting",
+    "ghostImportedPosts": 30,
+    "ghostImportedPages": 1,
+    "postPublicationState": "draft",
+    "blogProvider": "Ghost unchanged",
+    "productionDeployment": "not performed",
+    "workerOnVPS": "not started",
+    "ownerPassword": "owner must set via Appwrite Console",
+    "gitBranch": "codex/crm-workspace",
+    "integratedUpstream": "origin/main through 0397d6d; TOEFL and service-location pages preserved",
+    "githubCheckpoint": "CASE-01 acceptance checkpoint on codex/crm-workspace; main unchanged; inspect branch Git log for exact commit",
+    "mainMergePolicy": "User authorizes feature-tested merges with rollback references. The current development branch still includes unaccepted modules, so no whole-branch main merge has been performed.",
+    "rollbackReference": "rollback/main-2026-10-29-407977c preserves the existing main baseline for release recovery",
+    "scheduleIndex": "posts schedule(status,publishedAt) available; live due query passed read-only with zero due posts",
+    "publishingWorker": "Dedicated opt-in runner added; not activated on VPS",
+    "browserTestData": "Synthetic built-app CASE-01 browser acceptance passed; preview stopped; production records untouched",
+    "mediaSchema": "Private media collection/attributes/index provisioned; published defaults false (live default check passed)",
+    "mediaStorage": "Private bucket config and real disposable file/metadata round trip verified; synthetic resources removed",
+    "nginx": "Bootstrap and HTTPS templates prepared; target-server validation not performed",
+    "reminderSchema": "Notification source/version/due fields, unread=false default and private worker_health collection provisioned",
+    "reminderStorageCheck": "Private synthetic notification/health CRUD, indexed queries and anonymous denial passed; both records removed",
+    "reminderWorker": "Due-task-only runner verified locally, including actual synthetic CLI and SIGTERM idle exit; never activated on VPS",
+    "caseSchema": "Read-only cases setup preview completed; no schema changes applied"
+  },
+  "checks": [
+    {
+      "command": "npm run typecheck",
+      "status": "passed",
+      "exitCode": 0,
+      "checkedAt": "2026-11-07T05:02:54.068Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-nQXt15/typecheck.log"
+    },
+    {
+      "command": "npm run test",
+      "status": "passed",
+      "exitCode": 0,
+      "checkedAt": "2026-11-07T05:02:55.057Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-nQXt15/test.log"
+    },
+    {
+      "command": "npm run build",
+      "status": "passed",
+      "exitCode": 0,
+      "checkedAt": "2026-11-07T05:02:59.997Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-nQXt15/build.log"
+    }
+  ],
+  "updatedAt": "2026-11-07T05:03:28.884Z",
+  "verifiedSourceFingerprint": "7dc5b830443fbc922363879241386933f666bc6fbc4966418ad703acce420fa3"
+}

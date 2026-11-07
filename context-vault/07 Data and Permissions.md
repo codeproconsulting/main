@@ -51,3 +51,7 @@ Lead reassignment now transfers every linked application, including terminal rec
 ## CASE-01 acceptance — 7 November 2026
 
 CASE-01 locally accepted: both service forms require appropriate identifying fields/destination and an active CRM assignee; stage choices match service and existing service is fixed. Keyed forms refresh saved values on navigation/version change; missing records return 404. Focused tests cover permissions, stale forms, independent records, audit failures, ambiguous writes, paginated handoff and interrupted-transfer retry. Actual built-app browser exercised both service creations, deadline normalization/display, independent list states, fixed service and second-tab stale rejection. Existing private cases schema checked read-only. Production rollout and case-reminder adapter remain separate gates. See `docs/APPLICATION-WORKFLOWS.md` and `tests/manual/CASE-01-browser.md`.
+
+## CAL-01 appointment acceptance
+
+Lead authorization remains authoritative during partial appointment transfers. Already moved records reserve the target slot, but the receiving counselor cannot read them until the lead transfers. Pending audit intents identify ambiguous saves. Retrying a handoff skips version bumps for appointments already moved.

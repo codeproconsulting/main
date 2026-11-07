@@ -8,7 +8,7 @@ let vite,crm,notices,stores,failAudit,afterTaskRead;
 const reply=(value,status=200)=>new Response(JSON.stringify(value),{status,headers:{'Content-Type':'application/json'}});
 const rejects=status=>error=>error instanceof Response&&error.status===status;
 function reset(){
- stores={cases:new Map(),leads:new Map([['lead-one',{$id:'lead-one',owner:'counselor-one',stage:'New',version:1}]]),tasks:new Map([['task-one',{$id:'task-one',leadId:'lead-one',owner:'counselor-one',title:'Synthetic task',status:'Open',dueAt:'2030-01-01T11:00:00.000Z',version:1}]]),staff:new Map([['counselor-one',staff('counselor')],['counselor-two',{$id:'counselor-two',name:'Synthetic two',role:'counselor',active:true}]]),notifications:new Map([['notice-one',{$id:'notice-one',recipient:'counselor-one',entityId:'lead-one',kind:'task',sourceId:'task-one',sourceVersion:1,dueAt:'2030-01-01T11:00:00.000Z',title:'Stored title',body:'Stored body',read:false}]]),activities:new Map(),worker_health:new Map()};failAudit=false;afterTaskRead=null;
+ stores={appointments:new Map(),cases:new Map(),leads:new Map([['lead-one',{$id:'lead-one',owner:'counselor-one',stage:'New',version:1}]]),tasks:new Map([['task-one',{$id:'task-one',leadId:'lead-one',owner:'counselor-one',title:'Synthetic task',status:'Open',dueAt:'2030-01-01T11:00:00.000Z',version:1}]]),staff:new Map([['counselor-one',staff('counselor')],['counselor-two',{$id:'counselor-two',name:'Synthetic two',role:'counselor',active:true}]]),notifications:new Map([['notice-one',{$id:'notice-one',recipient:'counselor-one',entityId:'lead-one',kind:'task',sourceId:'task-one',sourceVersion:1,dueAt:'2030-01-01T11:00:00.000Z',title:'Stored title',body:'Stored body',read:false}]]),activities:new Map(),worker_health:new Map()};failAudit=false;afterTaskRead=null;
 }
 before(async()=>{
  Object.assign(process.env,{NODE_ENV:'test',APPWRITE_ENDPOINT:'http://127.0.0.1/v1',APPWRITE_PROJECT_ID:'synthetic',APPWRITE_API_KEY:'synthetic',APPWRITE_DATABASE_ID:'synthetic'});
@@ -17,7 +17,7 @@ before(async()=>{
   const url=new URL(input),[,collection,id]=url.pathname.match(/\/collections\/(\w+)\/documents(?:\/([^/]+))?$/)||[],store=stores[collection];if(!store)throw new Error('Unexpected collection');const method=options.method||'GET',payload=options.body?JSON.parse(options.body):null;
   if(method==='GET'){
    if(id){const response=store.has(id)?reply(store.get(id)):reply({},404);if(collection==='tasks'&&afterTaskRead){const fn=afterTaskRead;afterTaskRead=null;fn();}return response;}
-   let documents=[...store.values()];for(const q of url.searchParams.getAll('queries[]').map(JSON.parse)){if(q.method==='equal')documents=documents.filter(d=>q.values.includes(d[q.attribute]));if(q.method==='cursorAfter'){const index=documents.findIndex(d=>d.$id===q.values[0]);documents=documents.slice(index+1);}}const limit=url.searchParams.getAll('queries[]').map(JSON.parse).find(q=>q.method==='limit')?.values[0]??100;return reply({documents:documents.slice(0,limit),total:documents.length});
+   let documents=[...store.values()];for(const q of url.searchParams.getAll('queries[]').map(JSON.parse)){if(q.method==='equal')documents=documents.filter(d=>q.values.includes(d[q.attribute]));if(q.method==='orderAsc')documents.sort((a,b)=>String(a[q.attribute]).localeCompare(String(b[q.attribute])));if(q.method==='cursorAfter'){const index=documents.findIndex(d=>d.$id===q.values[0]);documents=documents.slice(index+1);}}const limit=url.searchParams.getAll('queries[]').map(JSON.parse).find(q=>q.method==='limit')?.values[0]??100;return reply({documents:documents.slice(0,limit),total:documents.length});
   }
   if(method==='POST'){if(collection==='activities'&&failAudit)return reply({},503);assert.deepEqual(payload.permissions,[]);const record={...payload.data,$id:payload.documentId};store.set(record.$id,record);return reply(record);}
   if(method==='PATCH'){if(!store.has(id))return reply({},404);const record={...store.get(id),...payload.data};store.set(id,record);return reply(record);}
@@ -125,4 +125,158 @@ test('interrupted handoff retains old lead scope and retry reconciles applicatio
 test('application completeness is enforced server-side for each service and requires an active assignee',async()=>{
  reset();const operations=await vite.ssrLoadModule('/app/admin/operations.server.ts');for(const changes of [{institution:''},{country:''},{course:''}])await assert.rejects(()=>operations.saveCase(staff('counselor'),applicationForm(changes)),rejects(400));
  const visa=await operations.saveCase(staff('counselor'),applicationForm({kind:'Immigration',course:''}));assert.equal(visa.course,'');stores.leads.get('lead-one').owner='';await assert.rejects(()=>operations.saveCase(staff('manager'),applicationForm()),rejects(400));stores.leads.get('lead-one').owner='counselor-one';stores.staff.get('counselor-one').active=false;await assert.rejects(()=>operations.saveCase(staff('manager'),applicationForm()),rejects(403));
+});
+
+function bookingForm(changes = {}) {
+ const form = new FormData();
+ for (const [key, value] of Object.entries({ leadId: 'lead-one', title: 'Synthetic consultation', startsAt: '2030-02-01T10:00:00+05:00', endsAt: '2030-02-01T11:00:00+05:00', status: 'Booked', ...changes })) form.set(key, String(value));
+ return form;
+}
+function handoffForm() {
+ const form = new FormData();
+ for (const [key, value] of Object.entries({version:'1', stage:'New', priority:'Normal', owner:'counselor-two', reason:'Synthetic handoff'})) form.set(key, value);
+ return form;
+}
+
+test('appointment conflicts serialize across different leads for one counselor and allow adjacent slots', async () => {
+ reset();
+ const operations = await vite.ssrLoadModule('/app/admin/operations.server.ts');
+ stores.leads.set('second', {$id:'second',owner:'counselor-one'});
+ const results = await Promise.allSettled([
+  operations.saveAppointment(staff('counselor'), bookingForm()),
+  operations.saveAppointment(staff('counselor'), bookingForm({leadId:'second',startsAt:'2030-02-01T05:30:00Z',endsAt:'2030-02-01T06:30:00Z'})),
+ ]);
+ assert.equal(results[0].value.startsAt,'2030-02-01T05:00:00.000Z');
+ assert.equal(results[1].reason.status,409);
+ const adjacent = await operations.saveAppointment(staff('counselor'), bookingForm({leadId:'second',startsAt:'2030-02-01T06:00:00Z',endsAt:'2030-02-01T07:00:00Z'}));
+ assert.equal(adjacent.status,'Booked');
+ stores.leads.set('third',{$id:'third',owner:'counselor-two'});
+ const other = await operations.saveAppointment(staff('manager'),bookingForm({leadId:'third'}));
+ assert.equal(other.owner,'counselor-two');
+});
+
+test('calendar conflict checks include records after the first page and exclude terminal bookings', async () => {
+ reset();
+ const operations = await vite.ssrLoadModule('/app/admin/operations.server.ts');
+ for (let i=0;i<100;i++) stores.appointments.set('old-'+i,{$id:'old-'+i,owner:'counselor-one',status:'Cancelled'});
+ stores.appointments.set('zz-late',{$id:'zz-late',owner:'counselor-one',status:'Booked',startsAt:'2030-02-01T05:30:00Z',endsAt:'2030-02-01T06:30:00Z'});
+ await assert.rejects(()=>operations.saveAppointment(staff('counselor'),bookingForm()),rejects(409));
+ stores.appointments.get('zz-late').status='Completed';
+ assert.equal((await operations.saveAppointment(staff('counselor'),bookingForm())).status,'Booked');
+});
+
+test('appointment edits enforce timezone dates, versions, outcome timing and reasons', async () => {
+ reset();
+ const operations = await vite.ssrLoadModule('/app/admin/operations.server.ts');
+ for (const changes of [{startsAt:'2030-02-30T05:00:00Z'}, {startsAt:'2030-02-01T05:00'}, {endsAt:'2030-02-01T05:00:00Z'}, {status:'Cancelled'}]) {
+  await assert.rejects(()=>operations.saveAppointment(staff('counselor'),bookingForm(changes)),rejects(400));
+ }
+ const created = await operations.saveAppointment(staff('counselor'),bookingForm());
+ const id=created.$id;
+ await assert.rejects(()=>operations.saveAppointment(staff('counselor'),bookingForm({id,version:1,status:'No show',reason:'Synthetic reason'})),rejects(400));
+ const moved={id,version:1,startsAt:'2030-02-01T07:00:00Z',endsAt:'2030-02-01T08:00:00Z'};
+ await assert.rejects(()=>operations.saveAppointment(staff('counselor'),bookingForm(moved)),rejects(400));
+ assert.equal((await operations.saveAppointment(staff('counselor'),bookingForm({...moved,reason:'Synthetic reschedule'}))).version,2);
+ await assert.rejects(()=>operations.saveAppointment(staff('counselor'),bookingForm(moved)),rejects(409));
+ await assert.rejects(()=>operations.saveAppointment(staff('counselor'),bookingForm({...moved,version:2,status:'Cancelled'})),rejects(400));
+ const cancelled=await operations.saveAppointment(staff('counselor'),bookingForm({...moved,version:2,status:'Cancelled',reason:'Synthetic cancellation'}));
+ assert.equal(cancelled.status,'Cancelled');
+ await assert.rejects(()=>operations.saveAppointment(staff('counselor'),bookingForm({...moved,version:3})),rejects(400));
+ assert.equal((await operations.saveAppointment(staff('counselor'),bookingForm({...moved,id:'',version:''}))).status,'Booked');
+ const past={startsAt:'2020-01-01T05:00:00Z',endsAt:'2020-01-01T06:00:00Z'};
+ const pastRecord=await operations.saveAppointment(staff('counselor'),bookingForm(past));
+ const noShow=await operations.saveAppointment(staff('counselor'),bookingForm({...past,id:pastRecord.$id,version:1,status:'No show',reason:'Synthetic outcome'}));
+ assert.equal(noShow.status,'No show');
+});
+
+test('appointment permissions recheck current ownership after waiting for the lead lock', async () => {
+ reset();
+ const operations = await vite.ssrLoadModule('/app/admin/operations.server.ts');
+ await assert.rejects(()=>operations.saveAppointment(staff('editor'),bookingForm()),rejects(403));
+ stores.staff.get('counselor-one').active=false;
+ await assert.rejects(()=>operations.saveAppointment(staff('manager'),bookingForm()),rejects(403));
+ stores.staff.get('counselor-one').active=true;
+ const created=await operations.saveAppointment(staff('counselor'),bookingForm());
+ stores.leads.set('other',{$id:'other',owner:'counselor-one'});
+ await assert.rejects(()=>operations.saveAppointment(staff('counselor'),bookingForm({leadId:'other',id:created.$id,version:1})),rejects(403));
+ let release;
+ const gate=new Promise(resolve=>release=resolve);
+ const transfer=crm.serialized('lead:lead-one',async()=>{await gate;stores.leads.get('lead-one').owner='counselor-two';});
+ const pending=operations.saveAppointment(staff('counselor'),bookingForm());
+ release();await transfer;
+ await assert.rejects(()=>pending,rejects(403));
+ assert.equal(stores.appointments.size,1);
+});
+
+test('appointment writes require audit intent and preserve recovery evidence after lost acknowledgment', async () => {
+ reset();
+ const operations = await vite.ssrLoadModule('/app/admin/operations.server.ts');
+ failAudit=true;
+ await assert.rejects(()=>operations.saveAppointment(staff('counselor'),bookingForm()));
+ assert.equal(stores.appointments.size,0);
+ failAudit=false;
+ const transport=globalThis.fetch;
+ globalThis.fetch=async(input,options)=>{
+  const result=await transport(input,options);
+  if(options?.method==='POST'&&String(input).includes('/collections/appointments/documents'))throw new Error('Synthetic lost acknowledgment');
+  return result;
+ };
+ try{await assert.rejects(()=>operations.saveAppointment(staff('counselor'),bookingForm()));}finally{globalThis.fetch=transport;}
+ const event=JSON.parse([...stores.activities.values()][0].details);
+ assert.equal(event.state,'pending');assert.ok(stores.appointments.has(event.appointmentId));
+ await assert.rejects(()=>operations.saveAppointment(staff('counselor'),bookingForm()),rejects(409));
+});
+
+test('handoff preflight rejects collisions before writes and transfers appointments after the conflict clears', async () => {
+ reset();
+ const operations = await vite.ssrLoadModule('/app/admin/operations.server.ts');
+ const created=await operations.saveAppointment(staff('counselor'),bookingForm());
+ stores.leads.set('second',{$id:'second',owner:'counselor-two'});
+ const conflict=await operations.saveAppointment(staff('manager'),bookingForm({leadId:'second'}));
+ const before=stores.activities.size;
+ await assert.rejects(()=>crm.updateLead(staff('manager'),'lead-one',handoffForm()),rejects(409));
+ assert.equal(stores.activities.size,before);
+ assert.equal(stores.leads.get('lead-one').owner,'counselor-one');
+ assert.equal(stores.appointments.get(created.$id).version,1);
+ await operations.saveAppointment(staff('manager'),bookingForm({leadId:'second',id:conflict.$id,version:1,status:'Cancelled',reason:'Synthetic cancellation'}));
+ await crm.updateLead(staff('manager'),'lead-one',handoffForm());
+ const assignee=stores.staff.get('counselor-two');
+ assert.equal((await operations.scopedRecords(staff('counselor'),'appointments')).length,0);
+ assert.ok((await operations.scopedRecords(assignee,'appointments')).some(a=>a.$id===created.$id));
+ assert.equal(stores.appointments.get(created.$id).version,2);
+ await assert.rejects(()=>operations.saveAppointment(assignee,bookingForm({id:created.$id,version:1})),rejects(409));
+});
+
+test('interrupted calendar handoff reserves moved slots and retries without bumping already moved versions', async () => {
+ reset();
+ const operations = await vite.ssrLoadModule('/app/admin/operations.server.ts');
+ await operations.saveAppointment(staff('counselor'),bookingForm());
+ await operations.saveAppointment(staff('counselor'),bookingForm({startsAt:'2030-02-02T05:00:00Z',endsAt:'2030-02-02T06:00:00Z'}));
+ const [a,b]=[...stores.appointments.values()].sort((x,y)=>x.$id.localeCompare(y.$id));
+ const transport=globalThis.fetch;
+ globalThis.fetch=async(input,options)=>options?.method==='PATCH'&&String(input).endsWith('/appointments/documents/'+b.$id)?reply({},503):transport(input,options);
+ try{await assert.rejects(()=>crm.updateLead(staff('manager'),'lead-one',handoffForm()));}finally{globalThis.fetch=transport;}
+ assert.equal(stores.leads.get('lead-one').owner,'counselor-one');
+ assert.equal(stores.appointments.get(a.$id).owner,'counselor-two');
+ assert.equal((await operations.scopedRecords(stores.staff.get('counselor-two'),'appointments')).length,0);
+ await assert.rejects(()=>operations.saveAppointment(staff('manager'),bookingForm({id:a.$id,version:2})),rejects(409));
+ stores.leads.set('target',{$id:'target',owner:'counselor-two'});
+ await assert.rejects(()=>operations.saveAppointment(staff('manager'),bookingForm({leadId:'target',startsAt:a.startsAt,endsAt:a.endsAt})),rejects(409));
+ await crm.updateLead(staff('manager'),'lead-one',handoffForm());
+ assert.equal(stores.appointments.get(a.$id).version,2);
+ assert.equal(stores.appointments.get(b.$id).owner,'counselor-two');
+});
+
+test('booked appointments prevent unassignment until an outcome is recorded', async () => {
+ reset();
+ const operations = await vite.ssrLoadModule('/app/admin/operations.server.ts');
+ const past = {startsAt:'2020-01-01T05:00:00Z',endsAt:'2020-01-01T06:00:00Z'};
+ const appointment = await operations.saveAppointment(staff('counselor'),bookingForm(past));
+ const unassign = handoffForm();unassign.set('owner','');
+ await assert.rejects(()=>crm.updateLead(staff('manager'),'lead-one',unassign),rejects(400));
+ assert.equal(stores.leads.get('lead-one').owner,'counselor-one');
+ await operations.saveAppointment(staff('counselor'),bookingForm({...past,id:appointment.$id,version:1,status:'Completed'}));
+ await crm.updateLead(staff('manager'),'lead-one',unassign);
+ assert.equal(stores.appointments.get(appointment.$id).owner,'');
+ assert.equal(stores.appointments.get(appointment.$id).status,'Completed');
 });

@@ -45,3 +45,7 @@ Application email provider: Resend. Activation requires verified sender DNS/doma
 ## CASE-01 acceptance — 7 November 2026
 
 CASE-01 locally accepted: both service forms require appropriate identifying fields/destination and an active CRM assignee; stage choices match service and existing service is fixed. Keyed forms refresh saved values on navigation/version change; missing records return 404. Focused tests cover permissions, stale forms, independent records, audit failures, ambiguous writes, paginated handoff and interrupted-transfer retry. Actual built-app browser exercised both service creations, deadline normalization/display, independent list states, fixed service and second-tab stale rejection. Existing private cases schema checked read-only. Production rollout and case-reminder adapter remain separate gates. See `docs/APPLICATION-WORKFLOWS.md` and `tests/manual/CASE-01-browser.md`.
+
+## CAL-01 appointment acceptance
+
+The existing private appointments collection accepted owner and lead query shapes in a read-only check. CAL-01 code and local tests are ready for the OPS-01 production smoke checklist. Appointment reminder delivery, external calendar sync and availability features have separate gates.

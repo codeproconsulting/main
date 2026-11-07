@@ -2,10 +2,12 @@
 import http from 'node:http';
 import {spawn} from 'node:child_process';
 import {remindDueTasks} from '../../scripts/remind-tasks.mjs';
-const reminders=(process.argv.includes('--reminders')||process.argv.includes('--cases')),role=reminders?'manager':'publisher',userId=`synthetic-${role}`;
-const stores=Object.fromEntries(['posts','revisions','activities','locks','staff','media','leads','tasks','notifications','worker_health','cases'].map(k=>[k,new Map()]));
-stores.staff.set(userId,{$id:userId,name:reminders?'Synthetic Manager':'Synthetic Publisher',role,active:true,teamId:''});
-if(reminders){
+const reminders=process.argv.includes('--reminders');
+const crm=reminders||process.argv.includes('--cases')||process.argv.includes('--calendar');
+const role=crm?'manager':'publisher',userId=`synthetic-${role}`;
+const stores=Object.fromEntries(['posts','revisions','activities','locks','staff','media','leads','tasks','notifications','worker_health','cases','appointments'].map(k=>[k,new Map()]));
+stores.staff.set(userId,{$id:userId,name:crm?'Synthetic Manager':'Synthetic Publisher',role,active:true,teamId:''});
+if(crm){
  stores.leads.set('synthetic-lead',{$id:'synthetic-lead',$createdAt:new Date().toISOString(),name:'Synthetic enquiry',email:'lead@example.invalid',phone:'000',service:'Education',source:'Isolated preview',country:'',stage:'New',owner:userId,priority:'Normal',nextFollowUp:'',details:'{}',version:1});
  for(const [id,title]of [['reschedule','Review course shortlist'],['cancel','Confirm duplicate appointment'],['complete','Call to confirm documents']])stores.tasks.set(id,{$id:id,leadId:'synthetic-lead',owner:userId,title,dueAt:'2020-01-01T10:00:00.000Z',status:'Open',outcome:'',version:1});
 }
@@ -20,7 +22,7 @@ const server=http.createServer(async(request,response)=>{
   if(url.pathname==='/v1/account/sessions/email'&&request.method==='POST'){if(body.email!==`${role}@example.invalid`||body.password!=='synthetic-preview-password')return send(response,401,{});return send(response,201,{secret:'synthetic-preview-session',expire:'2030-01-01T00:00:00.000Z'});}
   if(url.pathname==='/v1/account'){if(request.headers['x-appwrite-session']!=='synthetic-preview-session')return send(response,401,{});return send(response,200,{$id:userId});}
   if(url.pathname==='/v1/account/sessions/current'&&request.method==='DELETE'){response.writeHead(204);return response.end();}
-  const match=url.pathname.match(/^\/v1\/databases\/preview\/collections\/(posts|revisions|activities|locks|staff|media|leads|tasks|notifications|worker_health|cases)\/documents(?:\/([^/]+))?$/);if(!match)return send(response,404,{});
+  const match=url.pathname.match(/^\/v1\/databases\/preview\/collections\/(posts|revisions|activities|locks|staff|media|leads|tasks|notifications|worker_health|cases|appointments)\/documents(?:\/([^/]+))?$/);if(!match)return send(response,404,{});
   const [,collection,id]=match,store=stores[collection];
   if(request.method==='GET'){if(id)return store.has(id)?send(response,200,store.get(id)):send(response,404,{});let documents=[...store.values()];for(const q of url.searchParams.getAll('queries[]').map(JSON.parse)){if(q.method==='equal')documents=documents.filter(d=>q.values.includes(d[q.attribute]));if(q.method==='lessThanEqual')documents=documents.filter(d=>d[q.attribute]<=q.values[0]);if(q.method==='orderAsc')documents.sort((a,b)=>String(a[q.attribute]??'').localeCompare(String(b[q.attribute]??'')));if(q.method==='orderDesc')documents.sort((a,b)=>String(b[q.attribute]??'').localeCompare(String(a[q.attribute]??'')));}const total=documents.length;const queries=url.searchParams.getAll('queries[]').map(JSON.parse),offset=queries.find(q=>q.method==='offset')?.values[0]||0,limit=queries.find(q=>q.method==='limit')?.values[0]||100;const cursor=queries.find(q=>q.method==='cursorAfter')?.values[0];if(cursor)documents=documents.slice(documents.findIndex(d=>d.$id===cursor)+1);return send(response,200,{documents:documents.slice(offset,offset+limit),total});}
   if(request.method==='POST'){if(store.has(body.documentId))return send(response,409,{});const doc={...body.data,$id:body.documentId,$createdAt:new Date().toISOString(),$updatedAt:new Date().toISOString()};store.set(doc.$id,doc);return send(response,201,doc);}

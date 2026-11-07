@@ -15,8 +15,8 @@ Only **one feature** is the active session focus. “Code staged” means implem
 | MEDIA-01 | Editorial image uploads/publication | Verified locally + isolated Appwrite | Upload/permission/failure tests and browser toggle flow pass; private schema/default and real disposable storage check verified. Public website route rollout and VPS checks remain separate |
 | REMIND-01 | In-app background reminders | Verified locally + isolated Appwrite schema | Due-task-only delivery, retries/dedup, current-scope inbox, task lifecycle, health and fail-closed recovery tested. VPS activation pending; appointment/case/provider reminders gated |
 | CASE-01 | Applications and immigration cases | Verified locally | Required fields/service stages, scoped lifecycle, handoff/recovery and built-app browser acceptance pass; VPS rollout and case reminder adapter pending |
-| CAL-01 | Appointment booking | **Next session; code staged** | Conflict/concurrency, rescheduling, timezones, cancellation and no-show tests |
-| DOC-01 | Private client documents | Code staged | Upload limits/signatures, antivirus behavior, authorized streaming, review/expiry/checklists, orphan reconciliation |
+| CAL-01 | Appointment booking | Verified locally | Conflict, timezone, outcome, scoped handoff and recovery tests plus built-app browser acceptance passed. Production rollout and reminder adapter pending |
+| DOC-01 | Private client documents | **Next session; code staged** | Upload limits/signatures, antivirus behavior, authorized streaming, review/expiry/checklists, orphan reconciliation |
 | TEAM-01 | Team roles and deactivation | Code staged | Self/last-owner protections, lead transfer, session revocation, profile persistence failure tests |
 | REPORT-01 | Operational counts and CSV export | Code staged | Scope, pagination/caps, totals, export audit and formula handling |
 | CRM-02 | Advanced lead operations | Planned | Contact/enquiry separation, duplicate review/merge, manual creation, saved views, bulk actions, phone/email search |

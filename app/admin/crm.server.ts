@@ -1,3 +1,4 @@
+import { appointmentCalendarLock, appointmentsForHandoff } from "./calendar.server";
 import { createHash, randomUUID } from "node:crypto";
 import { AppwriteError, appwrite, createDocument, getDocument, listDocuments, query, updateDocument } from "~/lib/appwrite.server";
 import { canAccessLead, canManage, canUseCRM, stages, type Activity, type Lead, type Staff, type Task } from "./domain";
@@ -80,26 +81,34 @@ export async function updateLead(staff: Staff, id: string, form: FormData) {
       if (!reason) throw new Response("A reason is required for closure or reassignment.", { status: 400 });
     }
     const changes = { stage, owner, priority, nextFollowUp: dateField(field(form, "nextFollowUp")), version: lead.version + 1 };
-    // Record intent before mutation; an unavailable audit store prevents unaudited writes.
-    const event = await audit(staff, id, "lead", "Lead update requested", { before: { stage: lead.stage, owner: lead.owner, priority: lead.priority, nextFollowUp: lead.nextFollowUp }, after: changes, reason, state: "pending" });
-    if (owner !== lead.owner) {
-      let cursor: string | undefined;
-      do {
-        const page = await listDocuments<Task>("tasks", [query("equal", "leadId", [id]), query("equal", "status", ["Open"]), query("limit", undefined, [100]), ...(cursor ? [query("cursorAfter", undefined, [cursor])] : [])]);
-        for (const task of page.documents) await updateDocument<Task>("tasks", task.$id, { owner, version: task.version + 1 });
-        cursor = page.documents.length === 100 ? page.documents[99].$id : undefined;
-      } while (cursor);
-      // Transfer every linked application, including closed records, under the lead lock.
-      cursor=undefined;
-      do {
-        const page:{documents:{$id:string;version:number}[];total:number}=await listDocuments<{ $id:string; version:number }>("cases",[query("equal","leadId",[id]),query("orderAsc","$id"),query("limit",undefined,[100]),...(cursor?[query("cursorAfter",undefined,[cursor])]:[])]);
-        for(const application of page.documents)await updateDocument("cases",application.$id,{owner,version:application.version+1});
-        cursor=page.documents.length===100?page.documents[99].$id:undefined;
-      }while(cursor);
-    }
-    const updated = await updateDocument<Lead>("leads", id, changes);
-    await updateDocument("activities", event.$id, { event: "Lead updated" });
-    return updated;
+    const transferring = owner !== lead.owner;
+    const save = async () => {
+      const appointments = transferring ? await appointmentsForHandoff(id, owner) : [];
+      // Record intent before mutation; an unavailable audit store prevents unaudited writes.
+      const event = await audit(staff, id, "lead", "Lead update requested", { before: { stage: lead.stage, owner: lead.owner, priority: lead.priority, nextFollowUp: lead.nextFollowUp }, after: changes, reason, state: "pending" });
+      if (transferring) {
+        let cursor: string | undefined;
+        do {
+          const page = await listDocuments<Task>("tasks", [query("equal", "leadId", [id]), query("equal", "status", ["Open"]), query("limit", undefined, [100]), ...(cursor ? [query("cursorAfter", undefined, [cursor])] : [])]);
+          for (const task of page.documents) await updateDocument<Task>("tasks", task.$id, { owner, version: task.version + 1 });
+          cursor = page.documents.length === 100 ? page.documents[99].$id : undefined;
+        } while (cursor);
+        // Transfer every linked application, including closed records, under the lead lock.
+        cursor=undefined;
+        do {
+          const page:{documents:{$id:string;version:number}[];total:number}=await listDocuments<{ $id:string; version:number }>("cases",[query("equal","leadId",[id]),query("orderAsc","$id"),query("limit",undefined,[100]),...(cursor?[query("cursorAfter",undefined,[cursor])]:[])]);
+          for(const application of page.documents)await updateDocument("cases",application.$id,{owner,version:application.version+1});
+          cursor=page.documents.length===100?page.documents[99].$id:undefined;
+        }while(cursor);
+      }
+      for (const appointment of appointments) {
+        if (appointment.owner !== owner) await updateDocument("appointments", appointment.$id, { owner, version: appointment.version + 1 });
+      }
+      const updated = await updateDocument<Lead>("leads", id, changes);
+      await updateDocument("activities", event.$id, { event: "Lead updated" });
+      return updated;
+    };
+    return transferring ? serialized(appointmentCalendarLock, save) : save();
   });
 }
 export async function addNote(staff: Staff, id: string, note: string) {

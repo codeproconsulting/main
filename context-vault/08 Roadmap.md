@@ -6,7 +6,7 @@ updated: 2026-10-29
 
 ## Current increment
 
-CMS-02, CMS-03, MEDIA-01 and REMIND-01 are verified locally (media/reminders also passed isolated real Appwrite checks). Start the next bounded **CAL-01** session, as specified in [[Session Wall]]. Keep one feature active, finish its acceptance checks, and record evidence before selecting another feature. [[Feature Ledger]] distinguishes staged modules from verified and planned work. General typecheck/tests/build checks do not close a feature automatically.
+CMS-02, CMS-03, MEDIA-01 and REMIND-01 are verified locally (media/reminders also passed isolated real Appwrite checks). Start the next bounded **DOC-01** session, as specified in [[Session Wall]]. Keep one feature active, finish its acceptance checks, and record evidence before selecting another feature. [[Feature Ledger]] distinguishes staged modules from verified and planned work. General typecheck/tests/build checks do not close a feature automatically.
 
 ## Next increments
 
@@ -18,3 +18,5 @@ CMS-02, CMS-03, MEDIA-01 and REMIND-01 are verified locally (media/reminders als
 6. WhatsApp/SMS/calendar/mailbox integrations, financial workflows, and a future client portal as separately configured features.
 
 The detailed requirements and acceptance gates remain in `docs/CRM-CMS-APPWRITE-IMPLEMENTATION-PLAN.md`. Progress is recorded in [[03 Implementation Status]] and [[Changes/2026-10-29]].
+
+CAL-01 appointment workflows are accepted locally. Private client document acceptance is next.
