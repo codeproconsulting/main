@@ -25,13 +25,13 @@
       "id": "CASE01-B",
       "description": "Lifecycle, stale edits, assignment transfer and browser workflow verified",
       "status": "pending",
-      "evidence": "Application lifecycle service tests now cover independent records, stale edits, invalid kind/stage/timezone, foreign lead binding, audit failure and lost acknowledgment. Ownership transfer/scoped listing and browser acceptance remain pending."
+      "evidence": "Paginated application handoff, former/new counselor scope and stale edit regressions pass. Kind-specific policies, interrupted-transfer recovery and browser acceptance remain pending."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Finish CASE-01 ownership transfer and scoped listing (case owner metadata currently remains stale on lead reassignment), education/immigration field/stage policies and browser acceptance. Keep the tested audit-first save and recovery regressions.",
+      "action": "Finish CASE-01 kind-specific stage/field policy, partial transfer failure/reconciliation tests and browser acceptance. Preserve paginated handoff and audit recovery checks.",
       "files": [
         "app/admin/operations.server.ts",
         "app/admin/work.tsx",
@@ -46,7 +46,8 @@
     "Reminder inbox scans 25 stored records per page; task lists still cap at 100. Recurrence/escalation/snooze and provider outbox remain follow-up features.",
     "Runtime health is stale after three minutes without a recorded cycle; a long cycle or delayed clock can also cause stale status. No external alerting provider is configured.",
     "VPS deployment, Nginx/TLS/PM2 reboot smoke checks and production worker activation remain unperformed.",
-    "Development branch still contains unaccepted cases/calendar/documents/team/reporting modules; whole-branch main merge is gated."
+    "Development branch still contains unaccepted cases/calendar/documents/team/reporting modules; whole-branch main merge is gated.",
+    "Application ownership transfer is multi-record and not transactional; an interrupted handoff can leave metadata ahead of the lead owner. Existing current-lead scope checks hide records from the wrong counselor; retry/reconciliation still needs feature acceptance."
   ],
   "externalState": {
     "database": "proconsulting",
@@ -77,24 +78,24 @@
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-06T07:51:27.554Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-yO2xw2/typecheck.log"
+      "checkedAt": "2026-11-07T04:52:48.143Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-jzIToI/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-06T07:51:28.381Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-yO2xw2/test.log"
+      "checkedAt": "2026-11-07T04:52:49.123Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-jzIToI/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-06T07:51:33.013Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-yO2xw2/build.log"
+      "checkedAt": "2026-11-07T04:52:54.447Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-jzIToI/build.log"
     }
   ],
-  "updatedAt": "2026-11-06T07:52:00.716Z",
-  "verifiedSourceFingerprint": "c4a734383a08cac78feed93a02aae572f8f468b3f0b892a8e77754ce26bafe68"
+  "updatedAt": "2026-11-07T04:53:15.289Z",
+  "verifiedSourceFingerprint": "0ea8d0d4c331dd0166df365cb7e8fcbc3fd097af7e9383d525fcedb6138d3917"
 }

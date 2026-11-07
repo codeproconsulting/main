@@ -17,7 +17,7 @@ before(async()=>{
   const url=new URL(input),[,collection,id]=url.pathname.match(/\/collections\/(\w+)\/documents(?:\/([^/]+))?$/)||[],store=stores[collection];if(!store)throw new Error('Unexpected collection');const method=options.method||'GET',payload=options.body?JSON.parse(options.body):null;
   if(method==='GET'){
    if(id){const response=store.has(id)?reply(store.get(id)):reply({},404);if(collection==='tasks'&&afterTaskRead){const fn=afterTaskRead;afterTaskRead=null;fn();}return response;}
-   let documents=[...store.values()];for(const q of url.searchParams.getAll('queries[]').map(JSON.parse)){if(q.method==='equal')documents=documents.filter(d=>q.values.includes(d[q.attribute]));if(q.method==='cursorAfter'){const index=documents.findIndex(d=>d.$id===q.values[0]);documents=documents.slice(index+1);}if(q.method==='limit')documents=documents.slice(0,q.values[0]);}return reply({documents,total:documents.length});
+   let documents=[...store.values()];for(const q of url.searchParams.getAll('queries[]').map(JSON.parse)){if(q.method==='equal')documents=documents.filter(d=>q.values.includes(d[q.attribute]));if(q.method==='cursorAfter'){const index=documents.findIndex(d=>d.$id===q.values[0]);documents=documents.slice(index+1);}}const limit=url.searchParams.getAll('queries[]').map(JSON.parse).find(q=>q.method==='limit')?.values[0]??100;return reply({documents:documents.slice(0,limit),total:documents.length});
   }
   if(method==='POST'){if(collection==='activities'&&failAudit)return reply({},503);assert.deepEqual(payload.permissions,[]);const record={...payload.data,$id:payload.documentId};store.set(record.$id,record);return reply(record);}
   if(method==='PATCH'){if(!store.has(id))return reply({},404);const record={...store.get(id),...payload.data};store.set(id,record);return reply(record);}
@@ -91,4 +91,22 @@ test('application lost write acknowledgment retains the committed version and pe
  globalThis.fetch=async(input,options)=>{const response=await transport(input,options);if(options?.method==='PATCH'&&String(input).includes('/collections/cases/'))throw new Error('Synthetic lost acknowledgment');return response;};
  try{await assert.rejects(()=>operations.saveCase(staff('counselor'),applicationForm({id:saved.$id,version:1,stage:'Submitted'})));}finally{globalThis.fetch=transport;}
  assert.equal(stores.cases.get(saved.$id).version,2);assert.ok([...stores.activities.values()].some(a=>JSON.parse(a.details).state==='pending'));await assert.rejects(()=>operations.saveCase(staff('counselor'),applicationForm({id:saved.$id,version:1})),rejects(409));
+});
+
+test('lead reassignment transfers application ownership/version and revokes former counselor listing and edits',async()=>{
+ reset();const operations=await vite.ssrLoadModule('/app/admin/operations.server.ts');const application=await operations.saveCase(staff('counselor'),applicationForm());
+ const transfer=new FormData();for(const [key,value]of Object.entries({version:'1',stage:'New',priority:'Normal',owner:'counselor-two',reason:'Synthetic handoff'}))transfer.set(key,value);
+ await crm.updateLead(staff('manager'),'lead-one',transfer);
+ assert.equal(stores.cases.get(application.$id).owner,'counselor-two');assert.equal(stores.cases.get(application.$id).version,2);
+ assert.equal((await operations.scopedRecords(staff('counselor'),'cases')).length,0);
+ const next=stores.staff.get('counselor-two');assert.equal((await operations.scopedRecords(next,'cases')).length,1);
+ await assert.rejects(()=>operations.saveCase(staff('counselor'),applicationForm({id:application.$id,version:2})),rejects(403));
+ await assert.rejects(()=>operations.saveCase(next,applicationForm({id:application.$id,version:1})),rejects(409));
+ assert.equal((await operations.saveCase(next,applicationForm({id:application.$id,version:2,stage:'Submitted'}))).version,3);
+});
+
+test('handoff transfers more than one page of applications including terminal stages',async()=>{
+ reset();for(let i=0;i<102;i++)stores.cases.set('case-'+i,{$id:'case-'+i,leadId:'lead-one',owner:'counselor-one',version:1,stage:'Withdrawn'});
+ const form=new FormData();for(const [key,value]of Object.entries({version:'1',stage:'New',priority:'Normal',owner:'counselor-two',reason:'Synthetic paginated handoff'}))form.set(key,value);
+ await crm.updateLead(staff('manager'),'lead-one',form);assert.equal(stores.cases.size,102);for(const row of stores.cases.values()){assert.equal(row.owner,'counselor-two');assert.equal(row.version,2);}
 });

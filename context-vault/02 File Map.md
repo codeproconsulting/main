@@ -80,3 +80,5 @@ Use [[Feature Ledger]] for actual acceptance state; this file map describes code
 - `docs/IN-APP-REMINDERS.md`: activation, scope, consistency limits, health, shutdown and operator recovery.
 
 CASE-01 audit changes: `app/admin/operations.server.ts` records application intents before mutation; `tests/reminder-workflow.test.mjs` includes application lifecycle/access/failure regressions.
+
+Application handoff: `app/admin/crm.server.ts` paginates linked cases on owner change; `tests/reminder-workflow.test.mjs` verifies access/version transfer beyond 100 records.

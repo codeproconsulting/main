@@ -33,11 +33,11 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
 | CASE01-A | Application saves recheck lead ownership inside the shared lock | passed | Added queued reassignment regression test; final check results recorded below. |
-| CASE01-B | Lifecycle, stale edits, assignment transfer and browser workflow verified | pending | Application lifecycle service tests now cover independent records, stale edits, invalid kind/stage/timezone, foreign lead binding, audit failure and lost acknowledgment. Ownership transfer/scoped listing and browser acceptance remain pending. |
+| CASE01-B | Lifecycle, stale edits, assignment transfer and browser workflow verified | pending | Paginated application handoff, former/new counselor scope and stale edit regressions pass. Kind-specific policies, interrupted-transfer recovery and browser acceptance remain pending. |
 
 ## Exact next actions
 
-1. Finish CASE-01 ownership transfer and scoped listing (case owner metadata currently remains stale on lead reassignment), education/immigration field/stage policies and browser acceptance. Keep the tested audit-first save and recovery regressions.
+1. Finish CASE-01 kind-specific stage/field policy, partial transfer failure/reconciliation tests and browser acceptance. Preserve paginated handoff and audit recovery checks.
    Files: `app/admin/operations.server.ts`, `app/admin/work.tsx`, `app/admin/crm.server.ts`
 
 ## Known risks and unfinished work
@@ -49,12 +49,13 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 - Runtime health is stale after three minutes without a recorded cycle; a long cycle or delayed clock can also cause stale status. No external alerting provider is configured.
 - VPS deployment, Nginx/TLS/PM2 reboot smoke checks and production worker activation remain unperformed.
 - Development branch still contains unaccepted cases/calendar/documents/team/reporting modules; whole-branch main merge is gated.
+- Application ownership transfer is multi-record and not transactional; an interrupted handoff can leave metadata ahead of the lead owner. Existing current-lead scope checks hide records from the wrong counselor; retry/reconciliation still needs feature acceptance.
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-06T07:51:27.554Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-yO2xw2/typecheck.log`
-- **passed**: `npm run test` (2026-11-06T07:51:28.381Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-yO2xw2/test.log`
-- **passed**: `npm run build` (2026-11-06T07:51:33.013Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-yO2xw2/build.log`
+- **passed**: `npm run typecheck` (2026-11-07T04:52:48.143Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-jzIToI/typecheck.log`
+- **passed**: `npm run test` (2026-11-07T04:52:49.123Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-jzIToI/test.log`
+- **passed**: `npm run build` (2026-11-07T04:52:54.447Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-jzIToI/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 

@@ -89,6 +89,13 @@ export async function updateLead(staff: Staff, id: string, form: FormData) {
         for (const task of page.documents) await updateDocument<Task>("tasks", task.$id, { owner, version: task.version + 1 });
         cursor = page.documents.length === 100 ? page.documents[99].$id : undefined;
       } while (cursor);
+      // Transfer every linked application, including closed records, under the lead lock.
+      cursor=undefined;
+      do {
+        const page:{documents:{$id:string;version:number}[];total:number}=await listDocuments<{ $id:string; version:number }>("cases",[query("equal","leadId",[id]),query("orderAsc","$id"),query("limit",undefined,[100]),...(cursor?[query("cursorAfter",undefined,[cursor])]:[])]);
+        for(const application of page.documents)await updateDocument("cases",application.$id,{owner,version:application.version+1});
+        cursor=page.documents.length===100?page.documents[99].$id:undefined;
+      }while(cursor);
     }
     const updated = await updateDocument<Lead>("leads", id, changes);
     await updateDocument("activities", event.$id, { event: "Lead updated" });
