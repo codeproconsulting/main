@@ -121,3 +121,8 @@ test('interrupted handoff retains old lead scope and retry reconciles applicatio
  assert.equal(stores.leads.get('lead-one').owner,'counselor-one');assert.ok([...stores.activities.values()].some(a=>JSON.parse(a.details).state==='pending'));const operations=await vite.ssrLoadModule('/app/admin/operations.server.ts');assert.equal((await operations.scopedRecords(stores.staff.get('counselor-two'),'cases')).length,0);
  await crm.updateLead(staff('manager'),'lead-one',form);for(const row of stores.cases.values())assert.equal(row.owner,'counselor-two');assert.equal(stores.leads.get('lead-one').owner,'counselor-two');
 });
+
+test('application completeness is enforced server-side for each service and requires an active assignee',async()=>{
+ reset();const operations=await vite.ssrLoadModule('/app/admin/operations.server.ts');for(const changes of [{institution:''},{country:''},{course:''}])await assert.rejects(()=>operations.saveCase(staff('counselor'),applicationForm(changes)),rejects(400));
+ const visa=await operations.saveCase(staff('counselor'),applicationForm({kind:'Immigration',course:''}));assert.equal(visa.course,'');stores.leads.get('lead-one').owner='';await assert.rejects(()=>operations.saveCase(staff('manager'),applicationForm()),rejects(400));stores.leads.get('lead-one').owner='counselor-one';stores.staff.get('counselor-one').active=false;await assert.rejects(()=>operations.saveCase(staff('manager'),applicationForm()),rejects(403));
+});

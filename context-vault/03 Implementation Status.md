@@ -93,3 +93,7 @@ Lead reassignment now transfers every linked application, including terminal rec
 ## CASE-01 service policy and recovery continuation
 
 Added service-specific stage choices to server validation and the application form: immigration excludes education offer/deposit/enrolment stages; Shortlisted remains for legacy intake compatibility. Existing application service cannot be changed; create a separate application instead. Added an interrupted multi-record handoff test: pending audit and old lead owner remain after failure, new counselor access stays blocked, and an intentional retry reconciles application owners. Browser acceptance and required-field completeness review remain open; CASE-01 is not complete.
+
+## CASE-01 acceptance — 7 November 2026
+
+CASE-01 locally accepted: both service forms require appropriate identifying fields/destination and an active CRM assignee; stage choices match service and existing service is fixed. Keyed forms refresh saved values on navigation/version change; missing records return 404. Focused tests cover permissions, stale forms, independent records, audit failures, ambiguous writes, paginated handoff and interrupted-transfer retry. Actual built-app browser exercised both service creations, deadline normalization/display, independent list states, fixed service and second-tab stale rejection. Existing private cases schema checked read-only. Production rollout and case-reminder adapter remain separate gates. See `docs/APPLICATION-WORKFLOWS.md` and `tests/manual/CASE-01-browser.md`.

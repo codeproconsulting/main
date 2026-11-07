@@ -84,3 +84,5 @@ CASE-01 audit changes: `app/admin/operations.server.ts` records application inte
 Application handoff: `app/admin/crm.server.ts` paginates linked cases on owner change; `tests/reminder-workflow.test.mjs` verifies access/version transfer beyond 100 records.
 
 `app/admin/domain.ts` exports `caseStagesFor`; `operations.server.ts` enforces service-stage compatibility and immutable service; `work.tsx` uses the same stage choices and refreshes selected service when navigating records.
+
+CASE-01 accepted workflow/recovery: `docs/APPLICATION-WORKFLOWS.md`; browser evidence: `tests/manual/CASE-01-browser.md`; fixture: `tests/helpers/cms-preview.mjs --cases`.

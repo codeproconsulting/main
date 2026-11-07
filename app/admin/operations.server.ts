@@ -12,6 +12,9 @@ export async function saveCase(staff:Staff,form:FormData){const id=field(form,"i
  const kind=field(form,"kind",30),stage=field(form,"stage",80);if(!["Education","Immigration"].includes(kind)||!caseStagesFor(kind).includes(stage))throw new Response("Invalid application type or stage",{status:400});
  if(current&&current.kind!==kind)throw new Response("Application service cannot be changed. Create a separate application for the other service.",{status:400});
  const payload={leadId,owner:lead.owner,kind,institution:field(form,"institution",300),course:field(form,"course",300),country:field(form,"country",150),intake:field(form,"intake",100),stage,deadline:dateField(field(form,"deadline",40)),notes:field(form,"notes",10000),version:(current?.version??0)+1};
+ if(!lead.owner)throw new Response("Assign the lead before creating or updating an application.",{status:400});
+ const assignee=await getDocument<Staff>("staff",lead.owner);allow(assignee.active&&canUseCRM(assignee));
+ if(!payload.institution||!payload.country||(kind==="Education"&&!payload.course))throw new Response(kind==="Education"?"Enter an institution, course and destination.":"Enter a visa category and destination.",{status:400});
  const caseId=current?.$id||randomUUID();
  const event=await audit(staff,leadId,"lead","Application save requested",{state:"pending",caseId,fromVersion:current?.version??0,toVersion:payload.version,stage});
  const record=current?await updateDocument<CaseRecord>("cases",caseId,payload):await createDocument("cases",payload,caseId);

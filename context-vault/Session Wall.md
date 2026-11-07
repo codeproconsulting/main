@@ -11,11 +11,11 @@ Generated from `session-state.json` by `npm run session:status`. Edit that struc
 
 **Active feature:** CASE-01
 
-**State:** in_progress
+**State:** completed
 
 **Objective:** Verify application workflows, current lead scope, stale writes and assignment transfer.
 
-A user saying **continue** means resume this feature's next unfinished acceptance check. Do not start unrelated modules or repeat completed infrastructure work. Verify current files and drift before trusting the checkpoint.
+This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
@@ -33,12 +33,15 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
 | CASE01-A | Application saves recheck lead ownership inside the shared lock | passed | Added queued reassignment regression test; final check results recorded below. |
-| CASE01-B | Lifecycle, stale edits, assignment transfer and browser workflow verified | pending | Service-specific stage validation, immutable service, pagination and interrupted-transfer recovery tests pass. Browser acceptance and required-field completeness review remain pending. |
+| CASE01-B | Lifecycle, stale edits, assignment transfer and browser workflow verified | passed | Required fields/active assignee, service-stage rules, independent applications, stale edits, audit failure/lost acknowledgments, 102-record transfer and partial-transfer retry tests pass. Built-app browser verifies education/immigration creation, fixed service, saved-state navigation, deadline display, list independence and stale-tab rejection. Production rollout remains separate. Final session:verify passed 96 tests, typecheck/build; vault links, source credential-pattern and whitespace checks passed. |
 
 ## Exact next actions
 
-1. Finish CASE-01 browser acceptance and required-field completeness review. Verify both service forms, stage options, record navigation, handoff and stale forms. Preserve tested service-stage, audit and transfer recovery behavior.
-   Files: `app/admin/operations.server.ts`, `app/admin/work.tsx`, `app/admin/crm.server.ts`
+1. Archive completed CASE-01 state and start bounded CAL-01 appointment verification: current ownership inside locks, conflict concurrency, timezones, cancellation/reschedule/no-show and browser workflow. Do not activate appointment reminders before acceptance.
+   Files: `app/admin/operations.server.ts`, `app/admin/work.tsx`, `context-vault/Feature Ledger.md`
+
+2. Keep case reminder adapter, private documents and production rollout separately gated. Follow application recovery and deployment runbooks; Resend remains the planned email provider.
+   Files: `docs/APPLICATION-WORKFLOWS.md`, `deploy/CRM-DEPLOYMENT.md`
 
 ## Known risks and unfinished work
 
@@ -48,14 +51,14 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 - Reminder inbox scans 25 stored records per page; task lists still cap at 100. Recurrence/escalation/snooze and provider outbox remain follow-up features.
 - Runtime health is stale after three minutes without a recorded cycle; a long cycle or delayed clock can also cause stale status. No external alerting provider is configured.
 - VPS deployment, Nginx/TLS/PM2 reboot smoke checks and production worker activation remain unperformed.
-- Development branch still contains unaccepted cases/calendar/documents/team/reporting modules; whole-branch main merge is gated.
+- Development branch still contains unaccepted calendar/documents/team/reporting modules; whole-branch main merge is gated.
 - Application ownership transfer is multi-record and not transactional; an interrupted handoff can leave metadata ahead of the lead owner. Existing current-lead scope checks hide records from the wrong counselor; retry/reconciliation still needs feature acceptance.
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-07T04:55:21.942Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-wIsR3N/typecheck.log`
-- **passed**: `npm run test` (2026-11-07T04:55:22.871Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-wIsR3N/test.log`
-- **passed**: `npm run build` (2026-11-07T04:55:28.056Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-wIsR3N/build.log`
+- **passed**: `npm run typecheck` (2026-11-07T05:02:54.068Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-nQXt15/typecheck.log`
+- **passed**: `npm run test` (2026-11-07T05:02:55.057Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-nQXt15/test.log`
+- **passed**: `npm run build` (2026-11-07T05:02:59.997Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-nQXt15/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -71,17 +74,18 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **ownerPassword**: owner must set via Appwrite Console
 - **gitBranch**: codex/crm-workspace
 - **integratedUpstream**: origin/main through 0397d6d; TOEFL and service-location pages preserved
-- **githubCheckpoint**: Application audit-first save checkpoint prepared on codex/crm-workspace; CASE-01 remains incomplete
+- **githubCheckpoint**: CASE-01 acceptance checkpoint on codex/crm-workspace; main unchanged; inspect branch Git log for exact commit
 - **mainMergePolicy**: User authorizes feature-tested merges with rollback references. The current development branch still includes unaccepted modules, so no whole-branch main merge has been performed.
 - **rollbackReference**: rollback/main-2026-10-29-407977c preserves the existing main baseline for release recovery
 - **scheduleIndex**: posts schedule(status,publishedAt) available; live due query passed read-only with zero due posts
 - **publishingWorker**: Dedicated opt-in runner added; not activated on VPS
-- **browserTestData**: Synthetic in-memory reminders browser workflow and actual CLI --once passed; preview processes stopped
+- **browserTestData**: Synthetic built-app CASE-01 browser acceptance passed; preview stopped; production records untouched
 - **mediaSchema**: Private media collection/attributes/index provisioned; published defaults false (live default check passed)
 - **mediaStorage**: Private bucket config and real disposable file/metadata round trip verified; synthetic resources removed
 - **nginx**: Bootstrap and HTTPS templates prepared; target-server validation not performed
 - **reminderSchema**: Notification source/version/due fields, unread=false default and private worker_health collection provisioned
 - **reminderStorageCheck**: Private synthetic notification/health CRUD, indexed queries and anonymous denial passed; both records removed
 - **reminderWorker**: Due-task-only runner verified locally, including actual synthetic CLI and SIGTERM idle exit; never activated on VPS
+- **caseSchema**: Read-only cases setup preview completed; no schema changes applied
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]
