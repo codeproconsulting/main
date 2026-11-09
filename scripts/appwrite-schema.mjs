@@ -12,6 +12,6 @@ export const schema = {
  worker_health: {fields:{worker:30,status:30,startedAt:40,finishedAt:40,lastSuccessAt:40,summary:4000,errorCount:'integer'},indexes:{}},
  locks: {fields:{key:256,owner:100,acquiredAt:40},indexes:{}},
  revisions: {fields:{postId:36,actor:36,payload:1000000,version:'integer'},indexes:{post:['postId']}},
- documents: {fields:{leadId:36,fileId:36,name:200,mime:100,category:100,status:30,expiresAt:40,checksum:64,uploadedBy:36},indexes:{lead:["leadId"],expiry:["expiresAt"]}},
+ documents: {fields:{leadId:36,fileId:36,name:200,mime:100,category:100,status:30,expiresAt:40,checksum:64,uploadedBy:36,scannedAt:40,reviewVersion:"integer",reviewNotes:2000},indexes:{lead:["leadId"],expiry:["expiresAt"]}},
  media: {fields:{fileId:36,name:200,alt:300,caption:1000,mime:100,published:"boolean",checksum:64},indexes:{published:["published"]}},
 };

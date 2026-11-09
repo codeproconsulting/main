@@ -208,7 +208,7 @@ Before admitting staff, verify in a browser:
 - Media starts private; editor can upload/preview; publisher explicitly changes visibility. A public image URL needs the accepted app build on the **public website process** too. Starting the CRM alone cannot add `/media/:id` to the old public release. Do not rewrite public-host URLs to the CRM or expose a private bucket to bypass that gate.
 - Check existing `proconsulting.uk` and `appwrite.proconsulting.uk` still work. Before any later public website update, verify public intake persists a synthetic submission to Appwrite and existing Ghost article routes/media remain intact.
 
-Record the exact commit, checks and remaining gaps in the context vault. Reminder source fields and private worker health are provisioned and feature-tested; the VPS reminder runner is still disabled. Current development code includes authoring/revisions, staged cases/calendar/documents/team/reporting and opt-in reminders; inspect the feature ledger for acceptance, not just build success. Managers currently have organization-wide CRM scope. Email/WhatsApp/SMS providers and Ghost cutover remain separate work. Keep `BLOG_PROVIDER=ghost` and real imported drafts private.
+Record the exact commit, checks and remaining gaps in the context vault. Reminder source fields and private worker health are provisioned and feature-tested; the VPS reminder runner is still disabled. Current development code includes authoring/revisions, verified local cases, calendar and private documents, staged team/reporting and opt-in reminders; inspect the feature ledger for acceptance, not just build success. Managers currently have organization-wide CRM scope. Email/WhatsApp/SMS providers and Ghost cutover remain separate work. Keep `BLOG_PROVIDER=ghost` and real imported drafts private.
 
 ## 9. Updates, rollback and troubleshooting
 
@@ -239,3 +239,7 @@ Routing and headers follow the [Nginx proxy module](https://nginx.org/en/docs/ht
 ## Planned email delivery: Resend
 
 Resend is the selected application email provider. Before COMMS-01 activation, verify the sender domain/DNS in Resend, confirm sender/reply-to addresses, configure server-only API and webhook secrets, and test the durable outbox, retries and signed delivery/bounce/complaint webhooks. Proposed configuration names: `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, `RESEND_REPLY_TO_EMAIL`, `RESEND_WEBHOOK_SECRET`; runtime does not consume these yet. Do not enable email merely by adding environment variables. Appwrite authentication email setup remains a separate operator configuration. See the email-provider decision in the implementation plan.
+
+## Private client documents
+
+Follow `docs/PRIVATE-DOCUMENTS.md` before accepting document uploads on the VPS. Provision the three additive metadata attributes, make the trusted ClamAV Unix socket available to the CRM service, and run the actual scanner, private storage and proxy acceptance checks. The runtime variable is `CRM_CLAMD_SOCKET`. The existing Nginx 25 MiB body limit allows the app's 20 MB file limit and multipart overhead.

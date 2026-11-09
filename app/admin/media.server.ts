@@ -2,7 +2,7 @@ import {randomUUID} from "node:crypto";
 import {AppwriteError,createDocument,getDocument,updateDocument} from "~/lib/appwrite.server";
 import {allow,audit,serialized} from "./crm.server";
 import {canEditContent,canPublish,type Staff} from "./domain";
-import {mediaBucket,uploadFile,removeFile,storageRequest} from "./storage.server";
+import {boundedUploadForm,mediaBucket,uploadFile,removeFile,storageRequest} from "./storage.server";
 
 export type Media={$id:string;fileId:string;name:string;alt:string;caption:string;mime:string;published:boolean;checksum:string};
 export const imageTypes=["image/jpeg","image/png","image/webp"];
@@ -58,15 +58,6 @@ export async function publicMedia(id:string){
  return new Response(stored.body,{headers:{"Content-Type":media.mime,"X-Content-Type-Options":"nosniff","Cache-Control":"no-store","Content-Security-Policy":"default-src 'none'; sandbox"}});
 }
 
-// Bound multipart buffering even when a caller omits/spoofs Content-Length.
-export async function mediaForm(request:Request){
- const max=6*1024*1024;
- if(Number(request.headers.get("Content-Length"))>max)throw new Response("Image request is too large",{status:413});
- if(!request.headers.get("Content-Type")?.startsWith("multipart/form-data")&&!request.headers.get("Content-Type")?.startsWith("application/x-www-form-urlencoded"))throw new Response("Invalid media form",{status:400});
- const reader=request.body?.getReader();if(!reader)throw new Response("Empty media form",{status:400});
- const chunks:Uint8Array<ArrayBuffer>[]=[];let size=0;
- try{while(true){const {done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>max){await reader.cancel();throw new Response("Image request is too large",{status:413});}chunks.push(new Uint8Array(value));}}
- finally{reader.releaseLock();}
- try{return await new Response(new Blob(chunks),{headers:{"Content-Type":request.headers.get("Content-Type")!}}).formData();}
- catch{throw new Response("Invalid media form",{status:400});}
+export function mediaForm(request:Request){
+ return boundedUploadForm(request,6*1024*1024,"Image");
 }

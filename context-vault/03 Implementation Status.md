@@ -101,3 +101,7 @@ CASE-01 locally accepted: both service forms require appropriate identifying fie
 ## CAL-01 appointment acceptance
 
 CAL-01 passed local acceptance for booking, overlap handling, reschedule and outcome reasons, timezones, stale edits, lead handoff and recovery. Built-app browser acceptance and 104 automated tests passed. Production deployment remains a separate gate.
+
+## DOC-01 private document acceptance
+
+Locally verified with a synthetic scanner and Appwrite fixtures. The built CRM passed upload, review, expiry, checklist, rejected upload and download. The existing private Appwrite bucket also passed a disposable 20 MB chunked upload, byte comparison and anonymous denial. The test file was removed. Schema changes were previewed only. Live ClamAV acceptance, additive metadata provisioning and VPS rollout remain release gates.

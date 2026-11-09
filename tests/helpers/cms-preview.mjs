@@ -2,10 +2,13 @@
 import http from 'node:http';
 import {spawn} from 'node:child_process';
 import {remindDueTasks} from '../../scripts/remind-tasks.mjs';
+import {documentScanner} from './document-scanner.mjs';
+const documents=process.argv.includes('--documents');
+const scanner=documents?await documentScanner(bytes=>bytes.includes('SYNTHETIC-SCAN-REJECT')?'stream: Synthetic.Test FOUND\0':'stream: OK\0'):null;
 const reminders=process.argv.includes('--reminders');
-const crm=reminders||process.argv.includes('--cases')||process.argv.includes('--calendar');
+const crm=documents||reminders||process.argv.includes('--cases')||process.argv.includes('--calendar');
 const role=crm?'manager':'publisher',userId=`synthetic-${role}`;
-const stores=Object.fromEntries(['posts','revisions','activities','locks','staff','media','leads','tasks','notifications','worker_health','cases','appointments'].map(k=>[k,new Map()]));
+const stores=Object.fromEntries(['posts','revisions','activities','locks','staff','media','leads','tasks','notifications','worker_health','cases','appointments','documents'].map(k=>[k,new Map()]));
 stores.staff.set(userId,{$id:userId,name:crm?'Synthetic Manager':'Synthetic Publisher',role,active:true,teamId:''});
 if(crm){
  stores.leads.set('synthetic-lead',{$id:'synthetic-lead',$createdAt:new Date().toISOString(),name:'Synthetic enquiry',email:'lead@example.invalid',phone:'000',service:'Education',source:'Isolated preview',country:'',stage:'New',owner:userId,priority:'Normal',nextFollowUp:'',details:'{}',version:1});
@@ -16,13 +19,13 @@ const send=(response,status,value)=>{response.writeHead(status,{'Content-Type':'
 const server=http.createServer(async(request,response)=>{
  try{
   const url=new URL(request.url,'http://127.0.0.1:4175');const chunks=[];let size=0;for await(const chunk of request){chunks.push(chunk);size+=chunk.length;if(size>6*1024*1024)return send(response,413,{});}const raw=Buffer.concat(chunks);
-  const storage=url.pathname.match(/^\/v1\/storage\/buckets\/crm-media\/files(?:\/([^/]+))?(?:\/(view|download))?$/);
-  if(storage){const[,id,view]=storage;if(request.method==='POST'){const form=await new Response(raw,{headers:{'Content-Type':request.headers['content-type']}}).formData();const file=form.get('file'),key=form.get('fileId');files.set(key,{bytes:Buffer.from(await file.arrayBuffer()),mime:file.type});return send(response,201,{$id:key,$permissions:[]});}if(request.method==='DELETE'){files.delete(id);response.writeHead(204);return response.end();}const file=files.get(id);if(!file)return send(response,404,{});if(view){response.writeHead(200,{'Content-Type':file.mime});return response.end(file.bytes);}return send(response,200,{$id:id});}
+  const storage=url.pathname.match(/^\/v1\/storage\/buckets\/(crm-media|crm-documents)\/files(?:\/([^/]+))?(?:\/(view|download))?$/);
+  if(storage){const[,bucket,id,view]=storage;const fileKey=value=>bucket+'/'+value;if(request.method==='POST'){const form=await new Response(raw,{headers:{'Content-Type':request.headers['content-type']}}).formData();const file=form.get('file'),key=form.get('fileId');files.set(fileKey(key),{bytes:Buffer.from(await file.arrayBuffer()),mime:file.type});return send(response,201,{$id:key,$permissions:[]});}if(request.method==='DELETE'){files.delete(fileKey(id));response.writeHead(204);return response.end();}const file=files.get(fileKey(id));if(!file)return send(response,404,{});if(view){response.writeHead(200,{'Content-Type':file.mime});return response.end(file.bytes);}return send(response,200,{$id:id});}
   const body=raw.length?JSON.parse(raw.toString()):{};
   if(url.pathname==='/v1/account/sessions/email'&&request.method==='POST'){if(body.email!==`${role}@example.invalid`||body.password!=='synthetic-preview-password')return send(response,401,{});return send(response,201,{secret:'synthetic-preview-session',expire:'2030-01-01T00:00:00.000Z'});}
   if(url.pathname==='/v1/account'){if(request.headers['x-appwrite-session']!=='synthetic-preview-session')return send(response,401,{});return send(response,200,{$id:userId});}
   if(url.pathname==='/v1/account/sessions/current'&&request.method==='DELETE'){response.writeHead(204);return response.end();}
-  const match=url.pathname.match(/^\/v1\/databases\/preview\/collections\/(posts|revisions|activities|locks|staff|media|leads|tasks|notifications|worker_health|cases|appointments)\/documents(?:\/([^/]+))?$/);if(!match)return send(response,404,{});
+  const match=url.pathname.match(/^\/v1\/databases\/preview\/collections\/(posts|revisions|activities|locks|staff|media|leads|tasks|notifications|worker_health|cases|appointments|documents)\/documents(?:\/([^/]+))?$/);if(!match)return send(response,404,{});
   const [,collection,id]=match,store=stores[collection];
   if(request.method==='GET'){if(id)return store.has(id)?send(response,200,store.get(id)):send(response,404,{});let documents=[...store.values()];for(const q of url.searchParams.getAll('queries[]').map(JSON.parse)){if(q.method==='equal')documents=documents.filter(d=>q.values.includes(d[q.attribute]));if(q.method==='lessThanEqual')documents=documents.filter(d=>d[q.attribute]<=q.values[0]);if(q.method==='orderAsc')documents.sort((a,b)=>String(a[q.attribute]??'').localeCompare(String(b[q.attribute]??'')));if(q.method==='orderDesc')documents.sort((a,b)=>String(b[q.attribute]??'').localeCompare(String(a[q.attribute]??'')));}const total=documents.length;const queries=url.searchParams.getAll('queries[]').map(JSON.parse),offset=queries.find(q=>q.method==='offset')?.values[0]||0,limit=queries.find(q=>q.method==='limit')?.values[0]||100;const cursor=queries.find(q=>q.method==='cursorAfter')?.values[0];if(cursor)documents=documents.slice(documents.findIndex(d=>d.$id===cursor)+1);return send(response,200,{documents:documents.slice(offset,offset+limit),total});}
   if(request.method==='POST'){if(store.has(body.documentId))return send(response,409,{});const doc={...body.data,$id:body.documentId,$createdAt:new Date().toISOString(),$updatedAt:new Date().toISOString()};store.set(doc.$id,doc);return send(response,201,doc);}
@@ -37,7 +40,7 @@ server.listen(4175,'127.0.0.1',async()=>{
   await remindDueTasks({api,allDocuments,databaseId:'preview'});
  }
 
- const child=spawn(process.execPath,['scripts/start.mjs'],{stdio:'inherit',env:{...process.env,NODE_ENV:'development',HOST:'127.0.0.1',PORT:'4173',APP_SURFACE:'dashboard',DASHBOARD_URL:'http://127.0.0.1:4173',APPWRITE_ENDPOINT:'http://127.0.0.1:4175/v1',APPWRITE_PROJECT_ID:'synthetic',APPWRITE_DATABASE_ID:'preview',APPWRITE_API_KEY:'synthetic-local-preview-key',SESSION_SECRET:'synthetic-preview-signing-secret-at-least-32-characters'}});
+ const child=spawn(process.execPath,['scripts/start.mjs'],{stdio:'inherit',env:{...process.env,NODE_ENV:'development',HOST:'127.0.0.1',PORT:'4173',APP_SURFACE:'dashboard',DASHBOARD_URL:'http://127.0.0.1:4173',APPWRITE_ENDPOINT:'http://127.0.0.1:4175/v1',CRM_CLAMD_SOCKET:scanner?.path??'',APPWRITE_PROJECT_ID:'synthetic',APPWRITE_DATABASE_ID:'preview',APPWRITE_API_KEY:'synthetic-local-preview-key',SESSION_SECRET:'synthetic-preview-signing-secret-at-least-32-characters'}});
  console.log('Isolated CMS preview at http://127.0.0.1:4173/admin/login; synthetic in-memory API only.');
- function stop(){child.kill('SIGTERM');server.close();}process.on('SIGTERM',stop);process.on('SIGINT',stop);child.on('exit',()=>server.close());
+ function stop(){child.kill('SIGTERM');server.close();}process.on('SIGTERM',stop);process.on('SIGINT',stop);child.on('exit',()=>{server.close();void scanner?.close();});
 });

@@ -49,3 +49,7 @@ CASE-01 locally accepted: both service forms require appropriate identifying fie
 ## CAL-01 appointment acceptance
 
 The existing private appointments collection accepted owner and lead query shapes in a read-only check. CAL-01 code and local tests are ready for the OPS-01 production smoke checklist. Appointment reminder delivery, external calendar sync and availability features have separate gates.
+
+## DOC-01 private document release
+
+The existing private bucket configuration and disposable large-file probe passed. Apply the additive document attributes and configure the CRM service's local ClamAV socket before enabling the release. Verify the real daemon, signature updates, effective encryption, permissions and proxy path using `docs/PRIVATE-DOCUMENTS.md`. No document schema changes or VPS activation were performed in this session.

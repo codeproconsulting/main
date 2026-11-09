@@ -1,0 +1,125 @@
+{
+  "formatVersion": 1,
+  "project": "ProConsulting",
+  "sessionId": "2026-11-07-02",
+  "sessionStatus": "completed",
+  "activeFeature": "CAL-01",
+  "objective": "Verify appointment booking, status changes, scheduling conflicts, scoped access and lead handoffs.",
+  "scope": [
+    "Booking, reschedule, cancellation and no-show",
+    "Current lead ownership and shared calendar locking",
+    "Audit recovery, timezone validation and browser acceptance"
+  ],
+  "outOfScope": [
+    "Provider calendars and external messages",
+    "Appointment reminders and production deployment"
+  ],
+  "acceptance": [
+    {
+      "id": "CAL01-A",
+      "description": "Current CRM scope, booking conflicts and timezone normalization",
+      "status": "passed",
+      "evidence": "Concurrent requests on different leads reject overlaps for the same counselor and allow adjacent or different-counselor slots. Tests cover conflict pagination, active assignee and queued ownership checks, and strict timezone/date normalization."
+    },
+    {
+      "id": "CAL01-B",
+      "description": "Reschedule, outcome, stale edits and audit recovery",
+      "status": "passed",
+      "evidence": "Service tests cover reschedule reasons, cancellation, completion, no-show timing, stale and terminal edits, failed audit intent and committed writes with a lost acknowledgment. Browser verified booking and outcomes."
+    },
+    {
+      "id": "CAL01-C",
+      "description": "Handoff conflict checks, version transfer and partial failure recovery",
+      "status": "passed",
+      "evidence": "Conflict preflight runs before writes. Tests verify handoff scope/version transfer, blocked unassignment with a booking, and interrupted retry without bumping already moved appointment versions."
+    },
+    {
+      "id": "CAL01-D",
+      "description": "Built-app browser workflow and project verification",
+      "status": "passed",
+      "evidence": "Actual built-app synthetic browser checks passed booking, conflict feedback, required reschedule reason, cancellation, no-show and local start/end display. Read-only Appwrite checks verified the private collection and owner/lead query shapes. Typecheck, all 104 tests and build passed."
+    }
+  ],
+  "nextActions": [
+    {
+      "order": 1,
+      "action": "Archive CAL-01 and start bounded DOC-01 verification for private document uploads, download authorization, review and recovery.",
+      "files": [
+        "app/admin/documents.tsx",
+        "app/admin/document-download.ts",
+        "context-vault/Feature Ledger.md"
+      ]
+    },
+    {
+      "order": 2,
+      "action": "Keep appointment and case reminder adapters and production rollout separately gated. Use the appointment recovery guide during operator acceptance.",
+      "files": [
+        "docs/APPOINTMENT-WORKFLOWS.md",
+        "deploy/CRM-DEPLOYMENT.md"
+      ]
+    }
+  ],
+  "knownRisks": [
+    "Appointment/case reminder adapters remain separately gated; external provider delivery is not configured.",
+    "Crash-left cycle/lead locks fail closed; recovery requires stopping their owners before targeted operator removal. No expiry takeover.",
+    "Task creation/change audit acknowledgments can be ambiguous; inspect recorded task ID/current version before retrying to avoid duplicate work.",
+    "Reminder inbox scans 25 stored records per page; task lists still cap at 100. Recurrence/escalation/snooze and provider outbox remain follow-up features.",
+    "Runtime health is stale after three minutes without a recorded cycle; a long cycle or delayed clock can also cause stale status. No external alerting provider is configured.",
+    "VPS deployment, Nginx/TLS/PM2 reboot smoke checks and production worker activation remain unperformed.",
+    "Development branch still contains unaccepted documents/team/reporting modules; whole-branch main merge is gated.",
+    "Application ownership transfer is multi-record and not transactional; an interrupted handoff can leave metadata ahead of the lead owner. Existing current-lead scope checks hide records from the wrong counselor; retry/reconciliation still needs feature acceptance.",
+    "Scheduling writes share one calendar lock. Partial handoffs may need operator retry, and moved slots remain reserved on the target calendar while the lead remains with its prior owner."
+  ],
+  "externalState": {
+    "database": "proconsulting",
+    "ghostImportedPosts": 30,
+    "ghostImportedPages": 1,
+    "postPublicationState": "draft",
+    "blogProvider": "Ghost unchanged",
+    "productionDeployment": "not performed",
+    "workerOnVPS": "not started",
+    "ownerPassword": "owner must set via Appwrite Console",
+    "gitBranch": "codex/crm-workspace",
+    "integratedUpstream": "origin/main through 0397d6d; TOEFL and service-location pages preserved",
+    "githubCheckpoint": "CAL-01 verified checkpoint on codex/crm-workspace. Exact commit in branch history.",
+    "mainMergePolicy": "User authorizes feature-tested merges with rollback references. The current development branch still includes unaccepted modules, so no whole-branch main merge has been performed.",
+    "rollbackReference": "rollback/main-2026-10-29-407977c preserves the existing main baseline for release recovery",
+    "scheduleIndex": "posts schedule(status,publishedAt) available; live due query passed read-only with zero due posts",
+    "publishingWorker": "Dedicated opt-in runner added; not activated on VPS",
+    "browserTestData": "Synthetic calendar preview stopped after acceptance",
+    "mediaSchema": "Private media collection/attributes/index provisioned; published defaults false (live default check passed)",
+    "mediaStorage": "Private bucket config and real disposable file/metadata round trip verified; synthetic resources removed",
+    "nginx": "Bootstrap and HTTPS templates prepared; target-server validation not performed",
+    "reminderSchema": "Notification source/version/due fields, unread=false default and private worker_health collection provisioned",
+    "reminderStorageCheck": "Private synthetic notification/health CRUD, indexed queries and anonymous denial passed; both records removed",
+    "reminderWorker": "Due-task-only runner verified locally, including actual synthetic CLI and SIGTERM idle exit; never activated on VPS",
+    "caseSchema": "Read-only cases setup preview completed; no schema changes applied",
+    "appointmentSchema": "Existing private collection and owner/lead query shapes verified read-only",
+    "appointmentWorkflow": "CAL-01 locally accepted including synthetic browser checks"
+  },
+  "checks": [
+    {
+      "command": "npm run typecheck",
+      "status": "passed",
+      "exitCode": 0,
+      "checkedAt": "2026-11-07T05:13:27.937Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Iz24Hw/typecheck.log"
+    },
+    {
+      "command": "npm run test",
+      "status": "passed",
+      "exitCode": 0,
+      "checkedAt": "2026-11-07T05:13:29.001Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Iz24Hw/test.log"
+    },
+    {
+      "command": "npm run build",
+      "status": "passed",
+      "exitCode": 0,
+      "checkedAt": "2026-11-07T05:13:33.995Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Iz24Hw/build.log"
+    }
+  ],
+  "updatedAt": "2026-11-07T05:14:25.661Z",
+  "verifiedSourceFingerprint": "346280af1289bf3133ec17733f845c7d84feeb9106727c1b71c34e7d35b4f9fa"
+}

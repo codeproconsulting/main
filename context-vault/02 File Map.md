@@ -42,7 +42,7 @@ updated: 2026-10-29
 - `scripts/import-ghost.mjs`, `validate-ghost-import.mjs`: private allowlisted import and read-only reconciliation; reports stay ignored.
 - `scripts/worker.mjs`: staged in-app reminders and scheduled publishing; disabled by default.
 - `app/admin/operations.server.ts`, `work.tsx`: staged cases and appointments.
-- `storage.server.ts`, `documents.tsx`, `document-download.ts`: staged private client documents.
+- `documents.tsx`, `document-domain.ts`, `documents.server.ts`, `document-scan.server.ts`, `document-download.ts` and `storage.server.ts`: private document checklist, workflow, scanner, storage and attachment routes. See `docs/PRIVATE-DOCUMENTS.md` and `tests/manual/DOC-01-browser.md`.
 - `media.tsx`, `media-download.ts`, `app/routes/media.ts`: staged editorial media and explicit public visibility.
 - `rich-editor.tsx`, `preview.ts`, `history.tsx`: staged visual authoring, sanitized preview and revisions.
 - `team.tsx`, `reports.tsx`, `reports.server.ts`, `export.ts`: staged staff controls, counts, and CSV.

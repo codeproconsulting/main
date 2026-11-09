@@ -79,3 +79,7 @@ CASE-01 locally accepted: both service forms require appropriate identifying fie
 ## CAL-01 appointment acceptance
 
 Use one shared calendar lock to coordinate booking and lead transfers on the existing Appwrite deployment. Require reasons for reschedules, cancellations and no-shows. Keep terminal appointment times and outcomes fixed, and book a new record when a closed session needs another time.
+
+## DOC-01 scanning and recovery
+
+Require an explicit clean verdict from a trusted Unix socket before writing any new applicant file. The bucket antivirus setting provides a separate control. Older records with a blank scan marker need a scanned replacement. Use a decimal 20 MB cap and Appwrite's chunk protocol. Preserve pending audit intents when a write may still have committed and compensate only after a definite rejection and confirmed missing metadata. Keep expired scanned files available to authorized staff for investigation.
