@@ -8,6 +8,7 @@ export const schema = {
  content_sources: {fields:{kind:30,checksum:64,payload:1000000},indexes:{kind:["kind"]}},
  notifications: {fields:{recipient:36,entityId:36,title:300,body:2000,kind:30,read:'boolean',sourceId:36,sourceVersion:'integer',dueAt:40},indexes:{recipient:['recipient']}},
  cases: {fields:{leadId:36,owner:36,kind:30,institution:300,course:300,country:150,intake:100,stage:80,deadline:40,notes:65536,version:'integer'},indexes:{lead:['leadId'],owner:['owner'],deadline:['deadline']}},
+ consultations: {fields:{leadId:36,counselor:36,counselorName:200,destination:150,destinationKey:100,heldOn:10,recordedBy:36},indexes:{held:['heldOn'],lead_held:['leadId','heldOn'],counselor_held:['counselor','heldOn'],destination_held:['destinationKey','heldOn'],destination_counselor_held:['destinationKey','counselor','heldOn']}},
  appointments: {fields:{leadId:36,owner:36,title:300,startsAt:40,endsAt:40,status:30,location:1000,notes:65536,version:'integer'},indexes:{lead:['leadId'],owner_start:['owner','startsAt']}},
  worker_health: {fields:{worker:30,status:30,startedAt:40,finishedAt:40,lastSuccessAt:40,summary:4000,errorCount:'integer'},indexes:{}},
  locks: {fields:{key:256,owner:100,acquiredAt:40},indexes:{}},

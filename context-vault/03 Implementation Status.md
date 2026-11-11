@@ -117,3 +117,7 @@ Locally verified. Operational reports aggregate current leads from bounded curso
 ## CRM-02 manual entry and contact search
 
 This slice is locally verified. Browser checks covered manual creation, formatted phone search, case-insensitive email search and stage filtering. The Appwrite dry run found the two new lead attributes absent. Schema provisioning, legacy backfill and production rollout remain pending. Duplicate handling, saved views and bulk actions remain part of CRM-02.
+
+## CONSULT-01 consultation tracking
+
+Locally verified. Staff can record completed consultations on enquiries, and managers can filter consultation history and counts by counselor and destination. Attribution remains stable after reassignment. The live Appwrite dry run found the private collection absent. Provisioning and production smoke checks remain pending.

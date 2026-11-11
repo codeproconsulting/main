@@ -1,4 +1,4 @@
-import { useLoaderData } from "react-router";
+import { Link, useLoaderData } from "react-router";
 import type { LoaderFunctionArgs } from "react-router";
 import { requireStaff } from "./auth.server";
 import { operationalReport } from "./reports.server";
@@ -15,7 +15,10 @@ export default function Reports() {
 
   return <>
     <PageHeading eyebrow="LEAD INVENTORY" title="Operational reports" description="Current lead counts by stage, source and destination.">
-      {!report.truncated && <a className="crm-button" href="/admin/leads.csv">Export leads as CSV</a>}
+      <div className="flex flex-wrap gap-2">
+        <Link className="crm-button secondary" to="/admin/reports/consultations">Consultation tracking</Link>
+        {!report.truncated && <a className="crm-button" href="/admin/leads.csv">Export leads as CSV</a>}
+      </div>
     </PageHeading>
     {report.truncated && <p className="crm-alert" role="status">Counts cover the first 10,000 leads by record ID. CSV export is unavailable above this limit.</p>}
     <div className="crm-stats">

@@ -9,7 +9,7 @@ const teamPreview=process.argv.includes('--team');
 const reminders=process.argv.includes('--reminders');
 const crm=teamPreview||documents||reminders||process.argv.includes('--cases')||process.argv.includes('--calendar');
 const role=teamPreview?'owner':crm?'manager':'publisher',userId=`synthetic-${role}`;
-const stores=Object.fromEntries(['posts','revisions','activities','locks','staff','media','leads','tasks','notifications','worker_health','cases','appointments','documents'].map(k=>[k,new Map()]));
+const stores=Object.fromEntries(['posts','revisions','activities','locks','staff','media','leads','tasks','notifications','worker_health','cases','appointments','documents','consultations'].map(k=>[k,new Map()]));
 stores.staff.set(userId,{$id:userId,name:teamPreview?'Synthetic Owner':crm?'Synthetic Manager':'Synthetic Publisher',role,active:true,teamId:'',$updatedAt:new Date().toISOString()});
 if(crm){
  stores.leads.set('synthetic-lead',{$id:'synthetic-lead',$createdAt:new Date().toISOString(),name:'Synthetic enquiry',email:'lead@example.invalid',phone:'000',service:'Education',source:'Isolated preview',country:'',stage:'New',owner:userId,priority:'Normal',nextFollowUp:'',details:'{}',version:1});
@@ -56,7 +56,7 @@ const server=http.createServer(async(request,response)=>{
     response.writeHead(204);return response.end();
    }
   }
-  const match=url.pathname.match(/^\/v1\/databases\/preview\/collections\/(posts|revisions|activities|locks|staff|media|leads|tasks|notifications|worker_health|cases|appointments|documents)\/documents(?:\/([^/]+))?$/);if(!match)return send(response,404,{});
+  const match=url.pathname.match(/^\/v1\/databases\/preview\/collections\/(posts|revisions|activities|locks|staff|media|leads|tasks|notifications|worker_health|cases|appointments|documents|consultations)\/documents(?:\/([^/]+))?$/);if(!match)return send(response,404,{});
   const [,collection,id]=match,store=stores[collection];
   if(request.method==='GET'){if(id)return store.has(id)?send(response,200,store.get(id)):send(response,404,{});let documents=[...store.values()];for(const q of url.searchParams.getAll('queries[]').map(JSON.parse)){if(q.method==='equal')documents=documents.filter(d=>q.values.includes(d[q.attribute]));if(q.method==='lessThanEqual')documents=documents.filter(d=>d[q.attribute]<=q.values[0]);if(q.method==='orderAsc')documents.sort((a,b)=>String(a[q.attribute]??'').localeCompare(String(b[q.attribute]??'')));if(q.method==='orderDesc')documents.sort((a,b)=>String(b[q.attribute]??'').localeCompare(String(a[q.attribute]??'')));}const total=documents.length;const queries=url.searchParams.getAll('queries[]').map(JSON.parse),offset=queries.find(q=>q.method==='offset')?.values[0]||0,limit=queries.find(q=>q.method==='limit')?.values[0]||100;const cursor=queries.find(q=>q.method==='cursorAfter')?.values[0];if(cursor)documents=documents.slice(documents.findIndex(d=>d.$id===cursor)+1);return send(response,200,{documents:documents.slice(offset,offset+limit),total});}
   if(request.method==='POST'){if(store.has(body.documentId))return send(response,409,{});const doc={...body.data,$id:body.documentId,$createdAt:new Date().toISOString(),$updatedAt:new Date().toISOString()};store.set(doc.$id,doc);return send(response,201,doc);}

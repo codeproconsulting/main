@@ -73,3 +73,7 @@ The report reads private lead projections in stable ID order and aggregates them
 ## CRM-02 manual entry and contact search
 
 Public intake and staff entry write normalized email and phone keys. Scoped lead queries use the indexed keys for exact contact lookup and retain the name full-text search. The new search form submits terms in the request body and list results project only the displayed lead fields.
+
+## Consultation tracking
+
+Completed consultations use a private collection keyed by enquiry, credited staff member and destination. Lead history checks current enquiry scope. The management report filters by counselor and normalized destination and projects only the names needed for enquiry links.

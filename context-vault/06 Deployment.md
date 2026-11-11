@@ -65,3 +65,7 @@ The report requires the existing private leads and activities collections. The q
 ## CRM-02 lead entry and search release
 
 Provision the two additive lead fields and indexes before starting either updated app process. Both public and manual intake write these fields. Backfill existing search keys and repeat after both processes are updated. The live schema check was read-only. See `docs/CRM-LEAD-ENTRY.md`.
+
+## Consultation tracking release
+
+Run `node scripts/setup-appwrite.mjs --only=consultations` to preview, then apply with the setup key before enabling the routes in production. Confirm the private collection, available attributes and five indexes. Smoke-test logging and counselor/destination filters with synthetic enquiries. See [[Sessions/2026-11-11-03]].

@@ -33,6 +33,7 @@ export default [
   route("admin", "admin/layout.tsx", [
     index("admin/overview.tsx"),
     route("leads", "admin/leads.tsx"),
+    route("leads/:id/consultations", "admin/consultations.tsx"),
     route("leads/:id/documents", "admin/documents.tsx"),
     route("documents/:id/download", "admin/document-download.ts"),
     route("blog-preview", "admin/preview.ts"),
@@ -45,6 +46,7 @@ export default [
     route("media", "admin/media.tsx"),
     route("media/:id/download", "admin/media-download.ts"),
     route("reports", "admin/reports.tsx"),
+    route("reports/consultations", "admin/consultation-report.tsx"),
     route("leads.csv", "admin/export.ts"),
     route("notifications", "admin/notifications.tsx"),
     route("applications", "admin/work.tsx", {id:"applications-list"}),

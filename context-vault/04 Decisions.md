@@ -95,3 +95,7 @@ Scan at most 10,000 leads and use one extra record to detect partial results. Ke
 ## CRM-02 contact keys and manual ownership
 
 Keep display contact values and store separate normalized keys for exact lookup. Preserve explicit country codes. Use the authenticated counselor as their own manual lead assignee and leave manager-created leads unassigned. Use one stable lead ID and audit intent for a retried form submission.
+
+## Consultation attribution
+
+Store the actual counselor separately from the recorder and current enquiry owner. Count completed sessions. Preserve historical credit after lead handoff. A retried form reuses its consultation record ID.

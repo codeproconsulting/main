@@ -1,6 +1,6 @@
 # File updates
 
-Generated snapshot of changes since the previous inventory; Nov 11, 2026, 10:22 a.m. (Asia/Karachi).
+Generated snapshot of changes since the previous inventory; Nov 11, 2026, 10:30 a.m. (Asia/Karachi).
 
 [[02 File Map]] · [[Source Inventory]] · [[05 Maintenance]]
 
@@ -8,17 +8,15 @@ Review these changes and update human-authored architecture/status notes where n
 
 ## Added
 
-- `app/admin/manual-leads.server.ts`
-- `app/lib/lead-contact.ts`
-- `docs/CRM-LEAD-ENTRY.md`
-- `scripts/backfill-lead-contact.mjs`
-- `tests/manual-leads.test.mjs`
+- `app/admin/consultation-report.tsx`
+- `app/admin/consultations.server.ts`
+- `app/admin/consultations.tsx`
+- `tests/consultations.test.mjs`
 
 ## Modified
 
-- `app/admin/crm.server.ts`
-- `app/admin/domain.ts`
-- `app/admin/leads.tsx`
-- `app/lib/intake.server.ts`
-- `deploy/CRM-DEPLOYMENT.md`
+- `app/admin/lead.tsx`
+- `app/admin/reports.tsx`
+- `app/routes.ts`
 - `scripts/appwrite-schema.mjs`
+- `tests/helpers/cms-preview.mjs`

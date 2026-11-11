@@ -71,3 +71,7 @@ Active owners, admins and managers have current organization-wide report access.
 ## CRM-02 manual entry and search permissions
 
 Active CRM staff may add leads. Counselors create and search their assigned leads. Managers retain organization-wide scope and create unassigned leads. Content-only profiles cannot use these routes. Search responses omit notes and detailed intake payloads.
+
+## Consultation records
+
+Counselors log their own consultations on currently assigned enquiries. Owners, admins and managers can record a session for an active counselor and access the organization-wide report. The collection stores staff attribution, destination and date without a duplicate customer profile.

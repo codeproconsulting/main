@@ -102,3 +102,7 @@ CASE-01 accepted workflow/recovery: `docs/APPLICATION-WORKFLOWS.md`; browser evi
 ## CRM-02 manual entry and contact search
 
 `app/admin/leads.tsx` adds the manual form and scoped search controls. `app/admin/manual-leads.server.ts` handles role checks, audit and idempotent creation. `app/lib/lead-contact.ts` shares normalization with public intake and `scripts/backfill-lead-contact.mjs`. See `docs/CRM-LEAD-ENTRY.md` and `tests/manual-leads.test.mjs`.
+
+## Consultation tracking
+
+`app/admin/consultations.tsx` records and lists enquiry consultations. `app/admin/consultation-report.tsx` shows management totals and filters. `app/admin/consultations.server.ts` implements scope, attribution and retry handling. See [[Sessions/2026-11-11-03]].
