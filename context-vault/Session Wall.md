@@ -3,44 +3,45 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-11-01]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-11-02]].
 
 ## Resume here
 
-**Session:** 2026-11-11-01
+**Session:** 2026-11-11-02
 
-**Active feature:** REPORT-01
+**Active feature:** CRM-02
 
 **State:** completed
 
-**Objective:** Verify operational lead counts and audited CSV export.
+**Objective:** Add manual lead creation and normalized contact search.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Manager scope, report totals and bounded pagination
-- Audited CSV download and formula handling
+- Manual entry, role-based assignment and idempotent audit
+- Exact email and formatted phone search for existing and new records
 
 ## Out of scope
 
-- Team-specific manager scope, historic conversion rates and VPS rollout
+- Contact separation, duplicate merges, saved views and bulk actions
+- Production provisioning and deployment
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| REPORT01-A | Authorized report totals and exact cap behavior | passed | Synthetic tests verified active management scope, aggregate-only projection, grouped totals across pages, repeated cursor rejection, and the exact cap with and without an overflow record. |
-| REPORT01-B | Audited, private and spreadsheet-safe CSV | passed | Synthetic tests verified the field allowlist, fresh role check, audit-before-delivery, overflow and audit-failure denial, formula escaping, quoting and private attachment headers. The built CRM downloaded a synthetic CSV. |
-| REPORT01-C | Full project checks and release evidence | passed | Typecheck, 127 tests and build passed. The built CRM displayed synthetic report breakdowns. Appwrite accepted the projection and ordering in a read-only empty query. Release smoke checks are documented. |
+| CRM02-A | Authorized and retry-safe manual entry | passed | Focused tests verified input validation, content-role denial, current role recheck, counselor self-assignment, unassigned manager intake, audit-before-write, repeat submission and lost acknowledgment. The built CRM created a synthetic lead. |
+| CRM02-B | Scoped name, email and phone search with legacy backfill | passed | Tests verified normalized contact queries, name search, stage and counselor filters, pagination parameters, and repeatable legacy backfill. Browser verified differently formatted phone and uppercase email lookup plus stage filtering with a clean page URL. |
+| CRM02-C | Project verification and release steps | passed | Typecheck, 132 tests and build passed. Read-only Appwrite setup preview found the new fields absent. Additive schema, backfill and release order are documented. |
 
 ## Exact next actions
 
-1. Archive REPORT-01 and start CRM-02 with manual lead creation and normalized contact search. Use the feature ledger to sequence the later CRM-02 work.
-   Files: `app/admin/leads.tsx`, `app/admin/crm.server.ts`, `context-vault/Feature Ledger.md`
+1. Archive the manual entry slice and continue CRM-02 with contact/enquiry separation and duplicate review. Keep merge, saved views and bulk actions as subsequent work.
+   Files: `app/admin/domain.ts`, `app/admin/manual-leads.server.ts`, `scripts/appwrite-schema.mjs`, `context-vault/Feature Ledger.md`
 
-2. Review the complete accepted release candidate and prior-main rollback reference before main integration. Run the report smoke checks at deployment.
-   Files: `docs/RELEASE-AND-ROLLBACK.md`, `docs/CRM-REPORTS.md`, `deploy/CRM-DEPLOYMENT.md`
+2. Before release, provision the lead fields and indexes, backfill legacy keys, and smoke-test public and staff intake.
+   Files: `docs/CRM-LEAD-ENTRY.md`, `deploy/CRM-DEPLOYMENT.md`
 
 ## Known risks and unfinished work
 
@@ -56,12 +57,13 @@ This feature is complete. On **continue**, start the next bounded session named 
 - Legacy files have no scan marker and require a scanned replacement before download or review. Uncertain uploads require the targeted operator procedure.
 - TEAM-01 release requires additive staff schema and actual Appwrite session revocation verification. Ambiguous profile or final lead assignment writes retain locks and require targeted recovery.
 - REPORT-01 counts describe a bounded live scan rather than a database snapshot. Export above 10,000 records requires a future bounded export workflow.
+- CRM-02 manual entry and contact search require additive lead fields and indexes before rollout. Older phone values that cannot be normalized remain searchable by name or email.
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-11T04:54:53.141Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-eMNF87/typecheck.log`
-- **passed**: `npm run test` (2026-11-11T04:54:54.438Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-eMNF87/test.log`
-- **passed**: `npm run build` (2026-11-11T04:54:59.396Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-eMNF87/build.log`
+- **passed**: `npm run typecheck` (2026-11-11T05:22:18.665Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-hp4LLf/typecheck.log`
+- **passed**: `npm run test` (2026-11-11T05:22:19.960Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-hp4LLf/test.log`
+- **passed**: `npm run build` (2026-11-11T05:22:25.180Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-hp4LLf/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -77,12 +79,12 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **ownerPassword**: owner must set via Appwrite Console
 - **gitBranch**: codex/crm-workspace
 - **integratedUpstream**: origin/main through 0397d6d; TOEFL and service-location pages preserved
-- **githubCheckpoint**: REPORT-01 verified checkpoint on codex/crm-workspace. Exact commit in branch history.
+- **githubCheckpoint**: CRM-02 manual entry and contact search verified on codex/crm-workspace. Exact commit in branch history.
 - **mainMergePolicy**: Tested features may be merged after exact release candidate review and creation of a prior-main rollback reference. No integration was performed in REPORT-01.
 - **rollbackReference**: rollback/main-2026-10-29-407977c preserves the existing main baseline for release recovery
 - **scheduleIndex**: posts schedule(status,publishedAt) available; live due query passed read-only with zero due posts
 - **publishingWorker**: Dedicated opt-in runner added; not activated on VPS
-- **browserTestData**: Synthetic reports preview stopped after acceptance.
+- **browserTestData**: Synthetic manual lead preview stopped after acceptance.
 - **mediaSchema**: Private media collection/attributes/index provisioned; published defaults false (live default check passed)
 - **mediaStorage**: Private bucket config and real disposable file/metadata round trip verified; synthetic resources removed
 - **nginx**: Bootstrap and HTTPS templates prepared; target-server validation not performed
@@ -99,5 +101,7 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **staffAccess**: Synthetic role, handoff and revocation acceptance passed. Live Appwrite session revocation and VPS rollout pending.
 - **reportQuery**: Read-only Appwrite report projection and ordering accepted with an empty synthetic owner filter.
 - **reporting**: Synthetic report and CSV acceptance passed. VPS rollout pending.
+- **leadContactSchema**: Read-only preview confirmed both additive lead fields are absent. Schema and backfill were not applied.
+- **crm02ManualEntry**: Manual entry and contact search accepted locally. Broader CRM-02 work remains open.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

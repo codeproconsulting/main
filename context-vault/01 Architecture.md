@@ -69,3 +69,7 @@ Staff edits use the shared staff access lock. Lead reassignment acquires the lea
 ## REPORT-01 operational reports
 
 The report reads private lead projections in stable ID order and aggregates them server-side. CSV uses the same pagination with a separate field allowlist, checks the staff session again, then records the audit before returning an attachment.
+
+## CRM-02 manual entry and contact search
+
+Public intake and staff entry write normalized email and phone keys. Scoped lead queries use the indexed keys for exact contact lookup and retain the name full-text search. The new search form submits terms in the request body and list results project only the displayed lead fields.

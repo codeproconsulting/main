@@ -113,3 +113,7 @@ Verified locally with a built-app browser workflow and synthetic Appwrite tests.
 ## REPORT-01 operational reports and CSV export
 
 Locally verified. Operational reports aggregate current leads from bounded cursor pages and use a separate field projection from CSV. Exactly 10,000 records can be exported. A further record marks counts partial and prevents CSV delivery. The built CRM displayed synthetic report breakdowns and downloaded an attachment. Live verification was limited to read-only query syntax. VPS smoke checks remain pending.
+
+## CRM-02 manual entry and contact search
+
+This slice is locally verified. Browser checks covered manual creation, formatted phone search, case-insensitive email search and stage filtering. The Appwrite dry run found the two new lead attributes absent. Schema provisioning, legacy backfill and production rollout remain pending. Duplicate handling, saved views and bulk actions remain part of CRM-02.

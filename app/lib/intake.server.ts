@@ -1,3 +1,4 @@
+import { emailKey, leadServices, phoneKey } from "./lead-contact";
 import { AppwriteError,createDocument,getDocument } from "./appwrite.server";
 import { rateLimit } from "./rate-limit.server";
 import type { Lead } from "~/admin/domain";
@@ -15,9 +16,9 @@ export async function captureLead(request:Request,input:Record<string,unknown>) 
  if(!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id))throw new Response('Refresh the form and try again.',{status:400});
  const source=read('source',100)||new URL(request.url).pathname;
  const service=read('service',100)|| (source.includes('immigration')?'Immigration':'Education');
- if(!['Education','Immigration','Study Abroad','Visit Visa','General Enquiry'].includes(service))throw new Response('Choose a valid service.',{status:400});
+ if(!leadServices.includes(service))throw new Response('Choose a valid service.',{status:400});
  const details=Object.fromEntries(allowed.map(key=>[key,read(key,key==='notes'||key==='message'?4000:1000)]).filter(([,value])=>value));
- const payload={name,email,phone,service,source,country:read('targetCountry',150)||read('destinationCountry',150)||read('interestedCountry',150),stage:'New',owner:'',priority:'Normal',nextFollowUp:'',details:JSON.stringify(details),version:1};
+ const payload={name,email,phone,emailKey:emailKey(email),phoneKey:phoneKey(phone),service,source,country:read('targetCountry',150)||read('destinationCountry',150)||read('interestedCountry',150),stage:'New',owner:'',priority:'Normal',nextFollowUp:'',details:JSON.stringify(details),version:1};
  if(payload.details.length>16000)throw new Response('Submission is too large',{status:413});
  try {return await createDocument('leads',payload,id);}
  catch(e){if(e instanceof AppwriteError&&e.status===409){const previous=await getDocument<Lead>('leads',id);if(previous.email===email&&previous.name===name&&previous.phone===phone)return previous;throw new Response('This submission reference was already used. Refresh and try again.',{status:409});}throw e;}

@@ -1,3 +1,4 @@
+import { emailKey, phoneKey } from "~/lib/lead-contact";
 import { appointmentCalendarLock, appointmentsForHandoff } from "./calendar.server";
 import { createHash, randomUUID } from "node:crypto";
 import { AppwriteError, appwrite, createDocument, getDocument, listDocuments, query, updateDocument } from "~/lib/appwrite.server";
@@ -20,13 +21,19 @@ export async function audit(staff: Staff, entityId: string, entityType: string, 
   return createDocument("activities", { actor: staff.$id, entityId, entityType, event, details: JSON.stringify(details) });
 }
 export async function listStaff() { return (await listDocuments<Staff>("staff", [query("equal", "active", [true]), query("limit", undefined, [100])])).documents; }
+const leadListFields = ["$id", "$createdAt", "name", "email", "service", "country", "stage", "owner", "nextFollowUp"] as const;
+
 export async function leadsFor(staff: Staff, search = "", stage = "", page = 1) {
-  allow(canUseCRM(staff));
-  const queries = [query("orderDesc", "$createdAt"), query("limit", undefined, [25]), query("offset", undefined, [(page - 1) * 25])];
+  allow(staff.active && canUseCRM(staff));
+  const queries = [query("select", undefined, [...leadListFields]), query("orderDesc", "$createdAt"), query("limit", undefined, [25]), query("offset", undefined, [(page - 1) * 25])];
   if (!canManage(staff)) queries.push(query("equal", "owner", [staff.$id]));
   if (stage && stages.includes(stage as typeof stages[number])) queries.push(query("equal", "stage", [stage]));
-  if (search) queries.push(query("search", "name", [search.slice(0, 100)]));
-  return listDocuments<Lead>("leads", queries);
+  const term = search.trim();
+  const phone = phoneKey(term);
+  if (term.includes("@")) queries.push(query("equal", "emailKey", [emailKey(term.slice(0, 254))]));
+  else if (phone) queries.push(query("equal", "phoneKey", [phone]));
+  else if (term.length >= 3) queries.push(query("search", "name", [term.slice(0, 100)]));
+  return listDocuments<Pick<Lead, typeof leadListFields[number]>>("leads", queries);
 }
 export async function leadFor(staff: Staff, id: string) {
   allow(canUseCRM(staff));

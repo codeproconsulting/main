@@ -61,3 +61,7 @@ Provision the additive staff marker and owner/active index. Check CRM server sco
 ## REPORT-01 reports release
 
 The report requires the existing private leads and activities collections. The query projection and ordering were checked read-only against Appwrite with an empty synthetic filter. Verify report permissions, CSV attachment and the audit record in the release environment. See `docs/CRM-REPORTS.md`.
+
+## CRM-02 lead entry and search release
+
+Provision the two additive lead fields and indexes before starting either updated app process. Both public and manual intake write these fields. Backfill existing search keys and repeat after both processes are updated. The live schema check was read-only. See `docs/CRM-LEAD-ENTRY.md`.

@@ -247,3 +247,7 @@ Follow `docs/PRIVATE-DOCUMENTS.md` before accepting document uploads on the VPS.
 ## Team access
 
 Follow `docs/STAFF-ACCESS.md` for handoff, session revocation and lock recovery. Provision the additive staff marker and role/active index, then verify the runtime key and perform live session checks with synthetic users in the release environment.
+
+## Lead contact search
+
+Follow `docs/CRM-LEAD-ENTRY.md` before releasing CRM-02 manual entry and contact search. Provision the two additive lead fields and indexes before either new app process writes leads. Backfill legacy search keys and verify public intake and staff search with synthetic records.

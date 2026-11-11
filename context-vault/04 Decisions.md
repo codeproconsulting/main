@@ -91,3 +91,7 @@ Persist inactive access before attempting session revocation. Retain a marker fo
 ## REPORT-01 bounded current counts
 
 Scan at most 10,000 leads and use one extra record to detect partial results. Keep exact-cap export available. Refuse oversized export and duplicate cursor results. Use a separate data projection for counts and escape spreadsheet formula prefixes in CSV cells.
+
+## CRM-02 contact keys and manual ownership
+
+Keep display contact values and store separate normalized keys for exact lookup. Preserve explicit country codes. Use the authenticated counselor as their own manual lead assignee and leave manager-created leads unassigned. Use one stable lead ID and audit intent for a retried form submission.

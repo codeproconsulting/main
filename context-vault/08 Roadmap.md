@@ -20,3 +20,5 @@ CMS-02, CMS-03, MEDIA-01 and REMIND-01 are verified locally (media/reminders als
 The detailed requirements and acceptance gates remain in `docs/CRM-CMS-APPWRITE-IMPLEMENTATION-PLAN.md`. Progress is recorded in [[03 Implementation Status]] and [[Changes/2026-10-29]].
 
 CAL-01 appointments and DOC-01 private documents are accepted locally. TEAM-01 staff access is verified locally. REPORT-01 operational reporting and CSV export is verified locally. CRM-02 advanced lead operations is the next planned feature. DOC-01 production gates are tracked in [[06 Deployment]].
+
+CRM-02 manual entry and normalized search passed local acceptance. The next CRM-02 slice is contact/enquiry separation and duplicate review.

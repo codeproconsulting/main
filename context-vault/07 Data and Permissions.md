@@ -67,3 +67,7 @@ Owners and admins manage staff, and only owners can grant or edit the owner role
 ## REPORT-01 report and export scope
 
 Active owners, admins and managers have current organization-wide report access. Aggregate output omits contact fields. CSV includes only allowlisted fields and requires a fresh session check plus an audit event. The audit event contains the actor and count without exported contact details.
+
+## CRM-02 manual entry and search permissions
+
+Active CRM staff may add leads. Counselors create and search their assigned leads. Managers retain organization-wide scope and create unassigned leads. Content-only profiles cannot use these routes. Search responses omit notes and detailed intake payloads.

@@ -98,3 +98,7 @@ CASE-01 accepted workflow/recovery: `docs/APPLICATION-WORKFLOWS.md`; browser evi
 ## REPORT-01 operational reports
 
 `app/admin/reports.server.ts` handles permissions, projections, pagination, totals and audited CSV. `app/admin/reports.tsx` renders aggregate counts and `app/admin/export.ts` is the download route. See `docs/CRM-REPORTS.md` and `tests/reports.test.mjs`.
+
+## CRM-02 manual entry and contact search
+
+`app/admin/leads.tsx` adds the manual form and scoped search controls. `app/admin/manual-leads.server.ts` handles role checks, audit and idempotent creation. `app/lib/lead-contact.ts` shares normalization with public intake and `scripts/backfill-lead-contact.mjs`. See `docs/CRM-LEAD-ENTRY.md` and `tests/manual-leads.test.mjs`.
