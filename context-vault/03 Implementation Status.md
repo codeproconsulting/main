@@ -105,3 +105,7 @@ CAL-01 passed local acceptance for booking, overlap handling, reschedule and out
 ## DOC-01 private document acceptance
 
 Locally verified with a synthetic scanner and Appwrite fixtures. The built CRM passed upload, review, expiry, checklist, rejected upload and download. The existing private Appwrite bucket also passed a disposable 20 MB chunked upload, byte comparison and anonymous denial. The test file was removed. Schema changes were previewed only. Live ClamAV acceptance, additive metadata provisioning and VPS rollout remain release gates.
+
+## TEAM-01 staff access
+
+Verified locally with a built-app browser workflow and synthetic Appwrite tests. The owner and admin guards, concurrent owner changes, handoff requirement, immediate CRM denial, retryable revocation and ambiguous writes passed. The existing project was inspected read-only. Staff schema provisioning, live session revocation and rollout remain release steps.

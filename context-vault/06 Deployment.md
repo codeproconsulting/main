@@ -53,3 +53,7 @@ The existing private appointments collection accepted owner and lead query shape
 ## DOC-01 private document release
 
 The existing private bucket configuration and disposable large-file probe passed. Apply the additive document attributes and configure the CRM service's local ClamAV socket before enabling the release. Verify the real daemon, signature updates, effective encryption, permissions and proxy path using `docs/PRIVATE-DOCUMENTS.md`. No document schema changes or VPS activation were performed in this session.
+
+## TEAM-01 staff release
+
+Provision the additive staff marker and owner/active index. Check CRM server scope for Auth identity lookup and session revocation. Run the isolated Appwrite session check in `docs/STAFF-ACCESS.md` before rollout. The existing project was checked read-only and no staff roles or sessions were changed.

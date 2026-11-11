@@ -1,7 +1,7 @@
 export const stages = ["New", "Attempting contact", "Contacted", "Counselling booked", "Counselled", "Qualified", "Converted", "Nurture", "Unresponsive", "Not eligible", "Lost", "Archived"] as const;
 export const roles = ["owner", "admin", "manager", "counselor", "editor", "publisher"] as const;
 export type Role = typeof roles[number];
-export type Staff = { $id: string; name: string; role: Role; active: boolean; teamId?: string };
+export type Staff = { $id: string; name: string; role: Role; active: boolean; teamId?: string; revocationPending?: string };
 export type Lead = { $id: string; $createdAt: string; name: string; email: string; phone: string; service: string; source: string; country: string; stage: string; owner: string; priority: string; nextFollowUp: string; details: string; version: number };
 export type Task = { $id: string; leadId: string; title: string; owner: string; dueAt: string; status: string; outcome: string; version: number };
 export type Activity = { $id: string; $createdAt: string; actor: string; entityId: string; entityType: string; event: string; details: string };

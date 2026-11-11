@@ -90,3 +90,7 @@ CASE-01 accepted workflow/recovery: `docs/APPLICATION-WORKFLOWS.md`; browser evi
 ## CAL-01 appointment acceptance
 
 `app/admin/calendar.server.ts` handles strict timezone input, paged conflict checks and handoff preflight. `operations.server.ts` saves appointment versions and audit intents. `crm.server.ts` transfers linked appointments under the calendar lock. See `docs/APPOINTMENT-WORKFLOWS.md` and `tests/manual/CAL-01-browser.md`.
+
+## TEAM-01 staff access
+
+`app/admin/team.tsx` provides the paged staff list and edit form. `app/admin/team.server.ts` owns role boundaries, profile persistence, session revocation and retries. `app/admin/crm.server.ts` coordinates the staff and assignment locks. `scripts/provision-staff.mjs` links new profiles for bootstrap. See `docs/STAFF-ACCESS.md` and `tests/manual/TEAM-01-browser.md`.

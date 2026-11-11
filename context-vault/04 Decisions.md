@@ -83,3 +83,7 @@ Use one shared calendar lock to coordinate booking and lead transfers on the exi
 ## DOC-01 scanning and recovery
 
 Require an explicit clean verdict from a trusted Unix socket before writing any new applicant file. The bucket antivirus setting provides a separate control. Older records with a blank scan marker need a scanned replacement. Use a decimal 20 MB cap and Appwrite's chunk protocol. Preserve pending audit intents when a write may still have committed and compensate only after a definite rejection and confirmed missing metadata. Keep expired scanned files available to authorized staff for investigation.
+
+## TEAM-01 offboarding and uncertain writes
+
+Persist inactive access before attempting session revocation. Retain a marker for retry and require a successful revocation before reactivation. Apply owner safeguards and lead ownership checks under the shared staff access lock. Unconfirmed writes that could change staff access or final lead ownership retain their locks for operator reconciliation.

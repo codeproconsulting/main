@@ -48,6 +48,14 @@ export async function tasksFor(staff: Staff) {
   }));
   return checked.filter((task): task is Task & { $createdAt: string; $updatedAt: string } => task !== null);
 }
+// A remote write may commit after a timeout. Retain held locks until an operator verifies the outcome.
+export class UnconfirmedMutation extends Response {
+  constructor(message: string) { super(message, { status: 503 }); }
+}
+export function definitiveWriteRejection(error: unknown) {
+  return error instanceof AppwriteError && [400, 401, 403, 404, 422].includes(error.status);
+}
+
 // Serialize mutations within the documented single dashboard process. Distributed CAS requires version-specific Appwrite transactions.
 const mutations = new Map<string, Promise<unknown>>();
 export async function serialized<T>(key: string, operation: () => Promise<T>): Promise<T> {
@@ -57,12 +65,21 @@ export async function serialized<T>(key: string, operation: () => Promise<T>): P
     const id = createHash("sha256").update(key).digest("hex").slice(0, 32);
     try { await createDocument("locks", { key, owner: randomUUID(), acquiredAt: new Date().toISOString() }, id); }
     catch (error) { if (error instanceof AppwriteError && error.status === 409) throw new Response("This record is being updated. Retry shortly; contact an administrator if it remains locked.", { status: 409 }); throw error; }
-    try { return await operation(); }
-    finally { await appwrite(`/databases/${encodeURIComponent(process.env.APPWRITE_DATABASE_ID!)}/collections/locks/documents/${id}`, { method: "DELETE" }); }
+    let release = true;
+    try {
+      return await operation();
+    } catch (error) {
+      if (error instanceof UnconfirmedMutation) release = false;
+      throw error;
+    } finally {
+      if (release) await appwrite(`/databases/${encodeURIComponent(process.env.APPWRITE_DATABASE_ID!)}/collections/locks/documents/${id}`, { method: "DELETE" });
+    }
   });
   mutations.set(key, pending);
   try { return await pending; } finally { if (mutations.get(key) === pending) mutations.delete(key); }
 }
+export const staffAccessLock = "staff:access";
+
 export async function updateLead(staff: Staff, id: string, form: FormData) {
   return serialized(`lead:${id}`, async () => {
     const lead = await leadFor(staff, id);
@@ -72,10 +89,6 @@ export async function updateLead(staff: Staff, id: string, form: FormData) {
     const priority = field(form, "priority");
     if (!["Normal", "High", "Urgent"].includes(priority)) throw new Response("Invalid priority", { status: 400 });
     const owner = canManage(staff) ? field(form, "owner", 36) : lead.owner;
-    if (owner) {
-      const assignee = await getDocument<Staff>("staff", owner);
-      allow(assignee.active && canUseCRM(assignee));
-    }
     const reason = field(form, "reason", 2000);
     if ((["Lost", "Not eligible", "Archived"].includes(stage) && stage !== lead.stage) || owner !== lead.owner) {
       if (!reason) throw new Response("A reason is required for closure or reassignment.", { status: 400 });
@@ -83,6 +96,10 @@ export async function updateLead(staff: Staff, id: string, form: FormData) {
     const changes = { stage, owner, priority, nextFollowUp: dateField(field(form, "nextFollowUp")), version: lead.version + 1 };
     const transferring = owner !== lead.owner;
     const save = async () => {
+      if (owner) {
+        const assignee = await getDocument<Staff>("staff", owner);
+        allow(assignee.active && canUseCRM(assignee));
+      }
       const appointments = transferring ? await appointmentsForHandoff(id, owner) : [];
       // Record intent before mutation; an unavailable audit store prevents unaudited writes.
       const event = await audit(staff, id, "lead", "Lead update requested", { before: { stage: lead.stage, owner: lead.owner, priority: lead.priority, nextFollowUp: lead.nextFollowUp }, after: changes, reason, state: "pending" });
@@ -104,11 +121,26 @@ export async function updateLead(staff: Staff, id: string, form: FormData) {
       for (const appointment of appointments) {
         if (appointment.owner !== owner) await updateDocument("appointments", appointment.$id, { owner, version: appointment.version + 1 });
       }
-      const updated = await updateDocument<Lead>("leads", id, changes);
+      let updated;
+      try {
+        updated = await updateDocument<Lead>("leads", id, changes);
+      } catch (error) {
+        if (!transferring || definitiveWriteRejection(error)) throw error;
+        const current = await getDocument<Lead>("leads", id).catch(() => null);
+        if (!current || Object.entries(changes).some(([key, value]) => current[key as keyof Lead] !== value)) {
+          throw new UnconfirmedMutation("The handoff outcome is uncertain. Ask an administrator to reconcile it before retrying.");
+        }
+        updated = current;
+      }
       await updateDocument("activities", event.$id, { event: "Lead updated" });
       return updated;
     };
-    return transferring ? serialized(appointmentCalendarLock, save) : save();
+    if (!transferring) return save();
+    return serialized(staffAccessLock, async () => {
+      const currentActor = await getDocument<Staff>("staff", staff.$id);
+      allow(currentActor.active && canManage(currentActor));
+      return serialized(appointmentCalendarLock, save);
+    });
   });
 }
 export async function addNote(staff: Staff, id: string, note: string) {

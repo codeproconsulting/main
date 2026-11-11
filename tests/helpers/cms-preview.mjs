@@ -5,14 +5,24 @@ import {remindDueTasks} from '../../scripts/remind-tasks.mjs';
 import {documentScanner} from './document-scanner.mjs';
 const documents=process.argv.includes('--documents');
 const scanner=documents?await documentScanner(bytes=>bytes.includes('SYNTHETIC-SCAN-REJECT')?'stream: Synthetic.Test FOUND\0':'stream: OK\0'):null;
+const teamPreview=process.argv.includes('--team');
 const reminders=process.argv.includes('--reminders');
-const crm=documents||reminders||process.argv.includes('--cases')||process.argv.includes('--calendar');
-const role=crm?'manager':'publisher',userId=`synthetic-${role}`;
+const crm=teamPreview||documents||reminders||process.argv.includes('--cases')||process.argv.includes('--calendar');
+const role=teamPreview?'owner':crm?'manager':'publisher',userId=`synthetic-${role}`;
 const stores=Object.fromEntries(['posts','revisions','activities','locks','staff','media','leads','tasks','notifications','worker_health','cases','appointments','documents'].map(k=>[k,new Map()]));
-stores.staff.set(userId,{$id:userId,name:crm?'Synthetic Manager':'Synthetic Publisher',role,active:true,teamId:''});
+stores.staff.set(userId,{$id:userId,name:teamPreview?'Synthetic Owner':crm?'Synthetic Manager':'Synthetic Publisher',role,active:true,teamId:'',$updatedAt:new Date().toISOString()});
 if(crm){
  stores.leads.set('synthetic-lead',{$id:'synthetic-lead',$createdAt:new Date().toISOString(),name:'Synthetic enquiry',email:'lead@example.invalid',phone:'000',service:'Education',source:'Isolated preview',country:'',stage:'New',owner:userId,priority:'Normal',nextFollowUp:'',details:'{}',version:1});
  for(const [id,title]of [['reschedule','Review course shortlist'],['cancel','Confirm duplicate appointment'],['complete','Call to confirm documents']])stores.tasks.set(id,{$id:id,leadId:'synthetic-lead',owner:userId,title,dueAt:'2020-01-01T10:00:00.000Z',status:'Open',outcome:'',version:1});
+}
+const authUsers=new Map([[userId,{$id:userId,status:true}]]);
+const authSessions=new Map();
+let failRevocation=teamPreview;
+if(teamPreview){
+ for(const [id,name] of [['synthetic-counselor','Synthetic Counselor'],['synthetic-new','Synthetic New Staff']]){
+  authUsers.set(id,{$id:id,status:true});
+  if(id==='synthetic-counselor')stores.staff.set(id,{$id:id,name,role:'counselor',active:true,teamId:'',$updatedAt:new Date().toISOString()});
+ }
 }
 const files=new Map();
 const send=(response,status,value)=>{response.writeHead(status,{'Content-Type':'application/json'});response.end(JSON.stringify(value));};
@@ -22,9 +32,30 @@ const server=http.createServer(async(request,response)=>{
   const storage=url.pathname.match(/^\/v1\/storage\/buckets\/(crm-media|crm-documents)\/files(?:\/([^/]+))?(?:\/(view|download))?$/);
   if(storage){const[,bucket,id,view]=storage;const fileKey=value=>bucket+'/'+value;if(request.method==='POST'){const form=await new Response(raw,{headers:{'Content-Type':request.headers['content-type']}}).formData();const file=form.get('file'),key=form.get('fileId');files.set(fileKey(key),{bytes:Buffer.from(await file.arrayBuffer()),mime:file.type});return send(response,201,{$id:key,$permissions:[]});}if(request.method==='DELETE'){files.delete(fileKey(id));response.writeHead(204);return response.end();}const file=files.get(fileKey(id));if(!file)return send(response,404,{});if(view){response.writeHead(200,{'Content-Type':file.mime});return response.end(file.bytes);}return send(response,200,{$id:id});}
   const body=raw.length?JSON.parse(raw.toString()):{};
-  if(url.pathname==='/v1/account/sessions/email'&&request.method==='POST'){if(body.email!==`${role}@example.invalid`||body.password!=='synthetic-preview-password')return send(response,401,{});return send(response,201,{secret:'synthetic-preview-session',expire:'2030-01-01T00:00:00.000Z'});}
-  if(url.pathname==='/v1/account'){if(request.headers['x-appwrite-session']!=='synthetic-preview-session')return send(response,401,{});return send(response,200,{$id:userId});}
-  if(url.pathname==='/v1/account/sessions/current'&&request.method==='DELETE'){response.writeHead(204);return response.end();}
+  if(url.pathname==='/v1/account/sessions/email'&&request.method==='POST'){
+   const id=body.email===`${role}@example.invalid`?userId:teamPreview&&body.email==='counselor@example.invalid'?'synthetic-counselor':'';
+   if(!id||body.password!=='synthetic-preview-password')return send(response,401,{});
+   const secret=crypto.randomUUID();authSessions.set(secret,id);
+   return send(response,201,{secret,expire:'2030-01-01T00:00:00.000Z'});
+  }
+  if(url.pathname==='/v1/account'){
+   const id=authSessions.get(request.headers['x-appwrite-session']);
+   return id?send(response,200,{$id:id}):send(response,401,{});
+  }
+  if(url.pathname==='/v1/account/sessions/current'&&request.method==='DELETE'){
+   authSessions.delete(request.headers['x-appwrite-session']);response.writeHead(204);return response.end();
+  }
+  const authUser=url.pathname.match(/^\/v1\/users\/([^/]+)(\/sessions)?$/);
+  if(authUser&&teamPreview){
+   const [,id,sessions]=authUser;
+   if(!authUsers.has(id))return send(response,404,{});
+   if(!sessions&&request.method==='GET')return send(response,200,authUsers.get(id));
+   if(sessions&&request.method==='DELETE'){
+    if(failRevocation&&id==='synthetic-counselor'){failRevocation=false;return send(response,503,{});}
+    for(const [secret,owner] of authSessions)if(owner===id)authSessions.delete(secret);
+    response.writeHead(204);return response.end();
+   }
+  }
   const match=url.pathname.match(/^\/v1\/databases\/preview\/collections\/(posts|revisions|activities|locks|staff|media|leads|tasks|notifications|worker_health|cases|appointments|documents)\/documents(?:\/([^/]+))?$/);if(!match)return send(response,404,{});
   const [,collection,id]=match,store=stores[collection];
   if(request.method==='GET'){if(id)return store.has(id)?send(response,200,store.get(id)):send(response,404,{});let documents=[...store.values()];for(const q of url.searchParams.getAll('queries[]').map(JSON.parse)){if(q.method==='equal')documents=documents.filter(d=>q.values.includes(d[q.attribute]));if(q.method==='lessThanEqual')documents=documents.filter(d=>d[q.attribute]<=q.values[0]);if(q.method==='orderAsc')documents.sort((a,b)=>String(a[q.attribute]??'').localeCompare(String(b[q.attribute]??'')));if(q.method==='orderDesc')documents.sort((a,b)=>String(b[q.attribute]??'').localeCompare(String(a[q.attribute]??'')));}const total=documents.length;const queries=url.searchParams.getAll('queries[]').map(JSON.parse),offset=queries.find(q=>q.method==='offset')?.values[0]||0,limit=queries.find(q=>q.method==='limit')?.values[0]||100;const cursor=queries.find(q=>q.method==='cursorAfter')?.values[0];if(cursor)documents=documents.slice(documents.findIndex(d=>d.$id===cursor)+1);return send(response,200,{documents:documents.slice(offset,offset+limit),total});}

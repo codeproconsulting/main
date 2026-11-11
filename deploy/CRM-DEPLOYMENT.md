@@ -106,9 +106,9 @@ Create or locate the Auth user `admin@proconsulting.uk` in Appwrite Console. Its
 node scripts/provision-staff.mjs AUTH_USER_ID "ProConsulting administrator" owner
 ```
 
-This command creates/updates that user's role; use it only for the intended owner. CRM roles live in the private staff collection, not browser-supplied claims. Counselor assignment requires a separate active counselor profile linked to an Auth identity.
+This command links a new profile and protects existing staff profiles; use it only for the intended owner. CRM roles live in the private staff collection, not browser-supplied claims. Counselor assignment requires a separate active counselor profile linked to an Auth identity.
 
-Replace the setup key in `.env` with a runtime key: private document read/write, file read/write, and `sessions.write` for SSR email/password login. Check exact scope names in your installed Appwrite Console. Revoke the temporary key after setup checks. No database/bucket schema or user administration scopes are needed by normal page requests. Appwrite server keys bypass record permissions, so application role enforcement remains essential. Keep collection/bucket and uploaded file permissions private; public article images are streamed by an application route only after publisher approval.
+Replace the setup key in `.env` with a runtime key: private document read/write, file read/write, and `sessions.write` for SSR email/password login. Check exact scope names in your installed Appwrite Console. Revoke the temporary key after setup checks. Team & access additionally needs `users.read` for Auth identity lookup and uses `sessions.write` to revoke sessions. Database and bucket schema scopes stay with the setup key. Appwrite server keys bypass record permissions, so application role enforcement remains essential. Keep collection/bucket and uploaded file permissions private; public article images are streamed by an application route only after publisher approval.
 
 ## 5. Build and start only the CRM
 
@@ -208,7 +208,7 @@ Before admitting staff, verify in a browser:
 - Media starts private; editor can upload/preview; publisher explicitly changes visibility. A public image URL needs the accepted app build on the **public website process** too. Starting the CRM alone cannot add `/media/:id` to the old public release. Do not rewrite public-host URLs to the CRM or expose a private bucket to bypass that gate.
 - Check existing `proconsulting.uk` and `appwrite.proconsulting.uk` still work. Before any later public website update, verify public intake persists a synthetic submission to Appwrite and existing Ghost article routes/media remain intact.
 
-Record the exact commit, checks and remaining gaps in the context vault. Reminder source fields and private worker health are provisioned and feature-tested; the VPS reminder runner is still disabled. Current development code includes authoring/revisions, verified local cases, calendar and private documents, staged team/reporting and opt-in reminders; inspect the feature ledger for acceptance, not just build success. Managers currently have organization-wide CRM scope. Email/WhatsApp/SMS providers and Ghost cutover remain separate work. Keep `BLOG_PROVIDER=ghost` and real imported drafts private.
+Record the exact commit, checks and remaining gaps in the context vault. Reminder source fields and private worker health are provisioned and feature-tested; the VPS reminder runner is still disabled. Current development code includes authoring/revisions, verified local cases, calendar, private documents and staff access, staged reporting and opt-in reminders; inspect the feature ledger for acceptance, not just build success. Managers currently have organization-wide CRM scope. Email/WhatsApp/SMS providers and Ghost cutover remain separate work. Keep `BLOG_PROVIDER=ghost` and real imported drafts private.
 
 ## 9. Updates, rollback and troubleshooting
 
@@ -243,3 +243,7 @@ Resend is the selected application email provider. Before COMMS-01 activation, v
 ## Private client documents
 
 Follow `docs/PRIVATE-DOCUMENTS.md` before accepting document uploads on the VPS. Provision the three additive metadata attributes, make the trusted ClamAV Unix socket available to the CRM service, and run the actual scanner, private storage and proxy acceptance checks. The runtime variable is `CRM_CLAMD_SOCKET`. The existing Nginx 25 MiB body limit allows the app's 20 MB file limit and multipart overhead.
+
+## Team access
+
+Follow `docs/STAFF-ACCESS.md` for handoff, session revocation and lock recovery. Provision the additive staff marker and role/active index, then verify the runtime key and perform live session checks with synthetic users in the release environment.

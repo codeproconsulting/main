@@ -59,3 +59,7 @@ Lead authorization remains authoritative during partial appointment transfers. A
 ## DOC-01 document permissions
 
 The document collection stores private metadata and review notes. Only authorized CRM staff with current lead access can list, upload, review or download. Review writes use the lead lock and a version check. Legacy metadata without a scan marker has no download or review action. Checklist readiness requires a clean scan, accepted review and unexpired record. Audit details omit file names, notes and file bytes.
+
+## TEAM-01 role safeguards
+
+Owners and admins manage staff, and only owners can grant or edit the owner role. Self edits are blocked. At least one active owner profile remains. A profile with assigned leads cannot be deactivated or changed to a role without CRM access. The optional team reference remains descriptive.

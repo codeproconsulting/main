@@ -1,6 +1,6 @@
 // Repeatable setup: creates missing schema and applies explicitly documented safe defaults; never drops records.
 export const schema = {
- staff: { fields: {name:200,role:30,active:'boolean',teamId:36}, indexes: {active:['active']} },
+ staff: { fields: {name:200,role:30,active:'boolean',teamId:36,revocationPending:40}, indexes: {active:['active'],role_active:['role','active']} },
  leads: { fields: {name:200,email:254,phone:80,service:100,source:500,country:150,stage:50,owner:36,priority:20,nextFollowUp:40,details:65536,version:'integer'}, indexes: {owner:['owner'],stage:['stage'],name_search:{type:'fulltext',attributes:['name']},email:['email']} },
  tasks: {fields:{leadId:36,title:300,owner:36,dueAt:40,status:30,outcome:2000,version:'integer'},indexes:{lead:['leadId'],owner:['owner'],status_due:['status','dueAt']}},
  activities: {fields:{actor:36,entityId:36,entityType:30,event:100,details:65536},indexes:{entity:['entityId']}},
