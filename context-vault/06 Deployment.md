@@ -73,3 +73,7 @@ Run `node scripts/setup-appwrite.mjs --only=consultations` to preview, then appl
 ## Mobile app access
 
 The Expo app targets the same CRM hostname as the browser. A live connection check returned a certificate hostname mismatch. Install the matching certificate and verify HTTPS at the CRM origin before device acceptance. The mobile build and the CRM deployment have separate release steps.
+
+## Native API release
+
+The CRM host needs valid TLS and the release containing `/admin/mobile/v1/`. Apply and validate the Nginx template that includes the native session endpoint in the login rate limit. Verify online sign-in, scope and airplane-mode behavior on a device before distributing the native update. The initial native workspace uses the existing Expo runtime, so it can be distributed as an OTA update to compatible preview installs. See [[Sessions/2026-11-11-05]].

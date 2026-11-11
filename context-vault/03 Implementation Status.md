@@ -125,3 +125,7 @@ Locally verified. Staff can record completed consultations on enquiries, and man
 ## MOB-01 React Native staff app
 
 The sibling mobile project builds the existing CRM workspace into a React Native app. Expo finished the Android preview APK and the iOS simulator archive. Both artifacts were downloaded and inspected. Phone-width sign-out was verified against the synthetic CRM. Live device acceptance awaits the CRM certificate correction and deployment.
+
+### MOB-02 native staff workspace
+
+The native sign-in, lead and follow-up screens and shared CRM API are implemented locally. A loaded snapshot stays readable during connection loss for up to 15 minutes in the running app. First sign-in, a cold-start data load and all writes require connectivity. Native editing, durable offline storage and full feature parity remain planned. Production release and physical-device verification are pending. See [[Sessions/2026-11-11-05]].

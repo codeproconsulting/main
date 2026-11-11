@@ -28,6 +28,7 @@ export default [
   route("locations/islamabad", "routes/service-locations-hub-islamabad.tsx", { id: "locations-islamabad-alias" }),
   route("apply", "education/routes/contact.tsx", { id: "root-apply" }),
   route("assessment", "education/routes/contact.tsx", { id: "root-assessment" }),
+  route("admin/mobile/v1/:resource", "admin/mobile-api.ts"),
   route("admin/login", "admin/login.tsx"),
   route("admin/logout", "admin/logout.tsx"),
   route("admin", "admin/layout.tsx", [

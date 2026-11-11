@@ -103,3 +103,7 @@ Store the actual counselor separately from the recorder and current enquiry owne
 ## Mobile workflow delivery
 
 Use the existing CRM routes and staff permission checks inside the native app so deployed features are shared across platforms. Release builds require a valid HTTPS workspace origin. Hand off attachments to the system browser, which can establish its own staff session.
+
+## Native workspace and offline data
+
+Use native views for counselor workflows and keep an explicit browser link for the full dashboard. Reuse CRM service functions so mobile and dashboard scope changes use the same rules. Keep the initial snapshot in memory and clear it on sign-out, auth rejection or expiry. Review device protection, offline authorization and write conflict handling before persisting applicant records or queuing edits. See [[Sessions/2026-11-11-05]].

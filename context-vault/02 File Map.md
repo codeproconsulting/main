@@ -110,3 +110,6 @@ CASE-01 accepted workflow/recovery: `docs/APPLICATION-WORKFLOWS.md`; browser evi
 ## Mobile staff workspace
 
 The sibling app's `src/StaffWorkspace.tsx` hosts the workspace, `src/workspace.ts` validates navigation, and `app.json` and `eas.json` hold mobile configuration. In this repository, `app/admin/admin.css` controls responsive CRM sign-out visibility. See [[Sessions/2026-11-11-04]].
+
+- `app/admin/mobile-api.ts` provides native sign-in, sign-out and scoped lead/task snapshots. `tests/mobile-api.test.mjs` exercises the synthetic Appwrite boundary.
+- `../Proconsulting-App/src/NativeWorkspace.tsx` and `../Proconsulting-App/src/mobile-api.ts` implement the React Native UI and its API client in the sibling repository.

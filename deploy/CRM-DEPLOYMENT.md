@@ -251,3 +251,7 @@ Follow `docs/STAFF-ACCESS.md` for handoff, session revocation and lock recovery.
 ## Lead contact search
 
 Follow `docs/CRM-LEAD-ENTRY.md` before releasing CRM-02 manual entry and contact search. Provision the two additive lead fields and indexes before either new app process writes leads. Backfill legacy search keys and verify public intake and staff search with synthetic records.
+
+### Native staff workspace release
+
+Install the matching CRM TLS certificate and use the current `deploy/nginx/crm.proconsulting.uk.conf` template. Its login limit covers `/admin/mobile/v1/session`. After `nginx -t` and release startup, check that an unauthenticated HTTPS GET to `/admin/mobile/v1/workspace` returns JSON HTTP 401 with `Cache-Control: private, no-store`. Use a test staff account on the preview device to verify scoped leads and follow-ups, then turn on airplane mode and check that the loaded snapshot remains visible during a failed refresh. Verify local sign-out clears it and restarting offline still renders native sign-in. Confirm the browser dashboard login and lead views still work before publishing the mobile preview.

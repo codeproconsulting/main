@@ -25,28 +25,35 @@ export async function requireStaff(request: Request): Promise<Staff> {
   const session = await sessionCookie().parse(request.headers.get("Cookie"));
   if (typeof session !== "string" || !session) throw redirect("/admin/login");
   try {
-    const account = await appwrite<{ $id: string }>("/account", { session });
-    const staff = await getDocument<Staff>("staff", account.$id);
-    if (!staff.active || !roles.includes(staff.role)) throw new Response("Your account does not have active staff access.", { status: 403 });
-    return { $id: account.$id, name: staff.name, role: staff.role, active: staff.active, teamId: staff.teamId };
+    return await staffForSession(session);
   } catch (error) {
     if (error instanceof AppwriteError && [401, 404].includes(error.status)) throw redirect("/admin/login");
     if (error instanceof Response) throw error;
     throw new Response("The staff service is temporarily unavailable. Please retry.", { status: 503 });
   }
 }
-export async function signIn(request: Request, email: string, password: string) {
-  dashboardRequest(request); sameOrigin(request);
+export async function staffForSession(session: string): Promise<Staff> {
+  const account = await appwrite<{ $id: string }>("/account", { session });
+  const staff = await getDocument<Staff>("staff", account.$id);
+  if (!staff.active || !roles.includes(staff.role)) throw new Response("Your account does not have active staff access.", { status: 403 });
+  return { $id: account.$id, name: staff.name, role: staff.role, active: staff.active, teamId: staff.teamId };
+}
+
+export async function openStaffSession(email: string, password: string) {
   const session = await appwrite<{ secret: string; expire: string }>("/account/sessions/email", { method: "POST", body: { email, password } });
   if (!session.secret) throw new Error("Appwrite did not return an SSR session secret");
   try {
-    const account = await appwrite<{ $id: string }>("/account", { session: session.secret });
-    const staff = await getDocument<Staff>("staff", account.$id);
-    if (!staff.active || !roles.includes(staff.role)) throw new Error("Inactive staff");
-  } catch {
+    const staff = await staffForSession(session.secret);
+    return { ...session, staff };
+  } catch (error) {
     await appwrite("/account/sessions/current", { method: "DELETE", session: session.secret }).catch(() => undefined);
-    throw new Error("Staff access is required");
+    throw error;
   }
+}
+
+export async function signIn(request: Request, email: string, password: string) {
+  dashboardRequest(request); sameOrigin(request);
+  const session = await openStaffSession(email, password);
   return redirect("/admin", { headers: { "Set-Cookie": await sessionCookie().serialize(session.secret, { expires: new Date(session.expire) }) } });
 }
 export async function signOut(request: Request) {

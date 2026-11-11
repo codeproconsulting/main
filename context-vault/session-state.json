@@ -1,48 +1,50 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-11-04",
-  "sessionStatus": "completed",
-  "activeFeature": "MOB-01",
-  "objective": "Create the React Native staff app in the new sibling mobile folder and verify build readiness.",
+  "sessionId": "2026-11-11-05",
+  "sessionStatus": "in_progress",
+  "activeFeature": "MOB-02",
+  "objective": "Replace the embedded CRM website with the first native staff workflow and verify offline behavior.",
   "scope": [
-    "Branded Expo mobile shell sharing deployed CRM workflows",
-    "Native bundle checks and device build setup",
-    "Mobile sign-out visibility"
+    "Native sign-in, lead list and follow-up list",
+    "Shared CRM mobile API and dashboard compatibility",
+    "Short-lived offline snapshot in app memory"
   ],
   "outOfScope": [
-    "Production deployment and app store publication"
+    "Offline edits and encrypted storage across app restarts",
+    "Production rollout and full native parity"
   ],
   "acceptance": [
     {
-      "id": "MOB01-A",
-      "description": "Mobile shell and security checks",
+      "id": "MOB02-A",
+      "description": "API sign-in, scoped reads and revocation",
       "status": "passed",
-      "evidence": "Expo shell typecheck, lint and three navigation tests passed. CRM typecheck, tests and build passed. Synthetic phone-width browser verification confirmed sign-in and visible sign-out."
+      "evidence": "Synthetic integration test confirms counselor scope, transferred task exclusion, redacted projection, host and browser rejection, token tamper rejection, no-store and revocation."
     },
     {
-      "id": "MOB01-B",
-      "description": "Bundles and native build status",
-      "status": "passed",
-      "evidence": "EAS finished the Android preview APK and iOS simulator build. APK archive integrity and manifest/DEX/bundle presence verified. iOS archive contains the app metadata and JavaScript bundle. Device sign-in is a separate release gate."
+      "id": "MOB02-B",
+      "description": "Native render and airplane-mode device checks",
+      "status": "blocked",
+      "evidence": "Mobile typecheck, lint, existing tests and Android/iOS Hermes exports passed. Device sign-in and airplane-mode behavior are unverified. HTTPS probe failed because the certificate does not match crm.proconsulting.uk."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Archive the mobile build session and resume CRM-02 with contact/enquiry separation and duplicate review.",
+      "action": "Deploy the accepted CRM build and rate-limited route behind valid TLS, then run Android checks for sign-in, airplane mode, cache expiry and sign-out before releasing the mobile preview update.",
       "files": [
-        "app/admin/domain.ts",
-        "scripts/appwrite-schema.mjs",
-        "context-vault/Feature Ledger.md"
+        "deploy/CRM-DEPLOYMENT.md",
+        "deploy/nginx/crm.proconsulting.uk.conf",
+        "app/admin/mobile-api.ts"
       ]
     },
     {
       "order": 2,
-      "action": "Before live mobile testing, install the matching CRM TLS certificate and deploy the accepted CRM release. Then test real-device sign-in and file workflows.",
+      "action": "Expand native lead editing and other workflows. Resume CRM-02 contact/enquiry separation and duplicate review in a separate session.",
       "files": [
-        "deploy/CRM-DEPLOYMENT.md",
-        "context-vault/Sessions/2026-11-11-04.md"
+        "context-vault/Feature Ledger.md",
+        "app/admin/domain.ts",
+        "scripts/appwrite-schema.mjs"
       ]
     }
   ],
@@ -61,7 +63,8 @@
     "REPORT-01 counts describe a bounded live scan rather than a database snapshot. Export above 10,000 records requires a future bounded export workflow.",
     "CRM-02 manual entry and contact search require additive lead fields and indexes before rollout. Older phone values that cannot be normalized remain searchable by name or email.",
     "Consultation release requires the private Appwrite collection and index smoke checks.",
-    "Live mobile sign-in is blocked by a certificate hostname mismatch at the CRM origin. iOS physical-device distribution also needs Apple signing."
+    "Live mobile sign-in is blocked by a certificate hostname mismatch at the CRM origin. iOS physical-device distribution also needs Apple signing.",
+    "Native snapshots expire after 15 minutes and stay in memory. Cold-start offline data and edits require an approved encrypted persistence and reconciliation design."
   ],
   "externalState": {
     "database": "proconsulting",
@@ -99,31 +102,32 @@
     "leadContactSchema": "Read-only preview confirmed both additive lead fields are absent. Schema and backfill were not applied.",
     "crm02ManualEntry": "Manual entry and contact search accepted locally. Broader CRM-02 work remains open.",
     "consultationSchema": "Read-only dry run found the private collection absent. Schema was not applied.",
-    "mobileBuilds": "EAS finished Android build 8d2da134-c48d-4f05-bc92-6062b132bd25 and iOS simulator build fa48dddc-d3e2-47ba-abad-2f4fd0b85b91. Local artifacts verified."
+    "mobileBuilds": "EAS finished Android build 8d2da134-c48d-4f05-bc92-6062b132bd25 and iOS simulator build fa48dddc-d3e2-47ba-abad-2f4fd0b85b91. Local artifacts verified.",
+    "nativeMobile": "Native source and both bundles verified locally. CRM TLS hostname mismatch confirmed. VPS API rollout and OTA release pending."
   },
   "checks": [
     {
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-11T06:21:21.616Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-D8wwZC/typecheck.log"
+      "checkedAt": "2026-11-11T18:34:37.730Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-bL5KeG/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-11T06:21:22.774Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-D8wwZC/test.log"
+      "checkedAt": "2026-11-11T18:34:39.030Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-bL5KeG/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-11T06:21:27.847Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-D8wwZC/build.log"
+      "checkedAt": "2026-11-11T18:34:43.845Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-bL5KeG/build.log"
     }
   ],
-  "updatedAt": "2026-11-11T07:21:27.168Z",
-  "verifiedSourceFingerprint": "2641998a0c4478e9edafd69858904160675404748b925f430702dc02e1b3e635"
+  "updatedAt": "2026-11-11T18:34:43.995Z",
+  "verifiedSourceFingerprint": "88d8ad2cde861a802005b32454ea073f039a8c512920b145565f889bb103e285"
 }
