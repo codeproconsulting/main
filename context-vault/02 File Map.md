@@ -94,3 +94,7 @@ CASE-01 accepted workflow/recovery: `docs/APPLICATION-WORKFLOWS.md`; browser evi
 ## TEAM-01 staff access
 
 `app/admin/team.tsx` provides the paged staff list and edit form. `app/admin/team.server.ts` owns role boundaries, profile persistence, session revocation and retries. `app/admin/crm.server.ts` coordinates the staff and assignment locks. `scripts/provision-staff.mjs` links new profiles for bootstrap. See `docs/STAFF-ACCESS.md` and `tests/manual/TEAM-01-browser.md`.
+
+## REPORT-01 operational reports
+
+`app/admin/reports.server.ts` handles permissions, projections, pagination, totals and audited CSV. `app/admin/reports.tsx` renders aggregate counts and `app/admin/export.ts` is the download route. See `docs/CRM-REPORTS.md` and `tests/reports.test.mjs`.

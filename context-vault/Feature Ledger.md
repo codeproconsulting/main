@@ -18,7 +18,7 @@ Only **one feature** is the active session focus. “Code staged” means implem
 | CAL-01 | Appointment booking | Verified locally | Conflict, timezone, outcome, scoped handoff and recovery tests plus built-app browser acceptance passed. Production rollout and reminder adapter pending |
 | DOC-01 | Private client documents | Verified locally + isolated Appwrite storage | Synthetic scanner and built-app workflow passed. Real daemon acceptance, additive schema and VPS rollout pending |
 | TEAM-01 | Team roles and deactivation | Verified locally | Role guards, handoff, revocation retry and retained locks passed. Staff schema and live Appwrite session acceptance pending |
-| REPORT-01 | Operational counts and CSV export | **Next session; code staged** | Scope, pagination/caps, totals, export audit and formula handling |
+| REPORT-01 | Operational counts and CSV export | Verified locally | Bounded totals, role gates, exact cap, audit and CSV safety passed. VPS smoke checks pending |
 | CRM-02 | Advanced lead operations | Planned | Contact/enquiry separation, duplicate review/merge, manual creation, saved views, bulk actions, phone/email search |
 | CRM-03 | Assignment and team scopes | Planned | Capacity/availability rules, round robin, branches, genuinely team-scoped managers |
 | OPS-01 | Production operations | Planned | Deployment access, existing edge, DNS/TLS, backup/restore, monitoring, narrow runtime key, stale-lock recovery |

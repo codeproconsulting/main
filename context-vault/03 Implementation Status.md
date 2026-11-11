@@ -109,3 +109,7 @@ Locally verified with a synthetic scanner and Appwrite fixtures. The built CRM p
 ## TEAM-01 staff access
 
 Verified locally with a built-app browser workflow and synthetic Appwrite tests. The owner and admin guards, concurrent owner changes, handoff requirement, immediate CRM denial, retryable revocation and ambiguous writes passed. The existing project was inspected read-only. Staff schema provisioning, live session revocation and rollout remain release steps.
+
+## REPORT-01 operational reports and CSV export
+
+Locally verified. Operational reports aggregate current leads from bounded cursor pages and use a separate field projection from CSV. Exactly 10,000 records can be exported. A further record marks counts partial and prevents CSV delivery. The built CRM displayed synthetic report breakdowns and downloaded an attachment. Live verification was limited to read-only query syntax. VPS smoke checks remain pending.

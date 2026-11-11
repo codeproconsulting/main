@@ -87,3 +87,7 @@ Require an explicit clean verdict from a trusted Unix socket before writing any 
 ## TEAM-01 offboarding and uncertain writes
 
 Persist inactive access before attempting session revocation. Retain a marker for retry and require a successful revocation before reactivation. Apply owner safeguards and lead ownership checks under the shared staff access lock. Unconfirmed writes that could change staff access or final lead ownership retain their locks for operator reconciliation.
+
+## REPORT-01 bounded current counts
+
+Scan at most 10,000 leads and use one extra record to detect partial results. Keep exact-cap export available. Refuse oversized export and duplicate cursor results. Use a separate data projection for counts and escape spreadsheet formula prefixes in CSV cells.

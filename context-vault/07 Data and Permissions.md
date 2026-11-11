@@ -63,3 +63,7 @@ The document collection stores private metadata and review notes. Only authorize
 ## TEAM-01 role safeguards
 
 Owners and admins manage staff, and only owners can grant or edit the owner role. Self edits are blocked. At least one active owner profile remains. A profile with assigned leads cannot be deactivated or changed to a role without CRM access. The optional team reference remains descriptive.
+
+## REPORT-01 report and export scope
+
+Active owners, admins and managers have current organization-wide report access. Aggregate output omits contact fields. CSV includes only allowlisted fields and requires a fresh session check plus an audit event. The audit event contains the actor and count without exported contact details.

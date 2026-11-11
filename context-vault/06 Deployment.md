@@ -57,3 +57,7 @@ The existing private bucket configuration and disposable large-file probe passed
 ## TEAM-01 staff release
 
 Provision the additive staff marker and owner/active index. Check CRM server scope for Auth identity lookup and session revocation. Run the isolated Appwrite session check in `docs/STAFF-ACCESS.md` before rollout. The existing project was checked read-only and no staff roles or sessions were changed.
+
+## REPORT-01 reports release
+
+The report requires the existing private leads and activities collections. The query projection and ordering were checked read-only against Appwrite with an empty synthetic filter. Verify report permissions, CSV attachment and the audit record in the release environment. See `docs/CRM-REPORTS.md`.

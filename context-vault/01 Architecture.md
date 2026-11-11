@@ -65,3 +65,7 @@ The staff route validates a bounded request and checks the lead before sending b
 ## TEAM-01 staff access
 
 Staff edits use the shared staff access lock. Lead reassignment acquires the lead lock, staff access lock, then the calendar lock. The acting staff role and target eligibility are checked inside the protected handoff. Inactive profiles are denied on each new CRM request while Appwrite session revocation is attempted.
+
+## REPORT-01 operational reports
+
+The report reads private lead projections in stable ID order and aggregates them server-side. CSV uses the same pagination with a separate field allowlist, checks the staff session again, then records the audit before returning an attachment.

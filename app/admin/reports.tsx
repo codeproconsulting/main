@@ -1,7 +1,33 @@
-import {Link,useLoaderData} from "react-router";
-import type {LoaderFunctionArgs} from "react-router";
-import {requireStaff} from "./auth.server";
-import {reportLeads} from "./reports.server";
-import {PageHeading,Empty} from "./ui";
-export async function loader({request}:LoaderFunctionArgs){const staff=await requireStaff(request),{leads,truncated}=await reportLeads(staff);const count=(key:"stage"|"source"|"owner"|"country")=>Object.entries(leads.reduce<Record<string,number>>((result,item)=>{const k=item[key]||"Unassigned / unknown";result[k]=(result[k]||0)+1;return result;},{})).sort((a,b)=>b[1]-a[1]);return {total:leads.length,unassigned:leads.filter(l=>!l.owner).length,converted:leads.filter(l=>l.stage==="Converted").length,stages:count("stage"),sources:count("source"),countries:count("country"),truncated};}
-export default function Reports(){const r=useLoaderData<typeof loader>();return <><PageHeading eyebrow="SEE WHAT MOVES THE BUSINESS" title="Operational reports" description="Current lead inventory by stage, source, and destination. These are current-state counts, not cohort conversion rates."><a className="crm-button" href="/admin/leads.csv">Export permitted leads</a></PageHeading>{r.truncated&&<p className="crm-alert">This view is capped at 10,000 leads. Add a date-bounded reporting pipeline before interpreting larger datasets.</p>}<div className="crm-stats">{[["Leads",r.total],["Unassigned",r.unassigned],["Converted",r.converted]].map(([label,value])=><div className="crm-stat" key={label}><p>{label}</p><strong>{value}</strong></div>)}</div><div className="crm-two-col">{[["By stage",r.stages],["By source",r.sources],["By destination",r.countries]].map(([label,rows])=><section className="crm-panel crm-padded" key={label as string}><h2>{label as string}</h2>{!(rows as [string,number][]).length&&<Empty title="No data yet">Saved enquiries will populate this report.</Empty>}{(rows as [string,number][]).map(([key,count])=><div className="crm-list-row" key={key}><strong className="flex-1">{key}</strong><span>{count}</span></div>)}</section>)}</div></>;}
+import { useLoaderData } from "react-router";
+import type { LoaderFunctionArgs } from "react-router";
+import { requireStaff } from "./auth.server";
+import { operationalReport } from "./reports.server";
+import { PageHeading, Empty } from "./ui";
+
+export async function loader({ request }: LoaderFunctionArgs) {
+  return operationalReport(await requireStaff(request));
+}
+
+export default function Reports() {
+  const report = useLoaderData<typeof loader>();
+  const counts = [["Leads counted", report.total], ["Unassigned", report.unassigned], ["Converted", report.converted]] as const;
+  const sections = [["By stage", report.stages], ["By source", report.sources], ["By destination", report.countries]] as const;
+
+  return <>
+    <PageHeading eyebrow="LEAD INVENTORY" title="Operational reports" description="Current lead counts by stage, source and destination.">
+      {!report.truncated && <a className="crm-button" href="/admin/leads.csv">Export leads as CSV</a>}
+    </PageHeading>
+    {report.truncated && <p className="crm-alert" role="status">Counts cover the first 10,000 leads by record ID. CSV export is unavailable above this limit.</p>}
+    <div className="crm-stats">
+      {counts.map(([label, value]) => <div className="crm-stat" key={label}><p>{label}</p><strong>{value.toLocaleString("en-GB")}</strong></div>)}
+    </div>
+    <div className="crm-two-col">
+      {sections.map(([label, section]) => <section className="crm-panel crm-padded" key={label}>
+        <h2>{label}</h2>
+        {!section.rows.length && <Empty title="No data yet">Saved enquiries will populate this report.</Empty>}
+        {section.rows.map(([name, count]) => <div className="crm-list-row" key={name}><strong className="flex-1">{name}</strong><span>{count}</span></div>)}
+        {section.remainder > 0 && <div className="crm-list-row"><strong className="flex-1">Remaining groups</strong><span>{section.remainder}</span></div>}
+      </section>)}
+    </div>
+  </>;
+}
