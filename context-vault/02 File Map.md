@@ -106,3 +106,7 @@ CASE-01 accepted workflow/recovery: `docs/APPLICATION-WORKFLOWS.md`; browser evi
 ## Consultation tracking
 
 `app/admin/consultations.tsx` records and lists enquiry consultations. `app/admin/consultation-report.tsx` shows management totals and filters. `app/admin/consultations.server.ts` implements scope, attribution and retry handling. See [[Sessions/2026-11-11-03]].
+
+## Mobile staff workspace
+
+The sibling app's `src/StaffWorkspace.tsx` hosts the workspace, `src/workspace.ts` validates navigation, and `app.json` and `eas.json` hold mobile configuration. In this repository, `app/admin/admin.css` controls responsive CRM sign-out visibility. See [[Sessions/2026-11-11-04]].

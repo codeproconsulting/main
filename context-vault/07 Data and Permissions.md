@@ -75,3 +75,5 @@ Active CRM staff may add leads. Counselors create and search their assigned lead
 ## Consultation records
 
 Counselors log their own consultations on currently assigned enquiries. Owners, admins and managers can record a session for an active counselor and access the organization-wide report. The collection stores staff attribution, destination and date without a duplicate customer profile.
+
+The mobile client uses CRM sessions and role checks. Appwrite keys remain on the server. The mobile app does not maintain its own customer record store.

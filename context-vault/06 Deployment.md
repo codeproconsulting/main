@@ -69,3 +69,7 @@ Provision the two additive lead fields and indexes before starting either update
 ## Consultation tracking release
 
 Run `node scripts/setup-appwrite.mjs --only=consultations` to preview, then apply with the setup key before enabling the routes in production. Confirm the private collection, available attributes and five indexes. Smoke-test logging and counselor/destination filters with synthetic enquiries. See [[Sessions/2026-11-11-03]].
+
+## Mobile app access
+
+The Expo app targets the same CRM hostname as the browser. A live connection check returned a certificate hostname mismatch. Install the matching certificate and verify HTTPS at the CRM origin before device acceptance. The mobile build and the CRM deployment have separate release steps.

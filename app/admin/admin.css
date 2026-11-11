@@ -149,7 +149,10 @@
 .crm-shell{display:block}
 .crm-main{margin-left:0}
 .crm-sidebar .crm-brand{margin-bottom:15px}
-.crm-nav-caption,.crm-sidebar-bottom{display:none}
+.crm-nav-caption{display:none}
+.crm-sidebar-bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px}
+.crm-sidebar-bottom>a{display:none}
+.crm-sidebar-bottom .crm-profile{width:100%;margin-top:0}
 .crm-sidebar nav{display:flex;overflow-x:auto;gap:4px}
 .crm-sidebar nav a{white-space:nowrap;font-size:11px;padding:10px}
 .crm-sidebar nav svg{width:15px}

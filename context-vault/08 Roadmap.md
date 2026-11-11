@@ -24,3 +24,5 @@ CAL-01 appointments and DOC-01 private documents are accepted locally. TEAM-01 s
 CRM-02 manual entry and normalized search passed local acceptance. The next CRM-02 slice is contact/enquiry separation and duplicate review.
 
 CONSULT-01 consultation tracking passed local acceptance. Resume CRM-02 with contact/enquiry separation and duplicate review.
+
+MOB-01 mobile builds are available for Android and iOS simulator testing. Live mobile sign-in requires the CRM HTTPS certificate and release. Resume CRM-02 as recorded in [[Session Wall]].

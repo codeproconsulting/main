@@ -99,3 +99,7 @@ Keep display contact values and store separate normalized keys for exact lookup.
 ## Consultation attribution
 
 Store the actual counselor separately from the recorder and current enquiry owner. Count completed sessions. Preserve historical credit after lead handoff. A retried form reuses its consultation record ID.
+
+## Mobile workflow delivery
+
+Use the existing CRM routes and staff permission checks inside the native app so deployed features are shared across platforms. Release builds require a valid HTTPS workspace origin. Hand off attachments to the system browser, which can establish its own staff session.

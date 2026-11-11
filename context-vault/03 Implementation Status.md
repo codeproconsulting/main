@@ -121,3 +121,7 @@ This slice is locally verified. Browser checks covered manual creation, formatte
 ## CONSULT-01 consultation tracking
 
 Locally verified. Staff can record completed consultations on enquiries, and managers can filter consultation history and counts by counselor and destination. Attribution remains stable after reassignment. The live Appwrite dry run found the private collection absent. Provisioning and production smoke checks remain pending.
+
+## MOB-01 React Native staff app
+
+The sibling mobile project builds the existing CRM workspace into a React Native app. Expo finished the Android preview APK and the iOS simulator archive. Both artifacts were downloaded and inspected. Phone-width sign-out was verified against the synthetic CRM. Live device acceptance awaits the CRM certificate correction and deployment.

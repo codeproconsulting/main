@@ -3,7 +3,7 @@
   "AGENTS.md": "b05e49dfef5758806b70aae79454e763ad00a63d27ac9dc9227e47b875aaba37",
   "app/Navbar.tsx": "cffe3d06798c59c1055a9473ed7a59a173950bcdb910e3f283bb2cc9f8743d77",
   "app/ReviewsSection.tsx": "125ee70a3291633da7fc382c718cdf9562afe250ca68737363cd915ee4082bb5",
-  "app/admin/admin.css": "b36f467e66c6e0d0b78e187cbac76fbd135d5aec8ca05b672e500fb52d3a3ad1",
+  "app/admin/admin.css": "19f724a5dfc46bde0098b8fd661894949853ee3588ae21315c5e67326db6ac87",
   "app/admin/auth.server.ts": "64041b738cf686f732f7226dfb0734c59661a675d43254e6061b81d755382c31",
   "app/admin/blog-edit.tsx": "6f0948aaacfc47b000ea02b2f0d9fa003a13be69cf2896d55dc472e15df7dfc6",
   "app/admin/blogs.tsx": "fa9113a0d9e27cdaf2e936e2436deba9239302c9203033a632997877a337b04b",

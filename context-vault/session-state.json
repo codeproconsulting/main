@@ -1,36 +1,36 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-11-03",
+  "sessionId": "2026-11-11-04",
   "sessionStatus": "completed",
-  "activeFeature": "CONSULT-01",
-  "objective": "Track completed customer consultations by counselor and destination.",
+  "activeFeature": "MOB-01",
+  "objective": "Create the React Native staff app in the new sibling mobile folder and verify build readiness.",
   "scope": [
-    "Record consultation on an enquiry",
-    "Filter consultation history by destination and counselor"
+    "Branded Expo mobile shell sharing deployed CRM workflows",
+    "Native bundle checks and device build setup",
+    "Mobile sign-out visibility"
   ],
   "outOfScope": [
-    "Billing and commissions",
-    "Production rollout"
+    "Production deployment and app store publication"
   ],
   "acceptance": [
     {
-      "id": "CONSULT01-A",
-      "description": "Scoped and retry-safe recording",
+      "id": "MOB01-A",
+      "description": "Mobile shell and security checks",
       "status": "passed",
-      "evidence": "Synthetic tests passed counselor scope, manager attribution, handoff preservation, invalid dates and lost acknowledgment recovery. Browser logged a completed Germany consultation."
+      "evidence": "Expo shell typecheck, lint and three navigation tests passed. CRM typecheck, tests and build passed. Synthetic phone-width browser verification confirmed sign-in and visible sign-out."
     },
     {
-      "id": "CONSULT01-B",
-      "description": "Consultation history and management filters",
+      "id": "MOB01-B",
+      "description": "Bundles and native build status",
       "status": "passed",
-      "evidence": "Synthetic tests passed management role, combined filters and pagination. Browser verified Germany and counselor filters and the empty Italy result. Typecheck, 136 tests and build passed."
+      "evidence": "EAS finished the Android preview APK and iOS simulator build. APK archive integrity and manifest/DEX/bundle presence verified. iOS archive contains the app metadata and JavaScript bundle. Device sign-in is a separate release gate."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Archive consultation tracking and resume CRM-02 with contact/enquiry separation and duplicate review.",
+      "action": "Archive the mobile build session and resume CRM-02 with contact/enquiry separation and duplicate review.",
       "files": [
         "app/admin/domain.ts",
         "scripts/appwrite-schema.mjs",
@@ -39,10 +39,10 @@
     },
     {
       "order": 2,
-      "action": "Before releasing consultation tracking, provision the private collection and verify production-equivalent logging and filters.",
+      "action": "Before live mobile testing, install the matching CRM TLS certificate and deploy the accepted CRM release. Then test real-device sign-in and file workflows.",
       "files": [
-        "scripts/appwrite-schema.mjs",
-        "context-vault/Sessions/2026-11-11-03.md"
+        "deploy/CRM-DEPLOYMENT.md",
+        "context-vault/Sessions/2026-11-11-04.md"
       ]
     }
   ],
@@ -60,7 +60,8 @@
     "TEAM-01 release requires additive staff schema and actual Appwrite session revocation verification. Ambiguous profile or final lead assignment writes retain locks and require targeted recovery.",
     "REPORT-01 counts describe a bounded live scan rather than a database snapshot. Export above 10,000 records requires a future bounded export workflow.",
     "CRM-02 manual entry and contact search require additive lead fields and indexes before rollout. Older phone values that cannot be normalized remain searchable by name or email.",
-    "Consultation release requires the private Appwrite collection and index smoke checks."
+    "Consultation release requires the private Appwrite collection and index smoke checks.",
+    "Live mobile sign-in is blocked by a certificate hostname mismatch at the CRM origin. iOS physical-device distribution also needs Apple signing."
   ],
   "externalState": {
     "database": "proconsulting",
@@ -73,12 +74,12 @@
     "ownerPassword": "owner must set via Appwrite Console",
     "gitBranch": "codex/crm-workspace",
     "integratedUpstream": "origin/main through 0397d6d; TOEFL and service-location pages preserved",
-    "githubCheckpoint": "CONSULT-01 verified on codex/crm-workspace. Exact commit in branch history.",
+    "githubCheckpoint": "MOB-01 CRM responsive sign-out and vault checkpoint on codex/crm-workspace.",
     "mainMergePolicy": "Tested features may be merged after exact release candidate review and creation of a prior-main rollback reference. No integration was performed in REPORT-01.",
     "rollbackReference": "rollback/main-2026-10-29-407977c preserves the existing main baseline for release recovery",
     "scheduleIndex": "posts schedule(status,publishedAt) available; live due query passed read-only with zero due posts",
     "publishingWorker": "Dedicated opt-in runner added; not activated on VPS",
-    "browserTestData": "Synthetic consultation preview stopped after acceptance.",
+    "browserTestData": "Synthetic phone-width CRM preview stopped after acceptance.",
     "mediaSchema": "Private media collection/attributes/index provisioned; published defaults false (live default check passed)",
     "mediaStorage": "Private bucket config and real disposable file/metadata round trip verified; synthetic resources removed",
     "nginx": "Bootstrap and HTTPS templates prepared; target-server validation not performed",
@@ -97,31 +98,32 @@
     "reporting": "Synthetic report and CSV acceptance passed. VPS rollout pending.",
     "leadContactSchema": "Read-only preview confirmed both additive lead fields are absent. Schema and backfill were not applied.",
     "crm02ManualEntry": "Manual entry and contact search accepted locally. Broader CRM-02 work remains open.",
-    "consultationSchema": "Read-only dry run found the private collection absent. Schema was not applied."
+    "consultationSchema": "Read-only dry run found the private collection absent. Schema was not applied.",
+    "mobileBuilds": "EAS finished Android build 8d2da134-c48d-4f05-bc92-6062b132bd25 and iOS simulator build fa48dddc-d3e2-47ba-abad-2f4fd0b85b91. Local artifacts verified."
   },
   "checks": [
     {
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-11T05:30:17.095Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Xvi2xE/typecheck.log"
+      "checkedAt": "2026-11-11T06:21:21.616Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-D8wwZC/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-11T05:30:18.338Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Xvi2xE/test.log"
+      "checkedAt": "2026-11-11T06:21:22.774Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-D8wwZC/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-11T05:30:23.356Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Xvi2xE/build.log"
+      "checkedAt": "2026-11-11T06:21:27.847Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-D8wwZC/build.log"
     }
   ],
-  "updatedAt": "2026-11-11T05:31:36.903Z",
-  "verifiedSourceFingerprint": "dde1a6e42d1902b20d6805b3e7d8bbea84782e599fcc675f4e643033c8ab8689"
+  "updatedAt": "2026-11-11T07:21:27.168Z",
+  "verifiedSourceFingerprint": "2641998a0c4478e9edafd69858904160675404748b925f430702dc02e1b3e635"
 }

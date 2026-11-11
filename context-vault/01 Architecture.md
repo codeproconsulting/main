@@ -77,3 +77,7 @@ Public intake and staff entry write normalized email and phone keys. Scoped lead
 ## Consultation tracking
 
 Completed consultations use a private collection keyed by enquiry, credited staff member and destination. Lead history checks current enquiry scope. The management report filters by counselor and normalized destination and projects only the names needed for enquiry links.
+
+## MOB-01 mobile staff workspace
+
+The Expo/React Native app lives in the sibling `Proconsulting-App` folder. Its native browser view loads the responsive CRM over HTTPS, retaining server-managed authentication and feature permissions. The mobile shell adds navigation and a browser handoff for downloads. The CRM exposes its sign-out control at phone widths.
