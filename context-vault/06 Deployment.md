@@ -77,3 +77,5 @@ The Expo app targets the same CRM hostname as the browser. A live connection che
 ## Native API release
 
 The CRM host needs valid TLS and the release containing `/admin/mobile/v1/`. Apply and validate the Nginx template that includes the native session endpoint in the login rate limit. Verify online sign-in, scope and airplane-mode behavior on a device before distributing the native update. The initial native workspace uses the existing Expo runtime, so it can be distributed as an OTA update to compatible preview installs. See [[Sessions/2026-11-11-05]].
+
+Before distributing the native editor, test a mobile lead edit on the deployed CRM, reload the web lead, and confirm an older web or mobile form receives a conflict. See [[Sessions/2026-11-11-06]].

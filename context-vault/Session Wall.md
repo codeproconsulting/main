@@ -3,45 +3,44 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-11-05]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-11-06]].
 
 ## Resume here
 
-**Session:** 2026-11-11-05
+**Session:** 2026-11-11-06
 
-**Active feature:** MOB-02
+**Active feature:** MOB-03
 
 **State:** in_progress
 
-**Objective:** Replace the embedded CRM website with the first native staff workflow and verify offline behavior.
+**Objective:** Let staff edit lead stage and priority on mobile and web with shared conflict protection.
 
 A user saying **continue** means resume this feature's next unfinished acceptance check. Do not start unrelated modules or repeat completed infrastructure work. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Native sign-in, lead list and follow-up list
-- Shared CRM mobile API and dashboard compatibility
-- Short-lived offline snapshot in app memory
+- Native lead editor and online saves
+- Web priority column and reload action for stale edits
+- Shared authorization, version and audit behavior
 
 ## Out of scope
 
-- Offline edits and encrypted storage across app restarts
-- Production rollout and full native parity
+- Offline writes, mobile assignment and changes to the production VPS
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| MOB02-A | API sign-in, scoped reads and revocation | passed | Synthetic integration test confirms counselor scope, transferred task exclusion, redacted projection, host and browser rejection, token tamper rejection, no-store and revocation. |
-| MOB02-B | Native render and airplane-mode device checks | blocked | Mobile typecheck, lint, existing tests and Android/iOS Hermes exports passed. Device sign-in and airplane-mode behavior are unverified. HTTPS probe failed because the certificate does not match crm.proconsulting.uk. |
+| MOB03-A | Shared lead update rules and web/mobile conflict protection | passed | Synthetic authenticated web form and mobile API update the same lead. Both reject stale versions; counselor scope, closure reason, audit, and preservation of assignment and next follow-up are tested. |
+| MOB03-B | Release and test mobile and web on the CRM host | blocked | MOB-02 recorded CRM TLS hostname mismatch. Target deployment and physical-device acceptance are pending. |
 
 ## Exact next actions
 
-1. Deploy the accepted CRM build and rate-limited route behind valid TLS, then run Android checks for sign-in, airplane mode, cache expiry and sign-out before releasing the mobile preview update.
-   Files: `deploy/CRM-DEPLOYMENT.md`, `deploy/nginx/crm.proconsulting.uk.conf`, `app/admin/mobile-api.ts`
+1. Deploy the accepted CRM release behind valid TLS. Test staff sign-in, mobile editing, browser conflict recovery and airplane mode on a phone before publishing the compatible preview update.
+   Files: `deploy/CRM-DEPLOYMENT.md`, `app/admin/mobile-api.ts`, `context-vault/Sessions/2026-11-11-06.md`
 
-2. Expand native lead editing and other workflows. Resume CRM-02 contact/enquiry separation and duplicate review in a separate session.
-   Files: `context-vault/Feature Ledger.md`, `app/admin/domain.ts`, `scripts/appwrite-schema.mjs`
+2. Continue native lead search and pagination and resume CRM-02 contact/enquiry separation in separately scoped sessions.
+   Files: `app/admin/crm.server.ts`, `context-vault/Feature Ledger.md`
 
 ## Known risks and unfinished work
 
@@ -64,9 +63,9 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-11T18:34:37.730Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-bL5KeG/typecheck.log`
-- **passed**: `npm run test` (2026-11-11T18:34:39.030Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-bL5KeG/test.log`
-- **passed**: `npm run build` (2026-11-11T18:34:43.845Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-bL5KeG/build.log`
+- **passed**: `npm run typecheck` (2026-11-11T18:52:12.438Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-7ElmJ3/typecheck.log`
+- **passed**: `npm run test` (2026-11-11T18:52:13.550Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-7ElmJ3/test.log`
+- **passed**: `npm run build` (2026-11-11T18:52:19.347Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-7ElmJ3/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -109,5 +108,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **consultationSchema**: Read-only dry run found the private collection absent. Schema was not applied.
 - **mobileBuilds**: EAS finished Android build 8d2da134-c48d-4f05-bc92-6062b132bd25 and iOS simulator build fa48dddc-d3e2-47ba-abad-2f4fd0b85b91. Local artifacts verified.
 - **nativeMobile**: Native source and both bundles verified locally. CRM TLS hostname mismatch confirmed. VPS API rollout and OTA release pending.
+- **nativeLeadEditing**: Implemented in both source trees. No VPS or OTA release.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

@@ -1,4 +1,8 @@
 export const stages = ["New", "Attempting contact", "Contacted", "Counselling booked", "Counselled", "Qualified", "Converted", "Nurture", "Unresponsive", "Not eligible", "Lost", "Archived"] as const;
+export const priorities = ["Normal", "High", "Urgent"] as const;
+export const closureStages = ["Lost", "Not eligible", "Archived"] as const;
+export const requiresClosureReason = (current: string, next: string) =>
+  next !== current && closureStages.some(stage => stage === next);
 export const roles = ["owner", "admin", "manager", "counselor", "editor", "publisher"] as const;
 export type Role = typeof roles[number];
 export type Staff = { $id: string; name: string; role: Role; active: boolean; teamId?: string; revocationPending?: string };

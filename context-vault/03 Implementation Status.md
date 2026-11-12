@@ -129,3 +129,7 @@ The sibling mobile project builds the existing CRM workspace into a React Native
 ### MOB-02 native staff workspace
 
 The native sign-in, lead and follow-up screens and shared CRM API are implemented locally. A loaded snapshot stays readable during connection loss for up to 15 minutes in the running app. First sign-in, a cold-start data load and all writes require connectivity. Native editing, durable offline storage and full feature parity remain planned. Production release and physical-device verification are pending. See [[Sessions/2026-11-11-05]].
+
+### MOB-03 shared lead editing
+
+Mobile stage and priority editing and the web priority column and conflict reload action are implemented. Synthetic integration verified both directions of the shared edit and conflict flow. Device and deployed dashboard checks are pending. See [[Sessions/2026-11-11-06]].

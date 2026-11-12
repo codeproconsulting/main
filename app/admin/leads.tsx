@@ -100,11 +100,12 @@ export default function Leads() {
         <button className="crm-button secondary">Apply filters</button>
       </Form>
       <div className="crm-table-wrap"><table className="crm-table">
-        <thead><tr><th>Contact</th><th>Service & destination</th><th>Stage</th><th>Assigned to</th><th>Next follow-up</th><th /></tr></thead>
+        <thead><tr><th>Contact</th><th>Service & destination</th><th>Stage</th><th>Priority</th><th>Assigned to</th><th>Next follow-up</th><th /></tr></thead>
         <tbody>{leads.documents.map(lead => <tr key={lead.$id}>
           <td><Link to={`/admin/leads/${lead.$id}`}><strong>{lead.name}</strong><small>{lead.email}</small></Link></td>
           <td>{lead.service}<small>{lead.country || "Destination to confirm"}</small></td>
           <td><Badge tone={lead.stage === "New" ? "pink" : "neutral"}>{lead.stage}</Badge></td>
+          <td><Badge tone={lead.priority === "Urgent" ? "pink" : "neutral"}>{lead.priority || "Normal"}</Badge></td>
           <td>{initial.team.find(member => member.$id === lead.owner)?.name || (lead.owner ? "Assigned counselor" : "Unassigned")}</td>
           <td>{displayDate(lead.nextFollowUp)}</td>
           <td><Link aria-label={`Open ${lead.name}`} to={`/admin/leads/${lead.$id}`}><ArrowUpRight size={18} /></Link></td>

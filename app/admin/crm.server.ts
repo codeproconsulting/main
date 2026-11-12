@@ -2,7 +2,7 @@ import { emailKey, phoneKey } from "~/lib/lead-contact";
 import { appointmentCalendarLock, appointmentsForHandoff } from "./calendar.server";
 import { createHash, randomUUID } from "node:crypto";
 import { AppwriteError, appwrite, createDocument, getDocument, listDocuments, query, updateDocument } from "~/lib/appwrite.server";
-import { canAccessLead, canManage, canUseCRM, stages, type Activity, type Lead, type Staff, type Task } from "./domain";
+import { canAccessLead, canManage, canUseCRM, priorities, requiresClosureReason, stages, type Activity, type Lead, type Staff, type Task } from "./domain";
 
 export function allow(condition: boolean) { if (!condition) throw new Response("Access denied", { status: 403 }); }
 export function field(form: FormData, name: string, max = 1000) {
@@ -21,7 +21,7 @@ export async function audit(staff: Staff, entityId: string, entityType: string, 
   return createDocument("activities", { actor: staff.$id, entityId, entityType, event, details: JSON.stringify(details) });
 }
 export async function listStaff() { return (await listDocuments<Staff>("staff", [query("equal", "active", [true]), query("limit", undefined, [100])])).documents; }
-const leadListFields = ["$id", "$createdAt", "name", "email", "service", "country", "stage", "owner", "nextFollowUp"] as const;
+const leadListFields = ["$id", "$createdAt", "name", "email", "service", "country", "stage", "priority", "owner", "nextFollowUp"] as const;
 
 export async function leadsFor(staff: Staff, search = "", stage = "", page = 1) {
   allow(staff.active && canUseCRM(staff));
@@ -87,20 +87,20 @@ export async function serialized<T>(key: string, operation: () => Promise<T>): P
 }
 export const staffAccessLock = "staff:access";
 
-export async function updateLead(staff: Staff, id: string, form: FormData) {
+export async function updateLead(staff: Staff, id: string, form: FormData, mode: "full" | "stage-priority" = "full") {
   return serialized(`lead:${id}`, async () => {
     const lead = await leadFor(staff, id);
     if (Number(field(form, "version")) !== lead.version) throw new Response("This lead changed. Refresh before saving.", { status: 409 });
     const stage = field(form, "stage");
     if (!stages.includes(stage as typeof stages[number])) throw new Response("Invalid stage", { status: 400 });
     const priority = field(form, "priority");
-    if (!["Normal", "High", "Urgent"].includes(priority)) throw new Response("Invalid priority", { status: 400 });
-    const owner = canManage(staff) ? field(form, "owner", 36) : lead.owner;
+    if (!priorities.some(value => value === priority)) throw new Response("Invalid priority", { status: 400 });
+    const owner = mode === "full" && canManage(staff) ? field(form, "owner", 36) : lead.owner;
     const reason = field(form, "reason", 2000);
-    if ((["Lost", "Not eligible", "Archived"].includes(stage) && stage !== lead.stage) || owner !== lead.owner) {
+    if (requiresClosureReason(lead.stage, stage) || owner !== lead.owner) {
       if (!reason) throw new Response("A reason is required for closure or reassignment.", { status: 400 });
     }
-    const changes = { stage, owner, priority, nextFollowUp: dateField(field(form, "nextFollowUp")), version: lead.version + 1 };
+    const changes = { stage, owner, priority, nextFollowUp: mode === "full" ? dateField(field(form, "nextFollowUp")) : lead.nextFollowUp, version: lead.version + 1 };
     const transferring = owner !== lead.owner;
     const save = async () => {
       if (owner) {
