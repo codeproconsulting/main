@@ -2,6 +2,19 @@
 
 Install the CRM beside the live public website and Appwrite. The first install uses a separate checkout, a separate PM2 process, and a new HTTPS hostname. Keep the existing website and Ghost services running during the trial.
 
+## How the two hostnames share one application
+
+The public website, CRM pages under `/admin`, and CRM mobile API are in one React Router project. The repository's PM2 configuration can start both web surfaces from the same checkout and the same `npm run build` output. Each process gets its own `APP_SURFACE` and port.
+
+| Hostname | Proxy upstream | PM2 process | Runtime mode |
+| --- | --- | --- | --- |
+| `proconsulting.uk` | Existing upstream, normally `127.0.0.1:3000` | `proconsulting-main` when managed by this ecosystem | `website` |
+| `crm.proconsulting.uk` | `127.0.0.1:3001` for host Nginx | `proconsulting-crm` | `dashboard` |
+
+The CRM proxy sends the original path to Node. It sends `/admin/login` and `/admin/mobile/v1/workspace` to port 3001, and the CRM's root redirects to `/admin`. The Android app uses the HTTPS CRM API and has no separate VPS process.
+
+The dedicated checkout below isolates the first CRM trial from the current public release. After public acceptance, you can run both processes from one deployed checkout. First inspect `pm2 ls` and `pm2 describe <existing-website-process>` to confirm the website's directory, start command and port. Keep its existing listener during the trial. When promoting the shared build, update the existing website process or replace it during a planned cutover, with only one listener on its port. Pulling code alone does not update a running PM2 process or add DNS, HTTPS routing, or the CRM listener.
+
 ## 1. Identify the existing proxy and set DNS
 
 On the VPS, run:
