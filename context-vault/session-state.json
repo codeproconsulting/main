@@ -24,17 +24,16 @@
       "id": "OPS02-B",
       "description": "Candidate deployment and physical-device checks",
       "status": "pending",
-      "evidence": "Live Appwrite leads fields/indexes verified. Locally built candidate submitted a synthetic enquiry to Appwrite, confirmed both normalized fields, and cleaned up. Target Nginx and physical-device checks remain open."
+      "evidence": "Appwrite leads schema and synthetic candidate intake passed. Target owner profile is active. The live CRM certificate does not match the hostname, and target proxy and physical-device checks are open."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "On the release candidate, verify the additive leads schema, run the staged public intake smoke check and validate the active proxy. Smoke-test queue paging and handoff recovery before promotion.",
+      "action": "Operator to configure the CRM DNS and proxy, deploy the tested checkout alongside the live website, then verify TLS, browser login, and the mobile API.",
       "files": [
-        "deploy/CRM-DEPLOYMENT.md",
-        "scripts/verify-appwrite.mjs",
-        "docs/APPLICATION-WORKFLOWS.md"
+        "deploy/CRM-FIRST-INSTALL.md",
+        "deploy/CRM-DEPLOYMENT.md"
       ]
     },
     {
@@ -103,31 +102,32 @@
     "mobileBuilds": "EAS finished Android build 8d2da134-c48d-4f05-bc92-6062b132bd25 and iOS simulator build fa48dddc-d3e2-47ba-abad-2f4fd0b85b91. Local artifacts verified.",
     "nativeMobile": "Native source and both bundles verified locally. CRM TLS hostname mismatch confirmed. VPS API rollout and OTA release pending.",
     "nativeLeadEditing": "Implemented in both source trees. No VPS or OTA release.",
-    "auditRollout": "Appwrite leads schema provisioned. No VPS app deployment or OTA publication."
+    "auditRollout": "Appwrite leads schema provisioned. No VPS app deployment or OTA publication.",
+    "vpsHandoff": "Operator chose self-install. First-install checklist prepared. Target CRM DNS/proxy and VPS release await operator setup."
   },
   "checks": [
     {
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-12T02:03:06.464Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-zdRB8O/typecheck.log"
+      "checkedAt": "2026-11-12T07:47:47.437Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-j9YSD0/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-12T02:03:07.831Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-zdRB8O/test.log"
+      "checkedAt": "2026-11-12T07:47:48.621Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-j9YSD0/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-12T02:03:13.068Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-zdRB8O/build.log"
+      "checkedAt": "2026-11-12T07:47:53.647Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-j9YSD0/build.log"
     }
   ],
-  "updatedAt": "2026-11-12T06:22:33.850Z",
-  "verifiedSourceFingerprint": "bbc1a9d73a02a962dd384b52c5ec93a5d8069158649bed2b14705184623e6b69"
+  "updatedAt": "2026-11-12T07:48:07.746Z",
+  "verifiedSourceFingerprint": "a76a01f5fa72164409d83d6d8a8003cc706284c84bcbbc26c78c074957f7527d"
 }

@@ -117,3 +117,5 @@ The sibling app's `src/StaffWorkspace.tsx` hosts the workspace, `src/workspace.t
 - `app/admin/lead.tsx` presents the browser conflict reload action. `app/admin/leads.tsx` shows priority in the browser list. `app/admin/crm.server.ts` applies shared lead-edit rules for both clients.
 
 - `app/lib/request-body.server.ts` provides the bounded reader shared by public intake and CRM uploads. `scripts/verify-appwrite.mjs` can exercise staged public intake and verify cleanup.
+
+- `deploy/CRM-FIRST-INSTALL.md` lists the first-install steps for the current VPS and the tested feature-branch release.

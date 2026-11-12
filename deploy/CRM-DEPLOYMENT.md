@@ -2,6 +2,8 @@
 
 This runbook adds the CRM subdomain to the existing VPS. Start with a controlled staff trial: this development branch contains modules still awaiting acceptance. Read `context-vault/Session Wall.md` and `Feature Ledger.md` for current gates. No VPS deployment has been performed by these instructions.
 
+For a first install alongside the existing public website, start with the [first-install checklist](CRM-FIRST-INSTALL.md).
+
 ## 1. Topology and prerequisites
 
 | Host | Destination | Purpose |

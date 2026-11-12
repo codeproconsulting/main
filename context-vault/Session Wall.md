@@ -32,12 +32,12 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
 | OPS02-A | Intake limits, handoff retry and queue pagination | passed | Focused synthetic tests verify streamed-byte rejection and cancellation, retained handoff locks and exact retry, and records after the old 100-row ceiling with deduplicated lead reads. |
-| OPS02-B | Candidate deployment and physical-device checks | pending | Live Appwrite leads fields/indexes verified. Locally built candidate submitted a synthetic enquiry to Appwrite, confirmed both normalized fields, and cleaned up. Target Nginx and physical-device checks remain open. |
+| OPS02-B | Candidate deployment and physical-device checks | pending | Appwrite leads schema and synthetic candidate intake passed. Target owner profile is active. The live CRM certificate does not match the hostname, and target proxy and physical-device checks are open. |
 
 ## Exact next actions
 
-1. On the release candidate, verify the additive leads schema, run the staged public intake smoke check and validate the active proxy. Smoke-test queue paging and handoff recovery before promotion.
-   Files: `deploy/CRM-DEPLOYMENT.md`, `scripts/verify-appwrite.mjs`, `docs/APPLICATION-WORKFLOWS.md`
+1. Operator to configure the CRM DNS and proxy, deploy the tested checkout alongside the live website, then verify TLS, browser login, and the mobile API.
+   Files: `deploy/CRM-FIRST-INSTALL.md`, `deploy/CRM-DEPLOYMENT.md`
 
 2. After CRM TLS and API deployment, verify native follow-up paging and publish the compatible preview update. Resume native lead search and CRM-02 in separate sessions.
    Files: `app/admin/mobile-api.ts`, `context-vault/Feature Ledger.md`
@@ -63,9 +63,9 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-12T02:03:06.464Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-zdRB8O/typecheck.log`
-- **passed**: `npm run test` (2026-11-12T02:03:07.831Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-zdRB8O/test.log`
-- **passed**: `npm run build` (2026-11-12T02:03:13.068Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-zdRB8O/build.log`
+- **passed**: `npm run typecheck` (2026-11-12T07:47:47.437Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-j9YSD0/typecheck.log`
+- **passed**: `npm run test` (2026-11-12T07:47:48.621Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-j9YSD0/test.log`
+- **passed**: `npm run build` (2026-11-12T07:47:53.647Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-j9YSD0/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -110,5 +110,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **nativeMobile**: Native source and both bundles verified locally. CRM TLS hostname mismatch confirmed. VPS API rollout and OTA release pending.
 - **nativeLeadEditing**: Implemented in both source trees. No VPS or OTA release.
 - **auditRollout**: Appwrite leads schema provisioned. No VPS app deployment or OTA publication.
+- **vpsHandoff**: Operator chose self-install. First-install checklist prepared. Target CRM DNS/proxy and VPS release await operator setup.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

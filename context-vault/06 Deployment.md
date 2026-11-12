@@ -81,3 +81,5 @@ The CRM host needs valid TLS and the release containing `/admin/mobile/v1/`. App
 Before distributing the native editor, test a mobile lead edit on the deployed CRM, reload the web lead, and confirm an older web or mobile form receives a conflict. See [[Sessions/2026-11-11-06]].
 
 Verify the target leads schema and exercise one disposable enquiry on the staged website before switching public traffic. Apply the intake-specific request limit at the active edge. See [[Sessions/2026-11-12-01]] and `deploy/CRM-DEPLOYMENT.md`.
+
+The operator will configure the CRM hostname and release on the existing VPS. Use `deploy/CRM-FIRST-INSTALL.md` for the first install and `deploy/CRM-DEPLOYMENT.md` for the full runbook. The target Appwrite owner identity and active staff profile passed read-only verification. The live CRM certificate still does not cover the CRM hostname.
