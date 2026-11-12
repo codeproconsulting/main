@@ -1,3 +1,4 @@
+import { boundedBody } from "~/lib/request-body.server";
 import {createHash} from "node:crypto";
 import {appwrite} from "~/lib/appwrite.server";
 export const privateBucket=()=>process.env.APPWRITE_DOCUMENT_BUCKET||"crm-documents";
@@ -39,10 +40,8 @@ export async function downloadFile(bucket:string,id:string,name:string){const st
 export async function boundedUploadForm(request:Request,max:number,label:string){
  if(Number(request.headers.get("Content-Length"))>max)throw new Response(`${label} request is too large`,{status:413});
  if(!request.headers.get("Content-Type")?.startsWith("multipart/form-data")&&!request.headers.get("Content-Type")?.startsWith("application/x-www-form-urlencoded"))throw new Response(`Invalid ${label.toLowerCase()} form`,{status:400});
- const reader=request.body?.getReader();if(!reader)throw new Response(`Empty ${label.toLowerCase()} form`,{status:400});
- const chunks:Uint8Array<ArrayBuffer>[]=[];let size=0;
- try{while(true){const {done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>max){void reader.cancel().catch(()=>undefined);throw new Response(`${label} request is too large`,{status:413});}chunks.push(new Uint8Array(value));}}
- finally{reader.releaseLock();}
- try{return await new Response(new Blob(chunks),{headers:{"Content-Type":request.headers.get("Content-Type")!}}).formData();}
+ const body=await boundedBody(request,max,label);
+ if(!body.size)throw new Response(`Empty ${label.toLowerCase()} form`,{status:400});
+ try{return await new Response(body,{headers:{"Content-Type":request.headers.get("Content-Type")!}}).formData();}
  catch{throw new Response(`Invalid ${label.toLowerCase()} form`,{status:400});}
 }

@@ -133,3 +133,7 @@ The native sign-in, lead and follow-up screens and shared CRM API are implemente
 ### MOB-03 shared lead editing
 
 Mobile stage and priority editing and the web priority column and conflict reload action are implemented. Synthetic integration verified both directions of the shared edit and conflict flow. Device and deployed dashboard checks are pending. See [[Sessions/2026-11-11-06]].
+
+### OPS-02 audit remediation
+
+Intake byte limits, candidate schema/intake verification, handoff retry behavior and work-queue pagination are implemented locally. Follow-up paging is also implemented in the sibling mobile app. Appwrite leads fields and indexes were provisioned. Candidate intake against Appwrite passed. Deployment and device checks are open. See [[Sessions/2026-11-12-01]].

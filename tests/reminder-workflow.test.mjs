@@ -8,7 +8,7 @@ let vite,crm,notices,stores,failAudit,afterTaskRead;
 const reply=(value,status=200)=>new Response(JSON.stringify(value),{status,headers:{'Content-Type':'application/json'}});
 const rejects=status=>error=>error instanceof Response&&error.status===status;
 function reset(){
- stores={appointments:new Map(),cases:new Map(),leads:new Map([['lead-one',{$id:'lead-one',owner:'counselor-one',stage:'New',version:1}]]),tasks:new Map([['task-one',{$id:'task-one',leadId:'lead-one',owner:'counselor-one',title:'Synthetic task',status:'Open',dueAt:'2030-01-01T11:00:00.000Z',version:1}]]),staff:new Map([['manager-one',staff('manager')],['counselor-one',staff('counselor')],['counselor-two',{$id:'counselor-two',name:'Synthetic two',role:'counselor',active:true}]]),notifications:new Map([['notice-one',{$id:'notice-one',recipient:'counselor-one',entityId:'lead-one',kind:'task',sourceId:'task-one',sourceVersion:1,dueAt:'2030-01-01T11:00:00.000Z',title:'Stored title',body:'Stored body',read:false}]]),activities:new Map(),worker_health:new Map()};failAudit=false;afterTaskRead=null;
+ stores={locks:new Map(),appointments:new Map(),cases:new Map(),leads:new Map([['lead-one',{$id:'lead-one',owner:'counselor-one',stage:'New',version:1}]]),tasks:new Map([['task-one',{$id:'task-one',leadId:'lead-one',owner:'counselor-one',title:'Synthetic task',status:'Open',dueAt:'2030-01-01T11:00:00.000Z',version:1}]]),staff:new Map([['manager-one',staff('manager')],['counselor-one',staff('counselor')],['counselor-two',{$id:'counselor-two',name:'Synthetic two',role:'counselor',active:true}]]),notifications:new Map([['notice-one',{$id:'notice-one',recipient:'counselor-one',entityId:'lead-one',kind:'task',sourceId:'task-one',sourceVersion:1,dueAt:'2030-01-01T11:00:00.000Z',title:'Stored title',body:'Stored body',read:false}]]),activities:new Map(),worker_health:new Map()};failAudit=false;afterTaskRead=null;
 }
 before(async()=>{
  Object.assign(process.env,{NODE_ENV:'test',APPWRITE_ENDPOINT:'http://127.0.0.1/v1',APPWRITE_PROJECT_ID:'synthetic',APPWRITE_API_KEY:'synthetic',APPWRITE_DATABASE_ID:'synthetic'});
@@ -17,9 +17,9 @@ before(async()=>{
   const url=new URL(input),[,collection,id]=url.pathname.match(/\/collections\/(\w+)\/documents(?:\/([^/]+))?$/)||[],store=stores[collection];if(!store)throw new Error('Unexpected collection');const method=options.method||'GET',payload=options.body?JSON.parse(options.body):null;
   if(method==='GET'){
    if(id){const response=store.has(id)?reply(store.get(id)):reply({},404);if(collection==='tasks'&&afterTaskRead){const fn=afterTaskRead;afterTaskRead=null;fn();}return response;}
-   let documents=[...store.values()];for(const q of url.searchParams.getAll('queries[]').map(JSON.parse)){if(q.method==='equal')documents=documents.filter(d=>q.values.includes(d[q.attribute]));if(q.method==='orderAsc')documents.sort((a,b)=>String(a[q.attribute]).localeCompare(String(b[q.attribute])));if(q.method==='cursorAfter'){const index=documents.findIndex(d=>d.$id===q.values[0]);documents=documents.slice(index+1);}}const limit=url.searchParams.getAll('queries[]').map(JSON.parse).find(q=>q.method==='limit')?.values[0]??100;return reply({documents:documents.slice(0,limit),total:documents.length});
+   let documents=[...store.values()];for(const q of url.searchParams.getAll('queries[]').map(JSON.parse)){if(q.method==='equal')documents=documents.filter(d=>q.values.includes(d[q.attribute]));if(q.method==='orderAsc')documents.sort((a,b)=>String(a[q.attribute]).localeCompare(String(b[q.attribute])));if(q.method==='cursorAfter'){const index=documents.findIndex(d=>d.$id===q.values[0]);documents=documents.slice(index+1);}}const limit=url.searchParams.getAll('queries[]').map(JSON.parse).find(q=>q.method==='limit')?.values[0]??100;const offset=url.searchParams.getAll('queries[]').map(JSON.parse).find(q=>q.method==='offset')?.values[0]??0;return reply({documents:documents.slice(offset,offset+limit),total:documents.length});
   }
-  if(method==='POST'){if(collection==='activities'&&failAudit)return reply({},503);assert.deepEqual(payload.permissions,[]);const record={...payload.data,$id:payload.documentId};store.set(record.$id,record);return reply(record);}
+  if(method==='POST'){if(store.has(payload.documentId))return reply({},409);if(collection==='activities'&&failAudit)return reply({},503);assert.deepEqual(payload.permissions,[]);const record={...payload.data,$id:payload.documentId};store.set(record.$id,record);return reply(record);}
   if(method==='PATCH'){if(!store.has(id))return reply({},404);const record={...store.get(id),...payload.data};store.set(id,record);return reply(record);}
   throw new Error('Unexpected method');
  };
@@ -98,8 +98,8 @@ test('lead reassignment transfers application ownership/version and revokes form
  const transfer=new FormData();for(const [key,value]of Object.entries({version:'1',stage:'New',priority:'Normal',owner:'counselor-two',reason:'Synthetic handoff'}))transfer.set(key,value);
  await crm.updateLead(staff('manager'),'lead-one',transfer);
  assert.equal(stores.cases.get(application.$id).owner,'counselor-two');assert.equal(stores.cases.get(application.$id).version,2);
- assert.equal((await operations.scopedRecords(staff('counselor'),'cases')).length,0);
- const next=stores.staff.get('counselor-two');assert.equal((await operations.scopedRecords(next,'cases')).length,1);
+ assert.equal((await operations.scopedRecords(staff('counselor'),'cases')).records.length,0);
+ const next=stores.staff.get('counselor-two');assert.equal((await operations.scopedRecords(next,'cases')).records.length,1);
  await assert.rejects(()=>operations.saveCase(staff('counselor'),applicationForm({id:application.$id,version:2})),rejects(403));
  await assert.rejects(()=>operations.saveCase(next,applicationForm({id:application.$id,version:1})),rejects(409));
  assert.equal((await operations.saveCase(next,applicationForm({id:application.$id,version:2,stage:'Submitted'}))).version,3);
@@ -117,9 +117,24 @@ test('immigration cases reject education-only stages and existing services canno
 });
 test('interrupted handoff retains old lead scope and retry reconciles application owners',async()=>{
  reset();for(const id of ['case-a','case-b'])stores.cases.set(id,{$id:id,leadId:'lead-one',owner:'counselor-one',version:1});const form=new FormData();for(const [k,v]of Object.entries({version:'1',stage:'New',priority:'Normal',owner:'counselor-two',reason:'Synthetic recovery'}))form.set(k,v);
- const transport=globalThis.fetch;globalThis.fetch=async(input,options)=>{if(options?.method==='PATCH'&&String(input).endsWith('/collections/cases/documents/case-b'))return reply({},503);return transport(input,options);};try{await assert.rejects(()=>crm.updateLead(staff('manager'),'lead-one',form));}finally{globalThis.fetch=transport;}
- assert.equal(stores.leads.get('lead-one').owner,'counselor-one');assert.ok([...stores.activities.values()].some(a=>JSON.parse(a.details).state==='pending'));const operations=await vite.ssrLoadModule('/app/admin/operations.server.ts');assert.equal((await operations.scopedRecords(stores.staff.get('counselor-two'),'cases')).length,0);
- await crm.updateLead(staff('manager'),'lead-one',form);for(const row of stores.cases.values())assert.equal(row.owner,'counselor-two');assert.equal(stores.leads.get('lead-one').owner,'counselor-two');
+ const transport=globalThis.fetch, originalMode=process.env.NODE_ENV;
+ process.env.NODE_ENV='development';
+ globalThis.fetch=async(input,options)=>{
+  if(options?.method==='PATCH'&&String(input).endsWith('/collections/cases/documents/case-b'))return reply({},503);
+  return transport(input,options);
+ };
+ try{
+  await assert.rejects(()=>crm.updateLead(staff('manager'),'lead-one',form),error=>error instanceof crm.UnconfirmedMutation);
+  assert.deepEqual([...stores.locks.values()].map(lock=>lock.key),['lead:lead-one','staff:access','calendar:appointments']);
+  await assert.rejects(()=>crm.updateLead(staff('manager'),'lead-one',form),rejects(409));
+ }finally{
+  globalThis.fetch=transport;
+  process.env.NODE_ENV=originalMode;
+ }
+ // Simulate targeted operator removal after inspecting the pending handoff.
+ stores.locks.clear();
+ assert.equal(stores.leads.get('lead-one').owner,'counselor-one');assert.ok([...stores.activities.values()].some(a=>JSON.parse(a.details).state==='pending'));const operations=await vite.ssrLoadModule('/app/admin/operations.server.ts');assert.equal((await operations.scopedRecords(stores.staff.get('counselor-two'),'cases')).records.length,0);
+ await crm.updateLead(staff('manager'),'lead-one',form);for(const row of stores.cases.values()){assert.equal(row.owner,'counselor-two');assert.equal(row.version,2);}assert.equal(stores.leads.get('lead-one').owner,'counselor-two');
 });
 
 test('application completeness is enforced server-side for each service and requires an active assignee',async()=>{
@@ -241,8 +256,8 @@ test('handoff preflight rejects collisions before writes and transfers appointme
  await operations.saveAppointment(staff('manager'),bookingForm({leadId:'second',id:conflict.$id,version:1,status:'Cancelled',reason:'Synthetic cancellation'}));
  await crm.updateLead(staff('manager'),'lead-one',handoffForm());
  const assignee=stores.staff.get('counselor-two');
- assert.equal((await operations.scopedRecords(staff('counselor'),'appointments')).length,0);
- assert.ok((await operations.scopedRecords(assignee,'appointments')).some(a=>a.$id===created.$id));
+ assert.equal((await operations.scopedRecords(staff('counselor'),'appointments')).records.length,0);
+ assert.ok((await operations.scopedRecords(assignee,'appointments')).records.some(a=>a.$id===created.$id));
  assert.equal(stores.appointments.get(created.$id).version,2);
  await assert.rejects(()=>operations.saveAppointment(assignee,bookingForm({id:created.$id,version:1})),rejects(409));
 });
@@ -258,7 +273,7 @@ test('interrupted calendar handoff reserves moved slots and retries without bump
  try{await assert.rejects(()=>crm.updateLead(staff('manager'),'lead-one',handoffForm()));}finally{globalThis.fetch=transport;}
  assert.equal(stores.leads.get('lead-one').owner,'counselor-one');
  assert.equal(stores.appointments.get(a.$id).owner,'counselor-two');
- assert.equal((await operations.scopedRecords(stores.staff.get('counselor-two'),'appointments')).length,0);
+ assert.equal((await operations.scopedRecords(stores.staff.get('counselor-two'),'appointments')).records.length,0);
  await assert.rejects(()=>operations.saveAppointment(staff('manager'),bookingForm({id:a.$id,version:2})),rejects(409));
  stores.leads.set('target',{$id:'target',owner:'counselor-two'});
  await assert.rejects(()=>operations.saveAppointment(staff('manager'),bookingForm({leadId:'target',startsAt:a.startsAt,endsAt:a.endsAt})),rejects(409));
@@ -279,4 +294,28 @@ test('booked appointments prevent unassignment until an outcome is recorded', as
  await crm.updateLead(staff('manager'),'lead-one',unassign);
  assert.equal(stores.appointments.get(appointment.$id).owner,'');
  assert.equal(stores.appointments.get(appointment.$id).status,'Completed');
+});
+
+test('queue reaches records past 100 and checks a repeated lead once per page', async()=>{
+ reset();
+ stores.tasks.clear();
+ for(let i=0;i<101;i++){
+  const id=`task-${String(i).padStart(3,'0')}`;
+  stores.tasks.set(id,{$id:id,leadId:'lead-one',owner:'counselor-one',status:'Open',dueAt:now});
+ }
+ const transport=globalThis.fetch;
+ let leadReads=0;
+ globalThis.fetch=async(input,options)=>{
+  if(String(input).endsWith('/collections/leads/documents/lead-one'))leadReads++;
+  return transport(input,options);
+ };
+ try{
+  const first=await crm.taskPage(staff('counselor'),1);
+  assert.equal(first.records.length,25);
+  assert.equal(first.hasMore,true);
+  const last=await crm.taskPage(staff('counselor'),5);
+  assert.deepEqual(last.records.map(record=>record.$id),['task-100']);
+  assert.equal(last.hasMore,false);
+  assert.equal(leadReads,2);
+ }finally{globalThis.fetch=transport;}
 });

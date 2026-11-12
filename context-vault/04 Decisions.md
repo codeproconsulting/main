@@ -109,3 +109,5 @@ Use the existing CRM routes and staff permission checks inside the native app so
 Use native views for counselor workflows and keep an explicit browser link for the full dashboard. Reuse CRM service functions so mobile and dashboard scope changes use the same rules. Keep the initial snapshot in memory and clear it on sign-out, auth rejection or expiry. Review device protection, offline authorization and write conflict handling before persisting applicant records or queuing edits. See [[Sessions/2026-11-11-05]].
 
 Both clients submit the displayed version with a lead edit. After a conflict, staff reload the current lead before applying their changes. The first mobile edit exposes stage and priority only. It preserves ownership and the next follow-up inside the shared lead lock.
+
+Interrupted handoffs retain their locks for operator reconciliation. A same-target retry skips records already moved. Work queues calculate navigation from the stored page before filtering stale assignments, so empty filtered pages can still link forward.

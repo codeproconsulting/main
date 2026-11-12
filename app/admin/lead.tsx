@@ -1,7 +1,7 @@
 import { Form, Link, data, useActionData, useLoaderData } from "react-router";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { requireStaff, sameOrigin } from "./auth.server";
-import { activityFor, addNote, createTask, field, leadFor, listStaff, updateLead } from "./crm.server";
+import { activityFor, addNote, createTask, field, leadFor, listStaff, UnconfirmedMutation, updateLead } from "./crm.server";
 import { canManage, displayDate, priorities, stages } from "./domain";
 import { ActionError, Back, Badge, PageHeading, Submit } from "./ui";
 export async function loader({ request, params }: LoaderFunctionArgs) {
@@ -18,7 +18,7 @@ export async function action({ request,params }: ActionFunctionArgs) {
   else if(intent==="task") await createTask(staff,params.id!,form);
   else throw new Response("Unknown action",{status:400});
   return {error:"",success:true};
- } catch(error) { if(error instanceof Response && [400,409].includes(error.status)) return data({error:await error.text(),success:false,conflict:error.status===409},{status:error.status}); if(error instanceof Response) throw error; return data({error:"Could not save. Refresh to check the latest state before retrying.",success:false},{status:503}); }
+ } catch(error) { if(error instanceof Response && ([400,409].includes(error.status) || error instanceof UnconfirmedMutation)) return data({error:await error.text(),success:false,conflict:error.status===409},{status:error.status}); if(error instanceof Response) throw error; return data({error:"Could not save. Refresh to check the latest state before retrying.",success:false},{status:503}); }
 }
 export default function LeadDetail() {
  const {staff,lead,activities,team}=useLoaderData<typeof loader>(); const result=useActionData<typeof action>(); let details:Record<string,unknown>={};try{details=JSON.parse(lead.details);}catch{}

@@ -25,6 +25,7 @@ Only **one feature** is the active session focus. “Code staged” means implem
 | MOB-03 | Shared mobile and web lead editing | Synthetic cross-platform update checks passed | Stage/priority, closure reasons, stale edit rejection and audit. Live release and physical-device acceptance pending |
 | CRM-02 | Advanced lead operations | Manual entry and contact search verified locally | Next: contact/enquiry separation and duplicate review. Merge, saved views and bulk actions remain planned. New search fields and backfill are pending on the VPS |
 | CRM-03 | Assignment and team scopes | Planned | Capacity/availability rules, round robin, branches, genuinely team-scoped managers |
+| OPS-02 | Audit remediation | Implemented locally | Schema and local candidate intake verified against Appwrite. Target proxy and native device acceptance pending |
 | OPS-01 | Production operations | Planned | Deployment access, existing edge, DNS/TLS, backup/restore, monitoring, narrow runtime key, stale-lock recovery |
 | COMMS-01 | Email/WhatsApp/SMS delivery | Planned | Resend selected for email; verify sender/domain, server API/webhook adapter, durable outbox, retries, suppression and delivery tests. WhatsApp/SMS undecided; no provider activated |
 | EXT-01 | Calendar sync, payments, client portal | Planned | Separate requirements and provider setup after core acceptance |

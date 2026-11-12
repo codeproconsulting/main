@@ -87,3 +87,5 @@ The Expo/React Native app lives in the sibling `Proconsulting-App` folder. Its n
 The sibling Expo app renders staff sign-in, leads and open follow-ups with React Native views. It calls the versioned JSON resource under `/admin/mobile/v1/` on the CRM origin. Appwrite staff identity and the same role and record scope used by the dashboard are checked on each snapshot. The native session bearer is encrypted and expires after at most eight hours. The mobile app holds it in memory. The dashboard continues to use its browser session cookie and supports the full CRM and CMS. See [[Sessions/2026-11-11-05]].
 
 The native lead resource also reads and updates stage and priority. It uses the web dashboard's lead mutation service with the existing version check, authorization, closure reason and audit. Native writes preserve assignment and follow-up values. See [[Sessions/2026-11-11-06]].
+
+Staff follow-ups, applications and appointments now page through scoped records. Related lead checks deduplicate IDs within a page and limit concurrent reads. The native follow-up endpoint serves subsequent pages independently. Public enquiry intake bounds the body as bytes arrive.

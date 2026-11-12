@@ -115,3 +115,5 @@ The sibling app's `src/StaffWorkspace.tsx` hosts the workspace, `src/workspace.t
 - `../Proconsulting-App/src/NativeWorkspace.tsx` and `../Proconsulting-App/src/mobile-api.ts` implement the React Native UI and its API client in the sibling repository.
 
 - `app/admin/lead.tsx` presents the browser conflict reload action. `app/admin/leads.tsx` shows priority in the browser list. `app/admin/crm.server.ts` applies shared lead-edit rules for both clients.
+
+- `app/lib/request-body.server.ts` provides the bounded reader shared by public intake and CRM uploads. `scripts/verify-appwrite.mjs` can exercise staged public intake and verify cleanup.

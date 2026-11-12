@@ -1,47 +1,47 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-11-06",
+  "sessionId": "2026-11-12-01",
   "sessionStatus": "in_progress",
-  "activeFeature": "MOB-03",
-  "objective": "Let staff edit lead stage and priority on mobile and web with shared conflict protection.",
+  "activeFeature": "OPS-02",
+  "objective": "Address the audit findings that affect intake release and staff queue reliability.",
   "scope": [
-    "Native lead editor and online saves",
-    "Web priority column and reload action for stale edits",
-    "Shared authorization, version and audit behavior"
+    "Lead intake release verification and streaming byte limit",
+    "Handoff recovery and bounded work-queue pagination",
+    "Remove unused artifacts"
   ],
   "outOfScope": [
-    "Offline writes, mobile assignment and changes to the production VPS"
+    "Live rollout, live schema changes and Expo preview publication"
   ],
   "acceptance": [
     {
-      "id": "MOB03-A",
-      "description": "Shared lead update rules and web/mobile conflict protection",
+      "id": "OPS02-A",
+      "description": "Intake limits, handoff retry and queue pagination",
       "status": "passed",
-      "evidence": "Synthetic authenticated web form and mobile API update the same lead. Both reject stale versions; counselor scope, closure reason, audit, and preservation of assignment and next follow-up are tested."
+      "evidence": "Focused synthetic tests verify streamed-byte rejection and cancellation, retained handoff locks and exact retry, and records after the old 100-row ceiling with deduplicated lead reads."
     },
     {
-      "id": "MOB03-B",
-      "description": "Release and test mobile and web on the CRM host",
-      "status": "blocked",
-      "evidence": "MOB-02 recorded CRM TLS hostname mismatch. Target deployment and physical-device acceptance are pending."
+      "id": "OPS02-B",
+      "description": "Candidate deployment and physical-device checks",
+      "status": "pending",
+      "evidence": "Live Appwrite leads fields/indexes verified. Locally built candidate submitted a synthetic enquiry to Appwrite, confirmed both normalized fields, and cleaned up. Target Nginx and physical-device checks remain open."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Deploy the accepted CRM release behind valid TLS. Test staff sign-in, mobile editing, browser conflict recovery and airplane mode on a phone before publishing the compatible preview update.",
+      "action": "On the release candidate, verify the additive leads schema, run the staged public intake smoke check and validate the active proxy. Smoke-test queue paging and handoff recovery before promotion.",
       "files": [
         "deploy/CRM-DEPLOYMENT.md",
-        "app/admin/mobile-api.ts",
-        "context-vault/Sessions/2026-11-11-06.md"
+        "scripts/verify-appwrite.mjs",
+        "docs/APPLICATION-WORKFLOWS.md"
       ]
     },
     {
       "order": 2,
-      "action": "Continue native lead search and pagination and resume CRM-02 contact/enquiry separation in separately scoped sessions.",
+      "action": "After CRM TLS and API deployment, verify native follow-up paging and publish the compatible preview update. Resume native lead search and CRM-02 in separate sessions.",
       "files": [
-        "app/admin/crm.server.ts",
+        "app/admin/mobile-api.ts",
         "context-vault/Feature Ledger.md"
       ]
     }
@@ -97,36 +97,37 @@
     "staffAccess": "Synthetic role, handoff and revocation acceptance passed. Live Appwrite session revocation and VPS rollout pending.",
     "reportQuery": "Read-only Appwrite report projection and ordering accepted with an empty synthetic owner filter.",
     "reporting": "Synthetic report and CSV acceptance passed. VPS rollout pending.",
-    "leadContactSchema": "Read-only preview confirmed both additive lead fields are absent. Schema and backfill were not applied.",
+    "leadContactSchema": "Both additive fields and indexes applied and verified. Built candidate intake smoke passed with synthetic cleanup. Historical backfill not run.",
     "crm02ManualEntry": "Manual entry and contact search accepted locally. Broader CRM-02 work remains open.",
     "consultationSchema": "Read-only dry run found the private collection absent. Schema was not applied.",
     "mobileBuilds": "EAS finished Android build 8d2da134-c48d-4f05-bc92-6062b132bd25 and iOS simulator build fa48dddc-d3e2-47ba-abad-2f4fd0b85b91. Local artifacts verified.",
     "nativeMobile": "Native source and both bundles verified locally. CRM TLS hostname mismatch confirmed. VPS API rollout and OTA release pending.",
-    "nativeLeadEditing": "Implemented in both source trees. No VPS or OTA release."
+    "nativeLeadEditing": "Implemented in both source trees. No VPS or OTA release.",
+    "auditRollout": "Appwrite leads schema provisioned. No VPS app deployment or OTA publication."
   },
   "checks": [
     {
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-11T18:52:12.438Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-7ElmJ3/typecheck.log"
+      "checkedAt": "2026-11-12T02:03:06.464Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-zdRB8O/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-11T18:52:13.550Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-7ElmJ3/test.log"
+      "checkedAt": "2026-11-12T02:03:07.831Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-zdRB8O/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-11T18:52:19.347Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-7ElmJ3/build.log"
+      "checkedAt": "2026-11-12T02:03:13.068Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-zdRB8O/build.log"
     }
   ],
-  "updatedAt": "2026-11-11T18:52:19.588Z",
-  "verifiedSourceFingerprint": "e61e33c406450fd5ce2c8d34abf8eedf049ff97f8e9a88cb03f6e19ba09dbd6d"
+  "updatedAt": "2026-11-12T06:22:33.850Z",
+  "verifiedSourceFingerprint": "bbc1a9d73a02a962dd384b52c5ec93a5d8069158649bed2b14705184623e6b69"
 }

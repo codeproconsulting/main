@@ -64,6 +64,20 @@ test('intake validates contact fields before saving',async()=>{
  const req=request('/api/leads',{method:'POST',headers:{Origin:'http://localhost:5173'}});
  await assert.rejects(()=>intake.captureLead(req,{name:'Test',email:'bad',phone:'123'}),failStatus(400));assert.equal(calls,0);
 });
+test('public intake rejects oversized streamed JSON before a write',async()=>{
+ const {action}=await server.ssrLoadModule('/app/routes/api.leads.ts');
+ let cancelled=false;
+ const bytes=new TextEncoder().encode('é'.repeat(9000));
+ const body=new ReadableStream({
+  pull(controller){controller.enqueue(bytes);},
+  cancel(){cancelled=true;},
+ });
+ const request=new Request('https://example.invalid/api/leads',{method:'POST',body,duplex:'half'});
+ const result=await action({request});
+ assert.equal(result.init.status,413);
+ assert.equal(cancelled,true);
+});
+
 test('intake reports Appwrite failures instead of false success',async()=>{
  globalThis.fetch=async()=>reply({},503);
  const req=request('/api/leads',{method:'POST',headers:{Origin:'http://localhost:5173'}});

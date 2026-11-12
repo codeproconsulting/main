@@ -42,18 +42,45 @@ export async function leadFor(staff: Staff, id: string) {
   allow(canAccessLead(staff, lead));
   return lead;
 }
-export async function tasksFor(staff: Staff) {
+export function queuePage(value: string | null) {
+  const page = Number(value);
+  return Number.isSafeInteger(page) ? Math.min(10000, Math.max(1, page)) : 1;
+}
+
+export async function scopedQueue<T extends { leadId: string }>(
+  staff: Staff, collection: "tasks" | "cases" | "appointments", filters: string[], page: number, size = 25,
+) {
   allow(canUseCRM(staff));
-  const filters = [query("equal", "status", ["Open"]), query("orderAsc", "dueAt"), query("limit", undefined, [100])];
-  if (!canManage(staff)) filters.push(query("equal", "owner", [staff.$id]));
-  const tasks = (await listDocuments<Task>("tasks", filters)).documents;
-  // Assignment changes can leave task-owner metadata awaiting reconciliation. Never expose a task unless its lead is still in scope.
-  if (canManage(staff)) return tasks;
-  const checked = await Promise.all(tasks.map(async task => {
-    try { const lead = await getDocument<Lead>("leads", task.leadId); return canAccessLead(staff, lead) ? task : null; }
-    catch (error) { if (error instanceof AppwriteError && error.status === 404) return null; throw error; }
-  }));
-  return checked.filter((task): task is Task & { $createdAt: string; $updatedAt: string } => task !== null);
+  const manager = canManage(staff);
+  const offset = (page - 1) * size;
+  const { documents, total } = await listDocuments<T>(collection, [
+    ...filters, query("orderAsc", "$id"), query("limit", undefined, [size]), query("offset", undefined, [offset]),
+    ...(!manager ? [query("equal", "owner", [staff.$id])] : []),
+  ]);
+  const hasMore = offset + size < total && page < 10000;
+  if (manager && collection === "tasks") return { records: documents, hasMore };
+  // Filter after pagination so stale owner metadata cannot block navigation to the next raw page.
+  const ids = [...new Set(documents.map(row => row.leadId))];
+  const allowed = new Set<string>();
+  for (let i = 0; i < ids.length; i += 8) {
+    await Promise.all(ids.slice(i, i + 8).map(async id => {
+      try {
+        const lead = await getDocument<Lead>("leads", id);
+        if (canAccessLead(staff, lead)) allowed.add(id);
+      } catch (error) {
+        if (!(error instanceof AppwriteError && error.status === 404)) throw error;
+      }
+    }));
+  }
+  return { records: documents.filter(row => allowed.has(row.leadId)), hasMore };
+}
+
+export function taskPage(staff: Staff, page: number, size = 25) {
+  return scopedQueue<Task>(staff, "tasks", [query("equal", "status", ["Open"]), query("orderAsc", "dueAt")], page, size);
+}
+
+export async function tasksFor(staff: Staff) {
+  return (await taskPage(staff, 1, 100)).records;
 }
 // A remote write may commit after a timeout. Retain held locks until an operator verifies the outcome.
 export class UnconfirmedMutation extends Response {
@@ -110,37 +137,44 @@ export async function updateLead(staff: Staff, id: string, form: FormData, mode:
       const appointments = transferring ? await appointmentsForHandoff(id, owner) : [];
       // Record intent before mutation; an unavailable audit store prevents unaudited writes.
       const event = await audit(staff, id, "lead", "Lead update requested", { before: { stage: lead.stage, owner: lead.owner, priority: lead.priority, nextFollowUp: lead.nextFollowUp }, after: changes, reason, state: "pending" });
-      if (transferring) {
-        let cursor: string | undefined;
-        do {
-          const page = await listDocuments<Task>("tasks", [query("equal", "leadId", [id]), query("equal", "status", ["Open"]), query("limit", undefined, [100]), ...(cursor ? [query("cursorAfter", undefined, [cursor])] : [])]);
-          for (const task of page.documents) await updateDocument<Task>("tasks", task.$id, { owner, version: task.version + 1 });
-          cursor = page.documents.length === 100 ? page.documents[99].$id : undefined;
-        } while (cursor);
-        // Transfer every linked application, including closed records, under the lead lock.
-        cursor=undefined;
-        do {
-          const page:{documents:{$id:string;version:number}[];total:number}=await listDocuments<{ $id:string; version:number }>("cases",[query("equal","leadId",[id]),query("orderAsc","$id"),query("limit",undefined,[100]),...(cursor?[query("cursorAfter",undefined,[cursor])]:[])]);
-          for(const application of page.documents)await updateDocument("cases",application.$id,{owner,version:application.version+1});
-          cursor=page.documents.length===100?page.documents[99].$id:undefined;
-        }while(cursor);
-      }
-      for (const appointment of appointments) {
-        if (appointment.owner !== owner) await updateDocument("appointments", appointment.$id, { owner, version: appointment.version + 1 });
-      }
-      let updated;
       try {
-        updated = await updateDocument<Lead>("leads", id, changes);
-      } catch (error) {
-        if (!transferring || definitiveWriteRejection(error)) throw error;
-        const current = await getDocument<Lead>("leads", id).catch(() => null);
-        if (!current || Object.entries(changes).some(([key, value]) => current[key as keyof Lead] !== value)) {
-          throw new UnconfirmedMutation("The handoff outcome is uncertain. Ask an administrator to reconcile it before retrying.");
+        if (transferring) {
+          let cursor: string | undefined;
+          do {
+            const page = await listDocuments<Task>("tasks", [query("equal", "leadId", [id]), query("equal", "status", ["Open"]), query("orderAsc", "$id"), query("limit", undefined, [100]), ...(cursor ? [query("cursorAfter", undefined, [cursor])] : [])]);
+            for (const task of page.documents) if (task.owner !== owner) await updateDocument<Task>("tasks", task.$id, { owner, version: task.version + 1 });
+            cursor = page.documents.length === 100 ? page.documents[99].$id : undefined;
+          } while (cursor);
+          // Transfer every linked application, including closed records, under the lead lock.
+          cursor=undefined;
+          do {
+            const page:{documents:{$id:string;owner:string;version:number}[];total:number}=await listDocuments<{ $id:string; owner:string; version:number }>("cases",[query("equal","leadId",[id]),query("orderAsc","$id"),query("limit",undefined,[100]),...(cursor?[query("cursorAfter",undefined,[cursor])]:[])]);
+            for(const application of page.documents)if(application.owner!==owner)await updateDocument("cases",application.$id,{owner,version:application.version+1});
+            cursor=page.documents.length===100?page.documents[99].$id:undefined;
+          }while(cursor);
         }
-        updated = current;
+        for (const appointment of appointments) {
+          if (appointment.owner !== owner) await updateDocument("appointments", appointment.$id, { owner, version: appointment.version + 1 });
+        }
+        let updated;
+        try {
+          updated = await updateDocument<Lead>("leads", id, changes);
+        } catch (error) {
+          if (!transferring || definitiveWriteRejection(error)) throw error;
+          const current = await getDocument<Lead>("leads", id).catch(() => null);
+          if (!current || Object.entries(changes).some(([key, value]) => current[key as keyof Lead] !== value)) {
+            throw new UnconfirmedMutation("The handoff outcome is uncertain. Ask an administrator to reconcile it before retrying.");
+          }
+          updated = current;
+        }
+        await updateDocument("activities", event.$id, { event: "Lead updated" });
+        return updated;
+      } catch (error) {
+        if (transferring && !(error instanceof UnconfirmedMutation)) {
+          throw new UnconfirmedMutation("The handoff may be incomplete. An administrator must reconcile it before retrying.");
+        }
+        throw error;
       }
-      await updateDocument("activities", event.$id, { event: "Lead updated" });
-      return updated;
     };
     if (!transferring) return save();
     return serialized(staffAccessLock, async () => {

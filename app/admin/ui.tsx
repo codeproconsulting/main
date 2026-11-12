@@ -13,3 +13,13 @@ export function localToISO(form: HTMLFormElement, fields: string[]) { for (const
 export function WorkspaceBrand() {
   return <span><img className="crm-brand-logo" src="/Logo_main.png" alt="Pro Consulting" width={400} height={79}/><span className="crm-brand-caption">TEAM WORKSPACE</span></span>;
 }
+
+
+export function QueuePagination({ page, hasMore }: { page: number; hasMore: boolean }) {
+  if (page === 1 && !hasMore) return null;
+  return <nav aria-label="Queue pages" className="crm-pagination">
+    <span>Page {page}</span>
+    {page > 1 && <Link to={`?page=${page - 1}`}>Previous</Link>}
+    {hasMore && <Link to={`?page=${page + 1}`}>Next</Link>}
+  </nav>;
+}

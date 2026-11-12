@@ -1,12 +1,14 @@
 import {randomUUID} from "node:crypto";
 import {AppwriteError,createDocument,getDocument,listDocuments,query,updateDocument} from "~/lib/appwrite.server";
 import {caseStagesFor,canManage,canUseCRM,type Staff} from "./domain";
-import {allow,audit,dateField,field,leadFor,serialized} from "./crm.server";
+import {allow,audit,dateField,field,leadFor,scopedQueue,serialized} from "./crm.server";
 export type CaseRecord={$id:string;leadId:string;owner:string;kind:string;institution:string;course:string;country:string;intake:string;stage:string;deadline:string;notes:string;version:number};
 import {appointmentCalendarLock,appointmentTime,assertCalendarAvailable,type Appointment} from "./calendar.server";
 export type {Appointment} from "./calendar.server";
 
-export async function scopedRecords<T extends {leadId:string}>(staff:Staff,collection:string){allow(canUseCRM(staff));const filters=[query("orderDesc","$createdAt"),query("limit",undefined,[100])];if(!canManage(staff))filters.push(query("equal","owner",[staff.$id]));const result=await listDocuments<T>(collection,filters);const records=[];for(const record of result.documents){try{await leadFor(staff,record.leadId);records.push(record);}catch(error){if(error instanceof Response&&[403,404].includes(error.status))continue;throw error;}}return records;}
+export function scopedRecords<T extends {leadId:string}>(staff: Staff, collection: "cases" | "appointments", page = 1) {
+  return scopedQueue<T>(staff, collection, [query("orderDesc", "$createdAt")], page);
+}
 export async function saveCase(staff:Staff,form:FormData){const id=field(form,"id",36),leadId=field(form,"leadId",36);return serialized(`lead:${leadId}`,async()=>{
  const lead=await leadFor(staff,leadId);
  const current=id?await getDocument<CaseRecord>("cases",id):null;if(current){allow(current.leadId===leadId);if(current.version!==Number(field(form,"version")))throw new Response("Application changed. Refresh before saving.",{status:409});}

@@ -255,3 +255,15 @@ Follow `docs/CRM-LEAD-ENTRY.md` before releasing CRM-02 manual entry and contact
 ### Native staff workspace release
 
 Install the matching CRM TLS certificate and use the current `deploy/nginx/crm.proconsulting.uk.conf` template. Its login limit covers `/admin/mobile/v1/session`. After `nginx -t` and release startup, check that an unauthenticated HTTPS GET to `/admin/mobile/v1/workspace` returns JSON HTTP 401 with `Cache-Control: private, no-store`. Use a test staff account on the preview device to verify scoped leads and follow-ups, then turn on airplane mode and check that the loaded snapshot remains visible during a failed refresh. Verify local sign-out clears it and restarting offline still renders native sign-in. Confirm the browser dashboard login and lead views still work before publishing the mobile preview.
+
+### Public enquiry release gate
+
+Before moving public traffic to this build, preview and apply the additive leads schema with a setup key. Start the candidate website on a staging origin against the target Appwrite database. Run the verifier with the setup key and document read/write permissions. Replace the loopback origin with the candidate site's origin.
+
+```sh
+node scripts/setup-appwrite.mjs --only=leads
+node scripts/setup-appwrite.mjs --only=leads --apply
+node scripts/verify-appwrite.mjs --only=leads --intake-origin=http://127.0.0.1:3000
+```
+
+The verifier checks the schema, submits one synthetic enquiry through the real website route, confirms the normalized fields and attempts cleanup by its generated ID. Use a controlled candidate origin with no outbound workflows enabled. Do not switch public traffic if the check fails. If an acknowledgement times out, verify the generated synthetic record was removed before retrying. Run the existing contact backfill separately for historical records. Apply the 32,000-byte `/api/leads` proxy limit to the active public vhost and validate with `nginx -t`.

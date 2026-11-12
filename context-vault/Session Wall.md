@@ -3,44 +3,44 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-11-06]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-12-01]].
 
 ## Resume here
 
-**Session:** 2026-11-11-06
+**Session:** 2026-11-12-01
 
-**Active feature:** MOB-03
+**Active feature:** OPS-02
 
 **State:** in_progress
 
-**Objective:** Let staff edit lead stage and priority on mobile and web with shared conflict protection.
+**Objective:** Address the audit findings that affect intake release and staff queue reliability.
 
 A user saying **continue** means resume this feature's next unfinished acceptance check. Do not start unrelated modules or repeat completed infrastructure work. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Native lead editor and online saves
-- Web priority column and reload action for stale edits
-- Shared authorization, version and audit behavior
+- Lead intake release verification and streaming byte limit
+- Handoff recovery and bounded work-queue pagination
+- Remove unused artifacts
 
 ## Out of scope
 
-- Offline writes, mobile assignment and changes to the production VPS
+- Live rollout, live schema changes and Expo preview publication
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| MOB03-A | Shared lead update rules and web/mobile conflict protection | passed | Synthetic authenticated web form and mobile API update the same lead. Both reject stale versions; counselor scope, closure reason, audit, and preservation of assignment and next follow-up are tested. |
-| MOB03-B | Release and test mobile and web on the CRM host | blocked | MOB-02 recorded CRM TLS hostname mismatch. Target deployment and physical-device acceptance are pending. |
+| OPS02-A | Intake limits, handoff retry and queue pagination | passed | Focused synthetic tests verify streamed-byte rejection and cancellation, retained handoff locks and exact retry, and records after the old 100-row ceiling with deduplicated lead reads. |
+| OPS02-B | Candidate deployment and physical-device checks | pending | Live Appwrite leads fields/indexes verified. Locally built candidate submitted a synthetic enquiry to Appwrite, confirmed both normalized fields, and cleaned up. Target Nginx and physical-device checks remain open. |
 
 ## Exact next actions
 
-1. Deploy the accepted CRM release behind valid TLS. Test staff sign-in, mobile editing, browser conflict recovery and airplane mode on a phone before publishing the compatible preview update.
-   Files: `deploy/CRM-DEPLOYMENT.md`, `app/admin/mobile-api.ts`, `context-vault/Sessions/2026-11-11-06.md`
+1. On the release candidate, verify the additive leads schema, run the staged public intake smoke check and validate the active proxy. Smoke-test queue paging and handoff recovery before promotion.
+   Files: `deploy/CRM-DEPLOYMENT.md`, `scripts/verify-appwrite.mjs`, `docs/APPLICATION-WORKFLOWS.md`
 
-2. Continue native lead search and pagination and resume CRM-02 contact/enquiry separation in separately scoped sessions.
-   Files: `app/admin/crm.server.ts`, `context-vault/Feature Ledger.md`
+2. After CRM TLS and API deployment, verify native follow-up paging and publish the compatible preview update. Resume native lead search and CRM-02 in separate sessions.
+   Files: `app/admin/mobile-api.ts`, `context-vault/Feature Ledger.md`
 
 ## Known risks and unfinished work
 
@@ -63,9 +63,9 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-11T18:52:12.438Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-7ElmJ3/typecheck.log`
-- **passed**: `npm run test` (2026-11-11T18:52:13.550Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-7ElmJ3/test.log`
-- **passed**: `npm run build` (2026-11-11T18:52:19.347Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-7ElmJ3/build.log`
+- **passed**: `npm run typecheck` (2026-11-12T02:03:06.464Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-zdRB8O/typecheck.log`
+- **passed**: `npm run test` (2026-11-12T02:03:07.831Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-zdRB8O/test.log`
+- **passed**: `npm run build` (2026-11-12T02:03:13.068Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-zdRB8O/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -103,11 +103,12 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **staffAccess**: Synthetic role, handoff and revocation acceptance passed. Live Appwrite session revocation and VPS rollout pending.
 - **reportQuery**: Read-only Appwrite report projection and ordering accepted with an empty synthetic owner filter.
 - **reporting**: Synthetic report and CSV acceptance passed. VPS rollout pending.
-- **leadContactSchema**: Read-only preview confirmed both additive lead fields are absent. Schema and backfill were not applied.
+- **leadContactSchema**: Both additive fields and indexes applied and verified. Built candidate intake smoke passed with synthetic cleanup. Historical backfill not run.
 - **crm02ManualEntry**: Manual entry and contact search accepted locally. Broader CRM-02 work remains open.
 - **consultationSchema**: Read-only dry run found the private collection absent. Schema was not applied.
 - **mobileBuilds**: EAS finished Android build 8d2da134-c48d-4f05-bc92-6062b132bd25 and iOS simulator build fa48dddc-d3e2-47ba-abad-2f4fd0b85b91. Local artifacts verified.
 - **nativeMobile**: Native source and both bundles verified locally. CRM TLS hostname mismatch confirmed. VPS API rollout and OTA release pending.
 - **nativeLeadEditing**: Implemented in both source trees. No VPS or OTA release.
+- **auditRollout**: Appwrite leads schema provisioned. No VPS app deployment or OTA publication.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

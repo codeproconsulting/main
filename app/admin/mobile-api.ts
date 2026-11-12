@@ -2,7 +2,7 @@ import { createCipheriv, createDecipheriv, randomBytes, scryptSync } from "node:
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { appwrite, AppwriteError, configurationIssues } from "~/lib/appwrite.server";
 import { openStaffSession, staffForSession } from "./auth.server";
-import { leadFor, leadsFor, tasksFor, updateLead } from "./crm.server";
+import { leadFor, leadsFor, queuePage, taskPage, updateLead } from "./crm.server";
 
 import { closureStages, priorities, stages, type Lead } from "./domain";
 
@@ -86,14 +86,21 @@ export function loader({ request, params }: LoaderFunctionArgs) {
       const staff = await staffForSession(sessionFrom(request));
       return reply(editableLead(await leadFor(staff, leadId(request))));
     }
+    if (params.resource === "follow-ups") {
+      const staff = await staffForSession(sessionFrom(request));
+      const page = queuePage(new URL(request.url).searchParams.get("page"));
+      const { records, hasMore } = await taskPage(staff, page);
+      return reply({ page, hasMore, tasks: records.map(({ $id, title, dueAt }) => ({ id: $id, title, dueAt })) });
+    }
     if (params.resource !== "workspace") return reply({ error: "Unknown resource." }, 404);
     const staff = await staffForSession(sessionFrom(request));
-    const [leads, tasks] = await Promise.all([leadsFor(staff), tasksFor(staff)]);
+    const [leads, { records: tasks, hasMore }] = await Promise.all([leadsFor(staff), taskPage(staff, 1)]);
     return reply({
       updatedAt: new Date().toISOString(),
       totalLeads: leads.total,
       leads: leads.documents.map(({ $id, name, service, country, stage, priority, nextFollowUp }) =>
         ({ id: $id, name, service, country, stage, priority, nextFollowUp })),
+      tasksHaveMore: hasMore,
       tasks: tasks.map(({ $id, title, dueAt }) => ({ id: $id, title, dueAt })),
     });
   });
