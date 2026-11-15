@@ -23,11 +23,12 @@ export async function audit(staff: Staff, entityId: string, entityType: string, 
 export async function listStaff() { return (await listDocuments<Staff>("staff", [query("equal", "active", [true]), query("limit", undefined, [100])])).documents; }
 const leadListFields = ["$id", "$createdAt", "name", "email", "service", "country", "stage", "priority", "owner", "nextFollowUp"] as const;
 
-export async function leadsFor(staff: Staff, search = "", stage = "", page = 1) {
+export async function leadsFor(staff: Staff, search = "", stage = "", page = 1, priority = "") {
   allow(staff.active && canUseCRM(staff));
   const queries = [query("select", undefined, [...leadListFields]), query("orderDesc", "$createdAt"), query("limit", undefined, [25]), query("offset", undefined, [(page - 1) * 25])];
   if (!canManage(staff)) queries.push(query("equal", "owner", [staff.$id]));
   if (stage && stages.includes(stage as typeof stages[number])) queries.push(query("equal", "stage", [stage]));
+  if (priorities.some(value => value === priority)) queries.push(query("equal", "priority", [priority]));
   const term = search.trim();
   const phone = phoneKey(term);
   if (term.includes("@")) queries.push(query("equal", "emailKey", [emailKey(term.slice(0, 254))]));

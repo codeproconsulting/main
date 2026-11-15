@@ -133,3 +133,7 @@ Lead detail offers direct confirmation from matching enquiries. Run the syntheti
 ## Duplicate enquiry decisions
 
 Lead detail renders the manager decision and restore forms. CRM server checks membership, versions and dependencies. Cases, appointments, documents and consultations share the duplicate write guard.
+
+## Saved lead views
+
+The saved view UI lives in app/admin/leads.tsx and persistence lives in app/admin/lead-views.server.ts.

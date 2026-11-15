@@ -3,41 +3,39 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-15-03]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-15-04]].
 
 ## Resume here
 
-**Session:** 2026-11-15-03
+**Session:** 2026-11-15-04
 
 **Active feature:** CRM-02
 
 **State:** completed
 
-**Objective:** Archive and restore confirmed duplicate enquiries while retaining their history.
+**Objective:** Save and reopen private stage and priority presets.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Manager review of confirmed same-service and same-destination enquiries
-- Audit, version and dependent work checks
+- Stage and priority filtering
+- Staff-private preset persistence and removal
 
 ## Out of scope
 
-- Merging or moving dependent records
-- VPS deployment and mobile workflow
+- Saved contact search strings, shared views, and production rollout
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| CRM02-DUP-A | Duplicate decision permissions and preserved data | passed | Focused synthetic test verifies counselor denial, destination and stale version rejection, each dependent collection, archive, blocked task write and restoration. |
-| CRM02-DUP-B | Built app browser acceptance | passed | Isolated Chrome verified contact group linking, duplicate archive, retained reference and restore. Initial fixture seeded open tasks; corrected fixture to exercise the successful path. |
-| CRM02-DUP-C | Provisioned target acceptance | passed | Target leads fields and index available. All five dependency query shapes passed. Synthetic open task detection, archive reference, prior-stage restoration and cleanup passed. Tested with the configured setup key. |
+| CRM02-VIEWS-A | Scoped persistence and filtering | passed | Synthetic tests cover per-staff persistence and deletion, idempotency, invalid filters, inactive staff and counselor scope. |
+| CRM02-VIEWS-B | Browser and target Appwrite acceptance | passed | Chrome verified saving, reopening, staff isolation and removal. Target Appwrite verified private preset storage, index availability, combined scoped lead query and synthetic cleanup with setup credentials. |
 
 ## Exact next actions
 
-1. Start the next CRM-02 session for saved lead views. Reuse the current scoped lead search and design staff-private presets without storing contact search terms.
+1. Start the next CRM-02 session for bulk actions. Design a bounded selection and use existing per-enquiry permission, version and audit checks with explicit partial results.
    Files: `app/admin/leads.tsx`, `app/admin/crm.server.ts`, `context-vault/Feature Ledger.md`
 
 ## Known risks and unfinished work
@@ -61,9 +59,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-15T15:11:51.179Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-wzIQ36/typecheck.log`
-- **passed**: `npm run test` (2026-11-15T15:11:52.372Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-wzIQ36/test.log`
-- **passed**: `npm run build` (2026-11-15T15:11:57.050Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-wzIQ36/build.log`
+- **passed**: `npm run typecheck` (2026-11-15T15:24:34.468Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ZXgPvN/typecheck.log`
+- **passed**: `npm run test` (2026-11-15T15:24:35.991Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ZXgPvN/test.log`
+- **passed**: `npm run build` (2026-11-15T15:24:41.114Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ZXgPvN/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -111,5 +109,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **vpsHandoff**: Operator chose self-install. First-install checklist prepared. Target CRM DNS/proxy and VPS release await operator setup.
 - **contactGroupSchema**: Optional field and index provisioned and verified available on target Appwrite. Synthetic link/query/unlink passed and both rows were removed. VPS application rollout remains pending.
 - **duplicateSchema**: Duplicate fields and index provisioned. Target Appwrite storage smoke and cleanup verified. VPS app and runtime key acceptance pending.
+- **leadViewsSchema**: Private lead_views collection and leads priority index provisioned. Synthetic storage and query smoke passed. VPS runtime acceptance pending.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

@@ -127,3 +127,7 @@ For duplicate resolution, first build an explicit manager decision for two enqui
 ## Duplicate enquiry decisions
 
 Duplicate resolution requires the same confirmed contact, service and destination. Marking locks both enquiries and rejects open follow-up or any attached case, appointment, consultation or document, and rejects duplicate chains.
+
+## Saved lead views
+
+Presets store only stage and priority. Labels are derived from those values, and repeated saves are idempotent.

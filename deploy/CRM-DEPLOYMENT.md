@@ -277,3 +277,7 @@ Use the scoped leads setup above to provision the optional `contactGroup` attrib
 ### Duplicate enquiry decisions
 
 Apply the scoped leads setup for the optional duplicateOf and duplicatePriorStage attributes and duplicate_of index. Provision and verify runtime reads on tasks, cases, appointments, documents and consultations before accepting duplicate decisions. Dependency checks fail closed. Verify mark, restored stage, audit and access with synthetic enquiries. For an ambiguous decision, inspect the enquiry version and duplicate fields before recovering the relevant lead and staff-access locks.
+
+### Saved lead views
+
+Apply scoped schema setup for leads and lead_views before rollout to create the priority index and private preset collection. Confirm combined stage and priority filters, staff isolation, save and remove in the release environment. Presets store only stage and priority.

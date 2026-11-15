@@ -5,8 +5,9 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Search, ArrowUpRight } from "lucide-react";
 import { leadServices } from "~/lib/lead-contact";
 import { requireStaff, sameOrigin } from "./auth.server";
-import { canManage, displayDate, stages } from "./domain";
+import { canManage, displayDate, priorities, stages } from "./domain";
 import { field, leadsFor, listStaff } from "./crm.server";
+import { changeLeadView, leadViews } from "./lead-views.server";
 import { createManualLead } from "./manual-leads.server";
 import { ActionError, Badge, Empty, PageHeading, Submit } from "./ui";
 
@@ -20,12 +21,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
   const search = url.searchParams.get("q")?.slice(0, 254) ?? "";
   const stage = url.searchParams.get("stage") ?? "";
+  const priority = url.searchParams.get("priority") ?? "";
   const page = pageNumber(url.searchParams.get("page"));
-  const [leads, team] = await Promise.all([
-    leadsFor(staff, search, stage, page), canManage(staff) ? listStaff() : Promise.resolve([staff]),
+  const [leads, team, views] = await Promise.all([
+    leadsFor(staff, search, stage, page, priority), canManage(staff) ? listStaff() : Promise.resolve([staff]), leadViews(staff),
   ]);
   const create = url.searchParams.get("new") === "1";
-  return { leads, team, search, stage, page, create, submissionId: create ? randomUUID() : "", manager: canManage(staff) };
+  return { leads, team, views, search, stage, priority, page, create, submissionId: create ? randomUUID() : "", manager: canManage(staff) };
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -38,13 +40,20 @@ export async function action({ request }: ActionFunctionArgs) {
       const lead = await createManualLead(staff, form);
       return redirect(`/admin/leads/${lead.$id}`);
     }
+    if (intent === "save-view" || intent === "remove-view") {
+      const stage = field(form, "stage", 50);
+      const priority = field(form, "priority", 20);
+      await changeLeadView(staff, intent === "save-view" ? "save" : "remove", stage, priority);
+      return redirect(`/admin/leads?${new URLSearchParams({ stage, priority })}`);
+    }
     if (intent === "search") {
       const search = field(form, "q", 254);
       const stage = field(form, "stage", 50);
+      const priority = field(form, "priority", 20);
       const page = pageNumber(field(form, "page", 6));
       if (search && search.length < 3) throw new Response("Enter at least three characters to search.", { status: 400 });
-      const leads = await leadsFor(staff, search, stage, page);
-      return { kind: "search" as const, leads, search, stage, page };
+      const leads = await leadsFor(staff, search, stage, page, priority);
+      return { kind: "search" as const, leads, search, stage, priority, page };
     }
     throw new Response("Unknown lead action.", { status: 400 });
   } catch (error) {
@@ -80,22 +89,42 @@ function NewLeadForm({ submissionId, manager }: { submissionId: string; manager:
 export default function Leads() {
   const initial = useLoaderData<typeof loader>();
   const result = useActionData<typeof action>();
-  const { leads, search, stage, page } = result?.kind === "search" ? result : initial;
+  const { leads, search, stage, priority, page } = result?.kind === "search" ? result : initial;
 
+  const saved = initial.views?.some(view => view.stage === stage && view.priority === priority);
   return <>
     <PageHeading eyebrow="LEAD MANAGEMENT" title="Leads & enquiries" description="Find enquiries and manage their next steps.">
       {!initial.create && <Link className="crm-button" to="?new=1">Add enquiry</Link>}
     </PageHeading>
     <ActionError error={result?.kind === "error" ? result.error : undefined} />
     {initial.create && <NewLeadForm submissionId={initial.submissionId} manager={initial.manager} />}
+    {initial.views && <section className="crm-panel crm-padded">
+      <h2>My saved views</h2>
+      {initial.views.length === 0 ? <p>Apply a stage or priority filter to save your first view.</p> :
+        <ul className="flex flex-wrap gap-2">{initial.views.map(view => <li key={view.$id}>
+          <Link className="crm-button secondary" to={`?${new URLSearchParams({ stage: view.stage, priority: view.priority })}`}>
+            {[view.stage, view.priority].filter(Boolean).join(" · ")}
+          </Link>
+        </li>)}</ul>}
+      {(stage || priority) && <Form method="post" className="crm-form">
+        <input type="hidden" name="intent" value={saved ? "remove-view" : "save-view"}/>
+        <input type="hidden" name="stage" value={stage}/>
+        <input type="hidden" name="priority" value={priority}/>
+        {search && <p>Saved views include stage and priority only.</p>}
+        <div><Submit>{saved ? "Remove current view" : "Save current filters"}</Submit></div>
+      </Form>}
+    </section>}
     <section className="crm-panel">
-      <Form method="post" className="crm-filters" key={`${search}:${stage}`}>
+      <Form method="post" className="crm-filters" key={`${search}:${stage}:${priority}`}>
         <input type="hidden" name="intent" value="search" />
         <div className="crm-search"><Search size={18} aria-hidden="true" />
           <input aria-label="Search by name, email or phone" name="q" defaultValue={search} placeholder="Name, full email or phone" minLength={3} maxLength={254} />
         </div>
         <select aria-label="Filter by stage" name="stage" defaultValue={stage}>
           <option value="">All stages</option>{stages.map(value => <option key={value}>{value}</option>)}
+        </select>
+        <select aria-label="Filter by priority" name="priority" defaultValue={priority}>
+          <option value="">All priorities</option>{priorities.map(value => <option key={value}>{value}</option>)}
         </select>
         <button className="crm-button secondary">Apply filters</button>
       </Form>
@@ -118,6 +147,7 @@ export default function Leads() {
           <input type="hidden" name="intent" value="search" />
           <input type="hidden" name="q" value={search} />
           <input type="hidden" name="stage" value={stage} />
+          <input type="hidden" name="priority" value={priority} />
           {page > 1 && <button name="page" value={page - 1}>← Previous</button>}
           {page < 10_000 && page * 25 < leads.total && <button name="page" value={page + 1}>Next →</button>}
         </Form>

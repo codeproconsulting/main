@@ -157,3 +157,9 @@ Confirmed contact linking passed all four session checks, including isolated Chr
 Duplicate archive and restore implemented. Synthetic regression coverage passes. Target fields, dependency collections and live acceptance remain pending.
 
 Duplicate archive and restore passed service, Chrome, and target storage acceptance. Production app rollout and checks with the VPS runtime key remain pending.
+
+## Saved lead views
+
+Saved lead views are implemented and covered by synthetic service tests. Release checks are tracked on the Session Wall.
+
+Saved views passed the isolated Chrome and target storage checks. Production rollout remains pending.

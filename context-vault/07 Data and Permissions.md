@@ -89,3 +89,7 @@ Confirmed groups and their audit details are visible to CRM managers. Counselors
 ## Duplicate enquiry decisions
 
 Managers alone can archive or restore duplicate decisions and see retained links. Counselors retain their existing lead access. Linked-work writes are blocked while marked duplicate.
+
+## Saved lead views
+
+Saved views are listed and changed only for the signed-in staff account. They never change the scope of lead results.

@@ -103,3 +103,7 @@ Confirmed contact groups are manager-only. An optional group ID links separate e
 ## Duplicate enquiry decisions
 
 Duplicate resolution archives an enquiry with a retained-enquiry reference and previous stage. The decision is audited; both records stay intact.
+
+## Saved lead views
+
+Saved lead filters use a private Appwrite collection keyed by staff and filter combination. Opening a view runs the existing scoped lead search.

@@ -11,7 +11,7 @@ const manager={$id:'synthetic-manager',role:'manager',active:true};
 const counselor={$id:'synthetic-counselor',role:'counselor',active:true};
 const errorStatus=status=>error=>error instanceof Response&&error.status===status;
 const token='d21265d0-363f-4a4c-b777-0e67b36930da';
-let vite,manual,crm,leads,activities,profiles,queries,options,dependencies;
+let vite,manual,crm,views,leads,activities,profiles,queries,options,dependencies;
 
 function form(changes={}){
  const fields=new FormData();
@@ -27,6 +27,7 @@ before(async()=>{
  vite=await createServer({configFile:false,root,resolve:{alias:{'~':root+'app'}},server:{middlewareMode:true,hmr:false,ws:false},logLevel:'error'});
  manual=await vite.ssrLoadModule('/app/admin/manual-leads.server.ts');
  crm=await vite.ssrLoadModule('/app/admin/crm.server.ts');
+ views=await vite.ssrLoadModule('/app/admin/lead-views.server.ts');
  globalThis.fetch=async(input,request)=>{
   const url=new URL(input);
   const [,collection,id]=url.pathname.match(/\/collections\/(\w+)\/documents(?:\/([^/]+))?$/)??[];
@@ -38,6 +39,7 @@ before(async()=>{
    const matches=[...store.values()].filter(row=>queries.every(q=>(q.method!=='equal'||q.values.includes(row[q.attribute]))&&(q.method!=='notEqual'||!q.values.includes(row[q.attribute]))));
    return Response.json({documents:matches,total:matches.length});
   }
+  if(request.method==='DELETE')return new Response(null,{status:store.delete(id)?204:404});
   const {data,documentId,permissions}=JSON.parse(request.body);
   if(request.method==='POST'){
    if(collection==='activities'&&options.failAudit)return Response.json({}, {status:503});
@@ -59,7 +61,7 @@ beforeEach(()=>{
  profiles=new Map([[manager.$id,manager],[counselor.$id,counselor]]);
  queries=[];
  options={};
- dependencies=Object.fromEntries(["tasks","cases","appointments","documents","consultations"].map(name=>[name,new Map()]));
+ dependencies=Object.fromEntries(["tasks","cases","appointments","documents","consultations","lead_views"].map(name=>[name,new Map()]));
 });
 after(async()=>{
  globalThis.fetch=originalFetch;
@@ -207,6 +209,7 @@ test('duplicate decisions require confirmation and no dependent work, and restor
  await assert.rejects(()=>crm.resolveDuplicate(manager,first.$id,mark),errorStatus(400));
  leads.set(second.$id,{...second,contactGroup:'synthetic-group'});
  for (const [name,store] of Object.entries(dependencies)) {
+  if(name==='lead_views')continue;
   store.set('synthetic-dependent',{leadId:first.$id,status:'Open'});
   await assert.rejects(()=>crm.resolveDuplicate(manager,first.$id,mark),errorStatus(409),name);
   store.clear();
@@ -229,4 +232,23 @@ test('duplicate decisions require confirmation and no dependent work, and restor
  assert.equal(restored.duplicateOf,'');
  assert.equal(restored.version,3);
  assert.equal(leads.size,2);
+});
+
+
+test('saved lead views are private, idempotent and keep the current counselor scope',async()=>{
+ await views.changeLeadView(manager,'save','New','Normal');
+ await views.changeLeadView(manager,'save','New','Normal');
+ await views.changeLeadView(counselor,'save','New','Normal');
+ assert.equal((await views.leadViews(manager)).length,1);
+ assert.equal((await views.leadViews(counselor)).length,1);
+ await views.changeLeadView(counselor,'remove','New','Normal');
+ await views.changeLeadView(counselor,'remove','New','Normal');
+ assert.equal((await views.leadViews(counselor)).length,0);
+ assert.equal((await views.leadViews(manager)).length,1);
+ await assert.rejects(()=>views.changeLeadView(counselor,'save','lead@example.invalid',''),errorStatus(400));
+ await assert.rejects(()=>views.changeLeadView({...manager,active:false},'remove','New','Normal'),errorStatus(403));
+ await manual.createManualLead(manager,form());
+ const assigned=await manual.createManualLead(counselor,form());
+ assert.deepEqual((await crm.leadsFor(counselor,'','New',1,'Normal')).documents.map(row=>row.$id),[assigned.$id]);
+ assert.equal((await crm.leadsFor(counselor,'','New',1,'Urgent')).total,0);
 });
