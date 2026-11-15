@@ -23,8 +23,8 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
     { $id: "foreign", owner: "other", name: "Other lead" },
   ];
   const tasks = [
-    { $id: "task", owner: "staff", leadId: "owned", title: "Follow up" },
-    { $id: "transferred", owner: "staff", leadId: "foreign", title: "Private task" },
+    { $id: "task", owner: "staff", leadId: "owned", title: "Follow up", status: "Open" },
+    { $id: "transferred", owner: "staff", leadId: "foreign", title: "Private task", status: "Open" },
   ];
   globalThis.fetch = async (input, options) => {
     const url = new URL(input);
@@ -59,8 +59,14 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
     }
     const filters = url.searchParams.getAll("queries[]").map(JSON.parse);
     assert.ok(filters.some(filter => filter.attribute === "owner" && filter.values[0] === "staff"));
-    const documents = rows.filter(row => row.owner === "staff");
-    return Response.json({ documents, total: documents.length });
+    const documents = rows.filter(row => filters.every(filter => {
+      if (filter.method === "equal") return filter.values.includes(row[filter.attribute]);
+      if (filter.method === "search") return row[filter.attribute].includes(filter.values[0]);
+      return true;
+    }));
+    const offset = filters.find(filter => filter.method === "offset")?.values[0] ?? 0;
+    const limit = filters.find(filter => filter.method === "limit")?.values[0] ?? 100;
+    return Response.json({ documents: documents.slice(offset, offset + limit), total: documents.length });
   };
   try {
     const { loader, action } = await vite.ssrLoadModule("/app/admin/mobile-api.ts");
@@ -87,6 +93,29 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
     assert.deepEqual(data.leads.map(lead => lead.id), ["owned"]);
     assert.equal(data.leads[0].email, undefined);
     assert.deepEqual(data.tasks.map(task => task.id), ["task"]);
+    const searchLeads = (q, page = 1, headers = auth.headers) => send("leads", {
+      method: "POST", headers: { ...headers, "Content-Type": "application/json" },
+      body: JSON.stringify({ q, page }),
+    });
+    assert.equal((await searchLeads("Synthetic", 1, {})).status, 401);
+    assert.equal((await searchLeads("ab")).status, 400);
+    for (let index = 0; index < 26; index++) {
+      leads.push({ $id: `search-${index}`, owner: "staff", name: "Synthetic search", emailKey: "synthetic@example.invalid", phoneKey: "441234567890" });
+    }
+    leads.push({ $id: "foreign-match", owner: "someone-else", name: "Synthetic search" });
+    const firstPage = await (await searchLeads("Synthetic search")).json();
+    assert.equal(firstPage.totalLeads, 26);
+    assert.equal(firstPage.leads.length, 25);
+    assert.equal(firstPage.hasMore, true);
+    const secondPage = await (await searchLeads("Synthetic search", 2)).json();
+    assert.deepEqual(secondPage.leads.map(lead => lead.id), ["search-25"]);
+    assert.equal(secondPage.hasMore, false);
+    for (const search of ["SYNTHETIC@example.invalid", "+44 1234 567890"]) {
+      const result = await (await searchLeads(search)).json();
+      assert.equal(result.totalLeads, 26);
+      assert.equal(result.leads[0].emailKey, undefined);
+      assert.equal(result.leads[0].phoneKey, undefined);
+    }
     const tampered = (token[0] === "a" ? "b" : "a") + token.slice(1);
     assert.equal((await send("workspace", { headers: { Authorization: `Bearer ${tampered}` } })).status, 401);
     const { action: webAction } = await vite.ssrLoadModule("/app/admin/lead.tsx");

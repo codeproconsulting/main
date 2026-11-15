@@ -80,6 +80,14 @@ function isJson(request: Request) {
   return request.headers.get("Content-Type")?.split(";")[0] === "application/json";
 }
 
+function mobileLeads({ documents, total }: Awaited<ReturnType<typeof leadsFor>>) {
+  return {
+    totalLeads: total,
+    leads: documents.map(({ $id, name, service, country, stage, priority, nextFollowUp }) =>
+      ({ id: $id, name, service, country, stage, priority, nextFollowUp })),
+  };
+}
+
 export function loader({ request, params }: LoaderFunctionArgs) {
   return mobileRequest(request, async () => {
     if (params.resource === "lead") {
@@ -97,9 +105,8 @@ export function loader({ request, params }: LoaderFunctionArgs) {
     const [leads, { records: tasks, hasMore }] = await Promise.all([leadsFor(staff), taskPage(staff, 1)]);
     return reply({
       updatedAt: new Date().toISOString(),
-      totalLeads: leads.total,
-      leads: leads.documents.map(({ $id, name, service, country, stage, priority, nextFollowUp }) =>
-        ({ id: $id, name, service, country, stage, priority, nextFollowUp })),
+      ...mobileLeads(leads),
+      leadsHaveMore: leads.total > 25,
       tasksHaveMore: hasMore,
       tasks: tasks.map(({ $id, title, dueAt }) => ({ id: $id, title, dueAt })),
     });
@@ -108,6 +115,20 @@ export function loader({ request, params }: LoaderFunctionArgs) {
 
 export function action({ request, params }: ActionFunctionArgs) {
   return mobileRequest(request, async () => {
+    if (params.resource === "leads") {
+      if (request.method !== "POST") return reply({ error: "Method not allowed." }, 405);
+      const staff = await staffForSession(sessionFrom(request));
+      if (!isJson(request)) return reply({ error: "Expected JSON." }, 415);
+      const body = await request.json().catch(() => null);
+      if (typeof body?.q !== "string") return reply({ error: "Invalid search." }, 400);
+      const search = body.q.trim();
+      if (search.length > 254 || (search && search.length < 3)) {
+        return reply({ error: "Enter between 3 and 254 characters to search." }, 400);
+      }
+      const page = queuePage(typeof body.page === "number" ? String(body.page) : null);
+      const result = await leadsFor(staff, search, "", page);
+      return reply({ ...mobileLeads(result), page, hasMore: page < 10000 && page * 25 < result.total });
+    }
     if (params.resource === "lead") {
       if (request.method !== "PATCH") return reply({ error: "Method not allowed." }, 405);
       const staff = await staffForSession(sessionFrom(request));

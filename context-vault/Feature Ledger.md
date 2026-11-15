@@ -23,6 +23,7 @@ Only **one feature** is the active session focus. “Code staged” means implem
 | MOB-01 | React Native staff app | Native preview builds verified | Android APK and iOS simulator archive available. CRM TLS and physical-device acceptance pending |
 | MOB-02 | Native staff CRM | First slice implemented locally | Native lead/follow-up reads and warm offline snapshot. Requires device acceptance, valid CRM TLS and API rollout. Editing, durable offline and feature parity remain open |
 | MOB-03 | Shared mobile and web lead editing | Synthetic cross-platform update checks passed | Stage/priority, closure reasons, stale edit rejection and audit. Live release and physical-device acceptance pending |
+| MOB-04 | Native lead search and pagination | Implemented locally | Synthetic API scope and query checks passed. Device checks after VPS rollout |
 | CRM-02 | Advanced lead operations | Manual entry and contact search verified locally | Next: contact/enquiry separation and duplicate review. Merge, saved views and bulk actions remain planned. New search fields and backfill are pending on the VPS |
 | CRM-03 | Assignment and team scopes | Planned | Capacity/availability rules, round robin, branches, genuinely team-scoped managers |
 | OPS-02 | Audit remediation | Implemented locally | Schema and local candidate intake verified against Appwrite. Target proxy and native device acceptance pending |

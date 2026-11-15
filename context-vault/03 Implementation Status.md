@@ -137,3 +137,5 @@ Mobile stage and priority editing and the web priority column and conflict reloa
 ### OPS-02 audit remediation
 
 Intake byte limits, candidate schema/intake verification, handoff retry behavior and work-queue pagination are implemented locally. Follow-up paging is also implemented in the sibling mobile app. Appwrite leads fields and indexes were provisioned. Candidate intake against Appwrite passed. Deployment and device checks are open. See [[Sessions/2026-11-12-01]].
+
+MOB-04 native lead search is implemented locally. Device acceptance and preview release await the CRM VPS rollout. See [[Sessions/2026-11-15-01]].

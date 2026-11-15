@@ -3,44 +3,43 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-12-01]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-15-01]].
 
 ## Resume here
 
-**Session:** 2026-11-12-01
+**Session:** 2026-11-15-01
 
-**Active feature:** OPS-02
+**Active feature:** MOB-04
 
 **State:** in_progress
 
-**Objective:** Address the audit findings that affect intake release and staff queue reliability.
+**Objective:** Find and page through assigned leads in the native workspace using the shared CRM search.
 
 A user saying **continue** means resume this feature's next unfinished acceptance check. Do not start unrelated modules or repeat completed infrastructure work. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Lead intake release verification and streaming byte limit
-- Handoff recovery and bounded work-queue pagination
-- Remove unused artifacts
+- Native lead search, result counts and page controls
+- Shared CRM name, normalized email and phone search
 
 ## Out of scope
 
-- Live rollout, live schema changes and Expo preview publication
+- Production VPS changes and OTA publication
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| OPS02-A | Intake limits, handoff retry and queue pagination | passed | Focused synthetic tests verify streamed-byte rejection and cancellation, retained handoff locks and exact retry, and records after the old 100-row ceiling with deduplicated lead reads. |
-| OPS02-B | Candidate deployment and physical-device checks | pending | Appwrite leads schema and synthetic candidate intake passed. Target owner profile is active. The live CRM certificate does not match the hostname, and target proxy and physical-device checks are open. |
+| MOB04-A | Scoped search and pagination | passed | Synthetic API check verified name, normalized contact search, counselor scope, input validation and access to the second page. |
+| MOB04-B | Physical Android acceptance | blocked | CRM HTTPS and API rollout are pending. Test search, clear, paging and connection loss before publishing the preview update. |
 
 ## Exact next actions
 
-1. Operator to configure the CRM DNS and proxy, deploy the tested checkout alongside the live website, then verify TLS, browser login, and the mobile API.
-   Files: `deploy/CRM-FIRST-INSTALL.md`, `deploy/CRM-DEPLOYMENT.md`
+1. After VPS setup, verify the deployed CRM API, then test mobile search and paging on Android before publishing the preview update.
+   Files: `deploy/CRM-FIRST-INSTALL.md`, `app/admin/mobile-api.ts`
 
-2. After CRM TLS and API deployment, verify native follow-up paging and publish the compatible preview update. Resume native lead search and CRM-02 in separate sessions.
-   Files: `app/admin/mobile-api.ts`, `context-vault/Feature Ledger.md`
+2. Continue CRM-02 contact and enquiry separation in a separate feature session.
+   Files: `context-vault/Feature Ledger.md`
 
 ## Known risks and unfinished work
 
@@ -63,9 +62,9 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-12T07:51:39.981Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-WZD5ao/typecheck.log`
-- **passed**: `npm run test` (2026-11-12T07:51:41.097Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-WZD5ao/test.log`
-- **passed**: `npm run build` (2026-11-12T07:51:45.968Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-WZD5ao/build.log`
+- **passed**: `npm run typecheck` (2026-11-15T14:45:04.005Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-uvNDeI/typecheck.log`
+- **passed**: `npm run test` (2026-11-15T14:45:05.173Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-uvNDeI/test.log`
+- **passed**: `npm run build` (2026-11-15T14:45:10.051Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-uvNDeI/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
