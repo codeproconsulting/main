@@ -95,3 +95,7 @@ Native lead search and pagination reuse the web dashboard query with a POST body
 ## Matching enquiry review — 2026-11-15
 
 Lead detail now reads matching enquiries by normalized email or phone through the existing server-side Appwrite boundary. Matching does not establish a canonical contact or merge records.
+
+## Confirmed contact links
+
+Confirmed contact groups are manager-only. An optional group ID links separate enquiries; case, assignment and follow-up relationships keep their original enquiry IDs.

@@ -13,7 +13,7 @@ Generated from `session-state.json` by `npm run session:status`. Edit that struc
 
 **State:** in_progress
 
-**Objective:** Review repeat enquiries through permission-scoped contact matches.
+**Objective:** Review repeat enquiries and explicitly link confirmed enquiries for one contact.
 
 A user saying **continue** means resume this feature's next unfinished acceptance check. Do not start unrelated modules or repeat completed infrastructure work. Verify current files and drift before trusting the checkpoint.
 
@@ -21,6 +21,7 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 
 - Matching-email and matching-phone enquiry review
 - Scoped pagination and links to independent enquiries
+- Manager-confirmed contact groups with reversible enquiry membership
 
 ## Out of scope
 
@@ -32,15 +33,17 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
 | CRM02-REVIEW-A | Matching enquiry permission and query checks | passed | Synthetic tests verify self exclusion, counselor scope, manager visibility, invalid mode/inactive rejection, empty phone and pagination query bounds; no records merged. |
-| CRM02-REVIEW-B | Browser and target Appwrite acceptance | pending | Typecheck and production build checked separately. Browser interaction and target query smoke still required. |
+| CRM02-REVIEW-B | Browser and target Appwrite acceptance | pending | Read-only synthetic email and phone query shapes accepted by target Appwrite. Built-app browser interaction pending. |
+| CRM02-LINK-A | Confirmed contact links preserve enquiry state and access | passed | Synthetic tests cover create, link, list, unlink, stale versions, counselor denial, and audit-write failure. |
+| CRM02-LINK-B | Browser and provisioned contact group acceptance | pending | Contact group field and index are declared in source. No provisioning or browser acceptance performed. |
 
 ## Exact next actions
 
-1. Verify matching enquiry filters and pagination in built-app browser and target Appwrite query; use synthetic records only.
-   Files: `app/admin/lead.tsx`, `app/admin/crm.server.ts`, `tests/manual-leads.test.mjs`
+1. Run built-app browser tests for matching filters and manager create, link, list and unlink. Verify counselor cannot access confirmed group data.
+   Files: `app/admin/lead.tsx`, `tests/manual-leads.test.mjs`
 
-2. Design explicit contact/enquiry linking and duplicate resolution without inferring identity from a shared phone or email. Keep MOB-04 Android acceptance pending until VPS setup.
-   Files: `context-vault/Feature Ledger.md`, `scripts/appwrite-schema.mjs`
+2. Provision additive leads schema in the release environment and smoke-test contact-group queries with synthetic enquiries; then design duplicate resolution.
+   Files: `scripts/appwrite-schema.mjs`, `deploy/CRM-DEPLOYMENT.md`
 
 ## Known risks and unfinished work
 
@@ -63,9 +66,9 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-15T14:51:41.378Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-BmVGKW/typecheck.log`
-- **passed**: `npm run test` (2026-11-15T14:51:42.588Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-BmVGKW/test.log`
-- **passed**: `npm run build` (2026-11-15T14:51:48.085Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-BmVGKW/build.log`
+- **passed**: `npm run typecheck` (2026-11-15T14:54:57.766Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-uXRCBg/typecheck.log`
+- **passed**: `npm run test` (2026-11-15T14:54:58.895Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-uXRCBg/test.log`
+- **passed**: `npm run build` (2026-11-15T14:55:03.738Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-uXRCBg/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -111,5 +114,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **nativeLeadEditing**: Implemented in both source trees. No VPS or OTA release.
 - **auditRollout**: Appwrite leads schema provisioned. No VPS app deployment or OTA publication.
 - **vpsHandoff**: Operator chose self-install. First-install checklist prepared. Target CRM DNS/proxy and VPS release await operator setup.
+- **contactGroupSchema**: Source declaration added; not applied. Target accepted read-only synthetic email and phone matching query shapes.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

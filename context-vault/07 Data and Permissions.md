@@ -81,3 +81,7 @@ The mobile client uses CRM sessions and role checks. Appwrite keys remain on the
 ## Matching enquiry review — 2026-11-15
 
 Related enquiry totals and rows are filtered by current counselor owner before pagination. Managers retain existing organization-wide scope. The source enquiry must also be accessible. Contact values are resolved server-side, not placed in match pagination URLs.
+
+## Confirmed contact links
+
+Confirmed groups and their audit details are visible to CRM managers. Counselors retain access to their assigned enquiries and scoped match suggestions.

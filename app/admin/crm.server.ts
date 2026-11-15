@@ -131,6 +131,56 @@ export async function serialized<T>(key: string, operation: () => Promise<T>): P
 }
 export const staffAccessLock = "staff:access";
 
+export function contactEnquiries(staff: Staff, lead: Lead, page: number) {
+  allow(staff.active && canManage(staff));
+  if (!lead.contactGroup) return { documents: [], total: 0 };
+  return listDocuments<Pick<Lead, typeof leadListFields[number]>>("leads", [
+    query("select", undefined, [...leadListFields]),
+    query("equal", "contactGroup", [lead.contactGroup]),
+    query("notEqual", "$id", [lead.$id]),
+    query("orderAsc", "$id"),
+    query("limit", undefined, [25]),
+    query("offset", undefined, [(page - 1) * 25]),
+  ]);
+}
+
+export async function changeContactGroup(staff: Staff, id: string, form: FormData) {
+  allow(staff.active && canManage(staff));
+  const operation = field(form, "contactOperation", 10);
+  const targetId = field(form, "targetEnquiry", 36);
+  if (!["create", "join", "unlink"].includes(operation) ||
+      (operation === "join" && (!/^[a-zA-Z0-9][a-zA-Z0-9._-]{0,35}$/.test(targetId) || targetId === id))) {
+    throw new Response("Choose a valid contact action and enquiry reference.", { status: 400 });
+  }
+
+  return serialized(`lead:${id}`, () => serialized(staffAccessLock, async () => {
+    const actor = await getDocument<Staff>("staff", staff.$id);
+    allow(actor.active && canManage(actor));
+    const lead = await leadFor(actor, id);
+    if (Number(field(form, "version")) !== lead.version) {
+      throw new Response("This enquiry changed. Refresh before saving.", { status: 409 });
+    }
+    if (operation === "unlink" ? !lead.contactGroup : !!lead.contactGroup) {
+      throw new Response("Refresh and check this enquiry’s current contact link.", { status: 409 });
+    }
+    let contactGroup = operation === "create" ? randomUUID() : "";
+    if (operation === "join") {
+      const target = await leadFor(actor, targetId);
+      if (!target.contactGroup) throw new Response("Start a contact group on the other enquiry first.", { status: 400 });
+      contactGroup = target.contactGroup;
+    }
+    await audit(actor, id, "lead", "Contact link change requested", {
+      operation, previousGroup: lead.contactGroup || "", contactGroup, version: lead.version + 1,
+    });
+    try {
+      return await updateDocument("leads", id, { contactGroup, version: lead.version + 1 });
+    } catch (error) {
+      if (definitiveWriteRejection(error)) throw error;
+      throw new UnconfirmedMutation("The contact change may have saved. Ask an administrator to reconcile it before retrying.");
+    }
+  }));
+}
+
 export async function updateLead(staff: Staff, id: string, form: FormData, mode: "full" | "stage-priority" = "full") {
   return serialized(`lead:${id}`, async () => {
     const lead = await leadFor(staff, id);

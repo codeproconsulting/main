@@ -89,3 +89,7 @@ The mobile lead search ships through the existing Android preview runtime after 
 ## Matching enquiry review — 2026-11-15
 
 Matching-enquiry review uses existing emailKey/phoneKey fields/indexes; historical backfill remains needed for complete matching coverage. No new collection or provisioning performed. Target query smoke required before release.
+
+## Confirmed contact links
+
+Before enabling release use, provision optional leads contactGroup and its index using the scoped leads setup. Verify create, link, query and unlink in the release environment.

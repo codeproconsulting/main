@@ -115,3 +115,7 @@ Interrupted handoffs retain their locks for operator reconciliation. A same-targ
 ## Matching enquiry review — 2026-11-15
 
 Matching email/phone is a review hint only. No automatic identity linking, merging, assignment changes or cross-counselor disclosure. Match type is explicit and pages contain at most 25 results.
+
+## Confirmed contact links
+
+Staff confirm identity before linking. Membership changes write one enquiry at a time with audit intent and existing locks. There is no automatic identity inference.

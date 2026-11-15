@@ -143,3 +143,7 @@ MOB-04 native lead search is implemented locally. Device acceptance and preview 
 ## Matching enquiry review — 2026-11-15
 
 CRM-02 matching-enquiry review implemented locally. Synthetic access and query checks pass; browser and target Appwrite acceptance remain pending. Canonical contact separation and merge remain planned.
+
+## Confirmed contact links
+
+Confirmed contact group creation, linking and unlinking are implemented with focused synthetic checks. Browser and provisioned-schema acceptance remain pending. Profile editing and duplicate merging remain open.

@@ -168,3 +168,26 @@ test('related enquiries exclude self and other counselors without merging record
  assert.equal(leads.size,3);
  assert.equal(activities.size,3);
 });
+
+
+test('confirmed contact links are manager-only, versioned, reversible and preserve separate enquiries',async()=>{
+ const first=await manual.createManualLead(manager,form());
+ const second=await manual.createManualLead(counselor,form({country:'Italy'}));
+ const change=(staff,id,operation,version,targetEnquiry='')=>crm.changeContactGroup(staff,id,form({contactOperation:operation,targetEnquiry,version:String(version)}));
+ await assert.rejects(()=>change(counselor,second.$id,'create',1),errorStatus(403));
+ await assert.rejects(()=>change(manager,second.$id,'join',1,first.$id),errorStatus(400));
+ const anchor=await change(manager,first.$id,'create',1);
+ options.failAudit=true;
+ await assert.rejects(()=>change(manager,second.$id,'join',1,first.$id),error=>error.status===503);
+ assert.equal(leads.get(second.$id).contactGroup,undefined);
+ options.failAudit=false;
+ const joined=await change(manager,second.$id,'join',1,first.$id);
+ assert.deepEqual(joined,{...second,contactGroup:anchor.contactGroup,version:2});
+ assert.deepEqual((await crm.contactEnquiries(manager,anchor,1)).documents.map(row=>row.$id),[second.$id]);
+ assert.throws(()=>crm.contactEnquiries(counselor,joined,1),errorStatus(403));
+ await assert.rejects(()=>change(manager,second.$id,'unlink',1),errorStatus(409));
+ const unlinked=await change(manager,second.$id,'unlink',2);
+ assert.equal(unlinked.contactGroup,'');
+ assert.equal((await crm.contactEnquiries(manager,anchor,1)).total,0);
+ assert.equal(leads.size,2);
+});

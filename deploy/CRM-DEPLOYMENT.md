@@ -269,3 +269,7 @@ node scripts/verify-appwrite.mjs --only=leads --intake-origin=http://127.0.0.1:3
 ```
 
 The verifier checks the schema, submits one synthetic enquiry through the real website route, confirms the normalized fields and attempts cleanup by its generated ID. Use a controlled candidate origin with no outbound workflows enabled. Do not switch public traffic if the check fails. If an acknowledgement times out, verify the generated synthetic record was removed before retrying. Run the existing contact backfill separately for historical records. Apply the 32,000-byte `/api/leads` proxy limit to the active public vhost and validate with `nginx -t`.
+
+### Confirmed contact groups
+
+Use the scoped leads setup above to provision the optional `contactGroup` attribute and index before staff use this workflow. Check create, link, pagination, unlink and counselor denial with synthetic enquiries. Existing enquiries start without a group and retain their original assignments and history. For an uncertain write, inspect the enquiry version, group and audit intent before clearing the affected lead and staff-access locks under the existing operator recovery procedure.

@@ -4,10 +4,11 @@
   "sessionId": "2026-11-15-02",
   "sessionStatus": "in_progress",
   "activeFeature": "CRM-02",
-  "objective": "Review repeat enquiries through permission-scoped contact matches.",
+  "objective": "Review repeat enquiries and explicitly link confirmed enquiries for one contact.",
   "scope": [
     "Matching-email and matching-phone enquiry review",
-    "Scoped pagination and links to independent enquiries"
+    "Scoped pagination and links to independent enquiries",
+    "Manager-confirmed contact groups with reversible enquiry membership"
   ],
   "outOfScope": [
     "Automatic merge and canonical contact migration",
@@ -24,25 +25,36 @@
       "id": "CRM02-REVIEW-B",
       "description": "Browser and target Appwrite acceptance",
       "status": "pending",
-      "evidence": "Typecheck and production build checked separately. Browser interaction and target query smoke still required."
+      "evidence": "Read-only synthetic email and phone query shapes accepted by target Appwrite. Built-app browser interaction pending."
+    },
+    {
+      "id": "CRM02-LINK-A",
+      "description": "Confirmed contact links preserve enquiry state and access",
+      "status": "passed",
+      "evidence": "Synthetic tests cover create, link, list, unlink, stale versions, counselor denial, and audit-write failure."
+    },
+    {
+      "id": "CRM02-LINK-B",
+      "description": "Browser and provisioned contact group acceptance",
+      "status": "pending",
+      "evidence": "Contact group field and index are declared in source. No provisioning or browser acceptance performed."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Verify matching enquiry filters and pagination in built-app browser and target Appwrite query; use synthetic records only.",
+      "action": "Run built-app browser tests for matching filters and manager create, link, list and unlink. Verify counselor cannot access confirmed group data.",
       "files": [
         "app/admin/lead.tsx",
-        "app/admin/crm.server.ts",
         "tests/manual-leads.test.mjs"
       ]
     },
     {
       "order": 2,
-      "action": "Design explicit contact/enquiry linking and duplicate resolution without inferring identity from a shared phone or email. Keep MOB-04 Android acceptance pending until VPS setup.",
+      "action": "Provision additive leads schema in the release environment and smoke-test contact-group queries with synthetic enquiries; then design duplicate resolution.",
       "files": [
-        "context-vault/Feature Ledger.md",
-        "scripts/appwrite-schema.mjs"
+        "scripts/appwrite-schema.mjs",
+        "deploy/CRM-DEPLOYMENT.md"
       ]
     }
   ],
@@ -104,31 +116,32 @@
     "nativeMobile": "Native source and both bundles verified locally. CRM TLS hostname mismatch confirmed. VPS API rollout and OTA release pending.",
     "nativeLeadEditing": "Implemented in both source trees. No VPS or OTA release.",
     "auditRollout": "Appwrite leads schema provisioned. No VPS app deployment or OTA publication.",
-    "vpsHandoff": "Operator chose self-install. First-install checklist prepared. Target CRM DNS/proxy and VPS release await operator setup."
+    "vpsHandoff": "Operator chose self-install. First-install checklist prepared. Target CRM DNS/proxy and VPS release await operator setup.",
+    "contactGroupSchema": "Source declaration added; not applied. Target accepted read-only synthetic email and phone matching query shapes."
   },
   "checks": [
     {
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-15T14:51:41.378Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-BmVGKW/typecheck.log"
+      "checkedAt": "2026-11-15T14:54:57.766Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-uXRCBg/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-15T14:51:42.588Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-BmVGKW/test.log"
+      "checkedAt": "2026-11-15T14:54:58.895Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-uXRCBg/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-15T14:51:48.085Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-BmVGKW/build.log"
+      "checkedAt": "2026-11-15T14:55:03.738Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-uXRCBg/build.log"
     }
   ],
-  "updatedAt": "2026-11-15T14:51:55.157Z",
-  "verifiedSourceFingerprint": "45551797485aa700aa25455357031a66ceada84c9ca3a6e4ab02f02a72c1c979"
+  "updatedAt": "2026-11-15T14:55:16.537Z",
+  "verifiedSourceFingerprint": "91487b0e47d2f1b73260545ce993a52343abdfa085169cf58b06b7ae8239b928"
 }

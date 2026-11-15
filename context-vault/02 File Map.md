@@ -123,3 +123,7 @@ The sibling app's `src/StaffWorkspace.tsx` hosts the workspace, `src/workspace.t
 ## Matching enquiry review — 2026-11-15
 
 `app/admin/crm.server.ts`: relatedEnquiries scoped match query. `app/admin/lead.tsx`: matching contact selector, results and pagination. `tests/manual-leads.test.mjs`: permission and query regression coverage.
+
+## Confirmed contact links
+
+Lead detail contains the confirmed contact workflow. CRM server handles versioned group changes and paginated reads. The leads schema declares the group field and index.
