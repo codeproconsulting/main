@@ -119,3 +119,5 @@ Matching email/phone is a review hint only. No automatic identity linking, mergi
 ## Confirmed contact links
 
 Staff confirm identity before linking. Membership changes write one enquiry at a time with audit intent and existing locks. There is no automatic identity inference.
+
+Match-list confirmation checks versions of both the group enquiry and the enquiry being added.

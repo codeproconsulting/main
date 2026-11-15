@@ -33,17 +33,14 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
 | CRM02-REVIEW-A | Matching enquiry permission and query checks | passed | Synthetic tests verify self exclusion, counselor scope, manager visibility, invalid mode/inactive rejection, empty phone and pagination query bounds; no records merged. |
-| CRM02-REVIEW-B | Browser and target Appwrite acceptance | pending | Read-only synthetic email and phone query shapes accepted by target Appwrite. Built-app browser interaction pending. |
+| CRM02-REVIEW-B | Browser match filters and target Appwrite queries | passed | Chrome verified email and phone matching plus counselor isolation. Target previously accepted synthetic query shapes. Pagination bounds remain covered by service tests. |
 | CRM02-LINK-A | Confirmed contact links preserve enquiry state and access | passed | Synthetic tests cover create, link, list, unlink, stale versions, counselor denial, and audit-write failure. |
-| CRM02-LINK-B | Browser and provisioned contact group acceptance | pending | Contact group field and index are declared in source. No provisioning or browser acceptance performed. |
+| CRM02-LINK-B | Provisioned contact group acceptance | pending | Built-app Chrome verified manager create, confirm from match list, open and unlink plus counselor isolation. Target contact group schema and smoke test pending. |
 
 ## Exact next actions
 
-1. Run built-app browser tests for matching filters and manager create, link, list and unlink. Verify counselor cannot access confirmed group data.
-   Files: `app/admin/lead.tsx`, `tests/manual-leads.test.mjs`
-
-2. Provision additive leads schema in the release environment and smoke-test contact-group queries with synthetic enquiries; then design duplicate resolution.
-   Files: `scripts/appwrite-schema.mjs`, `deploy/CRM-DEPLOYMENT.md`
+1. Provision the documented additive leads schema in the release environment and smoke-test confirmed grouping with synthetic data. Then design duplicate resolution.
+   Files: `deploy/CRM-DEPLOYMENT.md`, `scripts/appwrite-schema.mjs`
 
 ## Known risks and unfinished work
 
@@ -66,9 +63,9 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-15T14:54:57.766Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-uXRCBg/typecheck.log`
-- **passed**: `npm run test` (2026-11-15T14:54:58.895Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-uXRCBg/test.log`
-- **passed**: `npm run build` (2026-11-15T14:55:03.738Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-uXRCBg/build.log`
+- **passed**: `npm run typecheck` (2026-11-15T15:01:39.028Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-LfsMvy/typecheck.log`
+- **passed**: `npm run test` (2026-11-15T15:01:40.219Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-LfsMvy/test.log`
+- **passed**: `npm run build` (2026-11-15T15:01:44.983Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-LfsMvy/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 

@@ -177,6 +177,9 @@ test('confirmed contact links are manager-only, versioned, reversible and preser
  await assert.rejects(()=>change(counselor,second.$id,'create',1),errorStatus(403));
  await assert.rejects(()=>change(manager,second.$id,'join',1,first.$id),errorStatus(400));
  const anchor=await change(manager,first.$id,'create',1);
+ await assert.rejects(()=>crm.changeContactGroup(manager,second.$id,form({
+  contactOperation:'join',targetEnquiry:first.$id,version:'1',targetVersion:'1',
+ })),errorStatus(409));
  options.failAudit=true;
  await assert.rejects(()=>change(manager,second.$id,'join',1,first.$id),error=>error.status===503);
  assert.equal(leads.get(second.$id).contactGroup,undefined);

@@ -21,6 +21,15 @@ export async function action({ request,params }: ActionFunctionArgs) {
  try {
   const intent=field(form,"intent");
   if(intent==="update") await updateLead(staff,params.id!,form);
+  else if(intent==="link-match") {
+   const matchId = field(form,"matchEnquiry",36);
+   if (!/^[a-zA-Z0-9][a-zA-Z0-9._-]{0,35}$/.test(matchId) || !field(form,"targetVersion")) {
+    throw new Response("Choose an enquiry from the match list.",{status:400});
+   }
+   form.set("contactOperation","join");
+   form.set("targetEnquiry",params.id!);
+   await changeContactGroup(staff,matchId,form);
+  }
   else if(intent==="contact") await changeContactGroup(staff,params.id!,form);
   else if(intent==="note") await addNote(staff,params.id!,field(form,"note",5000));
   else if(intent==="task") await createTask(staff,params.id!,form);
@@ -34,7 +43,14 @@ export default function LeadDetail() {
 <p className="crm-muted">Matches are suggestions, not confirmed duplicates. Shared or family contact details may belong to different people. Each enquiry keeps its own status and assignment. Only enquiries you can access appear here.</p>
 <Form method="get" className="crm-filters"><label>Match by<select name="match" defaultValue={match}><option value="email">Same email</option><option value="phone">Same phone</option></select></label><button className="crm-button secondary">Find matches</button></Form>
 <p>{related.total} other accessible enquiries · Page {relatedPage}</p>
-{related.documents.length ? <div className="crm-table-wrap"><table className="crm-table"><thead><tr><th>Enquiry</th><th>Service / destination</th><th>Stage</th><th>Counselor</th></tr></thead><tbody>{related.documents.map(row => <tr key={row.$id}><td><Link to={`/admin/leads/${row.$id}`}>{row.name}</Link><small>{displayDate(row.$createdAt)}</small></td><td>{row.service}<small>{row.country || "To confirm"}</small></td><td>{row.stage}</td><td>{team.find(member => member.$id === row.owner)?.name || (row.owner ? "Assigned counselor" : "Unassigned")}</td></tr>)}</tbody></table></div> : <p>No matching enquiries in this view.</p>}
+{related.documents.length ? <div className="crm-table-wrap"><table className="crm-table"><thead><tr><th>Enquiry</th><th>Service / destination</th><th>Stage</th><th>Counselor</th>{linked && <th>Contact link</th>}</tr></thead><tbody>{related.documents.map(row => <tr key={row.$id}><td><Link to={`/admin/leads/${row.$id}`}>{row.name}</Link><small>{displayDate(row.$createdAt)}</small></td><td>{row.service}<small>{row.country || "To confirm"}</small></td><td>{row.stage}</td><td>{team.find(member => member.$id === row.owner)?.name || (row.owner ? "Assigned counselor" : "Unassigned")}</td>
+{linked && <td><Form method="post">
+  <input type="hidden" name="intent" value="link-match"/>
+  <input type="hidden" name="matchEnquiry" value={row.$id}/>
+  <input type="hidden" name="version" value={row.version}/>
+  <input type="hidden" name="targetVersion" value={lead.version}/>
+  <Submit>Confirm same contact</Submit>
+</Form></td>}</tr>)}</tbody></table></div> : <p>No matching enquiries in this view.</p>}
 <div className="crm-pagination">{relatedPage > 1 && <Link to={`?match=${match}&relatedPage=${relatedPage - 1}`}>Previous matches</Link>}{relatedPage < 10000 && relatedPage * 25 < related.total && <Link to={`?match=${match}&relatedPage=${relatedPage + 1}`}>Next matches</Link>}</div>
 <p className="crm-muted">Older enquiries appear after their normalized contact fields have been backfilled. A match does not merge or change any record.</p>
 </section>{contact && <section className="crm-panel crm-padded">

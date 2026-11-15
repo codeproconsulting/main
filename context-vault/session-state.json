@@ -23,9 +23,9 @@
     },
     {
       "id": "CRM02-REVIEW-B",
-      "description": "Browser and target Appwrite acceptance",
-      "status": "pending",
-      "evidence": "Read-only synthetic email and phone query shapes accepted by target Appwrite. Built-app browser interaction pending."
+      "description": "Browser match filters and target Appwrite queries",
+      "status": "passed",
+      "evidence": "Chrome verified email and phone matching plus counselor isolation. Target previously accepted synthetic query shapes. Pagination bounds remain covered by service tests."
     },
     {
       "id": "CRM02-LINK-A",
@@ -35,26 +35,18 @@
     },
     {
       "id": "CRM02-LINK-B",
-      "description": "Browser and provisioned contact group acceptance",
+      "description": "Provisioned contact group acceptance",
       "status": "pending",
-      "evidence": "Contact group field and index are declared in source. No provisioning or browser acceptance performed."
+      "evidence": "Built-app Chrome verified manager create, confirm from match list, open and unlink plus counselor isolation. Target contact group schema and smoke test pending."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Run built-app browser tests for matching filters and manager create, link, list and unlink. Verify counselor cannot access confirmed group data.",
+      "action": "Provision the documented additive leads schema in the release environment and smoke-test confirmed grouping with synthetic data. Then design duplicate resolution.",
       "files": [
-        "app/admin/lead.tsx",
-        "tests/manual-leads.test.mjs"
-      ]
-    },
-    {
-      "order": 2,
-      "action": "Provision additive leads schema in the release environment and smoke-test contact-group queries with synthetic enquiries; then design duplicate resolution.",
-      "files": [
-        "scripts/appwrite-schema.mjs",
-        "deploy/CRM-DEPLOYMENT.md"
+        "deploy/CRM-DEPLOYMENT.md",
+        "scripts/appwrite-schema.mjs"
       ]
     }
   ],
@@ -124,24 +116,24 @@
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-15T14:54:57.766Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-uXRCBg/typecheck.log"
+      "checkedAt": "2026-11-15T15:01:39.028Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-LfsMvy/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-15T14:54:58.895Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-uXRCBg/test.log"
+      "checkedAt": "2026-11-15T15:01:40.219Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-LfsMvy/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-15T14:55:03.738Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-uXRCBg/build.log"
+      "checkedAt": "2026-11-15T15:01:44.983Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-LfsMvy/build.log"
     }
   ],
-  "updatedAt": "2026-11-15T14:55:16.537Z",
-  "verifiedSourceFingerprint": "91487b0e47d2f1b73260545ce993a52343abdfa085169cf58b06b7ae8239b928"
+  "updatedAt": "2026-11-15T15:01:45.140Z",
+  "verifiedSourceFingerprint": "dd3f97e374c5d56f7d2bcfd342bbe21e604b0c52b9a91f43d39f2096d52e5458"
 }

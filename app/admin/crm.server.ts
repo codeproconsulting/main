@@ -43,8 +43,8 @@ export async function relatedEnquiries(staff: Staff, id: string, match: string, 
   const value = match === "email" ? emailKey(lead.email) : phoneKey(lead.phone);
   const currentPage = queuePage(String(page));
   if (!value) return { documents: [], total: 0 };
-  return listDocuments<Pick<Lead, typeof leadListFields[number]>>("leads", [
-    query("select", undefined, [...leadListFields]),
+  return listDocuments<Pick<Lead, typeof leadListFields[number] | "version">>("leads", [
+    query("select", undefined, [...leadListFields, "version"]),
     query("equal", match === "email" ? "emailKey" : "phoneKey", [value]),
     query("notEqual", "$id", [lead.$id]),
     ...(!canManage(staff) ? [query("equal", "owner", [staff.$id])] : []),
@@ -166,6 +166,10 @@ export async function changeContactGroup(staff: Staff, id: string, form: FormDat
     let contactGroup = operation === "create" ? randomUUID() : "";
     if (operation === "join") {
       const target = await leadFor(actor, targetId);
+      const expected = field(form, "targetVersion");
+      if (expected && Number(expected) !== target.version) {
+        throw new Response("The contact group changed. Refresh before linking.", { status: 409 });
+      }
       if (!target.contactGroup) throw new Response("Start a contact group on the other enquiry first.", { status: 400 });
       contactGroup = target.contactGroup;
     }

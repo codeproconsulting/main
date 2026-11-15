@@ -1,6 +1,6 @@
 # File updates
 
-Generated snapshot of changes since the previous inventory; Nov 15, 2026, 7:54 p.m. (Asia/Karachi).
+Generated snapshot of changes since the previous inventory; Nov 15, 2026, 8:01 p.m. (Asia/Karachi).
 
 [[02 File Map]] · [[Source Inventory]] · [[05 Maintenance]]
 
@@ -8,9 +8,4 @@ Review these changes and update human-authored architecture/status notes where n
 
 ## Modified
 
-- `app/admin/crm.server.ts`
-- `app/admin/domain.ts`
-- `app/admin/lead.tsx`
-- `deploy/CRM-DEPLOYMENT.md`
-- `scripts/appwrite-schema.mjs`
-- `tests/manual-leads.test.mjs`
+- `tests/helpers/cms-preview.mjs`
