@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "project": "ProConsulting",
   "sessionId": "2026-11-15-02",
-  "sessionStatus": "in_progress",
+  "sessionStatus": "completed",
   "activeFeature": "CRM-02",
   "objective": "Review repeat enquiries and explicitly link confirmed enquiries for one contact.",
   "scope": [
@@ -36,17 +36,18 @@
     {
       "id": "CRM02-LINK-B",
       "description": "Provisioned contact group acceptance",
-      "status": "pending",
-      "evidence": "Built-app Chrome verified manager create, confirm from match list, open and unlink plus counselor isolation. Target contact group schema and smoke test pending."
+      "status": "passed",
+      "evidence": "Built-app Chrome verified create, link, navigation, unlink and counselor isolation. Target Appwrite field and index were available. Two synthetic rows verified the empty default, membership query and unlink. Deletion of both verified."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Provision the documented additive leads schema in the release environment and smoke-test confirmed grouping with synthetic data. Then design duplicate resolution.",
+      "action": "Start a CRM-02 duplicate resolution session. Implement audited withdrawal of a confirmed duplicate with a reference to the retained enquiry and a reversible status change. Test scope and block cases with dependent work until a reconciliation flow exists.",
       "files": [
-        "deploy/CRM-DEPLOYMENT.md",
-        "scripts/appwrite-schema.mjs"
+        "context-vault/04 Decisions.md",
+        "app/admin/crm.server.ts",
+        "app/admin/lead.tsx"
       ]
     }
   ],
@@ -109,7 +110,7 @@
     "nativeLeadEditing": "Implemented in both source trees. No VPS or OTA release.",
     "auditRollout": "Appwrite leads schema provisioned. No VPS app deployment or OTA publication.",
     "vpsHandoff": "Operator chose self-install. First-install checklist prepared. Target CRM DNS/proxy and VPS release await operator setup.",
-    "contactGroupSchema": "Source declaration added; not applied. Target accepted read-only synthetic email and phone matching query shapes."
+    "contactGroupSchema": "Optional field and index provisioned and verified available on target Appwrite. Synthetic link/query/unlink passed and both rows were removed. VPS application rollout remains pending."
   },
   "checks": [
     {
@@ -134,6 +135,6 @@
       "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-LfsMvy/build.log"
     }
   ],
-  "updatedAt": "2026-11-15T15:01:45.140Z",
+  "updatedAt": "2026-11-15T15:05:38.455Z",
   "verifiedSourceFingerprint": "dd3f97e374c5d56f7d2bcfd342bbe21e604b0c52b9a91f43d39f2096d52e5458"
 }

@@ -95,3 +95,5 @@ Matching-enquiry review uses existing emailKey/phoneKey fields/indexes; historic
 Before enabling release use, provision optional leads contactGroup and its index using the scoped leads setup. Verify create, link, query and unlink in the release environment.
 
 Contact workflow browser acceptance used the isolated built-app preview. Apply the additive schema and verify against target Appwrite before release.
+
+The contactGroup field and contact_group index are available on target Appwrite. A synthetic smoke check verified empty defaults, linking, exclusion of the current enquiry, unlink and verified cleanup. Treat this as schema acceptance. Deploy and smoke-test the application separately.

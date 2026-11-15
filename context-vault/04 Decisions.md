@@ -121,3 +121,5 @@ Matching email/phone is a review hint only. No automatic identity linking, mergi
 Staff confirm identity before linking. Membership changes write one enquiry at a time with audit intent and existing locks. There is no automatic identity inference.
 
 Match-list confirmation checks versions of both the group enquiry and the enquiry being added.
+
+For duplicate resolution, first build an explicit manager decision for two enquiries representing the same request. Require confirmed contact membership, both current record versions, and a reason. Record the retained enquiry reference and prior status in the audit trail. Preserve both records and let staff reverse the decision. Block resolution while the duplicate has open follow-ups or linked business records until a separate reconciliation workflow covers those dependencies. Repeat enquiries for different services or destinations remain independent.

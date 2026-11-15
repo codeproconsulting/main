@@ -11,11 +11,11 @@ Generated from `session-state.json` by `npm run session:status`. Edit that struc
 
 **Active feature:** CRM-02
 
-**State:** in_progress
+**State:** completed
 
 **Objective:** Review repeat enquiries and explicitly link confirmed enquiries for one contact.
 
-A user saying **continue** means resume this feature's next unfinished acceptance check. Do not start unrelated modules or repeat completed infrastructure work. Verify current files and drift before trusting the checkpoint.
+This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
@@ -35,12 +35,12 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 | CRM02-REVIEW-A | Matching enquiry permission and query checks | passed | Synthetic tests verify self exclusion, counselor scope, manager visibility, invalid mode/inactive rejection, empty phone and pagination query bounds; no records merged. |
 | CRM02-REVIEW-B | Browser match filters and target Appwrite queries | passed | Chrome verified email and phone matching plus counselor isolation. Target previously accepted synthetic query shapes. Pagination bounds remain covered by service tests. |
 | CRM02-LINK-A | Confirmed contact links preserve enquiry state and access | passed | Synthetic tests cover create, link, list, unlink, stale versions, counselor denial, and audit-write failure. |
-| CRM02-LINK-B | Provisioned contact group acceptance | pending | Built-app Chrome verified manager create, confirm from match list, open and unlink plus counselor isolation. Target contact group schema and smoke test pending. |
+| CRM02-LINK-B | Provisioned contact group acceptance | passed | Built-app Chrome verified create, link, navigation, unlink and counselor isolation. Target Appwrite field and index were available. Two synthetic rows verified the empty default, membership query and unlink. Deletion of both verified. |
 
 ## Exact next actions
 
-1. Provision the documented additive leads schema in the release environment and smoke-test confirmed grouping with synthetic data. Then design duplicate resolution.
-   Files: `deploy/CRM-DEPLOYMENT.md`, `scripts/appwrite-schema.mjs`
+1. Start a CRM-02 duplicate resolution session. Implement audited withdrawal of a confirmed duplicate with a reference to the retained enquiry and a reversible status change. Test scope and block cases with dependent work until a reconciliation flow exists.
+   Files: `context-vault/04 Decisions.md`, `app/admin/crm.server.ts`, `app/admin/lead.tsx`
 
 ## Known risks and unfinished work
 
@@ -111,6 +111,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **nativeLeadEditing**: Implemented in both source trees. No VPS or OTA release.
 - **auditRollout**: Appwrite leads schema provisioned. No VPS app deployment or OTA publication.
 - **vpsHandoff**: Operator chose self-install. First-install checklist prepared. Target CRM DNS/proxy and VPS release await operator setup.
-- **contactGroupSchema**: Source declaration added; not applied. Target accepted read-only synthetic email and phone matching query shapes.
+- **contactGroupSchema**: Optional field and index provisioned and verified available on target Appwrite. Synthetic link/query/unlink passed and both rows were removed. VPS application rollout remains pending.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

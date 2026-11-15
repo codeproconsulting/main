@@ -149,3 +149,5 @@ CRM-02 matching-enquiry review implemented locally. Synthetic access and query c
 Confirmed contact group creation, linking and unlinking are implemented with focused synthetic checks. Browser and provisioned-schema acceptance remain pending. Profile editing and duplicate merging remain open.
 
 Chrome verified the confirmed contact workflow against the synthetic preview. Target schema and release smoke checks are still pending.
+
+Confirmed contact linking passed all four session checks, including isolated Chrome and target Appwrite. Application rollout is pending. The broader duplicate resolution workflow remains planned.
