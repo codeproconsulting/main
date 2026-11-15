@@ -7,6 +7,7 @@ const documents=process.argv.includes('--documents');
 const scanner=documents?await documentScanner(bytes=>bytes.includes('SYNTHETIC-SCAN-REJECT')?'stream: Synthetic.Test FOUND\0':'stream: OK\0'):null;
 const teamPreview=process.argv.includes('--team');
 const reminders=process.argv.includes('--reminders');
+const duplicates=process.argv.includes("--duplicates");
 const contacts=process.argv.includes("--contacts");
 const crm=contacts||teamPreview||documents||reminders||process.argv.includes('--cases')||process.argv.includes('--calendar');
 const role=teamPreview?'owner':crm?'manager':'publisher',userId=`synthetic-${role}`;
@@ -14,12 +15,12 @@ const stores=Object.fromEntries(['posts','revisions','activities','locks','staff
 stores.staff.set(userId,{$id:userId,name:teamPreview?'Synthetic Owner':crm?'Synthetic Manager':'Synthetic Publisher',role,active:true,teamId:'',$updatedAt:new Date().toISOString()});
 if(crm){
  stores.leads.set('synthetic-lead',{$id:'synthetic-lead',$createdAt:new Date().toISOString(),name:'Synthetic enquiry',email:'lead@example.invalid',phone:'000',service:'Education',source:'Isolated preview',country:'',stage:'New',owner:userId,priority:'Normal',nextFollowUp:'',details:'{}',version:1});
- for(const [id,title]of [['reschedule','Review course shortlist'],['cancel','Confirm duplicate appointment'],['complete','Call to confirm documents']])stores.tasks.set(id,{$id:id,leadId:'synthetic-lead',owner:userId,title,dueAt:'2020-01-01T10:00:00.000Z',status:'Open',outcome:'',version:1});
+ if(!duplicates) for(const [id,title]of [['reschedule','Review course shortlist'],['cancel','Confirm duplicate appointment'],['complete','Call to confirm documents']])stores.tasks.set(id,{$id:id,leadId:'synthetic-lead',owner:userId,title,dueAt:'2020-01-01T10:00:00.000Z',status:'Open',outcome:'',version:1});
 }
 if(contacts){
  const first=stores.leads.get('synthetic-lead');
  Object.assign(first,{phone:'+44 20 1234 5678',phoneKey:'442012345678',emailKey:first.email,owner:'synthetic-counselor'});
- stores.leads.set('synthetic-repeat',{...first,$id:'synthetic-repeat',name:'Synthetic repeat enquiry',country:'Italy',owner:userId});
+ stores.leads.set('synthetic-repeat',{...first,$id:'synthetic-repeat',name:'Synthetic repeat enquiry',country:duplicates?first.country:"Italy",owner:userId});
 }
 const authUsers=new Map([[userId,{$id:userId,status:true}]]);
 const authSessions=new Map();

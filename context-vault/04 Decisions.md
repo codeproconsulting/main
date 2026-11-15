@@ -123,3 +123,7 @@ Staff confirm identity before linking. Membership changes write one enquiry at a
 Match-list confirmation checks versions of both the group enquiry and the enquiry being added.
 
 For duplicate resolution, first build an explicit manager decision for two enquiries representing the same request. Require confirmed contact membership, both current record versions, and a reason. Record the retained enquiry reference and prior status in the audit trail. Preserve both records and let staff reverse the decision. Block resolution while the duplicate has open follow-ups or linked business records until a separate reconciliation workflow covers those dependencies. Repeat enquiries for different services or destinations remain independent.
+
+## Duplicate enquiry decisions
+
+Duplicate resolution requires the same confirmed contact, service and destination. Marking locks both enquiries and rejects open follow-up or any attached case, appointment, consultation or document, and rejects duplicate chains.

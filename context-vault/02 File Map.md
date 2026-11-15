@@ -129,3 +129,7 @@ The sibling app's `src/StaffWorkspace.tsx` hosts the workspace, `src/workspace.t
 Lead detail contains the confirmed contact workflow. CRM server handles versioned group changes and paginated reads. The leads schema declares the group field and index.
 
 Lead detail offers direct confirmation from matching enquiries. Run the synthetic browser preview with the contacts flag in tests/helpers/cms-preview.mjs.
+
+## Duplicate enquiry decisions
+
+Lead detail renders the manager decision and restore forms. CRM server checks membership, versions and dependencies. Cases, appointments, documents and consultations share the duplicate write guard.

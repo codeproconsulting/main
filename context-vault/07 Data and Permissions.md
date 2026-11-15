@@ -85,3 +85,7 @@ Related enquiry totals and rows are filtered by current counselor owner before p
 ## Confirmed contact links
 
 Confirmed groups and their audit details are visible to CRM managers. Counselors retain access to their assigned enquiries and scoped match suggestions.
+
+## Duplicate enquiry decisions
+
+Managers alone can archive or restore duplicate decisions and see retained links. Counselors retain their existing lead access. Linked-work writes are blocked while marked duplicate.

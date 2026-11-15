@@ -134,8 +134,8 @@ export const staffAccessLock = "staff:access";
 export function contactEnquiries(staff: Staff, lead: Lead, page: number) {
   allow(staff.active && canManage(staff));
   if (!lead.contactGroup) return { documents: [], total: 0 };
-  return listDocuments<Pick<Lead, typeof leadListFields[number]>>("leads", [
-    query("select", undefined, [...leadListFields]),
+  return listDocuments<Pick<Lead, typeof leadListFields[number] | "version">>("leads", [
+    query("select", undefined, [...leadListFields, "version"]),
     query("equal", "contactGroup", [lead.contactGroup]),
     query("notEqual", "$id", [lead.$id]),
     query("orderAsc", "$id"),
@@ -156,7 +156,7 @@ export async function changeContactGroup(staff: Staff, id: string, form: FormDat
   return serialized(`lead:${id}`, () => serialized(staffAccessLock, async () => {
     const actor = await getDocument<Staff>("staff", staff.$id);
     allow(actor.active && canManage(actor));
-    const lead = await leadFor(actor, id);
+    const lead = await writableEnquiry(actor, id);
     if (Number(field(form, "version")) !== lead.version) {
       throw new Response("This enquiry changed. Refresh before saving.", { status: 409 });
     }
@@ -185,9 +185,79 @@ export async function changeContactGroup(staff: Staff, id: string, form: FormDat
   }));
 }
 
+export async function writableEnquiry(staff: Staff, id: string) {
+  const lead = await leadFor(staff, id);
+  if (lead.duplicateOf) throw new Response("Restore this duplicate before adding or changing work.", { status: 409 });
+  return lead;
+}
+
+export async function resolveDuplicate(staff: Staff, id: string, form: FormData) {
+  allow(staff.active && canManage(staff));
+  const intent = field(form, "intent");
+  const restore = intent === "restore-duplicate";
+  const targetId = restore ? "" : field(form, "retainedEnquiry", 36);
+  const reason = field(form, "reason", 2000);
+  if (!reason || (!restore && (intent !== "mark-duplicate" || targetId === id ||
+      !/^[a-zA-Z0-9][a-zA-Z0-9._-]{0,35}$/.test(targetId)))) {
+    throw new Response("Enter a reason and choose a different enquiry to retain.", { status: 400 });
+  }
+
+  const save = () => serialized(staffAccessLock, async () => {
+    const actor = await getDocument<Staff>("staff", staff.$id);
+    allow(actor.active && canManage(actor));
+    const lead = await leadFor(actor, id);
+    if (Number(field(form, "version")) !== lead.version || Boolean(lead.duplicateOf) !== restore) {
+      throw new Response("This enquiry changed. Refresh before saving.", { status: 409 });
+    }
+    let stage = lead.duplicatePriorStage;
+    if (restore) {
+      if (!stages.some(value => value === stage)) {
+        throw new Response("The previous stage needs administrator review.", { status: 409 });
+      }
+    } else {
+      const target = await leadFor(actor, targetId);
+      if (Number(field(form, "targetVersion")) !== target.version) {
+        throw new Response("The retained enquiry changed. Refresh before saving.", { status: 409 });
+      }
+      if (!lead.contactGroup || lead.contactGroup !== target.contactGroup || target.duplicateOf ||
+          lead.service.trim().toLowerCase() !== target.service.trim().toLowerCase() ||
+          lead.country.trim().toLowerCase() !== target.country.trim().toLowerCase()) {
+        throw new Response("Choose a confirmed contact enquiry for the same service and destination.", { status: 400 });
+      }
+      const dependencies = await Promise.all([
+        listDocuments("leads", [query("equal", "duplicateOf", [id]), query("limit", undefined, [1])]),
+        ...(["tasks", "cases", "appointments", "documents", "consultations"] as const).map(collection =>
+          listDocuments(collection, [query("equal", "leadId", [id]), query("limit", undefined, [1]),
+            ...(collection === "tasks" ? [query("equal", "status", ["Open"])] : [])])),
+      ]);
+      if (lead.nextFollowUp || dependencies.some(result => result.documents.length > 0)) {
+        throw new Response("Resolve linked work or existing duplicate references before marking this enquiry.", { status: 409 });
+      }
+      stage = "Archived";
+    }
+
+    const changes = {
+      stage, duplicateOf: targetId, duplicatePriorStage: restore ? "" : lead.stage,
+      version: lead.version + 1,
+    };
+    await audit(actor, id, "lead", "Duplicate decision requested", {
+      intent, reason, before: { stage: lead.stage, duplicateOf: lead.duplicateOf || "" }, after: changes,
+    });
+    try {
+      return await updateDocument("leads", id, changes);
+    } catch (error) {
+      if (definitiveWriteRejection(error)) throw error;
+      throw new UnconfirmedMutation("The duplicate decision may have saved. Ask an administrator to reconcile it before retrying.");
+    }
+  });
+  if (restore) return serialized(`lead:${id}`, save);
+  const [first, second] = [id, targetId].sort();
+  return serialized(`lead:${first}`, () => serialized(`lead:${second}`, save));
+}
+
 export async function updateLead(staff: Staff, id: string, form: FormData, mode: "full" | "stage-priority" = "full") {
   return serialized(`lead:${id}`, async () => {
-    const lead = await leadFor(staff, id);
+    const lead = await writableEnquiry(staff, id);
     if (Number(field(form, "version")) !== lead.version) throw new Response("This lead changed. Refresh before saving.", { status: 409 });
     const stage = field(form, "stage");
     if (!stages.includes(stage as typeof stages[number])) throw new Response("Invalid stage", { status: 400 });
@@ -262,7 +332,7 @@ export async function addNote(staff: Staff, id: string, note: string) {
 }
 export async function createTask(staff: Staff, id: string, form: FormData) {
   return serialized(`lead:${id}`,async()=>{
-    const lead = await leadFor(staff, id);
+    const lead = await writableEnquiry(staff, id);
     const title = field(form, "title", 300),dueAt = dateField(field(form, "dueAt"));
     if (!title || !dueAt || !lead.owner) throw new Response("Assign this lead and enter a task title and due date.", { status: 400 });
     const assignee=await getDocument<Staff>("staff",lead.owner);allow(assignee.active&&canUseCRM(assignee));

@@ -273,3 +273,7 @@ The verifier checks the schema, submits one synthetic enquiry through the real w
 ### Confirmed contact groups
 
 Use the scoped leads setup above to provision the optional `contactGroup` attribute and index before staff use this workflow. Check create, link, pagination, unlink and counselor denial with synthetic enquiries. Existing enquiries start without a group and retain their original assignments and history. For an uncertain write, inspect the enquiry version, group and audit intent before clearing the affected lead and staff-access locks under the existing operator recovery procedure.
+
+### Duplicate enquiry decisions
+
+Apply the scoped leads setup for the optional duplicateOf and duplicatePriorStage attributes and duplicate_of index. Provision and verify runtime reads on tasks, cases, appointments, documents and consultations before accepting duplicate decisions. Dependency checks fail closed. Verify mark, restored stage, audit and access with synthetic enquiries. For an ambiguous decision, inspect the enquiry version and duplicate fields before recovering the relevant lead and staff-access locks.

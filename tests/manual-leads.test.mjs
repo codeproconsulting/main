@@ -11,7 +11,7 @@ const manager={$id:'synthetic-manager',role:'manager',active:true};
 const counselor={$id:'synthetic-counselor',role:'counselor',active:true};
 const errorStatus=status=>error=>error instanceof Response&&error.status===status;
 const token='d21265d0-363f-4a4c-b777-0e67b36930da';
-let vite,manual,crm,leads,activities,profiles,queries,options;
+let vite,manual,crm,leads,activities,profiles,queries,options,dependencies;
 
 function form(changes={}){
  const fields=new FormData();
@@ -30,7 +30,7 @@ before(async()=>{
  globalThis.fetch=async(input,request)=>{
   const url=new URL(input);
   const [,collection,id]=url.pathname.match(/\/collections\/(\w+)\/documents(?:\/([^/]+))?$/)??[];
-  const store={leads,activities,staff:profiles}[collection];
+  const store={leads,activities,staff:profiles,...dependencies}[collection];
   assert.ok(store);
   if(request.method==='GET'){
    if(id)return store.has(id)?Response.json(store.get(id)):Response.json({}, {status:404});
@@ -59,6 +59,7 @@ beforeEach(()=>{
  profiles=new Map([[manager.$id,manager],[counselor.$id,counselor]]);
  queries=[];
  options={};
+ dependencies=Object.fromEntries(["tasks","cases","appointments","documents","consultations"].map(name=>[name,new Map()]));
 });
 after(async()=>{
  globalThis.fetch=originalFetch;
@@ -192,5 +193,40 @@ test('confirmed contact links are manager-only, versioned, reversible and preser
  const unlinked=await change(manager,second.$id,'unlink',2);
  assert.equal(unlinked.contactGroup,'');
  assert.equal((await crm.contactEnquiries(manager,anchor,1)).total,0);
+ assert.equal(leads.size,2);
+});
+
+
+test('duplicate decisions require confirmation and no dependent work, and restore the original stage',async()=>{
+ const first=await manual.createManualLead(counselor,form());
+ const second=await manual.createManualLead(manager,form());
+ leads.set(first.$id,{...first,stage:'Contacted',contactGroup:'synthetic-group'});
+ leads.set(second.$id,{...second,contactGroup:'synthetic-group',country:'Italy'});
+ const mark=form({intent:'mark-duplicate',retainedEnquiry:second.$id,version:'1',targetVersion:'1',reason:'Same request'});
+ await assert.rejects(()=>crm.resolveDuplicate(counselor,first.$id,mark),errorStatus(403));
+ await assert.rejects(()=>crm.resolveDuplicate(manager,first.$id,mark),errorStatus(400));
+ leads.set(second.$id,{...second,contactGroup:'synthetic-group'});
+ for (const [name,store] of Object.entries(dependencies)) {
+  store.set('synthetic-dependent',{leadId:first.$id,status:'Open'});
+  await assert.rejects(()=>crm.resolveDuplicate(manager,first.$id,mark),errorStatus(409),name);
+  store.clear();
+ }
+ mark.set('targetVersion','2');
+ await assert.rejects(()=>crm.resolveDuplicate(manager,first.$id,mark),errorStatus(409));
+ mark.set('targetVersion','1');
+ const archived=await crm.resolveDuplicate(manager,first.$id,mark);
+ assert.equal(archived.stage,'Archived');
+ assert.equal(archived.duplicateOf,second.$id);
+ assert.equal(archived.owner,first.owner);
+ await assert.rejects(()=>crm.createTask(counselor,first.$id,form()),errorStatus(409));
+ await assert.rejects(()=>crm.resolveDuplicate(manager,second.$id,form({
+  intent:'mark-duplicate',retainedEnquiry:first.$id,version:'1',targetVersion:'2',reason:'Same request',
+ })),errorStatus(400));
+ const restored=await crm.resolveDuplicate(manager,first.$id,form({
+  intent:'restore-duplicate',version:'2',reason:'Keep both open',
+ }));
+ assert.equal(restored.stage,'Contacted');
+ assert.equal(restored.duplicateOf,'');
+ assert.equal(restored.version,3);
  assert.equal(leads.size,2);
 });

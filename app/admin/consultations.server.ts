@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { AppwriteError, createDocument, getDocument, listDocuments, query } from "~/lib/appwrite.server";
-import { allow, field, leadFor, serialized, staffAccessLock } from "./crm.server";
+import { allow, field, leadFor, writableEnquiry, serialized, staffAccessLock } from "./crm.server";
 import { canManage, canUseCRM, type Lead, type Staff } from "./domain";
 
 type Consultation = {
@@ -81,7 +81,7 @@ export async function recordConsultation(staff: Staff, leadId: string, form: For
   return serialized(`lead:${leadId}`, () => serialized(staffAccessLock, async () => {
     const actor = await getDocument<Staff>("staff", staff.$id);
     allow(actor.active && canUseCRM(actor));
-    await leadFor(actor, leadId);
+    await writableEnquiry(actor, leadId);
     const counselor = canManage(actor) ? field(form, "counselor", 36) : actor.$id;
     if (!/^[a-zA-Z0-9][a-zA-Z0-9._-]{0,35}$/.test(counselor)) {
       throw new Response("Choose the counselor who held the consultation.", { status: 400 });

@@ -151,3 +151,7 @@ Confirmed contact group creation, linking and unlinking are implemented with foc
 Chrome verified the confirmed contact workflow against the synthetic preview. Target schema and release smoke checks are still pending.
 
 Confirmed contact linking passed all four session checks, including isolated Chrome and target Appwrite. Application rollout is pending. The broader duplicate resolution workflow remains planned.
+
+## Duplicate enquiry decisions
+
+Duplicate archive and restore implemented. Synthetic regression coverage passes. Target fields, dependency collections and live acceptance remain pending.

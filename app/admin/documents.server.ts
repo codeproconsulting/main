@@ -1,7 +1,7 @@
 import { documentCategories, documentLimit, documentStatuses, type ClientDocument } from "./document-domain";
 import { randomUUID } from "node:crypto";
 import { AppwriteError, createDocument, getDocument, listDocuments, query, updateDocument } from "~/lib/appwrite.server";
-import { allow, audit, leadFor, serialized } from "./crm.server";
+import { allow, audit, leadFor, writableEnquiry, serialized } from "./crm.server";
 import { canUseCRM, type Staff } from "./domain";
 import { scanDocument } from "./document-scan.server";
 import { downloadFile, fileSignature, privateBucket, removeFile, uploadFile } from "./storage.server";
@@ -70,7 +70,7 @@ export async function uploadClientDocument(staff: Staff, leadId: string, file: F
   await scanDocument(bytes);
   const scannedAt = new Date().toISOString();
   return serialized(`lead:${leadId}`, async () => {
-    await leadFor(staff, leadId);
+    await writableEnquiry(staff, leadId);
     const id = randomUUID();
     const bucket = privateBucket();
     const event = await audit(staff, leadId, "lead", "Document upload requested", { state: "pending", documentId: id, fileId: id });
@@ -125,7 +125,7 @@ export async function reviewClientDocument(
   if (!documentStatuses.some(item => item === status)) throw new Response("Invalid review status.", { status: 400 });
   const expiresAt = documentExpiry(expiry);
   return serialized(`lead:${leadId}`, async () => {
-    await leadFor(staff, leadId);
+    await writableEnquiry(staff, leadId);
     const doc = await documentFor(id);
     allow(doc.leadId === leadId);
     if (!doc.scannedAt) throw new Response("Re-upload this document to scan it before review.", { status: 409 });

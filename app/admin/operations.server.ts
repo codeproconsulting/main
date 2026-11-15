@@ -1,7 +1,7 @@
 import {randomUUID} from "node:crypto";
 import {AppwriteError,createDocument,getDocument,listDocuments,query,updateDocument} from "~/lib/appwrite.server";
 import {caseStagesFor,canManage,canUseCRM,type Staff} from "./domain";
-import {allow,audit,dateField,field,leadFor,scopedQueue,serialized} from "./crm.server";
+import {allow,audit,dateField,field,writableEnquiry,scopedQueue,serialized} from "./crm.server";
 export type CaseRecord={$id:string;leadId:string;owner:string;kind:string;institution:string;course:string;country:string;intake:string;stage:string;deadline:string;notes:string;version:number};
 import {appointmentCalendarLock,appointmentTime,assertCalendarAvailable,type Appointment} from "./calendar.server";
 export type {Appointment} from "./calendar.server";
@@ -10,7 +10,7 @@ export function scopedRecords<T extends {leadId:string}>(staff: Staff, collectio
   return scopedQueue<T>(staff, collection, [query("orderDesc", "$createdAt")], page);
 }
 export async function saveCase(staff:Staff,form:FormData){const id=field(form,"id",36),leadId=field(form,"leadId",36);return serialized(`lead:${leadId}`,async()=>{
- const lead=await leadFor(staff,leadId);
+ const lead=await writableEnquiry(staff,leadId);
  const current=id?await getDocument<CaseRecord>("cases",id):null;if(current){allow(current.leadId===leadId);if(current.version!==Number(field(form,"version")))throw new Response("Application changed. Refresh before saving.",{status:409});}
  const kind=field(form,"kind",30),stage=field(form,"stage",80);if(!["Education","Immigration"].includes(kind)||!caseStagesFor(kind).includes(stage))throw new Response("Invalid application type or stage",{status:400});
  if(current&&current.kind!==kind)throw new Response("Application service cannot be changed. Create a separate application for the other service.",{status:400});
@@ -28,7 +28,7 @@ export async function saveAppointment(staff: Staff, form: FormData) {
   const leadId = field(form, "leadId", 36);
   allow(canUseCRM(staff));
   return serialized(`lead:${leadId}`, () => serialized(appointmentCalendarLock, async () => {
-    const lead = await leadFor(staff, leadId);
+    const lead = await writableEnquiry(staff, leadId);
     if (!lead.owner) throw new Response("Assign the lead before booking an appointment.", { status: 400 });
     const assignee = await getDocument<Staff>("staff", lead.owner);
     allow(assignee.active && canUseCRM(assignee));

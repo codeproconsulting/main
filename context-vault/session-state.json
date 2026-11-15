@@ -1,53 +1,45 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-15-02",
-  "sessionStatus": "completed",
+  "sessionId": "2026-11-15-03",
+  "sessionStatus": "in_progress",
   "activeFeature": "CRM-02",
-  "objective": "Review repeat enquiries and explicitly link confirmed enquiries for one contact.",
+  "objective": "Archive and restore confirmed duplicate enquiries while retaining their history.",
   "scope": [
-    "Matching-email and matching-phone enquiry review",
-    "Scoped pagination and links to independent enquiries",
-    "Manager-confirmed contact groups with reversible enquiry membership"
+    "Manager review of confirmed same-service and same-destination enquiries",
+    "Audit, version and dependent work checks"
   ],
   "outOfScope": [
-    "Automatic merge and canonical contact migration",
-    "Mobile UI and production rollout"
+    "Merging or moving dependent records",
+    "VPS deployment and mobile workflow"
   ],
   "acceptance": [
     {
-      "id": "CRM02-REVIEW-A",
-      "description": "Matching enquiry permission and query checks",
+      "id": "CRM02-DUP-A",
+      "description": "Duplicate decision permissions and preserved data",
       "status": "passed",
-      "evidence": "Synthetic tests verify self exclusion, counselor scope, manager visibility, invalid mode/inactive rejection, empty phone and pagination query bounds; no records merged."
+      "evidence": "Focused synthetic test verifies counselor denial, destination and stale version rejection, each dependent collection, archive, blocked task write and restoration."
     },
     {
-      "id": "CRM02-REVIEW-B",
-      "description": "Browser match filters and target Appwrite queries",
+      "id": "CRM02-DUP-B",
+      "description": "Built app browser acceptance",
       "status": "passed",
-      "evidence": "Chrome verified email and phone matching plus counselor isolation. Target previously accepted synthetic query shapes. Pagination bounds remain covered by service tests."
+      "evidence": "Isolated Chrome verified contact group linking, duplicate archive, retained reference and restore. Initial fixture seeded open tasks; corrected fixture to exercise the successful path."
     },
     {
-      "id": "CRM02-LINK-A",
-      "description": "Confirmed contact links preserve enquiry state and access",
-      "status": "passed",
-      "evidence": "Synthetic tests cover create, link, list, unlink, stale versions, counselor denial, and audit-write failure."
-    },
-    {
-      "id": "CRM02-LINK-B",
-      "description": "Provisioned contact group acceptance",
-      "status": "passed",
-      "evidence": "Built-app Chrome verified create, link, navigation, unlink and counselor isolation. Target Appwrite field and index were available. Two synthetic rows verified the empty default, membership query and unlink. Deletion of both verified."
+      "id": "CRM02-DUP-C",
+      "description": "Provisioned target acceptance",
+      "status": "pending",
+      "evidence": "New optional leads fields and index plus read access to dependency collections required. Not applied."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Start a CRM-02 duplicate resolution session. Implement audited withdrawal of a confirmed duplicate with a reference to the retained enquiry and a reversible status change. Test scope and block cases with dependent work until a reconciliation flow exists.",
+      "action": "Apply the optional duplicate fields and index in the release environment. Verify all dependency reads, then smoke-test duplicate archive and restore with synthetic records.",
       "files": [
-        "context-vault/04 Decisions.md",
-        "app/admin/crm.server.ts",
-        "app/admin/lead.tsx"
+        "deploy/CRM-DEPLOYMENT.md",
+        "scripts/appwrite-schema.mjs"
       ]
     }
   ],
@@ -117,24 +109,24 @@
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-15T15:01:39.028Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-LfsMvy/typecheck.log"
+      "checkedAt": "2026-11-15T15:11:51.179Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-wzIQ36/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-15T15:01:40.219Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-LfsMvy/test.log"
+      "checkedAt": "2026-11-15T15:11:52.372Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-wzIQ36/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-15T15:01:44.983Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-LfsMvy/build.log"
+      "checkedAt": "2026-11-15T15:11:57.050Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-wzIQ36/build.log"
     }
   ],
-  "updatedAt": "2026-11-15T15:05:38.455Z",
-  "verifiedSourceFingerprint": "dd3f97e374c5d56f7d2bcfd342bbe21e604b0c52b9a91f43d39f2096d52e5458"
+  "updatedAt": "2026-11-15T15:11:57.212Z",
+  "verifiedSourceFingerprint": "44df275317f3fd33a85ab9ab1e1c30e33a936c374ac01dd767671774b657fe3a"
 }

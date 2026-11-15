@@ -97,3 +97,7 @@ Before enabling release use, provision optional leads contactGroup and its index
 Contact workflow browser acceptance used the isolated built-app preview. Apply the additive schema and verify against target Appwrite before release.
 
 The contactGroup field and contact_group index are available on target Appwrite. A synthetic smoke check verified empty defaults, linking, exclusion of the current enquiry, unlink and verified cleanup. Treat this as schema acceptance. Deploy and smoke-test the application separately.
+
+## Duplicate enquiry decisions
+
+Duplicate resolution requires the additive leads fields duplicateOf and duplicatePriorStage, the duplicate_of index, and readable dependency collections. See the deployment runbook.

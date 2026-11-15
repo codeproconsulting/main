@@ -99,3 +99,7 @@ Lead detail now reads matching enquiries by normalized email or phone through th
 ## Confirmed contact links
 
 Confirmed contact groups are manager-only. An optional group ID links separate enquiries; case, assignment and follow-up relationships keep their original enquiry IDs.
+
+## Duplicate enquiry decisions
+
+Duplicate resolution archives an enquiry with a retained-enquiry reference and previous stage. The decision is audited; both records stay intact.

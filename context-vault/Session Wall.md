@@ -3,44 +3,42 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-15-02]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-15-03]].
 
 ## Resume here
 
-**Session:** 2026-11-15-02
+**Session:** 2026-11-15-03
 
 **Active feature:** CRM-02
 
-**State:** completed
+**State:** in_progress
 
-**Objective:** Review repeat enquiries and explicitly link confirmed enquiries for one contact.
+**Objective:** Archive and restore confirmed duplicate enquiries while retaining their history.
 
-This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
+A user saying **continue** means resume this feature's next unfinished acceptance check. Do not start unrelated modules or repeat completed infrastructure work. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Matching-email and matching-phone enquiry review
-- Scoped pagination and links to independent enquiries
-- Manager-confirmed contact groups with reversible enquiry membership
+- Manager review of confirmed same-service and same-destination enquiries
+- Audit, version and dependent work checks
 
 ## Out of scope
 
-- Automatic merge and canonical contact migration
-- Mobile UI and production rollout
+- Merging or moving dependent records
+- VPS deployment and mobile workflow
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| CRM02-REVIEW-A | Matching enquiry permission and query checks | passed | Synthetic tests verify self exclusion, counselor scope, manager visibility, invalid mode/inactive rejection, empty phone and pagination query bounds; no records merged. |
-| CRM02-REVIEW-B | Browser match filters and target Appwrite queries | passed | Chrome verified email and phone matching plus counselor isolation. Target previously accepted synthetic query shapes. Pagination bounds remain covered by service tests. |
-| CRM02-LINK-A | Confirmed contact links preserve enquiry state and access | passed | Synthetic tests cover create, link, list, unlink, stale versions, counselor denial, and audit-write failure. |
-| CRM02-LINK-B | Provisioned contact group acceptance | passed | Built-app Chrome verified create, link, navigation, unlink and counselor isolation. Target Appwrite field and index were available. Two synthetic rows verified the empty default, membership query and unlink. Deletion of both verified. |
+| CRM02-DUP-A | Duplicate decision permissions and preserved data | passed | Focused synthetic test verifies counselor denial, destination and stale version rejection, each dependent collection, archive, blocked task write and restoration. |
+| CRM02-DUP-B | Built app browser acceptance | passed | Isolated Chrome verified contact group linking, duplicate archive, retained reference and restore. Initial fixture seeded open tasks; corrected fixture to exercise the successful path. |
+| CRM02-DUP-C | Provisioned target acceptance | pending | New optional leads fields and index plus read access to dependency collections required. Not applied. |
 
 ## Exact next actions
 
-1. Start a CRM-02 duplicate resolution session. Implement audited withdrawal of a confirmed duplicate with a reference to the retained enquiry and a reversible status change. Test scope and block cases with dependent work until a reconciliation flow exists.
-   Files: `context-vault/04 Decisions.md`, `app/admin/crm.server.ts`, `app/admin/lead.tsx`
+1. Apply the optional duplicate fields and index in the release environment. Verify all dependency reads, then smoke-test duplicate archive and restore with synthetic records.
+   Files: `deploy/CRM-DEPLOYMENT.md`, `scripts/appwrite-schema.mjs`
 
 ## Known risks and unfinished work
 
@@ -63,9 +61,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-15T15:01:39.028Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-LfsMvy/typecheck.log`
-- **passed**: `npm run test` (2026-11-15T15:01:40.219Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-LfsMvy/test.log`
-- **passed**: `npm run build` (2026-11-15T15:01:44.983Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-LfsMvy/build.log`
+- **passed**: `npm run typecheck` (2026-11-15T15:11:51.179Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-wzIQ36/typecheck.log`
+- **passed**: `npm run test` (2026-11-15T15:11:52.372Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-wzIQ36/test.log`
+- **passed**: `npm run build` (2026-11-15T15:11:57.050Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-wzIQ36/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
