@@ -113,3 +113,7 @@ The private lead_views collection and leads priority index are available on targ
 ## Bulk lead changes
 
 Bulk changes reuse the existing lead and lock schema. Verify stage and priority edits through the deployed proxy before release.
+
+## Bulk counselor handoff
+
+Existing owner, lock and linked-work schemas cover bulk handoffs. Verify the deployed proxy and runtime permissions before enabling the workflow for staff.

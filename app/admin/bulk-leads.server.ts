@@ -1,15 +1,18 @@
 import { allow, field, updateLead } from "./crm.server";
 import { canManage, bulkLeadLimit, priorities, stages, type Staff } from "./domain";
 
-
 export async function bulkUpdateLeads(staff: Staff, form: FormData) {
   allow(staff.active && canManage(staff));
   const stage = field(form, "bulkStage", 50);
   const priority = field(form, "bulkPriority", 20);
+  const assignee = field(form, "bulkOwner", 36);
   const reason = field(form, "reason", 2000);
-  if ((!stage && !priority) || (stage && !stages.some(value => value === stage)) ||
+  if ((!stage && !priority && !assignee) || (stage && !stages.some(value => value === stage)) ||
       (priority && !priorities.some(value => value === priority))) {
-    throw new Response("Choose a stage or priority change.", { status: 400 });
+    throw new Response("Choose a counselor, stage, or priority change.", { status: 400 });
+  }
+  if (assignee && (!/^[a-zA-Z0-9][a-zA-Z0-9._-]{0,35}$/.test(assignee) || !reason)) {
+    throw new Response("Choose a valid counselor and enter a handoff reason.", { status: 400 });
   }
   const selection = form.getAll("selected");
   if (!selection.length || selection.length > bulkLeadLimit) {
@@ -26,6 +29,7 @@ export async function bulkUpdateLeads(staff: Staff, form: FormData) {
   for (const [id, version] of entries) {
     const change = new FormData();
     for (const [key, value] of Object.entries({ stage, priority, reason, version })) change.set(key, value);
+    if (assignee) change.set("owner", assignee);
     try {
       await updateLead(staff, id, change, "bulk");
       results.push({ id, status: "saved" as const, message: "Saved" });

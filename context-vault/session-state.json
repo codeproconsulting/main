@@ -1,39 +1,39 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-15-05",
+  "sessionId": "2026-11-15-06",
   "sessionStatus": "completed",
   "activeFeature": "CRM-02",
-  "objective": "Update stage and priority for a bounded selection of enquiries.",
+  "objective": "Triage unassigned enquiries and hand off selected enquiries in one workflow.",
   "scope": [
-    "Manager-only bulk stage and priority changes",
-    "Per-enquiry update results"
+    "Counselor and unassigned filters",
+    "Manager bulk counselor assignment with existing handoff and audit checks"
   ],
   "outOfScope": [
-    "Bulk reassignment, deletion and production rollout"
+    "Automatic assignment, bulk unassignment, and VPS deployment"
   ],
   "acceptance": [
     {
-      "id": "CRM02-BULK-A",
-      "description": "Permissions, bounds, versions and partial results",
+      "id": "CRM02-HANDOFF-A",
+      "description": "Bounded handoff, transfer and partial failure",
       "status": "passed",
-      "evidence": "Synthetic tests verify manager-only access, invalid selections, version conflicts, preservation of unchanged fields, and closure reasons."
+      "evidence": "Synthetic tests cover linked open tasks, applications, appointments, existing availability conflict, missing assignee, reason requirement, audit, unconfirmed transfer and counselor scope."
     },
     {
-      "id": "CRM02-BULK-B",
-      "description": "Built app browser acceptance",
+      "id": "CRM02-HANDOFF-B",
+      "description": "Browser workflow and target query",
       "status": "passed",
-      "evidence": "Chrome built preview verified partial save, stale row message, refreshed priority, cleared selection and counselor visibility."
+      "evidence": "Chrome verified the unassigned queue, combined counselor and priority changes, linked task movement and counselor access. Target Appwrite accepted the indexed unassigned query using a synthetic email filter."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Start the next CRM-02 session for bulk counselor assignment. Reuse existing handoff locking and dependent-record transfer. Verify partial failures and per-enquiry audit.",
+      "action": "Start CRM-03 assignment rules. Define counselor availability and capacity settings, then implement an audited manager-triggered round robin before considering automatic assignment at intake.",
       "files": [
-        "app/admin/bulk-leads.server.ts",
+        "context-vault/Feature Ledger.md",
         "app/admin/crm.server.ts",
-        "app/admin/leads.tsx"
+        "scripts/appwrite-schema.mjs"
       ]
     }
   ],
@@ -105,24 +105,24 @@
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-15T15:30:47.874Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-tOmvsm/typecheck.log"
+      "checkedAt": "2026-11-15T15:34:40.516Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-KzImy2/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-15T15:30:49.192Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-tOmvsm/test.log"
+      "checkedAt": "2026-11-15T15:34:41.859Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-KzImy2/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-15T15:30:54.266Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-tOmvsm/build.log"
+      "checkedAt": "2026-11-15T15:34:47.127Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-KzImy2/build.log"
     }
   ],
-  "updatedAt": "2026-11-15T15:31:29.359Z",
-  "verifiedSourceFingerprint": "e7e1abccf0b607f000614da82f0462efb3678ea088779a01b0a665a5f79f30cb"
+  "updatedAt": "2026-11-15T15:35:40.212Z",
+  "verifiedSourceFingerprint": "949a73d21f73d1dcf85bf1bcc1530edfdaa62bebc059d278e946e25e720d7de5"
 }

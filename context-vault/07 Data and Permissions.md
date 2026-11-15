@@ -97,3 +97,7 @@ Saved views are listed and changed only for the signed-in staff account. They ne
 ## Bulk lead changes
 
 Bulk changes are manager-only. The server validates each selected lead and version and rechecks current staff access before writing.
+
+## Bulk counselor handoff
+
+Managers can filter by counselor or unassigned and transfer selected leads to an active CRM staff account. Counselors always keep their own assignment scope.

@@ -3,40 +3,40 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-15-05]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-15-06]].
 
 ## Resume here
 
-**Session:** 2026-11-15-05
+**Session:** 2026-11-15-06
 
 **Active feature:** CRM-02
 
 **State:** completed
 
-**Objective:** Update stage and priority for a bounded selection of enquiries.
+**Objective:** Triage unassigned enquiries and hand off selected enquiries in one workflow.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Manager-only bulk stage and priority changes
-- Per-enquiry update results
+- Counselor and unassigned filters
+- Manager bulk counselor assignment with existing handoff and audit checks
 
 ## Out of scope
 
-- Bulk reassignment, deletion and production rollout
+- Automatic assignment, bulk unassignment, and VPS deployment
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| CRM02-BULK-A | Permissions, bounds, versions and partial results | passed | Synthetic tests verify manager-only access, invalid selections, version conflicts, preservation of unchanged fields, and closure reasons. |
-| CRM02-BULK-B | Built app browser acceptance | passed | Chrome built preview verified partial save, stale row message, refreshed priority, cleared selection and counselor visibility. |
+| CRM02-HANDOFF-A | Bounded handoff, transfer and partial failure | passed | Synthetic tests cover linked open tasks, applications, appointments, existing availability conflict, missing assignee, reason requirement, audit, unconfirmed transfer and counselor scope. |
+| CRM02-HANDOFF-B | Browser workflow and target query | passed | Chrome verified the unassigned queue, combined counselor and priority changes, linked task movement and counselor access. Target Appwrite accepted the indexed unassigned query using a synthetic email filter. |
 
 ## Exact next actions
 
-1. Start the next CRM-02 session for bulk counselor assignment. Reuse existing handoff locking and dependent-record transfer. Verify partial failures and per-enquiry audit.
-   Files: `app/admin/bulk-leads.server.ts`, `app/admin/crm.server.ts`, `app/admin/leads.tsx`
+1. Start CRM-03 assignment rules. Define counselor availability and capacity settings, then implement an audited manager-triggered round robin before considering automatic assignment at intake.
+   Files: `context-vault/Feature Ledger.md`, `app/admin/crm.server.ts`, `scripts/appwrite-schema.mjs`
 
 ## Known risks and unfinished work
 
@@ -59,9 +59,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-15T15:30:47.874Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-tOmvsm/typecheck.log`
-- **passed**: `npm run test` (2026-11-15T15:30:49.192Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-tOmvsm/test.log`
-- **passed**: `npm run build` (2026-11-15T15:30:54.266Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-tOmvsm/build.log`
+- **passed**: `npm run typecheck` (2026-11-15T15:34:40.516Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-KzImy2/typecheck.log`
+- **passed**: `npm run test` (2026-11-15T15:34:41.859Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-KzImy2/test.log`
+- **passed**: `npm run build` (2026-11-15T15:34:47.127Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-KzImy2/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 

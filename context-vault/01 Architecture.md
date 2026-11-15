@@ -111,3 +111,7 @@ Saved lead filters use a private Appwrite collection keyed by staff and filter c
 ## Bulk lead changes
 
 Bulk stage and priority changes call the existing lead mutation for each selected enquiry. They preserve the assignee and next follow-up.
+
+## Bulk counselor handoff
+
+Bulk assignment reuses the single enquiry transfer under lead, staff access and calendar locks. The manager filter adds an indexed owner condition to the scoped lead query.

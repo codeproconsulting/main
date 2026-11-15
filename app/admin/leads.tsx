@@ -5,7 +5,7 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Search, ArrowUpRight } from "lucide-react";
 import { leadServices } from "~/lib/lead-contact";
 import { requireStaff, sameOrigin } from "./auth.server";
-import { bulkLeadLimit, canManage, displayDate, priorities, stages } from "./domain";
+import { bulkLeadLimit, canManage, canUseCRM, displayDate, priorities, stages } from "./domain";
 import { field, leadsFor, listStaff } from "./crm.server";
 import { bulkUpdateLeads } from "./bulk-leads.server";
 import { changeLeadView, leadViews } from "./lead-views.server";
@@ -23,12 +23,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const search = url.searchParams.get("q")?.slice(0, 254) ?? "";
   const stage = url.searchParams.get("stage") ?? "";
   const priority = url.searchParams.get("priority") ?? "";
+  const ownerFilter = canManage(staff) ? url.searchParams.get("assigned")?.slice(0, 36) ?? "" : "";
   const page = pageNumber(url.searchParams.get("page"));
   const [leads, team, views] = await Promise.all([
-    leadsFor(staff, search, stage, page, priority), canManage(staff) ? listStaff() : Promise.resolve([staff]), leadViews(staff),
+    leadsFor(staff, search, stage, page, priority, ownerFilter), canManage(staff) ? listStaff() : Promise.resolve([staff]), leadViews(staff),
   ]);
   const create = url.searchParams.get("new") === "1";
-  return { leads, team, views, search, stage, priority, page, create, submissionId: create ? randomUUID() : "", manager: canManage(staff) };
+  return { leads, team, views, search, stage, priority, ownerFilter, page, create, submissionId: create ? randomUUID() : "", manager: canManage(staff) };
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -51,15 +52,16 @@ export async function action({ request }: ActionFunctionArgs) {
       const search = field(form, "q", 254);
       const stage = field(form, "stage", 50);
       const priority = field(form, "priority", 20);
+      const ownerFilter = canManage(staff) ? field(form, "assigned", 36) : "";
       const page = pageNumber(field(form, "page", 6));
       if (search && search.length < 3) throw new Response("Enter at least three characters to search.", { status: 400 });
       if (intent === "bulk-update") {
         const results = await bulkUpdateLeads(staff, form);
-        const leads = await leadsFor(staff, search, stage, page, priority).catch(() => null);
-        return { kind: "bulk" as const, batchId: randomUUID(), results, leads, search, stage, priority, page };
+        const leads = await leadsFor(staff, search, stage, page, priority, ownerFilter).catch(() => null);
+        return { kind: "bulk" as const, batchId: randomUUID(), results, leads, search, stage, priority, ownerFilter, page };
       }
-      const leads = await leadsFor(staff, search, stage, page, priority);
-      return { kind: "search" as const, leads, search, stage, priority, page };
+      const leads = await leadsFor(staff, search, stage, page, priority, ownerFilter);
+      return { kind: "search" as const, leads, search, stage, priority, ownerFilter, page };
     }
     throw new Response("Unknown lead action.", { status: 400 });
   } catch (error) {
@@ -95,8 +97,9 @@ function NewLeadForm({ submissionId, manager }: { submissionId: string; manager:
 export default function Leads() {
   const initial = useLoaderData<typeof loader>();
   const result = useActionData<typeof action>();
-  const { leads, search, stage, priority, page } = result?.kind === "search" ? result : result?.kind === "bulk" && result.leads ? { ...result, leads: result.leads } : initial;
+  const { leads, search, stage, priority, ownerFilter, page } = result?.kind === "search" ? result : result?.kind === "bulk" && result.leads ? { ...result, leads: result.leads } : initial;
 
+  const assignees = initial.team.filter(member => member.active && canUseCRM(member));
   const saved = initial.views?.some(view => view.stage === stage && view.priority === priority);
   return <>
     <PageHeading eyebrow="LEAD MANAGEMENT" title="Leads & enquiries" description="Find enquiries and manage their next steps.">
@@ -124,12 +127,12 @@ export default function Leads() {
         <input type="hidden" name="intent" value={saved ? "remove-view" : "save-view"}/>
         <input type="hidden" name="stage" value={stage}/>
         <input type="hidden" name="priority" value={priority}/>
-        {search && <p>Saved views include stage and priority only.</p>}
+        {(search || ownerFilter) && <p>Saved views include stage and priority only.</p>}
         <div><Submit>{saved ? "Remove current view" : "Save current filters"}</Submit></div>
       </Form>}
     </section>}
     <section className="crm-panel">
-      <Form method="post" className="crm-filters" key={`${search}:${stage}:${priority}`}>
+      <Form method="post" className="crm-filters" key={`${search}:${stage}:${priority}:${ownerFilter}`}>
         <input type="hidden" name="intent" value="search" />
         <div className="crm-search"><Search size={18} aria-hidden="true" />
           <input aria-label="Search by name, email or phone" name="q" defaultValue={search} placeholder="Name, full email or phone" minLength={3} maxLength={254} />
@@ -140,6 +143,10 @@ export default function Leads() {
         <select aria-label="Filter by priority" name="priority" defaultValue={priority}>
           <option value="">All priorities</option>{priorities.map(value => <option key={value}>{value}</option>)}
         </select>
+        {initial.manager && <select aria-label="Filter by counselor" name="assigned" defaultValue={ownerFilter}>
+          <option value="">All counselors</option><option value="-">Unassigned</option>
+          {assignees.map(member => <option key={member.$id} value={member.$id}>{member.name}</option>)}
+        </select>}
         <button className="crm-button secondary">Apply filters</button>
       </Form>
       {initial.manager && leads.documents.length > 0 && <Form id="bulk-leads" method="post" className="crm-form crm-padded" key={result?.kind === "bulk" ? result.batchId : "bulk"}>
@@ -147,19 +154,23 @@ export default function Leads() {
         <input type="hidden" name="q" value={search}/>
         <input type="hidden" name="stage" value={stage}/>
         <input type="hidden" name="priority" value={priority}/>
+        <input type="hidden" name="assigned" value={ownerFilter}/>
         <input type="hidden" name="page" value={page}/>
         <p>Select up to {bulkLeadLimit} enquiries on this page.</p>
         <div className="crm-two-col">
           <label>Set stage<select name="bulkStage"><option value="">Keep current stage</option>{stages.map(value => <option key={value}>{value}</option>)}</select></label>
           <label>Set priority<select name="bulkPriority"><option value="">Keep current priority</option>{priorities.map(value => <option key={value}>{value}</option>)}</select></label>
         </div>
-        <label>Reason for closing enquiries<input name="reason" maxLength={2000}/></label>
+        <label>Assign to<select name="bulkOwner"><option value="">Keep current assignment</option>
+          {assignees.map(member => <option key={member.$id} value={member.$id}>{member.name}</option>)}
+        </select></label>
+        <label>Reason (required for assignment or closure)<input name="reason" maxLength={2000}/></label>
         <div><Submit>Update selected enquiries</Submit></div>
       </Form>}
       <div className="crm-table-wrap"><table className="crm-table">
         <thead><tr>{initial.manager && <th scope="col">Select</th>}<th>Contact</th><th>Service & destination</th><th>Stage</th><th>Priority</th><th>Assigned to</th><th>Next follow-up</th><th /></tr></thead>
         <tbody>{leads.documents.map(lead => <tr key={lead.$id}>
-          {initial.manager && <td><input key={`${search}:${stage}:${priority}:${page}:${result?.kind === "bulk" ? result.batchId : ""}:${lead.version}`} type="checkbox" form="bulk-leads" name="selected" value={`${lead.$id}:${lead.version}`} aria-label={`Select ${lead.name}`}/></td>}
+          {initial.manager && <td><input key={`${search}:${stage}:${priority}:${ownerFilter}:${page}:${result?.kind === "bulk" ? result.batchId : ""}:${lead.version}`} type="checkbox" form="bulk-leads" name="selected" value={`${lead.$id}:${lead.version}`} aria-label={`Select ${lead.name}`}/></td>}
           <td><Link to={`/admin/leads/${lead.$id}`}><strong>{lead.name}</strong><small>{lead.email}</small></Link></td>
           <td>{lead.service}<small>{lead.country || "Destination to confirm"}</small></td>
           <td><Badge tone={lead.stage === "New" ? "pink" : "neutral"}>{lead.stage}</Badge></td>
@@ -177,6 +188,7 @@ export default function Leads() {
           <input type="hidden" name="q" value={search} />
           <input type="hidden" name="stage" value={stage} />
           <input type="hidden" name="priority" value={priority} />
+          <input type="hidden" name="assigned" value={ownerFilter}/>
           {page > 1 && <button name="page" value={page - 1}>← Previous</button>}
           {page < 10_000 && page * 25 < leads.total && <button name="page" value={page + 1}>Next →</button>}
         </Form>

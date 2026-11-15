@@ -135,3 +135,7 @@ Presets store only stage and priority. Labels are derived from those values, and
 ## Bulk lead changes
 
 The manager selects up to ten rows on one page. A batch reports individual outcomes because each lead update is separate. Refresh and inspect unconfirmed results before retrying.
+
+## Bulk counselor handoff
+
+Bulk assignment requires an explicit destination and reason. Rows keep independent audit and outcomes. The owner filter is temporary and saved presets continue to hold stage and priority.

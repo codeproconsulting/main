@@ -51,6 +51,7 @@ before(async()=>{
    if(collection==='leads'&&options.loseAck)throw new Error('Synthetic lost acknowledgement');
    return Response.json(row);
   }
+  if (options.failPatch === collection) return Response.json({}, {status:503});
   const row={...store.get(id),...data};
   store.set(id,row);
   return Response.json(row);
@@ -279,4 +280,45 @@ test('bulk changes enforce manager access, bounds and versions and report partia
  fields.set('bulkStage','Archived');
  assert.equal((await bulk.bulkUpdateLeads(manager,fields))[0].status,'skipped');
  assert.equal(leads.get(first.$id).stage,'New');
+});
+
+
+test('bulk handoff transfers linked work, reports calendar conflicts, and clears the unassigned queue',async()=>{
+ const first=await manual.createManualLead(manager,form());
+ const second=await manual.createManualLead(manager,form({submissionId:'d21265d0-363f-4a4c-b777-0e67b36930dc'}));
+ const slot={status:'Booked',startsAt:'2030-01-01T10:00:00Z',endsAt:'2030-01-01T11:00:00Z',owner:'',version:1};
+ dependencies.appointments.set('first-slot',{$id:'first-slot',leadId:first.$id,...slot});
+ dependencies.appointments.set('second-slot',{$id:'second-slot',leadId:second.$id,...slot});
+ dependencies.tasks.set('open',{$id:'open',leadId:first.$id,status:'Open',owner:'',version:1});
+ dependencies.tasks.set('complete',{$id:'complete',leadId:first.$id,status:'Completed',owner:'',version:1});
+ dependencies.cases.set('case',{$id:'case',leadId:first.$id,owner:'',version:1});
+ const fields=form({bulkOwner:counselor.$id,reason:'Capacity handoff'});
+ fields.append('selected',first.$id+':1');
+ fields.append('selected',second.$id+':1');
+ assert.equal((await crm.leadsFor(manager,'','',1,'','-')).total,2);
+ const results=await bulk.bulkUpdateLeads(manager,fields);
+ assert.deepEqual(results.map(row=>row.status),['saved','skipped']);
+ assert.match(results[1].message,/already has an appointment/);
+ assert.equal(leads.get(first.$id).owner,counselor.$id);
+ assert.equal(leads.get(second.$id).owner,'');
+ assert.equal(dependencies.tasks.get('open').owner,counselor.$id);
+ assert.equal(dependencies.tasks.get('complete').owner,'');
+ assert.equal(dependencies.cases.get('case').owner,counselor.$id);
+ assert.equal(dependencies.appointments.get('first-slot').owner,counselor.$id);
+ assert.equal(dependencies.appointments.get('second-slot').owner,'');
+ assert.deepEqual((await crm.leadsFor(manager,'','',1,'','-')).documents.map(row=>row.$id),[second.$id]);
+ assert.deepEqual((await crm.leadsFor(counselor,'','',1,'','-')).documents.map(row=>row.$id),[first.$id]);
+ const event=[...activities.values()].find(row=>row.event==='Lead updated');
+ assert.equal(JSON.parse(event.details).reason,'Capacity handoff');
+ fields.delete('selected');
+ fields.append('selected',second.$id+':1');
+ fields.set('reason','');
+ await assert.rejects(()=>bulk.bulkUpdateLeads(manager,fields),errorStatus(400));
+ fields.set('reason','Capacity handoff');
+ fields.set('bulkOwner','synthetic-missing');
+ assert.equal((await bulk.bulkUpdateLeads(manager,fields))[0].status,'skipped');
+ fields.set('bulkOwner',manager.$id);
+ options.failPatch='appointments';
+ assert.equal((await bulk.bulkUpdateLeads(manager,fields))[0].status,'review');
+ assert.equal(leads.get(second.$id).owner,'');
 });

@@ -23,10 +23,11 @@ export async function audit(staff: Staff, entityId: string, entityType: string, 
 export async function listStaff() { return (await listDocuments<Staff>("staff", [query("equal", "active", [true]), query("limit", undefined, [100])])).documents; }
 const leadListFields = ["$id", "$createdAt", "name", "email", "service", "country", "stage", "priority", "owner", "nextFollowUp", "version"] as const;
 
-export async function leadsFor(staff: Staff, search = "", stage = "", page = 1, priority = "") {
+export async function leadsFor(staff: Staff, search = "", stage = "", page = 1, priority = "", ownerFilter = "") {
   allow(staff.active && canUseCRM(staff));
   const queries = [query("select", undefined, [...leadListFields]), query("orderDesc", "$createdAt"), query("limit", undefined, [25]), query("offset", undefined, [(page - 1) * 25])];
   if (!canManage(staff)) queries.push(query("equal", "owner", [staff.$id]));
+  else if (ownerFilter) queries.push(query("equal", "owner", [ownerFilter === "-" ? "" : ownerFilter]));
   if (stage && stages.includes(stage as typeof stages[number])) queries.push(query("equal", "stage", [stage]));
   if (priorities.some(value => value === priority)) queries.push(query("equal", "priority", [priority]));
   const term = search.trim();
@@ -270,7 +271,9 @@ export async function updateLead(staff: Staff, id: string, form: FormData, mode:
     }
     const stage = requestedStage || lead.stage;
     const priority = requestedPriority || lead.priority;
-    const owner = mode === "full" && canManage(staff) ? field(form, "owner", 36) : lead.owner;
+    const owner = canManage(staff) && (mode === "full" || (mode === "bulk" && form.has("owner")))
+      ? field(form, "owner", 36)
+      : lead.owner;
     const reason = field(form, "reason", 2000);
     if (requiresClosureReason(lead.stage, stage) || owner !== lead.owner) {
       if (!reason) throw new Response("A reason is required for closure or reassignment.", { status: 400 });
@@ -279,7 +282,12 @@ export async function updateLead(staff: Staff, id: string, form: FormData, mode:
     const transferring = owner !== lead.owner;
     const save = async () => {
       if (owner) {
-        const assignee = await getDocument<Staff>("staff", owner);
+        const assignee = await getDocument<Staff>("staff", owner).catch(error => {
+          if (mode === "bulk" && error instanceof AppwriteError && error.status === 404) {
+            throw new Response("The selected counselor is no longer available.", { status: 400 });
+          }
+          throw error;
+        });
         allow(assignee.active && canUseCRM(assignee));
       }
       const appointments = transferring ? await appointmentsForHandoff(id, owner) : [];

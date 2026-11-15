@@ -141,3 +141,7 @@ The saved view UI lives in app/admin/leads.tsx and persistence lives in app/admi
 ## Bulk lead changes
 
 The lead list renders bulk controls and results. app/admin/bulk-leads.server.ts validates and executes up to ten changes.
+
+## Bulk counselor handoff
+
+The lead list offers counselor filters and a bulk assignment control. The bulk action validates the intended counselor and reason before dispatching individual changes.
