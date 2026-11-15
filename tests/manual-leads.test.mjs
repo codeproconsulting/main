@@ -35,7 +35,7 @@ before(async()=>{
   if(request.method==='GET'){
    if(id)return store.has(id)?Response.json(store.get(id)):Response.json({}, {status:404});
    queries=url.searchParams.getAll('queries[]').map(JSON.parse);
-   const matches=[...store.values()].filter(row=>queries.every(q=>q.method!=='equal'||q.values.includes(row[q.attribute])));
+   const matches=[...store.values()].filter(row=>queries.every(q=>(q.method!=='equal'||q.values.includes(row[q.attribute]))&&(q.method!=='notEqual'||!q.values.includes(row[q.attribute]))));
    return Response.json({documents:matches,total:matches.length});
   }
   const {data,documentId,permissions}=JSON.parse(request.body);
@@ -148,4 +148,23 @@ test('legacy backfill pages, previews safely, updates only keys, and can be reru
  assert.equal(records[100].phoneKey,'');
  assert.equal((await backfillLeadContact({...options,apply:true})).changes,0);
  assert.equal(writes,101);
+});
+
+test('related enquiries exclude self and other counselors without merging records',async()=>{
+ const owned=await manual.createManualLead(counselor,form());
+ const other=await manual.createManualLead(manager,form());
+ const repeat=await manual.createManualLead(counselor,form({submissionId:'d21265d0-363f-4a4c-b777-0e67b36930db',country:'Italy'}));
+ const matches=await crm.relatedEnquiries(counselor,owned.$id,'email',2);
+ assert.deepEqual(matches.documents.map(row=>row.$id),[repeat.$id]);
+ assert.equal(matches.total,1);
+ assert.ok(queries.some(q=>q.method==='offset'&&q.values[0]===25));
+ assert.ok(queries.some(q=>q.method==='limit'&&q.values[0]===25));
+ assert.equal((await crm.relatedEnquiries(manager,owned.$id,'phone')).total,2);
+ await assert.rejects(()=>crm.relatedEnquiries(counselor,other.$id,'email'),errorStatus(403));
+ await assert.rejects(()=>crm.relatedEnquiries({...manager,active:false},owned.$id,'email'),errorStatus(403));
+ await assert.rejects(()=>crm.relatedEnquiries(manager,owned.$id,'name'),errorStatus(400));
+ leads.set(owned.$id,{...owned,phone:''});
+ assert.equal((await crm.relatedEnquiries(manager,owned.$id,'phone')).total,0);
+ assert.equal(leads.size,3);
+ assert.equal(activities.size,3);
 });

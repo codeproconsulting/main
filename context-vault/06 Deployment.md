@@ -85,3 +85,7 @@ Verify the target leads schema and exercise one disposable enquiry on the staged
 The operator will configure the CRM hostname and release on the existing VPS. Use `deploy/CRM-FIRST-INSTALL.md` for the first install and `deploy/CRM-DEPLOYMENT.md` for the full runbook. The target Appwrite owner identity and active staff profile passed read-only verification. The live CRM certificate still does not cover the CRM hostname.
 
 The mobile lead search ships through the existing Android preview runtime after the matching CRM API is deployed and tested on a phone. See [[Sessions/2026-11-15-01]].
+
+## Matching enquiry review — 2026-11-15
+
+Matching-enquiry review uses existing emailKey/phoneKey fields/indexes; historical backfill remains needed for complete matching coverage. No new collection or provisioning performed. Target query smoke required before release.

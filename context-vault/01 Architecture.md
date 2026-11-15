@@ -91,3 +91,7 @@ The native lead resource also reads and updates stage and priority. It uses the 
 Staff follow-ups, applications and appointments now page through scoped records. Related lead checks deduplicate IDs within a page and limit concurrent reads. The native follow-up endpoint serves subsequent pages independently. Public enquiry intake bounds the body as bytes arrive.
 
 Native lead search and pagination reuse the web dashboard query with a POST body for contact search terms. See [[Sessions/2026-11-15-01]].
+
+## Matching enquiry review — 2026-11-15
+
+Lead detail now reads matching enquiries by normalized email or phone through the existing server-side Appwrite boundary. Matching does not establish a canonical contact or merge records.

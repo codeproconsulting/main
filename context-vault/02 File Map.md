@@ -119,3 +119,7 @@ The sibling app's `src/StaffWorkspace.tsx` hosts the workspace, `src/workspace.t
 - `app/lib/request-body.server.ts` provides the bounded reader shared by public intake and CRM uploads. `scripts/verify-appwrite.mjs` can exercise staged public intake and verify cleanup.
 
 - `deploy/CRM-FIRST-INSTALL.md` lists the first-install steps for the current VPS and the tested feature-branch release.
+
+## Matching enquiry review — 2026-11-15
+
+`app/admin/crm.server.ts`: relatedEnquiries scoped match query. `app/admin/lead.tsx`: matching contact selector, results and pagination. `tests/manual-leads.test.mjs`: permission and query regression coverage.

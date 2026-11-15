@@ -35,6 +35,23 @@ export async function leadsFor(staff: Staff, search = "", stage = "", page = 1) 
   else if (term.length >= 3) queries.push(query("search", "name", [term.slice(0, 100)]));
   return listDocuments<Pick<Lead, typeof leadListFields[number]>>("leads", queries);
 }
+// A matching contact value is a review hint, never proof that two enquiries are one person.
+export async function relatedEnquiries(staff: Staff, id: string, match: string, page = 1) {
+  allow(staff.active && canUseCRM(staff));
+  const lead = await leadFor(staff, id);
+  if (!["email", "phone"].includes(match)) throw new Response("Choose email or phone matching.", { status: 400 });
+  const value = match === "email" ? emailKey(lead.email) : phoneKey(lead.phone);
+  const currentPage = queuePage(String(page));
+  if (!value) return { documents: [], total: 0 };
+  return listDocuments<Pick<Lead, typeof leadListFields[number]>>("leads", [
+    query("select", undefined, [...leadListFields]),
+    query("equal", match === "email" ? "emailKey" : "phoneKey", [value]),
+    query("notEqual", "$id", [lead.$id]),
+    ...(!canManage(staff) ? [query("equal", "owner", [staff.$id])] : []),
+    query("orderDesc", "$createdAt"), query("orderAsc", "$id"),
+    query("limit", undefined, [25]), query("offset", undefined, [(currentPage - 1) * 25]),
+  ]);
+}
 export async function leadFor(staff: Staff, id: string) {
   allow(canUseCRM(staff));
   let lead;

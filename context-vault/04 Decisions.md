@@ -111,3 +111,7 @@ Use native views for counselor workflows and keep an explicit browser link for t
 Both clients submit the displayed version with a lead edit. After a conflict, staff reload the current lead before applying their changes. The first mobile edit exposes stage and priority only. It preserves ownership and the next follow-up inside the shared lead lock.
 
 Interrupted handoffs retain their locks for operator reconciliation. A same-target retry skips records already moved. Work queues calculate navigation from the stored page before filtering stale assignments, so empty filtered pages can still link forward.
+
+## Matching enquiry review — 2026-11-15
+
+Matching email/phone is a review hint only. No automatic identity linking, merging, assignment changes or cross-counselor disclosure. Match type is explicit and pages contain at most 25 results.

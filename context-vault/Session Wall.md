@@ -3,43 +3,44 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-15-01]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-15-02]].
 
 ## Resume here
 
-**Session:** 2026-11-15-01
+**Session:** 2026-11-15-02
 
-**Active feature:** MOB-04
+**Active feature:** CRM-02
 
 **State:** in_progress
 
-**Objective:** Find and page through assigned leads in the native workspace using the shared CRM search.
+**Objective:** Review repeat enquiries through permission-scoped contact matches.
 
 A user saying **continue** means resume this feature's next unfinished acceptance check. Do not start unrelated modules or repeat completed infrastructure work. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Native lead search, result counts and page controls
-- Shared CRM name, normalized email and phone search
+- Matching-email and matching-phone enquiry review
+- Scoped pagination and links to independent enquiries
 
 ## Out of scope
 
-- Production VPS changes and OTA publication
+- Automatic merge and canonical contact migration
+- Mobile UI and production rollout
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| MOB04-A | Scoped search and pagination | passed | Synthetic API check verified name, normalized contact search, counselor scope, input validation and access to the second page. |
-| MOB04-B | Physical Android acceptance | blocked | CRM HTTPS and API rollout are pending. Test search, clear, paging and connection loss before publishing the preview update. |
+| CRM02-REVIEW-A | Matching enquiry permission and query checks | passed | Synthetic tests verify self exclusion, counselor scope, manager visibility, invalid mode/inactive rejection, empty phone and pagination query bounds; no records merged. |
+| CRM02-REVIEW-B | Browser and target Appwrite acceptance | pending | Typecheck and production build checked separately. Browser interaction and target query smoke still required. |
 
 ## Exact next actions
 
-1. After VPS setup, verify the deployed CRM API, then test mobile search and paging on Android before publishing the preview update.
-   Files: `deploy/CRM-FIRST-INSTALL.md`, `app/admin/mobile-api.ts`
+1. Verify matching enquiry filters and pagination in built-app browser and target Appwrite query; use synthetic records only.
+   Files: `app/admin/lead.tsx`, `app/admin/crm.server.ts`, `tests/manual-leads.test.mjs`
 
-2. Continue CRM-02 contact and enquiry separation in a separate feature session.
-   Files: `context-vault/Feature Ledger.md`
+2. Design explicit contact/enquiry linking and duplicate resolution without inferring identity from a shared phone or email. Keep MOB-04 Android acceptance pending until VPS setup.
+   Files: `context-vault/Feature Ledger.md`, `scripts/appwrite-schema.mjs`
 
 ## Known risks and unfinished work
 
@@ -62,9 +63,9 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-15T14:45:04.005Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-uvNDeI/typecheck.log`
-- **passed**: `npm run test` (2026-11-15T14:45:05.173Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-uvNDeI/test.log`
-- **passed**: `npm run build` (2026-11-15T14:45:10.051Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-uvNDeI/build.log`
+- **passed**: `npm run typecheck` (2026-11-15T14:51:41.378Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-BmVGKW/typecheck.log`
+- **passed**: `npm run test` (2026-11-15T14:51:42.588Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-BmVGKW/test.log`
+- **passed**: `npm run build` (2026-11-15T14:51:48.085Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-BmVGKW/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
