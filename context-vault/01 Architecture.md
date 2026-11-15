@@ -107,3 +107,7 @@ Duplicate resolution archives an enquiry with a retained-enquiry reference and p
 ## Saved lead views
 
 Saved lead filters use a private Appwrite collection keyed by staff and filter combination. Opening a view runs the existing scoped lead search.
+
+## Bulk lead changes
+
+Bulk stage and priority changes call the existing lead mutation for each selected enquiry. They preserve the assignee and next follow-up.

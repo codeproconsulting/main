@@ -1,39 +1,39 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-15-04",
+  "sessionId": "2026-11-15-05",
   "sessionStatus": "completed",
   "activeFeature": "CRM-02",
-  "objective": "Save and reopen private stage and priority presets.",
+  "objective": "Update stage and priority for a bounded selection of enquiries.",
   "scope": [
-    "Stage and priority filtering",
-    "Staff-private preset persistence and removal"
+    "Manager-only bulk stage and priority changes",
+    "Per-enquiry update results"
   ],
   "outOfScope": [
-    "Saved contact search strings, shared views, and production rollout"
+    "Bulk reassignment, deletion and production rollout"
   ],
   "acceptance": [
     {
-      "id": "CRM02-VIEWS-A",
-      "description": "Scoped persistence and filtering",
+      "id": "CRM02-BULK-A",
+      "description": "Permissions, bounds, versions and partial results",
       "status": "passed",
-      "evidence": "Synthetic tests cover per-staff persistence and deletion, idempotency, invalid filters, inactive staff and counselor scope."
+      "evidence": "Synthetic tests verify manager-only access, invalid selections, version conflicts, preservation of unchanged fields, and closure reasons."
     },
     {
-      "id": "CRM02-VIEWS-B",
-      "description": "Browser and target Appwrite acceptance",
+      "id": "CRM02-BULK-B",
+      "description": "Built app browser acceptance",
       "status": "passed",
-      "evidence": "Chrome verified saving, reopening, staff isolation and removal. Target Appwrite verified private preset storage, index availability, combined scoped lead query and synthetic cleanup with setup credentials."
+      "evidence": "Chrome built preview verified partial save, stale row message, refreshed priority, cleared selection and counselor visibility."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Start the next CRM-02 session for bulk actions. Design a bounded selection and use existing per-enquiry permission, version and audit checks with explicit partial results.",
+      "action": "Start the next CRM-02 session for bulk counselor assignment. Reuse existing handoff locking and dependent-record transfer. Verify partial failures and per-enquiry audit.",
       "files": [
-        "app/admin/leads.tsx",
+        "app/admin/bulk-leads.server.ts",
         "app/admin/crm.server.ts",
-        "context-vault/Feature Ledger.md"
+        "app/admin/leads.tsx"
       ]
     }
   ],
@@ -105,24 +105,24 @@
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-15T15:24:34.468Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ZXgPvN/typecheck.log"
+      "checkedAt": "2026-11-15T15:30:47.874Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-tOmvsm/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-15T15:24:35.991Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ZXgPvN/test.log"
+      "checkedAt": "2026-11-15T15:30:49.192Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-tOmvsm/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-15T15:24:41.114Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ZXgPvN/build.log"
+      "checkedAt": "2026-11-15T15:30:54.266Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-tOmvsm/build.log"
     }
   ],
-  "updatedAt": "2026-11-15T15:25:42.791Z",
-  "verifiedSourceFingerprint": "3c23cfa77e0c865c3bdfeb9a69ab5ed92384bca7fd5ba2e82f7e424b70877df8"
+  "updatedAt": "2026-11-15T15:31:29.359Z",
+  "verifiedSourceFingerprint": "e7e1abccf0b607f000614da82f0462efb3678ea088779a01b0a665a5f79f30cb"
 }

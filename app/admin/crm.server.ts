@@ -21,7 +21,7 @@ export async function audit(staff: Staff, entityId: string, entityType: string, 
   return createDocument("activities", { actor: staff.$id, entityId, entityType, event, details: JSON.stringify(details) });
 }
 export async function listStaff() { return (await listDocuments<Staff>("staff", [query("equal", "active", [true]), query("limit", undefined, [100])])).documents; }
-const leadListFields = ["$id", "$createdAt", "name", "email", "service", "country", "stage", "priority", "owner", "nextFollowUp"] as const;
+const leadListFields = ["$id", "$createdAt", "name", "email", "service", "country", "stage", "priority", "owner", "nextFollowUp", "version"] as const;
 
 export async function leadsFor(staff: Staff, search = "", stage = "", page = 1, priority = "") {
   allow(staff.active && canUseCRM(staff));
@@ -44,8 +44,8 @@ export async function relatedEnquiries(staff: Staff, id: string, match: string, 
   const value = match === "email" ? emailKey(lead.email) : phoneKey(lead.phone);
   const currentPage = queuePage(String(page));
   if (!value) return { documents: [], total: 0 };
-  return listDocuments<Pick<Lead, typeof leadListFields[number] | "version">>("leads", [
-    query("select", undefined, [...leadListFields, "version"]),
+  return listDocuments<Pick<Lead, typeof leadListFields[number]>>("leads", [
+    query("select", undefined, [...leadListFields]),
     query("equal", match === "email" ? "emailKey" : "phoneKey", [value]),
     query("notEqual", "$id", [lead.$id]),
     ...(!canManage(staff) ? [query("equal", "owner", [staff.$id])] : []),
@@ -135,8 +135,8 @@ export const staffAccessLock = "staff:access";
 export function contactEnquiries(staff: Staff, lead: Lead, page: number) {
   allow(staff.active && canManage(staff));
   if (!lead.contactGroup) return { documents: [], total: 0 };
-  return listDocuments<Pick<Lead, typeof leadListFields[number] | "version">>("leads", [
-    query("select", undefined, [...leadListFields, "version"]),
+  return listDocuments<Pick<Lead, typeof leadListFields[number]>>("leads", [
+    query("select", undefined, [...leadListFields]),
     query("equal", "contactGroup", [lead.contactGroup]),
     query("notEqual", "$id", [lead.$id]),
     query("orderAsc", "$id"),
@@ -256,14 +256,20 @@ export async function resolveDuplicate(staff: Staff, id: string, form: FormData)
   return serialized(`lead:${first}`, () => serialized(`lead:${second}`, save));
 }
 
-export async function updateLead(staff: Staff, id: string, form: FormData, mode: "full" | "stage-priority" = "full") {
+export async function updateLead(staff: Staff, id: string, form: FormData, mode: "full" | "stage-priority" | "bulk" = "full") {
   return serialized(`lead:${id}`, async () => {
     const lead = await writableEnquiry(staff, id);
     if (Number(field(form, "version")) !== lead.version) throw new Response("This lead changed. Refresh before saving.", { status: 409 });
-    const stage = field(form, "stage");
-    if (!stages.includes(stage as typeof stages[number])) throw new Response("Invalid stage", { status: 400 });
-    const priority = field(form, "priority");
-    if (!priorities.some(value => value === priority)) throw new Response("Invalid priority", { status: 400 });
+    const requestedStage = field(form, "stage");
+    const requestedPriority = field(form, "priority");
+    if ((mode !== "bulk" || requestedStage) && !stages.some(value => value === requestedStage)) {
+      throw new Response("Invalid stage", { status: 400 });
+    }
+    if ((mode !== "bulk" || requestedPriority) && !priorities.some(value => value === requestedPriority)) {
+      throw new Response("Invalid priority", { status: 400 });
+    }
+    const stage = requestedStage || lead.stage;
+    const priority = requestedPriority || lead.priority;
     const owner = mode === "full" && canManage(staff) ? field(form, "owner", 36) : lead.owner;
     const reason = field(form, "reason", 2000);
     if (requiresClosureReason(lead.stage, stage) || owner !== lead.owner) {
@@ -318,11 +324,11 @@ export async function updateLead(staff: Staff, id: string, form: FormData, mode:
         throw error;
       }
     };
-    if (!transferring) return save();
+    if (!transferring && mode !== "bulk") return save();
     return serialized(staffAccessLock, async () => {
       const currentActor = await getDocument<Staff>("staff", staff.$id);
       allow(currentActor.active && canManage(currentActor));
-      return serialized(appointmentCalendarLock, save);
+      return transferring ? serialized(appointmentCalendarLock, save) : save();
     });
   });
 }

@@ -26,3 +26,5 @@ export const caseStages=["Shortlisted","Documents pending","Submitted","Conditio
 
 // Shortlisted remains available for legacy immigration intake records.
 export const caseStagesFor=(kind:string)=>kind==="Immigration"?caseStages.filter(stage=>!["Conditional offer","Unconditional offer","Deposit paid","Enrolled"].includes(stage)):caseStages;
+
+export const bulkLeadLimit = 10;

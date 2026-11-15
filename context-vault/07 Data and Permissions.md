@@ -93,3 +93,7 @@ Managers alone can archive or restore duplicate decisions and see retained links
 ## Saved lead views
 
 Saved views are listed and changed only for the signed-in staff account. They never change the scope of lead results.
+
+## Bulk lead changes
+
+Bulk changes are manager-only. The server validates each selected lead and version and rechecks current staff access before writing.

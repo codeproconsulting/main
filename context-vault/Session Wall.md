@@ -3,40 +3,40 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-15-04]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-15-05]].
 
 ## Resume here
 
-**Session:** 2026-11-15-04
+**Session:** 2026-11-15-05
 
 **Active feature:** CRM-02
 
 **State:** completed
 
-**Objective:** Save and reopen private stage and priority presets.
+**Objective:** Update stage and priority for a bounded selection of enquiries.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Stage and priority filtering
-- Staff-private preset persistence and removal
+- Manager-only bulk stage and priority changes
+- Per-enquiry update results
 
 ## Out of scope
 
-- Saved contact search strings, shared views, and production rollout
+- Bulk reassignment, deletion and production rollout
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| CRM02-VIEWS-A | Scoped persistence and filtering | passed | Synthetic tests cover per-staff persistence and deletion, idempotency, invalid filters, inactive staff and counselor scope. |
-| CRM02-VIEWS-B | Browser and target Appwrite acceptance | passed | Chrome verified saving, reopening, staff isolation and removal. Target Appwrite verified private preset storage, index availability, combined scoped lead query and synthetic cleanup with setup credentials. |
+| CRM02-BULK-A | Permissions, bounds, versions and partial results | passed | Synthetic tests verify manager-only access, invalid selections, version conflicts, preservation of unchanged fields, and closure reasons. |
+| CRM02-BULK-B | Built app browser acceptance | passed | Chrome built preview verified partial save, stale row message, refreshed priority, cleared selection and counselor visibility. |
 
 ## Exact next actions
 
-1. Start the next CRM-02 session for bulk actions. Design a bounded selection and use existing per-enquiry permission, version and audit checks with explicit partial results.
-   Files: `app/admin/leads.tsx`, `app/admin/crm.server.ts`, `context-vault/Feature Ledger.md`
+1. Start the next CRM-02 session for bulk counselor assignment. Reuse existing handoff locking and dependent-record transfer. Verify partial failures and per-enquiry audit.
+   Files: `app/admin/bulk-leads.server.ts`, `app/admin/crm.server.ts`, `app/admin/leads.tsx`
 
 ## Known risks and unfinished work
 
@@ -59,9 +59,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-15T15:24:34.468Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ZXgPvN/typecheck.log`
-- **passed**: `npm run test` (2026-11-15T15:24:35.991Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ZXgPvN/test.log`
-- **passed**: `npm run build` (2026-11-15T15:24:41.114Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ZXgPvN/build.log`
+- **passed**: `npm run typecheck` (2026-11-15T15:30:47.874Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-tOmvsm/typecheck.log`
+- **passed**: `npm run test` (2026-11-15T15:30:49.192Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-tOmvsm/test.log`
+- **passed**: `npm run build` (2026-11-15T15:30:54.266Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-tOmvsm/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 

@@ -109,3 +109,7 @@ Target Appwrite now has the duplicate fields, index, and private consultations s
 Provision the private lead_views collection and leads priority index before release. Verify reads and writes with the runtime key.
 
 The private lead_views collection and leads priority index are available on target Appwrite. Release runtime verification remains pending.
+
+## Bulk lead changes
+
+Bulk changes reuse the existing lead and lock schema. Verify stage and priority edits through the deployed proxy before release.

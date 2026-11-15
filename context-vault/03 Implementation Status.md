@@ -163,3 +163,7 @@ Duplicate archive and restore passed service, Chrome, and target storage accepta
 Saved lead views are implemented and covered by synthetic service tests. Release checks are tracked on the Session Wall.
 
 Saved views passed the isolated Chrome and target storage checks. Production rollout remains pending.
+
+## Bulk lead changes
+
+Bulk stage and priority changes implemented. See the session wall for verified checks.

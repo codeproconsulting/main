@@ -11,7 +11,7 @@ const manager={$id:'synthetic-manager',role:'manager',active:true};
 const counselor={$id:'synthetic-counselor',role:'counselor',active:true};
 const errorStatus=status=>error=>error instanceof Response&&error.status===status;
 const token='d21265d0-363f-4a4c-b777-0e67b36930da';
-let vite,manual,crm,views,leads,activities,profiles,queries,options,dependencies;
+let vite,manual,crm,views,bulk,leads,activities,profiles,queries,options,dependencies;
 
 function form(changes={}){
  const fields=new FormData();
@@ -28,6 +28,7 @@ before(async()=>{
  manual=await vite.ssrLoadModule('/app/admin/manual-leads.server.ts');
  crm=await vite.ssrLoadModule('/app/admin/crm.server.ts');
  views=await vite.ssrLoadModule('/app/admin/lead-views.server.ts');
+ bulk=await vite.ssrLoadModule('/app/admin/bulk-leads.server.ts');
  globalThis.fetch=async(input,request)=>{
   const url=new URL(input);
   const [,collection,id]=url.pathname.match(/\/collections\/(\w+)\/documents(?:\/([^/]+))?$/)??[];
@@ -251,4 +252,31 @@ test('saved lead views are private, idempotent and keep the current counselor sc
  const assigned=await manual.createManualLead(counselor,form());
  assert.deepEqual((await crm.leadsFor(counselor,'','New',1,'Normal')).documents.map(row=>row.$id),[assigned.$id]);
  assert.equal((await crm.leadsFor(counselor,'','New',1,'Urgent')).total,0);
+});
+
+
+test('bulk changes enforce manager access, bounds and versions and report partial results',async()=>{
+ const first=await manual.createManualLead(manager,form());
+ const second=await manual.createManualLead(counselor,form());
+ const fields=new FormData();
+ fields.set('bulkPriority','Urgent');
+ fields.append('selected',first.$id+':1');
+ fields.append('selected',second.$id+':2');
+ await assert.rejects(()=>bulk.bulkUpdateLeads(counselor,fields),errorStatus(403));
+ fields.append('selected',first.$id+':1');
+ await assert.rejects(()=>bulk.bulkUpdateLeads(manager,fields),errorStatus(400));
+ fields.delete('selected');
+ for(let i=0;i<11;i++)fields.append('selected','synthetic-'+i+':1');
+ await assert.rejects(()=>bulk.bulkUpdateLeads(manager,fields),errorStatus(400));
+ fields.delete('selected');
+ fields.append('selected',first.$id+':1');
+ fields.append('selected',second.$id+':2');
+ assert.deepEqual((await bulk.bulkUpdateLeads(manager,fields)).map(row=>row.status),['saved','skipped']);
+ assert.deepEqual(leads.get(first.$id),{...first,priority:'Urgent',version:2});
+ assert.deepEqual(leads.get(second.$id),second);
+ fields.delete('selected');
+ fields.append('selected',first.$id+':2');
+ fields.set('bulkStage','Archived');
+ assert.equal((await bulk.bulkUpdateLeads(manager,fields))[0].status,'skipped');
+ assert.equal(leads.get(first.$id).stage,'New');
 });

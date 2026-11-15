@@ -137,3 +137,7 @@ Lead detail renders the manager decision and restore forms. CRM server checks me
 ## Saved lead views
 
 The saved view UI lives in app/admin/leads.tsx and persistence lives in app/admin/lead-views.server.ts.
+
+## Bulk lead changes
+
+The lead list renders bulk controls and results. app/admin/bulk-leads.server.ts validates and executes up to ten changes.

@@ -5,8 +5,9 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Search, ArrowUpRight } from "lucide-react";
 import { leadServices } from "~/lib/lead-contact";
 import { requireStaff, sameOrigin } from "./auth.server";
-import { canManage, displayDate, priorities, stages } from "./domain";
+import { bulkLeadLimit, canManage, displayDate, priorities, stages } from "./domain";
 import { field, leadsFor, listStaff } from "./crm.server";
+import { bulkUpdateLeads } from "./bulk-leads.server";
 import { changeLeadView, leadViews } from "./lead-views.server";
 import { createManualLead } from "./manual-leads.server";
 import { ActionError, Badge, Empty, PageHeading, Submit } from "./ui";
@@ -46,12 +47,17 @@ export async function action({ request }: ActionFunctionArgs) {
       await changeLeadView(staff, intent === "save-view" ? "save" : "remove", stage, priority);
       return redirect(`/admin/leads?${new URLSearchParams({ stage, priority })}`);
     }
-    if (intent === "search") {
+    if (intent === "search" || intent === "bulk-update") {
       const search = field(form, "q", 254);
       const stage = field(form, "stage", 50);
       const priority = field(form, "priority", 20);
       const page = pageNumber(field(form, "page", 6));
       if (search && search.length < 3) throw new Response("Enter at least three characters to search.", { status: 400 });
+      if (intent === "bulk-update") {
+        const results = await bulkUpdateLeads(staff, form);
+        const leads = await leadsFor(staff, search, stage, page, priority).catch(() => null);
+        return { kind: "bulk" as const, batchId: randomUUID(), results, leads, search, stage, priority, page };
+      }
       const leads = await leadsFor(staff, search, stage, page, priority);
       return { kind: "search" as const, leads, search, stage, priority, page };
     }
@@ -89,7 +95,7 @@ function NewLeadForm({ submissionId, manager }: { submissionId: string; manager:
 export default function Leads() {
   const initial = useLoaderData<typeof loader>();
   const result = useActionData<typeof action>();
-  const { leads, search, stage, priority, page } = result?.kind === "search" ? result : initial;
+  const { leads, search, stage, priority, page } = result?.kind === "search" ? result : result?.kind === "bulk" && result.leads ? { ...result, leads: result.leads } : initial;
 
   const saved = initial.views?.some(view => view.stage === stage && view.priority === priority);
   return <>
@@ -97,6 +103,14 @@ export default function Leads() {
       {!initial.create && <Link className="crm-button" to="?new=1">Add enquiry</Link>}
     </PageHeading>
     <ActionError error={result?.kind === "error" ? result.error : undefined} />
+    {result?.kind === "bulk" && <section className="crm-panel crm-padded" aria-live="polite">
+      <h2>Bulk update results</h2>
+      <p>{result.results.filter(row => row.status === "saved").length} of {result.results.length} saved.</p>
+      {!result.leads && <p>Could not refresh the filtered list. Reload before making more changes.</p>}
+      <ul>{result.results.map(row => <li key={row.id}>
+        <Link to={`/admin/leads/${row.id}`}>{row.id}</Link> · {row.message}
+      </li>)}</ul>
+    </section>}
     {initial.create && <NewLeadForm submissionId={initial.submissionId} manager={initial.manager} />}
     {initial.views && <section className="crm-panel crm-padded">
       <h2>My saved views</h2>
@@ -128,9 +142,24 @@ export default function Leads() {
         </select>
         <button className="crm-button secondary">Apply filters</button>
       </Form>
+      {initial.manager && leads.documents.length > 0 && <Form id="bulk-leads" method="post" className="crm-form crm-padded" key={result?.kind === "bulk" ? result.batchId : "bulk"}>
+        <input type="hidden" name="intent" value="bulk-update"/>
+        <input type="hidden" name="q" value={search}/>
+        <input type="hidden" name="stage" value={stage}/>
+        <input type="hidden" name="priority" value={priority}/>
+        <input type="hidden" name="page" value={page}/>
+        <p>Select up to {bulkLeadLimit} enquiries on this page.</p>
+        <div className="crm-two-col">
+          <label>Set stage<select name="bulkStage"><option value="">Keep current stage</option>{stages.map(value => <option key={value}>{value}</option>)}</select></label>
+          <label>Set priority<select name="bulkPriority"><option value="">Keep current priority</option>{priorities.map(value => <option key={value}>{value}</option>)}</select></label>
+        </div>
+        <label>Reason for closing enquiries<input name="reason" maxLength={2000}/></label>
+        <div><Submit>Update selected enquiries</Submit></div>
+      </Form>}
       <div className="crm-table-wrap"><table className="crm-table">
-        <thead><tr><th>Contact</th><th>Service & destination</th><th>Stage</th><th>Priority</th><th>Assigned to</th><th>Next follow-up</th><th /></tr></thead>
+        <thead><tr>{initial.manager && <th scope="col">Select</th>}<th>Contact</th><th>Service & destination</th><th>Stage</th><th>Priority</th><th>Assigned to</th><th>Next follow-up</th><th /></tr></thead>
         <tbody>{leads.documents.map(lead => <tr key={lead.$id}>
+          {initial.manager && <td><input key={`${search}:${stage}:${priority}:${page}:${result?.kind === "bulk" ? result.batchId : ""}:${lead.version}`} type="checkbox" form="bulk-leads" name="selected" value={`${lead.$id}:${lead.version}`} aria-label={`Select ${lead.name}`}/></td>}
           <td><Link to={`/admin/leads/${lead.$id}`}><strong>{lead.name}</strong><small>{lead.email}</small></Link></td>
           <td>{lead.service}<small>{lead.country || "Destination to confirm"}</small></td>
           <td><Badge tone={lead.stage === "New" ? "pink" : "neutral"}>{lead.stage}</Badge></td>

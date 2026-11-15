@@ -131,3 +131,7 @@ Duplicate resolution requires the same confirmed contact, service and destinatio
 ## Saved lead views
 
 Presets store only stage and priority. Labels are derived from those values, and repeated saves are idempotent.
+
+## Bulk lead changes
+
+The manager selects up to ten rows on one page. A batch reports individual outcomes because each lead update is separate. Refresh and inspect unconfirmed results before retrying.
