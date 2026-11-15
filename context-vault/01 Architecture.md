@@ -115,3 +115,7 @@ Bulk stage and priority changes call the existing lead mutation for each selecte
 ## Bulk counselor handoff
 
 Bulk assignment reuses the single enquiry transfer under lead, staff access and calendar locks. The manager filter adds an indexed owner condition to the scoped lead query.
+
+## Counselor routing
+
+Manager-triggered routing evaluates candidates under the lead and staff-access locks. The lead write records rotation metadata with the new owner. The normal handoff transfers linked work.

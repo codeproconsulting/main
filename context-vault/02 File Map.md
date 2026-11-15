@@ -145,3 +145,7 @@ The lead list renders bulk controls and results. app/admin/bulk-leads.server.ts 
 ## Bulk counselor handoff
 
 The lead list offers counselor filters and a bulk assignment control. The bulk action validates the intended counselor and reason before dispatching individual changes.
+
+## Counselor routing
+
+Routing policy and settings writes live in app/admin/lead-routing.server.ts. The leads page renders controls. The scoped schema declares routing metadata.

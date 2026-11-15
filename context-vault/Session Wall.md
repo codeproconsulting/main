@@ -3,40 +3,41 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-15-06]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-15-07]].
 
 ## Resume here
 
-**Session:** 2026-11-15-06
+**Session:** 2026-11-15-07
 
-**Active feature:** CRM-02
+**Active feature:** CRM-03
 
 **State:** completed
 
-**Objective:** Triage unassigned enquiries and hand off selected enquiries in one workflow.
+**Objective:** Distribute unassigned enquiries through counselor round robin with explicit capacity and availability.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Counselor and unassigned filters
-- Manager bulk counselor assignment with existing handoff and audit checks
+- Manager settings and bounded manual round robin
+- Persistent rotation order and existing handoff safeguards
 
 ## Out of scope
 
-- Automatic assignment, bulk unassignment, and VPS deployment
+- Automatic intake assignment, branch scoping and deployment
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| CRM02-HANDOFF-A | Bounded handoff, transfer and partial failure | passed | Synthetic tests cover linked open tasks, applications, appointments, existing availability conflict, missing assignee, reason requirement, audit, unconfirmed transfer and counselor scope. |
-| CRM02-HANDOFF-B | Browser workflow and target query | passed | Chrome verified the unassigned queue, combined counselor and priority changes, linked task movement and counselor access. Target Appwrite accepted the indexed unassigned query using a synthetic email filter. |
+| CRM03-ROUTE-A | Routing access, capacity and persistence | passed | Synthetic tests verify counselor denial, safe rotation, pause, workload caps, reopened capacity and audit. |
+| CRM03-ROUTE-B | Built-app browser workflow | passed | Built-app Chrome verified save, unassigned queue selection, round robin and resulting counselor metadata. |
+| CRM03-ROUTE-C | Target schema and routing queries | passed | Routing-only fields and index are available on target. Setup key verified roster, rotation storage and scoped workload count. Synthetic row deletion verified. |
 
 ## Exact next actions
 
-1. Start CRM-03 assignment rules. Define counselor availability and capacity settings, then implement an audited manager-triggered round robin before considering automatic assignment at intake.
-   Files: `context-vault/Feature Ledger.md`, `app/admin/crm.server.ts`, `scripts/appwrite-schema.mjs`
+1. Start CRM-03 automatic intake routing. Design an opt-in worker around the existing locked assignment policy. Preserve intake success and the manager queue if capacity, permissions or calendar constraints prevent a handoff.
+   Files: `app/admin/lead-routing.server.ts`, `app/lib/intake.server.ts`, `context-vault/Feature Ledger.md`
 
 ## Known risks and unfinished work
 
@@ -59,9 +60,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-15T15:34:40.516Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-KzImy2/typecheck.log`
-- **passed**: `npm run test` (2026-11-15T15:34:41.859Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-KzImy2/test.log`
-- **passed**: `npm run build` (2026-11-15T15:34:47.127Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-KzImy2/build.log`
+- **passed**: `npm run typecheck` (2026-11-15T15:45:58.512Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-17EKoz/typecheck.log`
+- **passed**: `npm run test` (2026-11-15T15:45:59.655Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-17EKoz/test.log`
+- **passed**: `npm run build` (2026-11-15T15:46:04.534Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-17EKoz/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -110,5 +111,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **contactGroupSchema**: Optional field and index provisioned and verified available on target Appwrite. Synthetic link/query/unlink passed and both rows were removed. VPS application rollout remains pending.
 - **duplicateSchema**: Duplicate fields and index provisioned. Target Appwrite storage smoke and cleanup verified. VPS app and runtime key acceptance pending.
 - **leadViewsSchema**: Private lead_views collection and leads priority index provisioned. Synthetic storage and query smoke passed. VPS runtime acceptance pending.
+- **routingSchema**: Four optional routing fields and rotation index provisioned. No other staff schema changed. Runtime release pending.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

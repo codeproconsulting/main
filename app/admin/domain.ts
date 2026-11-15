@@ -5,7 +5,7 @@ export const requiresClosureReason = (current: string, next: string) =>
   next !== current && closureStages.some(stage => stage === next);
 export const roles = ["owner", "admin", "manager", "counselor", "editor", "publisher"] as const;
 export type Role = typeof roles[number];
-export type Staff = { $id: string; name: string; role: Role; active: boolean; teamId?: string; revocationPending?: string };
+export type Staff = { $id: string; name: string; role: Role; active: boolean; teamId?: string; routingAvailability?: string; routingCapacity?: string; revocationPending?: string };
 export type Lead = { $id: string; $createdAt: string; name: string; email: string; phone: string; phoneKey?: string; contactGroup?: string; duplicateOf?: string; duplicatePriorStage?: string; emailKey?: string; service: string; source: string; country: string; stage: string; owner: string; priority: string; nextFollowUp: string; details: string; version: number };
 export type Task = { $id: string; leadId: string; title: string; owner: string; dueAt: string; status: string; outcome: string; version: number };
 export type Activity = { $id: string; $createdAt: string; actor: string; entityId: string; entityType: string; event: string; details: string };

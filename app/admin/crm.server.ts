@@ -257,86 +257,101 @@ export async function resolveDuplicate(staff: Staff, id: string, form: FormData)
   return serialized(`lead:${first}`, () => serialized(`lead:${second}`, save));
 }
 
-export async function updateLead(staff: Staff, id: string, form: FormData, mode: "full" | "stage-priority" | "bulk" = "full") {
+type RoutingChoice = { routedCounselor: string; routedAt: string };
+export async function updateLead(
+  staff: Staff, id: string, form: FormData, mode: "full" | "stage-priority" | "bulk" = "full",
+  route?: (lead: Lead) => Promise<RoutingChoice>,
+) {
   return serialized(`lead:${id}`, async () => {
-    const lead = await writableEnquiry(staff, id);
-    if (Number(field(form, "version")) !== lead.version) throw new Response("This lead changed. Refresh before saving.", { status: 409 });
-    const requestedStage = field(form, "stage");
-    const requestedPriority = field(form, "priority");
-    if ((mode !== "bulk" || requestedStage) && !stages.some(value => value === requestedStage)) {
-      throw new Response("Invalid stage", { status: 400 });
-    }
-    if ((mode !== "bulk" || requestedPriority) && !priorities.some(value => value === requestedPriority)) {
-      throw new Response("Invalid priority", { status: 400 });
-    }
-    const stage = requestedStage || lead.stage;
-    const priority = requestedPriority || lead.priority;
-    const owner = canManage(staff) && (mode === "full" || (mode === "bulk" && form.has("owner")))
-      ? field(form, "owner", 36)
-      : lead.owner;
-    const reason = field(form, "reason", 2000);
-    if (requiresClosureReason(lead.stage, stage) || owner !== lead.owner) {
-      if (!reason) throw new Response("A reason is required for closure or reassignment.", { status: 400 });
-    }
-    const changes = { stage, owner, priority, nextFollowUp: mode === "full" ? dateField(field(form, "nextFollowUp")) : lead.nextFollowUp, version: lead.version + 1 };
-    const transferring = owner !== lead.owner;
-    const save = async () => {
-      if (owner) {
-        const assignee = await getDocument<Staff>("staff", owner).catch(error => {
-          if (mode === "bulk" && error instanceof AppwriteError && error.status === 404) {
-            throw new Response("The selected counselor is no longer available.", { status: 400 });
+    const apply = async () => {
+      const lead = await writableEnquiry(staff, id);
+      if (Number(field(form, "version")) !== lead.version) throw new Response("This lead changed. Refresh before saving.", { status: 409 });
+      const requestedStage = field(form, "stage");
+      const requestedPriority = field(form, "priority");
+      if ((mode !== "bulk" || requestedStage) && !stages.some(value => value === requestedStage)) {
+        throw new Response("Invalid stage", { status: 400 });
+      }
+      if ((mode !== "bulk" || requestedPriority) && !priorities.some(value => value === requestedPriority)) {
+        throw new Response("Invalid priority", { status: 400 });
+      }
+      const stage = requestedStage || lead.stage;
+      const priority = requestedPriority || lead.priority;
+      const routing = await route?.(lead);
+      const requestedOwner = canManage(staff) && (mode === "full" || (mode === "bulk" && form.has("owner")))
+        ? field(form, "owner", 36)
+        : lead.owner;
+      const owner = routing?.routedCounselor ?? requestedOwner;
+      const reason = field(form, "reason", 2000);
+      if (requiresClosureReason(lead.stage, stage) || owner !== lead.owner) {
+        if (!reason) throw new Response("A reason is required for closure or reassignment.", { status: 400 });
+      }
+      const changes = { stage, owner, priority, nextFollowUp: mode === "full" ? dateField(field(form, "nextFollowUp")) : lead.nextFollowUp, version: lead.version + 1, ...routing };
+      const transferring = owner !== lead.owner;
+      const save = async () => {
+        if (owner) {
+          const assignee = await getDocument<Staff>("staff", owner).catch(error => {
+            if (mode === "bulk" && error instanceof AppwriteError && error.status === 404) {
+              throw new Response("The selected counselor is no longer available.", { status: 400 });
+            }
+            throw error;
+          });
+          allow(assignee.active && canUseCRM(assignee));
+        }
+        const appointments = transferring ? await appointmentsForHandoff(id, owner) : [];
+        // Record intent before mutation; an unavailable audit store prevents unaudited writes.
+        const event = await audit(staff, id, "lead", "Lead update requested", { before: { stage: lead.stage, owner: lead.owner, priority: lead.priority, nextFollowUp: lead.nextFollowUp }, after: changes, reason, state: "pending" });
+        try {
+          if (transferring) {
+            let cursor: string | undefined;
+            do {
+              const page = await listDocuments<Task>("tasks", [query("equal", "leadId", [id]), query("equal", "status", ["Open"]), query("orderAsc", "$id"), query("limit", undefined, [100]), ...(cursor ? [query("cursorAfter", undefined, [cursor])] : [])]);
+              for (const task of page.documents) if (task.owner !== owner) await updateDocument<Task>("tasks", task.$id, { owner, version: task.version + 1 });
+              cursor = page.documents.length === 100 ? page.documents[99].$id : undefined;
+            } while (cursor);
+            // Transfer every linked application, including closed records, under the lead lock.
+            cursor=undefined;
+            do {
+              const page:{documents:{$id:string;owner:string;version:number}[];total:number}=await listDocuments<{ $id:string; owner:string; version:number }>("cases",[query("equal","leadId",[id]),query("orderAsc","$id"),query("limit",undefined,[100]),...(cursor?[query("cursorAfter",undefined,[cursor])]:[])]);
+              for(const application of page.documents)if(application.owner!==owner)await updateDocument("cases",application.$id,{owner,version:application.version+1});
+              cursor=page.documents.length===100?page.documents[99].$id:undefined;
+            }while(cursor);
+          }
+          for (const appointment of appointments) {
+            if (appointment.owner !== owner) await updateDocument("appointments", appointment.$id, { owner, version: appointment.version + 1 });
+          }
+          let updated;
+          try {
+            updated = await updateDocument<Lead>("leads", id, changes);
+          } catch (error) {
+            if (!transferring || definitiveWriteRejection(error)) throw error;
+            const current = await getDocument<Lead & Partial<RoutingChoice>>("leads", id).catch(() => null);
+            if (!current || Object.entries(changes).some(([key, value]) => current[key as keyof (Lead & RoutingChoice)] !== value)) {
+              throw new UnconfirmedMutation("The handoff outcome is uncertain. Ask an administrator to reconcile it before retrying.");
+            }
+            updated = current;
+          }
+          await updateDocument("activities", event.$id, { event: routing ? "Lead assigned by round robin" : "Lead updated" });
+          return updated;
+        } catch (error) {
+          if (transferring && !(error instanceof UnconfirmedMutation)) {
+            throw new UnconfirmedMutation("The handoff may be incomplete. An administrator must reconcile it before retrying.");
           }
           throw error;
-        });
-        allow(assignee.active && canUseCRM(assignee));
-      }
-      const appointments = transferring ? await appointmentsForHandoff(id, owner) : [];
-      // Record intent before mutation; an unavailable audit store prevents unaudited writes.
-      const event = await audit(staff, id, "lead", "Lead update requested", { before: { stage: lead.stage, owner: lead.owner, priority: lead.priority, nextFollowUp: lead.nextFollowUp }, after: changes, reason, state: "pending" });
-      try {
-        if (transferring) {
-          let cursor: string | undefined;
-          do {
-            const page = await listDocuments<Task>("tasks", [query("equal", "leadId", [id]), query("equal", "status", ["Open"]), query("orderAsc", "$id"), query("limit", undefined, [100]), ...(cursor ? [query("cursorAfter", undefined, [cursor])] : [])]);
-            for (const task of page.documents) if (task.owner !== owner) await updateDocument<Task>("tasks", task.$id, { owner, version: task.version + 1 });
-            cursor = page.documents.length === 100 ? page.documents[99].$id : undefined;
-          } while (cursor);
-          // Transfer every linked application, including closed records, under the lead lock.
-          cursor=undefined;
-          do {
-            const page:{documents:{$id:string;owner:string;version:number}[];total:number}=await listDocuments<{ $id:string; owner:string; version:number }>("cases",[query("equal","leadId",[id]),query("orderAsc","$id"),query("limit",undefined,[100]),...(cursor?[query("cursorAfter",undefined,[cursor])]:[])]);
-            for(const application of page.documents)if(application.owner!==owner)await updateDocument("cases",application.$id,{owner,version:application.version+1});
-            cursor=page.documents.length===100?page.documents[99].$id:undefined;
-          }while(cursor);
         }
-        for (const appointment of appointments) {
-          if (appointment.owner !== owner) await updateDocument("appointments", appointment.$id, { owner, version: appointment.version + 1 });
-        }
-        let updated;
-        try {
-          updated = await updateDocument<Lead>("leads", id, changes);
-        } catch (error) {
-          if (!transferring || definitiveWriteRejection(error)) throw error;
-          const current = await getDocument<Lead>("leads", id).catch(() => null);
-          if (!current || Object.entries(changes).some(([key, value]) => current[key as keyof Lead] !== value)) {
-            throw new UnconfirmedMutation("The handoff outcome is uncertain. Ask an administrator to reconcile it before retrying.");
-          }
-          updated = current;
-        }
-        await updateDocument("activities", event.$id, { event: "Lead updated" });
-        return updated;
-      } catch (error) {
-        if (transferring && !(error instanceof UnconfirmedMutation)) {
-          throw new UnconfirmedMutation("The handoff may be incomplete. An administrator must reconcile it before retrying.");
-        }
-        throw error;
-      }
+      };
+      if (route) return serialized(appointmentCalendarLock, save);
+      if (!transferring && mode !== "bulk") return save();
+      return serialized(staffAccessLock, async () => {
+        const currentActor = await getDocument<Staff>("staff", staff.$id);
+        allow(currentActor.active && canManage(currentActor));
+        return transferring ? serialized(appointmentCalendarLock, save) : save();
+      });
     };
-    if (!transferring && mode !== "bulk") return save();
+    if (!route) return apply();
     return serialized(staffAccessLock, async () => {
-      const currentActor = await getDocument<Staff>("staff", staff.$id);
-      allow(currentActor.active && canManage(currentActor));
-      return transferring ? serialized(appointmentCalendarLock, save) : save();
+      const actor = await getDocument<Staff>("staff", staff.$id);
+      allow(actor.active && canManage(actor));
+      return apply();
     });
   });
 }

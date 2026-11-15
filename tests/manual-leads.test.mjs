@@ -11,7 +11,7 @@ const manager={$id:'synthetic-manager',role:'manager',active:true};
 const counselor={$id:'synthetic-counselor',role:'counselor',active:true};
 const errorStatus=status=>error=>error instanceof Response&&error.status===status;
 const token='d21265d0-363f-4a4c-b777-0e67b36930da';
-let vite,manual,crm,views,bulk,leads,activities,profiles,queries,options,dependencies;
+let vite,manual,crm,views,bulk,routing,leads,activities,profiles,queries,options,dependencies;
 
 function form(changes={}){
  const fields=new FormData();
@@ -29,6 +29,7 @@ before(async()=>{
  crm=await vite.ssrLoadModule('/app/admin/crm.server.ts');
  views=await vite.ssrLoadModule('/app/admin/lead-views.server.ts');
  bulk=await vite.ssrLoadModule('/app/admin/bulk-leads.server.ts');
+ routing=await vite.ssrLoadModule('/app/admin/lead-routing.server.ts');
  globalThis.fetch=async(input,request)=>{
   const url=new URL(input);
   const [,collection,id]=url.pathname.match(/\/collections\/(\w+)\/documents(?:\/([^/]+))?$/)??[];
@@ -38,7 +39,10 @@ before(async()=>{
    if(id)return store.has(id)?Response.json(store.get(id)):Response.json({}, {status:404});
    queries=url.searchParams.getAll('queries[]').map(JSON.parse);
    const matches=[...store.values()].filter(row=>queries.every(q=>(q.method!=='equal'||q.values.includes(row[q.attribute]))&&(q.method!=='notEqual'||!q.values.includes(row[q.attribute]))));
-   return Response.json({documents:matches,total:matches.length});
+   const latest=queries.find(q=>q.method==='orderDesc'&&q.attribute==='routedAt');
+   if(latest) matches.sort((a,b)=>(b.routedAt??'').localeCompare(a.routedAt??''));
+   const limit=queries.find(q=>q.method==='limit')?.values[0];
+   return Response.json({documents:matches.slice(0,limit??matches.length),total:matches.length});
   }
   if(request.method==='DELETE')return new Response(null,{status:store.delete(id)?204:404});
   const {data,documentId,permissions}=JSON.parse(request.body);
@@ -321,4 +325,33 @@ test('bulk handoff transfers linked work, reports calendar conflicts, and clears
  options.failPatch='appointments';
  assert.equal((await bulk.bulkUpdateLeads(manager,fields))[0].status,'review');
  assert.equal(leads.get(second.$id).owner,'');
+});
+
+
+test('round robin persists turn order, respects capacity and pause, and audits assignment',async()=>{
+ const alternate={...counselor,$id:'synthetic-second-counselor'};
+ profiles.set(alternate.$id,alternate);
+ const settings=id=>form({counselor:id,capacity:'1',availability:'available'});
+ await assert.rejects(()=>routing.saveRoutingSettings(counselor,settings(counselor.$id)),errorStatus(403));
+ await assert.rejects(()=>routing.saveRoutingSettings(manager,settings(manager.$id)),errorStatus(400));
+ for(const id of [counselor.$id,alternate.$id])await routing.saveRoutingSettings(manager,settings(id));
+ const first=await manual.createManualLead(manager,form());
+ const second=await manual.createManualLead(manager,form({submissionId:'d21265d0-363f-4a4c-b777-0e67b36930dc'}));
+ const third=await manual.createManualLead(manager,form({submissionId:'d21265d0-363f-4a4c-b777-0e67b36930dd'}));
+ const batch=form({bulkOwner:'@round-robin',reason:'Distribute new enquiries'});
+ for(const lead of [first,second,third])batch.append('selected',lead.$id+':1');
+ assert.deepEqual((await bulk.bulkUpdateLeads(manager,batch)).map(row=>row.status),['saved','saved','skipped']);
+ assert.equal(leads.get(first.$id).owner,counselor.$id);
+ assert.equal(leads.get(second.$id).owner,alternate.$id);
+ assert.equal(leads.get(second.$id).routedCounselor,alternate.$id);
+ assert.ok(leads.get(second.$id).routedAt>leads.get(first.$id).routedAt);
+ const paused=settings(counselor.$id);paused.set('availability','paused');
+ await routing.saveRoutingSettings(manager,paused);
+ leads.set(first.$id,{...leads.get(first.$id),stage:'Converted'});
+ const retry=form({bulkOwner:'@round-robin',reason:'Distribute new enquiries',selected:third.$id+':1'});
+ assert.equal((await bulk.bulkUpdateLeads(manager,retry))[0].status,'skipped');
+ await routing.saveRoutingSettings(manager,settings(counselor.$id));
+ assert.equal((await bulk.bulkUpdateLeads(manager,retry))[0].status,'saved');
+ assert.equal(leads.get(third.$id).owner,counselor.$id);
+ assert.equal([...activities.values()].filter(row=>row.event==='Lead assigned by round robin').length,3);
 });

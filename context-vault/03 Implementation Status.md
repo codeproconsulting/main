@@ -171,3 +171,9 @@ Bulk stage and priority changes implemented. See the session wall for verified c
 ## Bulk counselor handoff
 
 Bulk assignment and counselor filters are implemented. Synthetic transfer, conflict and unconfirmed-outcome checks passed.
+
+## Counselor routing
+
+Counselor availability, capacity and manager-triggered round robin are implemented. Automatic intake and team-scoped assignment remain planned.
+
+Manager-triggered routing passed service, Chrome and target storage checks. VPS runtime and automatic intake routing remain pending.

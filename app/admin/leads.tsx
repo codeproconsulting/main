@@ -8,6 +8,7 @@ import { requireStaff, sameOrigin } from "./auth.server";
 import { bulkLeadLimit, canManage, canUseCRM, displayDate, priorities, stages } from "./domain";
 import { field, leadsFor, listStaff } from "./crm.server";
 import { bulkUpdateLeads } from "./bulk-leads.server";
+import { saveRoutingSettings } from "./lead-routing.server";
 import { changeLeadView, leadViews } from "./lead-views.server";
 import { createManualLead } from "./manual-leads.server";
 import { ActionError, Badge, Empty, PageHeading, Submit } from "./ui";
@@ -38,6 +39,10 @@ export async function action({ request }: ActionFunctionArgs) {
   try {
     const form = await request.formData();
     const intent = field(form, "intent", 20);
+    if (intent === "routing-settings") {
+      await saveRoutingSettings(staff, form);
+      return redirect("/admin/leads");
+    }
     if (intent === "create") {
       const lead = await createManualLead(staff, form);
       return redirect(`/admin/leads/${lead.$id}`);
@@ -114,6 +119,22 @@ export default function Leads() {
         <Link to={`/admin/leads/${row.id}`}>{row.id}</Link> · {row.message}
       </li>)}</ul>
     </section>}
+    {initial.manager && <details className="crm-panel crm-padded">
+      <summary>Counselor routing settings</summary>
+      <p>Set who can receive unassigned enquiries through round robin and how many active enquiries they can carry.</p>
+      {assignees.filter(member => member.role === "counselor").map(member => <Form key={member.$id} method="post" className="crm-form">
+        <input type="hidden" name="intent" value="routing-settings"/>
+        <input type="hidden" name="counselor" value={member.$id}/>
+        <fieldset className="crm-two-col">
+          <legend>{member.name}</legend>
+          <label>Availability<select name="availability" defaultValue={member.routingAvailability || "paused"}>
+            <option value="paused">Paused</option><option value="available">Available</option>
+          </select></label>
+          <label>Active enquiry limit<input name="capacity" type="number" min={1} max={100} required defaultValue={member.routingCapacity || "10"}/></label>
+        </fieldset>
+        <div><Submit>Save routing settings</Submit></div>
+      </Form>)}
+    </details>}
     {initial.create && <NewLeadForm submissionId={initial.submissionId} manager={initial.manager} />}
     {initial.views && <section className="crm-panel crm-padded">
       <h2>My saved views</h2>
@@ -162,6 +183,7 @@ export default function Leads() {
           <label>Set priority<select name="bulkPriority"><option value="">Keep current priority</option>{priorities.map(value => <option key={value}>{value}</option>)}</select></label>
         </div>
         <label>Assign to<select name="bulkOwner"><option value="">Keep current assignment</option>
+          <option value="@round-robin">Round robin (unassigned only)</option>
           {assignees.map(member => <option key={member.$id} value={member.$id}>{member.name}</option>)}
         </select></label>
         <label>Reason (required for assignment or closure)<input name="reason" maxLength={2000}/></label>

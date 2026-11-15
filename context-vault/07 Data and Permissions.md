@@ -101,3 +101,7 @@ Bulk changes are manager-only. The server validates each selected lead and versi
 ## Bulk counselor handoff
 
 Managers can filter by counselor or unassigned and transfer selected leads to an active CRM staff account. Counselors always keep their own assignment scope.
+
+## Counselor routing
+
+CRM managers configure routing and run batches. Only active counselors can be opted in. Lead assignments preserve existing record and audit protections.

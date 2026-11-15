@@ -139,3 +139,7 @@ The manager selects up to ten rows on one page. A batch reports individual outco
 ## Bulk counselor handoff
 
 Bulk assignment requires an explicit destination and reason. Rows keep independent audit and outcomes. The owner filter is temporary and saved presets continue to hold stage and priority.
+
+## Counselor routing
+
+Active workloads exclude Converted and closure stages. Counselors are paused until explicitly enabled. Manual assignment and stage changes may exceed routing capacity. Calendar conflicts skip the affected enquiry for manual review.

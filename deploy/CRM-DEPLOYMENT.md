@@ -281,3 +281,7 @@ Apply the scoped leads setup for the optional duplicateOf and duplicatePriorStag
 ### Saved lead views
 
 Apply scoped schema setup for leads and lead_views before rollout to create the priority index and private preset collection. Confirm combined stage and priority filters, staff isolation, save and remove in the release environment. Presets store only stage and priority.
+
+### Counselor routing
+
+Review and apply the scoped staff and leads schema setup before rollout. Routing requires routingAvailability and routingCapacity on staff and routedAt, routedCounselor and the routed_at index on leads. Existing counselor profiles remain paused until configured. Verify settings writes, rotation lookup, scoped workload counts and normal handoff permissions with the runtime key.
