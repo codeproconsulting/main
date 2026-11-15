@@ -155,3 +155,5 @@ Confirmed contact linking passed all four session checks, including isolated Chr
 ## Duplicate enquiry decisions
 
 Duplicate archive and restore implemented. Synthetic regression coverage passes. Target fields, dependency collections and live acceptance remain pending.
+
+Duplicate archive and restore passed service, Chrome, and target storage acceptance. Production app rollout and checks with the VPS runtime key remain pending.

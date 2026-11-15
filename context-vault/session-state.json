@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "project": "ProConsulting",
   "sessionId": "2026-11-15-03",
-  "sessionStatus": "in_progress",
+  "sessionStatus": "completed",
   "activeFeature": "CRM-02",
   "objective": "Archive and restore confirmed duplicate enquiries while retaining their history.",
   "scope": [
@@ -29,17 +29,18 @@
     {
       "id": "CRM02-DUP-C",
       "description": "Provisioned target acceptance",
-      "status": "pending",
-      "evidence": "New optional leads fields and index plus read access to dependency collections required. Not applied."
+      "status": "passed",
+      "evidence": "Target leads fields and index available. All five dependency query shapes passed. Synthetic open task detection, archive reference, prior-stage restoration and cleanup passed. Tested with the configured setup key."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Apply the optional duplicate fields and index in the release environment. Verify all dependency reads, then smoke-test duplicate archive and restore with synthetic records.",
+      "action": "Start the next CRM-02 session for saved lead views. Reuse the current scoped lead search and design staff-private presets without storing contact search terms.",
       "files": [
-        "deploy/CRM-DEPLOYMENT.md",
-        "scripts/appwrite-schema.mjs"
+        "app/admin/leads.tsx",
+        "app/admin/crm.server.ts",
+        "context-vault/Feature Ledger.md"
       ]
     }
   ],
@@ -96,13 +97,14 @@
     "reporting": "Synthetic report and CSV acceptance passed. VPS rollout pending.",
     "leadContactSchema": "Both additive fields and indexes applied and verified. Built candidate intake smoke passed with synthetic cleanup. Historical backfill not run.",
     "crm02ManualEntry": "Manual entry and contact search accepted locally. Broader CRM-02 work remains open.",
-    "consultationSchema": "Read-only dry run found the private collection absent. Schema was not applied.",
+    "consultationSchema": "Private consultation collection and indexes provisioned. Lead dependency query accepted with setup key. Production consultation workflow remains pending.",
     "mobileBuilds": "EAS finished Android build 8d2da134-c48d-4f05-bc92-6062b132bd25 and iOS simulator build fa48dddc-d3e2-47ba-abad-2f4fd0b85b91. Local artifacts verified.",
     "nativeMobile": "Native source and both bundles verified locally. CRM TLS hostname mismatch confirmed. VPS API rollout and OTA release pending.",
     "nativeLeadEditing": "Implemented in both source trees. No VPS or OTA release.",
     "auditRollout": "Appwrite leads schema provisioned. No VPS app deployment or OTA publication.",
     "vpsHandoff": "Operator chose self-install. First-install checklist prepared. Target CRM DNS/proxy and VPS release await operator setup.",
-    "contactGroupSchema": "Optional field and index provisioned and verified available on target Appwrite. Synthetic link/query/unlink passed and both rows were removed. VPS application rollout remains pending."
+    "contactGroupSchema": "Optional field and index provisioned and verified available on target Appwrite. Synthetic link/query/unlink passed and both rows were removed. VPS application rollout remains pending.",
+    "duplicateSchema": "Duplicate fields and index provisioned. Target Appwrite storage smoke and cleanup verified. VPS app and runtime key acceptance pending."
   },
   "checks": [
     {
@@ -127,6 +129,6 @@
       "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-wzIQ36/build.log"
     }
   ],
-  "updatedAt": "2026-11-15T15:11:57.212Z",
+  "updatedAt": "2026-11-15T15:19:27.181Z",
   "verifiedSourceFingerprint": "44df275317f3fd33a85ab9ab1e1c30e33a936c374ac01dd767671774b657fe3a"
 }

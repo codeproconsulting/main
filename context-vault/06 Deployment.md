@@ -101,3 +101,5 @@ The contactGroup field and contact_group index are available on target Appwrite.
 ## Duplicate enquiry decisions
 
 Duplicate resolution requires the additive leads fields duplicateOf and duplicatePriorStage, the duplicate_of index, and readable dependency collections. See the deployment runbook.
+
+Target Appwrite now has the duplicate fields, index, and private consultations schema. Dependency reads passed with the setup key. Repeat runtime checks after app deployment.

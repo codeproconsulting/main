@@ -11,11 +11,11 @@ Generated from `session-state.json` by `npm run session:status`. Edit that struc
 
 **Active feature:** CRM-02
 
-**State:** in_progress
+**State:** completed
 
 **Objective:** Archive and restore confirmed duplicate enquiries while retaining their history.
 
-A user saying **continue** means resume this feature's next unfinished acceptance check. Do not start unrelated modules or repeat completed infrastructure work. Verify current files and drift before trusting the checkpoint.
+This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
@@ -33,12 +33,12 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 | --- | --- | --- | --- |
 | CRM02-DUP-A | Duplicate decision permissions and preserved data | passed | Focused synthetic test verifies counselor denial, destination and stale version rejection, each dependent collection, archive, blocked task write and restoration. |
 | CRM02-DUP-B | Built app browser acceptance | passed | Isolated Chrome verified contact group linking, duplicate archive, retained reference and restore. Initial fixture seeded open tasks; corrected fixture to exercise the successful path. |
-| CRM02-DUP-C | Provisioned target acceptance | pending | New optional leads fields and index plus read access to dependency collections required. Not applied. |
+| CRM02-DUP-C | Provisioned target acceptance | passed | Target leads fields and index available. All five dependency query shapes passed. Synthetic open task detection, archive reference, prior-stage restoration and cleanup passed. Tested with the configured setup key. |
 
 ## Exact next actions
 
-1. Apply the optional duplicate fields and index in the release environment. Verify all dependency reads, then smoke-test duplicate archive and restore with synthetic records.
-   Files: `deploy/CRM-DEPLOYMENT.md`, `scripts/appwrite-schema.mjs`
+1. Start the next CRM-02 session for saved lead views. Reuse the current scoped lead search and design staff-private presets without storing contact search terms.
+   Files: `app/admin/leads.tsx`, `app/admin/crm.server.ts`, `context-vault/Feature Ledger.md`
 
 ## Known risks and unfinished work
 
@@ -103,12 +103,13 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **reporting**: Synthetic report and CSV acceptance passed. VPS rollout pending.
 - **leadContactSchema**: Both additive fields and indexes applied and verified. Built candidate intake smoke passed with synthetic cleanup. Historical backfill not run.
 - **crm02ManualEntry**: Manual entry and contact search accepted locally. Broader CRM-02 work remains open.
-- **consultationSchema**: Read-only dry run found the private collection absent. Schema was not applied.
+- **consultationSchema**: Private consultation collection and indexes provisioned. Lead dependency query accepted with setup key. Production consultation workflow remains pending.
 - **mobileBuilds**: EAS finished Android build 8d2da134-c48d-4f05-bc92-6062b132bd25 and iOS simulator build fa48dddc-d3e2-47ba-abad-2f4fd0b85b91. Local artifacts verified.
 - **nativeMobile**: Native source and both bundles verified locally. CRM TLS hostname mismatch confirmed. VPS API rollout and OTA release pending.
 - **nativeLeadEditing**: Implemented in both source trees. No VPS or OTA release.
 - **auditRollout**: Appwrite leads schema provisioned. No VPS app deployment or OTA publication.
 - **vpsHandoff**: Operator chose self-install. First-install checklist prepared. Target CRM DNS/proxy and VPS release await operator setup.
 - **contactGroupSchema**: Optional field and index provisioned and verified available on target Appwrite. Synthetic link/query/unlink passed and both rows were removed. VPS application rollout remains pending.
+- **duplicateSchema**: Duplicate fields and index provisioned. Target Appwrite storage smoke and cleanup verified. VPS app and runtime key acceptance pending.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]
