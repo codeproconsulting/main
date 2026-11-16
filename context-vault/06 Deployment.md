@@ -131,3 +131,9 @@ Enable automatic routing only after the queue schema, worker actor and runtime k
 Target intakeRouting and intake_routing are available. Production website opt-in and worker remain disabled pending VPS configuration and runtime acceptance.
 
 Team scope is design only. Do not enable restricted managers until additive schema, backfill and surface-specific acceptance pass. See [[Sessions/2026-11-16-02]].
+
+## Team-scoped lead workspace
+
+Preview private crm_teams and additive staff and leads scope fields. Do not configure team manager profiles in the release environment until migration and target acceptance are recorded.
+
+Read-only target preview confirmed the new team directory and scope fields are absent. Apply only after migration review. Keep existing staff profiles unchanged until a reviewed classification and runtime checks pass.

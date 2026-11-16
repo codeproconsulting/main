@@ -55,7 +55,7 @@ after(async()=>{
 });
 
 test('inactive managers and roles outside management cannot read reports or export',async()=>{
- for(const denied of [{...staff,active:false},...['counselor','editor','publisher'].map(role=>({...staff,role}))]){
+ for(const denied of [{...staff,active:false},{...staff,managerScope:'team',teamId:'team-alpha'},...['counselor','editor','publisher'].map(role=>({...staff,role}))]){
   await assert.rejects(()=>reports.operationalReport(denied),isStatus(403));
   await assert.rejects(()=>reports.exportLeads(denied,refresh),isStatus(403));
  }

@@ -155,3 +155,7 @@ Routing policy and settings writes live in app/admin/lead-routing.server.ts. The
 app/admin/intake-routing.server.ts processes a five-row queue page. scripts/intake-routing-worker.mjs runs the bundled service every minute.
 
 See [[Sessions/2026-11-16-02]] for the branch and team authorization call-path inventory.
+
+## Team-scoped lead workspace
+
+app/admin/team-scope.server.ts validates active teams. app/admin/auth.server.ts gates web routes and validates current profile scope. app/admin/crm.server.ts applies team scope before pagination and during edits.

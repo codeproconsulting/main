@@ -1,13 +1,14 @@
-import { Link, useLoaderData } from "react-router";
+import { redirect, Link, useLoaderData } from "react-router";
 import type { LoaderFunctionArgs } from "react-router";
 import { ArrowUpRight, UsersRound, Clock3, CheckCheck, BookOpen } from "lucide-react";
 import { requireStaff } from "./auth.server";
 import { leadsFor, tasksFor } from "./crm.server";
-import { canEditContent, canUseCRM, displayDate } from "./domain";
+import { canEditContent, canUseCRM, displayDate, isRestrictedManager } from "./domain";
 import { listDocuments, query } from "~/lib/appwrite.server";
 import { Badge, Empty, PageHeading } from "./ui";
 export async function loader({ request }: LoaderFunctionArgs) {
- const staff = await requireStaff(request);
+ const staff = await requireStaff(request, true);
+ if (isRestrictedManager(staff)) return redirect("/admin/leads");
  const [leads,tasks,posts] = await Promise.all([canUseCRM(staff) ? leadsFor(staff) : null, canUseCRM(staff) ? tasksFor(staff) : [], canEditContent(staff) ? listDocuments("posts", [query("limit", undefined, [1])]) : null]);
  return { staff, leads: leads?.documents ?? [], total: leads?.total ?? 0, tasks, postCount: posts?.total ?? 0 };
 }

@@ -149,3 +149,7 @@ Active workloads exclude Converted and closure stages. Counselors are paused unt
 Intake records the marker with the new enquiry. A definitive rejection of the marked write retries ordinary intake; ambiguous writes retain existing error behavior. Worker logs use counts only.
 
 Proposed team ownership, explicit manager scope and safe rollback order are recorded in [[Sessions/2026-11-16-02]].
+
+## Team-scoped lead workspace
+
+Existing managers without a scope retain global access. Profiles explicitly configured for team access fail closed on missing, inactive or invalid membership. Branch names label teams and confer no additional access.

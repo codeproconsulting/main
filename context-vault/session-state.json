@@ -1,35 +1,47 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-16-02",
+  "sessionId": "2026-11-16-03",
   "sessionStatus": "in_progress",
   "activeFeature": "CRM-03",
-  "objective": "Map CRM access and define safe branch and team scope migration.",
+  "objective": "Add branch-labelled team directory schema and enforce team access on the web lead workflow.",
   "scope": [
-    "Read and write surface inventory",
-    "Access defaults, staged migration, and release gates"
+    "Private team directory and optional staff and lead scope fields",
+    "Restricted-manager lead list, matches, read and stage/priority edit",
+    "Server-side denial of unverified surfaces"
   ],
   "outOfScope": [
-    "Schema provisioning and runtime authorization changes"
+    "Team administration UI, migration, and production activation",
+    "Restricted manager mobile, linked workflows, exports and assignment"
   ],
   "acceptance": [
     {
-      "id": "CRM03-SCOPE-DESIGN",
-      "description": "Authorization inventory and migration design",
+      "id": "CRM03-SCOPE-A",
+      "description": "Two-team scoped lead access and writes",
       "status": "passed",
-      "evidence": "Reviewed lead, mobile, linked queues, documents, notifications, consultation, reports, staff and routing paths. Recorded policy and release order."
+      "evidence": "Service tests verify team-only list and matches, direct read and edit denial, stale team recheck, inactive team, preserved ownership and legacy manager behavior."
+    },
+    {
+      "id": "CRM03-SCOPE-B",
+      "description": "Browser routing and restricted surface denial",
+      "status": "passed",
+      "evidence": "Chrome verified team redirect, allowed stage edit, cross-team 404, and 403 for reports, tasks, documents, consultation reports and mobile sign-in."
+    },
+    {
+      "id": "CRM03-SCOPE-C",
+      "description": "Target schema and migration acceptance",
+      "status": "pending",
+      "evidence": "Target read-only preview confirmed the team directory and manager/lead scope attributes are absent. No schema or profile changes applied."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Implement additive directory and scope fields, common lead policy and two-team synthetic tests. Deny unverified linked/report surfaces to restricted managers server-side before activation.",
+      "action": "Build the aggregate team inventory and reviewed classification workflow. Before activating team managers, provision the additive team schema and verify indexed team counts with synthetic data.",
       "files": [
         "context-vault/Sessions/2026-11-16-02.md",
-        "app/admin/domain.ts",
-        "app/admin/crm.server.ts",
-        "app/admin/auth.server.ts",
-        "scripts/appwrite-schema.mjs"
+        "scripts/appwrite-schema.mjs",
+        "app/admin/team-scope.server.ts"
       ]
     }
   ],
@@ -103,24 +115,24 @@
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-16T01:16:51.680Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-1Q8yhB/typecheck.log"
+      "checkedAt": "2026-11-16T01:36:49.505Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-QY68lB/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-16T01:16:52.916Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-1Q8yhB/test.log"
+      "checkedAt": "2026-11-16T01:36:50.702Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-QY68lB/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-16T01:16:58.226Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-1Q8yhB/build.log"
+      "checkedAt": "2026-11-16T01:36:56.307Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-QY68lB/build.log"
     }
   ],
-  "updatedAt": "2026-11-16T01:21:07.931Z",
-  "verifiedSourceFingerprint": "1e6d30b38ff42501e886626d6ac3d7ea6ad4dfaad8a3f13cf162cdc7a7e22687"
+  "updatedAt": "2026-11-16T01:37:07.979Z",
+  "verifiedSourceFingerprint": "35dce7a6164f1d370e9a2528016138ce196482a8bbc1b245dbf679e6fd40ba29"
 }

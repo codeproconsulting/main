@@ -111,3 +111,7 @@ CRM managers configure routing and run batches. Only active counselors can be op
 The worker acts under an explicitly configured active manager profile and the shared staff-access lock. It only processes pending, unassigned New enquiries.
 
 The proposed restricted manager policy and legacy defaults are detailed in [[Sessions/2026-11-16-02]]. Existing manager authorization has not changed.
+
+## Team-scoped lead workspace
+
+Team managers have scoped web lead list, match, read and stage/priority edit access. Linked workflows, audit history, reports, exports, cross-team writes and mobile are denied. Writes recheck current team membership under existing locks.

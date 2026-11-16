@@ -68,7 +68,7 @@ beforeEach(()=>{
  profiles=new Map([[manager.$id,manager],[counselor.$id,counselor]]);
  queries=[];
  options={};
- dependencies=Object.fromEntries(["tasks","cases","appointments","documents","consultations","lead_views"].map(name=>[name,new Map()]));
+ dependencies=Object.fromEntries(["tasks","cases","appointments","documents","consultations","lead_views","crm_teams"].map(name=>[name,new Map()]));
 });
 after(async()=>{
  globalThis.fetch=originalFetch;
@@ -216,7 +216,7 @@ test('duplicate decisions require confirmation and no dependent work, and restor
  await assert.rejects(()=>crm.resolveDuplicate(manager,first.$id,mark),errorStatus(400));
  leads.set(second.$id,{...second,contactGroup:'synthetic-group'});
  for (const [name,store] of Object.entries(dependencies)) {
-  if(name==='lead_views')continue;
+  if(['lead_views','crm_teams'].includes(name))continue;
   store.set('synthetic-dependent',{leadId:first.$id,status:'Open'});
   await assert.rejects(()=>crm.resolveDuplicate(manager,first.$id,mark),errorStatus(409),name);
   store.clear();
@@ -376,4 +376,38 @@ test('intake worker assigns only queued website enquiries and retries deferred c
  await crm.updateLead(manager,third.$id,edit,'bulk');
  assert.equal(leads.get(third.$id).intakeRouting,'');
  assert.equal((await worker.routeIntakePage(manager.$id)).assigned,0);
+});
+
+
+test('restricted managers see and change only team enquiries and fail closed after team changes',async()=>{
+ const unclassified=await manual.createManualLead(manager,form());
+ const alpha=await manual.createManualLead(counselor,form());
+ const beta=await manual.createManualLead(manager,form({submissionId:'d21265d0-363f-4a4c-b777-0e67b36930dc'}));
+ leads.set(alpha.$id,{...alpha,teamId:'team-alpha'});
+ leads.set(beta.$id,{...beta,teamId:'team-beta'});
+ const scoped={...manager,managerScope:'team',teamId:'team-alpha'};
+ profiles.set(scoped.$id,scoped);
+ dependencies.crm_teams.set('team-alpha',{$id:'team-alpha',status:'active'});
+ const listed=await crm.leadsFor(scoped,'','',1,'','-');
+ assert.equal(listed.total,1);
+ assert.deepEqual(listed.documents.map(row=>row.$id),[alpha.$id]);
+ assert.equal((await crm.relatedEnquiries(scoped,alpha.$id,'email')).total,0);
+ for(const id of [beta.$id,unclassified.$id]){
+  await assert.rejects(()=>crm.leadFor(scoped,id),errorStatus(404));
+  await assert.rejects(()=>crm.updateLead(scoped,id,form({version:'1',stage:'Contacted',priority:'High'}),'stage-priority'),errorStatus(404));
+ }
+ const update=form({version:'1',stage:'Contacted',priority:'High',owner:manager.$id});
+ await assert.rejects(()=>crm.updateLead(scoped,alpha.$id,update,'full'),errorStatus(403));
+ const changed=await crm.updateLead(scoped,alpha.$id,update,'stage-priority');
+ assert.equal(changed.priority,'High');
+ assert.equal(changed.owner,alpha.owner);
+ assert.equal(changed.teamId,'team-alpha');
+ update.set('version','2');
+ profiles.set(scoped.$id,{...scoped,teamId:'team-beta'});
+ await assert.rejects(()=>crm.updateLead(scoped,alpha.$id,update,'stage-priority'),errorStatus(403));
+ profiles.set(scoped.$id,scoped);
+ dependencies.crm_teams.get('team-alpha').status='inactive';
+ await assert.rejects(()=>crm.updateLead(scoped,alpha.$id,update,'stage-priority'),errorStatus(403));
+ await assert.rejects(()=>crm.leadsFor({...scoped,teamId:''}),errorStatus(403));
+ assert.equal((await crm.leadsFor(manager)).total,3);
 });

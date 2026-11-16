@@ -8,10 +8,11 @@ const scanner=documents?await documentScanner(bytes=>bytes.includes('SYNTHETIC-S
 const teamPreview=process.argv.includes('--team');
 const reminders=process.argv.includes('--reminders');
 const duplicates=process.argv.includes("--duplicates");
-const contacts=process.argv.includes("--contacts");
+const teamScope=process.argv.includes("--team-scope");
+const contacts=teamScope||process.argv.includes("--contacts");
 const crm=contacts||teamPreview||documents||reminders||process.argv.includes('--cases')||process.argv.includes('--calendar');
 const role=teamPreview?'owner':crm?'manager':'publisher',userId=`synthetic-${role}`;
-const stores=Object.fromEntries(['posts','revisions','activities','locks','staff','media','leads','lead_views','tasks','notifications','worker_health','cases','appointments','documents','consultations'].map(k=>[k,new Map()]));
+const stores=Object.fromEntries(['posts','revisions','activities','locks','staff','crm_teams','media','leads','lead_views','tasks','notifications','worker_health','cases','appointments','documents','consultations'].map(k=>[k,new Map()]));
 stores.staff.set(userId,{$id:userId,name:teamPreview?'Synthetic Owner':crm?'Synthetic Manager':'Synthetic Publisher',role,active:true,teamId:'',$updatedAt:new Date().toISOString()});
 if(crm){
  stores.leads.set('synthetic-lead',{$id:'synthetic-lead',$createdAt:new Date().toISOString(),name:'Synthetic enquiry',email:'lead@example.invalid',phone:'000',service:'Education',source:'Isolated preview',country:'',stage:'New',owner:userId,priority:'Normal',nextFollowUp:'',details:'{}',version:1});
@@ -21,6 +22,13 @@ if(contacts){
  const first=stores.leads.get('synthetic-lead');
  Object.assign(first,{phone:'+44 20 1234 5678',phoneKey:'442012345678',emailKey:first.email,owner:'synthetic-counselor'});
  stores.leads.set('synthetic-repeat',{...first,$id:'synthetic-repeat',name:'Synthetic repeat enquiry',country:duplicates?first.country:"Italy",owner:userId});
+}
+if(teamScope){
+ stores.crm_teams.set('team-alpha',{$id:'team-alpha',name:'Synthetic team Alpha',status:'active'});
+ stores.crm_teams.set('team-beta',{$id:'team-beta',name:'Synthetic team Beta',status:'active'});
+ Object.assign(stores.staff.get(userId),{managerScope:'team',teamId:'team-alpha'});
+ stores.leads.get('synthetic-lead').teamId='team-alpha';
+ stores.leads.get('synthetic-repeat').teamId='team-beta';
 }
 const authUsers=new Map([[userId,{$id:userId,status:true}]]);
 const authSessions=new Map();
@@ -63,7 +71,7 @@ const server=http.createServer(async(request,response)=>{
     response.writeHead(204);return response.end();
    }
   }
-  const match=url.pathname.match(/^\/v1\/databases\/preview\/collections\/(posts|revisions|activities|locks|staff|media|leads|lead_views|tasks|notifications|worker_health|cases|appointments|documents|consultations)\/documents(?:\/([^/]+))?$/);if(!match)return send(response,404,{});
+  const match=url.pathname.match(/^\/v1\/databases\/preview\/collections\/(posts|revisions|activities|locks|staff|crm_teams|media|leads|lead_views|tasks|notifications|worker_health|cases|appointments|documents|consultations)\/documents(?:\/([^/]+))?$/);if(!match)return send(response,404,{});
   const [,collection,id]=match,store=stores[collection];
   if(request.method==='GET'){if(id)return store.has(id)?send(response,200,store.get(id)):send(response,404,{});let documents=[...store.values()];for(const q of url.searchParams.getAll('queries[]').map(JSON.parse)){if(q.method==='equal')documents=documents.filter(d=>q.values.includes(d[q.attribute]));if(q.method==='notEqual')documents=documents.filter(d=>!q.values.includes(d[q.attribute]));if(q.method==='lessThanEqual')documents=documents.filter(d=>d[q.attribute]<=q.values[0]);if(q.method==='orderAsc')documents.sort((a,b)=>String(a[q.attribute]??'').localeCompare(String(b[q.attribute]??'')));if(q.method==='orderDesc')documents.sort((a,b)=>String(b[q.attribute]??'').localeCompare(String(a[q.attribute]??'')));}const total=documents.length;const queries=url.searchParams.getAll('queries[]').map(JSON.parse),offset=queries.find(q=>q.method==='offset')?.values[0]||0,limit=queries.find(q=>q.method==='limit')?.values[0]||100;const cursor=queries.find(q=>q.method==='cursorAfter')?.values[0];if(cursor)documents=documents.slice(documents.findIndex(d=>d.$id===cursor)+1);return send(response,200,{documents:documents.slice(offset,offset+limit),total});}
   if(request.method==='POST'){if(store.has(body.documentId))return send(response,409,{});const doc={...body.data,$id:body.documentId,$createdAt:new Date().toISOString(),$updatedAt:new Date().toISOString()};store.set(doc.$id,doc);return send(response,201,doc);}

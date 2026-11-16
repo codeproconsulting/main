@@ -5,7 +5,7 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Search, ArrowUpRight } from "lucide-react";
 import { leadServices } from "~/lib/lead-contact";
 import { requireStaff, sameOrigin } from "./auth.server";
-import { bulkLeadLimit, canManage, canUseCRM, displayDate, priorities, stages } from "./domain";
+import { bulkLeadLimit, canManage, canUseCRM, isRestrictedManager, displayDate, priorities, stages } from "./domain";
 import { field, leadsFor, listStaff } from "./crm.server";
 import { bulkUpdateLeads } from "./bulk-leads.server";
 import { saveRoutingSettings } from "./lead-routing.server";
@@ -19,7 +19,7 @@ function pageNumber(value: string | null) {
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const staff = await requireStaff(request);
+  const staff = await requireStaff(request, true);
   const url = new URL(request.url);
   const search = url.searchParams.get("q")?.slice(0, 254) ?? "";
   const stage = url.searchParams.get("stage") ?? "";
@@ -29,12 +29,12 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const [leads, team, views] = await Promise.all([
     leadsFor(staff, search, stage, page, priority, ownerFilter), canManage(staff) ? listStaff() : Promise.resolve([staff]), leadViews(staff),
   ]);
-  const create = url.searchParams.get("new") === "1";
-  return { leads, team, views, search, stage, priority, ownerFilter, page, create, submissionId: create ? randomUUID() : "", manager: canManage(staff) };
+  const create = !isRestrictedManager(staff) && url.searchParams.get("new") === "1";
+  return { leads, team, views, search, stage, priority, ownerFilter, page, create, submissionId: create ? randomUUID() : "", manager: canManage(staff), teamOnly: isRestrictedManager(staff) };
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-  const staff = await requireStaff(request);
+  const staff = await requireStaff(request, true);
   sameOrigin(request);
   try {
     const form = await request.formData();
@@ -44,6 +44,7 @@ export async function action({ request }: ActionFunctionArgs) {
       return redirect("/admin/leads");
     }
     if (intent === "create") {
+      if (isRestrictedManager(staff)) throw new Response("Access denied", { status: 403 });
       const lead = await createManualLead(staff, form);
       return redirect(`/admin/leads/${lead.$id}`);
     }
@@ -108,7 +109,7 @@ export default function Leads() {
   const saved = initial.views?.some(view => view.stage === stage && view.priority === priority);
   return <>
     <PageHeading eyebrow="LEAD MANAGEMENT" title="Leads & enquiries" description="Find enquiries and manage their next steps.">
-      {!initial.create && <Link className="crm-button" to="?new=1">Add enquiry</Link>}
+      {!initial.create && !initial.teamOnly && <Link className="crm-button" to="?new=1">Add enquiry</Link>}
     </PageHeading>
     <ActionError error={result?.kind === "error" ? result.error : undefined} />
     {result?.kind === "bulk" && <section className="crm-panel crm-padded" aria-live="polite">

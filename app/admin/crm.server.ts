@@ -1,8 +1,9 @@
 import { emailKey, phoneKey } from "~/lib/lead-contact";
+import { requireActiveTeam } from "./team-scope.server";
 import { appointmentCalendarLock, appointmentsForHandoff } from "./calendar.server";
 import { createHash, randomUUID } from "node:crypto";
 import { AppwriteError, appwrite, createDocument, getDocument, listDocuments, query, updateDocument } from "~/lib/appwrite.server";
-import { canAccessLead, canManage, canUseCRM, priorities, requiresClosureReason, stages, type Activity, type Lead, type Staff, type Task } from "./domain";
+import { canAccessLead, canManage, canUseCRM, isRestrictedManager, priorities, requiresClosureReason, stages, type Activity, type Lead, type Staff, type Task } from "./domain";
 
 export function allow(condition: boolean) { if (!condition) throw new Response("Access denied", { status: 403 }); }
 export function field(form: FormData, name: string, max = 1000) {
@@ -23,10 +24,16 @@ export async function audit(staff: Staff, entityId: string, entityType: string, 
 export async function listStaff() { return (await listDocuments<Staff>("staff", [query("equal", "active", [true]), query("limit", undefined, [100])])).documents; }
 const leadListFields = ["$id", "$createdAt", "name", "email", "service", "country", "stage", "priority", "owner", "nextFollowUp", "version"] as const;
 
+function leadScopeFilter(staff: Staff) {
+  return isRestrictedManager(staff)
+    ? query("equal", "teamId", [staff.teamId])
+    : query("equal", "owner", [staff.$id]);
+}
+
 export async function leadsFor(staff: Staff, search = "", stage = "", page = 1, priority = "", ownerFilter = "") {
   allow(staff.active && canUseCRM(staff));
   const queries = [query("select", undefined, [...leadListFields]), query("orderDesc", "$createdAt"), query("limit", undefined, [25]), query("offset", undefined, [(page - 1) * 25])];
-  if (!canManage(staff)) queries.push(query("equal", "owner", [staff.$id]));
+  if (!canManage(staff)) queries.push(leadScopeFilter(staff));
   else if (ownerFilter) queries.push(query("equal", "owner", [ownerFilter === "-" ? "" : ownerFilter]));
   if (stage && stages.includes(stage as typeof stages[number])) queries.push(query("equal", "stage", [stage]));
   if (priorities.some(value => value === priority)) queries.push(query("equal", "priority", [priority]));
@@ -49,7 +56,7 @@ export async function relatedEnquiries(staff: Staff, id: string, match: string, 
     query("select", undefined, [...leadListFields]),
     query("equal", match === "email" ? "emailKey" : "phoneKey", [value]),
     query("notEqual", "$id", [lead.$id]),
-    ...(!canManage(staff) ? [query("equal", "owner", [staff.$id])] : []),
+    ...(!canManage(staff) ? [leadScopeFilter(staff)] : []),
     query("orderDesc", "$createdAt"), query("orderAsc", "$id"),
     query("limit", undefined, [25]), query("offset", undefined, [(currentPage - 1) * 25]),
   ]);
@@ -58,6 +65,7 @@ export async function leadFor(staff: Staff, id: string) {
   allow(canUseCRM(staff));
   let lead;
   try { lead = await getDocument<Lead>("leads", id); } catch (error) { if (error instanceof AppwriteError && error.status === 404) throw new Response("Lead not found", { status: 404 }); throw error; }
+  if (isRestrictedManager(staff) && !canAccessLead(staff, lead)) throw new Response("Lead not found", { status: 404 });
   allow(canAccessLead(staff, lead));
   return lead;
 }
@@ -69,7 +77,7 @@ export function queuePage(value: string | null) {
 export async function scopedQueue<T extends { leadId: string }>(
   staff: Staff, collection: "tasks" | "cases" | "appointments", filters: string[], page: number, size = 25,
 ) {
-  allow(canUseCRM(staff));
+  allow(canUseCRM(staff) && !isRestrictedManager(staff));
   const manager = canManage(staff);
   const offset = (page - 1) * size;
   const { documents, total } = await listDocuments<T>(collection, [
@@ -349,6 +357,15 @@ export async function updateLead(
         return transferring ? serialized(appointmentCalendarLock, save) : save();
       });
     };
+    if (isRestrictedManager(staff)) {
+      allow(mode === "stage-priority" && !route);
+      return serialized(staffAccessLock, async () => {
+        const actor = await getDocument<Staff>("staff", staff.$id);
+        allow(actor.active && isRestrictedManager(actor) && actor.teamId === staff.teamId);
+        await requireActiveTeam(actor);
+        return apply();
+      });
+    }
     if (!route) return apply();
     return serialized(staffAccessLock, async () => {
       const actor = await getDocument<Staff>("staff", staff.$id);

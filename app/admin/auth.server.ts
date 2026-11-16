@@ -1,6 +1,7 @@
 import { createCookie, redirect } from "react-router";
 import { appwrite, AppwriteError, configurationIssues, getDocument } from "~/lib/appwrite.server";
-import { roles, type Staff } from "./domain";
+import { requireActiveTeam } from "./team-scope.server";
+import { isRestrictedManager, roles, type Staff } from "./domain";
 
 function sessionCookie() {
   const secret = process.env.SESSION_SECRET;
@@ -19,13 +20,17 @@ export function sameOrigin(request: Request) {
   const origin = request.headers.get("Origin");
   if (!origin || origin !== new URL(request.url).origin) throw new Response("Request origin rejected", { status: 403 });
 }
-export async function requireStaff(request: Request): Promise<Staff> {
+export async function requireStaff(request: Request, allowTeamManager = false): Promise<Staff> {
   dashboardRequest(request);
   if (configurationIssues().length) throw redirect("/admin/login");
   const session = await sessionCookie().parse(request.headers.get("Cookie"));
   if (typeof session !== "string" || !session) throw redirect("/admin/login");
   try {
-    return await staffForSession(session);
+    const staff = await staffForSession(session);
+    if (!allowTeamManager && isRestrictedManager(staff)) {
+      throw new Response("Use Leads & enquiries in your team workspace.", { status: 403 });
+    }
+    return staff;
   } catch (error) {
     if (error instanceof AppwriteError && [401, 404].includes(error.status)) throw redirect("/admin/login");
     if (error instanceof Response) throw error;
@@ -36,14 +41,16 @@ export async function staffForSession(session: string): Promise<Staff> {
   const account = await appwrite<{ $id: string }>("/account", { session });
   const staff = await getDocument<Staff>("staff", account.$id);
   if (!staff.active || !roles.includes(staff.role)) throw new Response("Your account does not have active staff access.", { status: 403 });
-  return { $id: account.$id, name: staff.name, role: staff.role, active: staff.active, teamId: staff.teamId };
+  if (isRestrictedManager(staff)) await requireActiveTeam(staff);
+  return { $id: account.$id, name: staff.name, role: staff.role, active: staff.active, teamId: staff.teamId, managerScope: staff.managerScope };
 }
 
-export async function openStaffSession(email: string, password: string) {
+export async function openStaffSession(email: string, password: string, allowTeamManager = true) {
   const session = await appwrite<{ secret: string; expire: string }>("/account/sessions/email", { method: "POST", body: { email, password } });
   if (!session.secret) throw new Error("Appwrite did not return an SSR session secret");
   try {
     const staff = await staffForSession(session.secret);
+    if (!allowTeamManager && isRestrictedManager(staff)) throw new Response("Use the web lead workspace for team access.", { status: 403 });
     return { ...session, staff };
   } catch (error) {
     await appwrite("/account/sessions/current", { method: "DELETE", session: session.secret }).catch(() => undefined);
@@ -54,7 +61,7 @@ export async function openStaffSession(email: string, password: string) {
 export async function signIn(request: Request, email: string, password: string) {
   dashboardRequest(request); sameOrigin(request);
   const session = await openStaffSession(email, password);
-  return redirect("/admin", { headers: { "Set-Cookie": await sessionCookie().serialize(session.secret, { expires: new Date(session.expire) }) } });
+  return redirect(isRestrictedManager(session.staff) ? "/admin/leads" : "/admin", { headers: { "Set-Cookie": await sessionCookie().serialize(session.secret, { expires: new Date(session.expire) }) } });
 }
 export async function signOut(request: Request) {
   dashboardRequest(request); sameOrigin(request);

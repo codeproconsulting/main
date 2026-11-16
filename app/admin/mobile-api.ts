@@ -4,7 +4,7 @@ import { appwrite, AppwriteError, configurationIssues } from "~/lib/appwrite.ser
 import { openStaffSession, staffForSession } from "./auth.server";
 import { leadFor, leadsFor, queuePage, taskPage, updateLead } from "./crm.server";
 
-import { closureStages, priorities, stages, type Lead } from "./domain";
+import { isRestrictedManager, closureStages, priorities, stages, type Lead } from "./domain";
 
 const headers = { "Cache-Control": "private, no-store", "X-Robots-Tag": "noindex, nofollow" };
 const reply = (body: unknown, status = 200) => Response.json(body, { headers, status });
@@ -80,6 +80,14 @@ function isJson(request: Request) {
   return request.headers.get("Content-Type")?.split(";")[0] === "application/json";
 }
 
+async function mobileStaff(request: Request) {
+  const staff = await staffForSession(sessionFrom(request));
+  if (isRestrictedManager(staff)) {
+    throw new Response("Use the web lead workspace for team access.", { status: 403 });
+  }
+  return staff;
+}
+
 function mobileLeads({ documents, total }: Awaited<ReturnType<typeof leadsFor>>) {
   return {
     totalLeads: total,
@@ -91,17 +99,17 @@ function mobileLeads({ documents, total }: Awaited<ReturnType<typeof leadsFor>>)
 export function loader({ request, params }: LoaderFunctionArgs) {
   return mobileRequest(request, async () => {
     if (params.resource === "lead") {
-      const staff = await staffForSession(sessionFrom(request));
+      const staff = await mobileStaff(request);
       return reply(editableLead(await leadFor(staff, leadId(request))));
     }
     if (params.resource === "follow-ups") {
-      const staff = await staffForSession(sessionFrom(request));
+      const staff = await mobileStaff(request);
       const page = queuePage(new URL(request.url).searchParams.get("page"));
       const { records, hasMore } = await taskPage(staff, page);
       return reply({ page, hasMore, tasks: records.map(({ $id, title, dueAt }) => ({ id: $id, title, dueAt })) });
     }
     if (params.resource !== "workspace") return reply({ error: "Unknown resource." }, 404);
-    const staff = await staffForSession(sessionFrom(request));
+    const staff = await mobileStaff(request);
     const [leads, { records: tasks, hasMore }] = await Promise.all([leadsFor(staff), taskPage(staff, 1)]);
     return reply({
       updatedAt: new Date().toISOString(),
@@ -117,7 +125,7 @@ export function action({ request, params }: ActionFunctionArgs) {
   return mobileRequest(request, async () => {
     if (params.resource === "leads") {
       if (request.method !== "POST") return reply({ error: "Method not allowed." }, 405);
-      const staff = await staffForSession(sessionFrom(request));
+      const staff = await mobileStaff(request);
       if (!isJson(request)) return reply({ error: "Expected JSON." }, 415);
       const body = await request.json().catch(() => null);
       if (typeof body?.q !== "string") return reply({ error: "Invalid search." }, 400);
@@ -131,7 +139,7 @@ export function action({ request, params }: ActionFunctionArgs) {
     }
     if (params.resource === "lead") {
       if (request.method !== "PATCH") return reply({ error: "Method not allowed." }, 405);
-      const staff = await staffForSession(sessionFrom(request));
+      const staff = await mobileStaff(request);
       const id = leadId(request);
       if (!isJson(request)) return reply({ error: "Expected JSON." }, 415);
       const { version, stage, priority, reason = "" } = await request.json().catch(() => null) ?? {};
@@ -158,7 +166,7 @@ export function action({ request, params }: ActionFunctionArgs) {
         typeof password !== "string" || !password || password.length > 512) {
       return reply({ error: "Enter your staff email and password." }, 400);
     }
-    const { secret, expire, staff } = await openStaffSession(email.trim(), password);
+    const { secret, expire, staff } = await openStaffSession(email.trim(), password, false);
     const expiresAt = Math.min(Date.parse(expire), Date.now() + 8 * 60 * 60 * 1000);
     if (!Number.isFinite(expiresAt) || expiresAt <= Date.now()) {
       await appwrite("/account/sessions/current", { method: "DELETE", session: secret });

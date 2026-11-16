@@ -3,39 +3,43 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-16-02]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-16-03]].
 
 ## Resume here
 
-**Session:** 2026-11-16-02
+**Session:** 2026-11-16-03
 
 **Active feature:** CRM-03
 
 **State:** in_progress
 
-**Objective:** Map CRM access and define safe branch and team scope migration.
+**Objective:** Add branch-labelled team directory schema and enforce team access on the web lead workflow.
 
 A user saying **continue** means resume this feature's next unfinished acceptance check. Do not start unrelated modules or repeat completed infrastructure work. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Read and write surface inventory
-- Access defaults, staged migration, and release gates
+- Private team directory and optional staff and lead scope fields
+- Restricted-manager lead list, matches, read and stage/priority edit
+- Server-side denial of unverified surfaces
 
 ## Out of scope
 
-- Schema provisioning and runtime authorization changes
+- Team administration UI, migration, and production activation
+- Restricted manager mobile, linked workflows, exports and assignment
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| CRM03-SCOPE-DESIGN | Authorization inventory and migration design | passed | Reviewed lead, mobile, linked queues, documents, notifications, consultation, reports, staff and routing paths. Recorded policy and release order. |
+| CRM03-SCOPE-A | Two-team scoped lead access and writes | passed | Service tests verify team-only list and matches, direct read and edit denial, stale team recheck, inactive team, preserved ownership and legacy manager behavior. |
+| CRM03-SCOPE-B | Browser routing and restricted surface denial | passed | Chrome verified team redirect, allowed stage edit, cross-team 404, and 403 for reports, tasks, documents, consultation reports and mobile sign-in. |
+| CRM03-SCOPE-C | Target schema and migration acceptance | pending | Target read-only preview confirmed the team directory and manager/lead scope attributes are absent. No schema or profile changes applied. |
 
 ## Exact next actions
 
-1. Implement additive directory and scope fields, common lead policy and two-team synthetic tests. Deny unverified linked/report surfaces to restricted managers server-side before activation.
-   Files: `context-vault/Sessions/2026-11-16-02.md`, `app/admin/domain.ts`, `app/admin/crm.server.ts`, `app/admin/auth.server.ts`, `scripts/appwrite-schema.mjs`
+1. Build the aggregate team inventory and reviewed classification workflow. Before activating team managers, provision the additive team schema and verify indexed team counts with synthetic data.
+   Files: `context-vault/Sessions/2026-11-16-02.md`, `scripts/appwrite-schema.mjs`, `app/admin/team-scope.server.ts`
 
 ## Known risks and unfinished work
 
@@ -58,9 +62,9 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-16T01:16:51.680Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-1Q8yhB/typecheck.log`
-- **passed**: `npm run test` (2026-11-16T01:16:52.916Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-1Q8yhB/test.log`
-- **passed**: `npm run build` (2026-11-16T01:16:58.226Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-1Q8yhB/build.log`
+- **passed**: `npm run typecheck` (2026-11-16T01:36:49.505Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-QY68lB/typecheck.log`
+- **passed**: `npm run test` (2026-11-16T01:36:50.702Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-QY68lB/test.log`
+- **passed**: `npm run build` (2026-11-16T01:36:56.307Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-QY68lB/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 

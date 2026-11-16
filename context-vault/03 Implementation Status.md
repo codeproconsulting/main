@@ -185,3 +185,7 @@ Automatic intake routing implemented behind explicit opt-in. VPS activation rema
 The built CLI and target queue acceptance passed. Production activation remains pending.
 
 The branch/team authorization map and migration design are documented in [[Sessions/2026-11-16-02]]. Runtime enforcement remains planned.
+
+## Team-scoped lead workspace
+
+Restricted manager web leads, matches and stage/priority edits implemented. Schema provisioning, classification and activation remain pending.
