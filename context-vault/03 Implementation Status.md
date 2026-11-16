@@ -241,3 +241,7 @@ Team consultation recording implemented.
 ## Team document checklist
 
 A read-only team document checklist is implemented.
+
+## Team private downloads
+
+Team scanned document downloads implemented. Upload and review remain gated.

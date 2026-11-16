@@ -159,3 +159,7 @@ Team managers can add consultation records for their current team. The record ke
 ## Team document checklist
 
 Team managers can see category, scan state, review status and expiry on their own leads. Upload, review and download remain excluded.
+
+## Team private downloads
+
+Team file access requires a valid scan marker, supported file MIME and current actor and parent within the same team.

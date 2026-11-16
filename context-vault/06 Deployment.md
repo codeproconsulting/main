@@ -187,3 +187,7 @@ No new schema. Verify consultation write and scope against the release runtime b
 No schema change for team checklist. Verify private projection and closed download gate with the release runtime.
 
 Target optional scannedAt now exists. Team checklist projection passed. The remaining review attributes and trusted scanner acceptance are still outstanding for the document write rollout.
+
+## Team private downloads
+
+No schema change. Verify document scanner acceptance and release storage read permissions before staff use.

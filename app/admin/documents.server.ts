@@ -3,6 +3,7 @@ import { randomUUID } from "node:crypto";
 import { AppwriteError, createDocument, getDocument, listDocuments, query, updateDocument } from "~/lib/appwrite.server";
 import { allow, audit, leadFor, writableEnquiry, serialized } from "./crm.server";
 import { canUseCRM, isRestrictedManager, type Staff } from "./domain";
+import { requireActiveTeam } from "./team-scope.server";
 import { scanDocument } from "./document-scan.server";
 import { downloadFile, fileSignature, privateBucket, removeFile, uploadFile } from "./storage.server";
 
@@ -156,13 +157,26 @@ export async function reviewClientDocument(
   });
 }
 
-export async function downloadClientDocument(staff: Staff, id: string) {
-  allow(canUseCRM(staff) && !isRestrictedManager(staff));
+export async function downloadClientDocument(staff: Staff, id: string, refreshStaff?: () => Promise<Staff>) {
+  const teamScoped = isRestrictedManager(staff);
+  allow(canUseCRM(staff) && (!teamScoped || Boolean(refreshStaff)));
+  if (teamScoped) await requireActiveTeam(staff);
   const doc = await documentFor(id);
-  await leadFor(staff, doc.leadId);
-  if (!doc.scannedAt) throw new Response("This document must be re-uploaded and scanned before download.", { status: 409 });
+  const checkLead = (actor: Staff) => leadFor(actor, doc.leadId).catch(error => {
+    if (teamScoped && error instanceof Response && error.status === 404) throw new Response("Document not found", { status: 404 });
+    throw error;
+  });
+  await checkLead(staff);
+  const extension = Object.hasOwn(extensions, doc.mime) ? extensions[doc.mime][0] : undefined;
+  if (!doc.scannedAt || (teamScoped && (!Number.isFinite(Date.parse(doc.scannedAt)) || !extension))) {
+    throw new Response("This document must be re-uploaded and scanned before download.", { status: 409 });
+  }
   await audit(staff, doc.leadId, "lead", "Document download requested", { documentId: doc.$id });
-  // Re-check scope after recording the audit, immediately before opening the storage stream.
-  await leadFor(staff, doc.leadId);
-  return downloadFile(privateBucket(), doc.fileId, doc.name);
+  if (teamScoped) {
+    const current = await refreshStaff!();
+    allow(current.active && current.$id === staff.$id && isRestrictedManager(current) && current.teamId === staff.teamId);
+    await requireActiveTeam(current);
+    await checkLead(current);
+  } else await checkLead(staff);
+  return downloadFile(privateBucket(), doc.fileId, teamScoped ? `document.${extension}` : doc.name);
 }

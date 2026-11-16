@@ -173,3 +173,7 @@ Consultation recording shares the existing lead and staff-access locks. The team
 ## Team document checklist
 
 Team document lists use a restricted metadata projection and verify current parent team again after pagination.
+
+## Team private downloads
+
+The download route audits access and refreshes current team and parent before opening the private storage stream.

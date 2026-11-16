@@ -88,9 +88,9 @@ export default function Documents() {
           <h2>{doc.name}</h2>
           <p>{doc.category} · <Badge>{documentState(doc)}</Badge></p>
           {doc.expiresAt && <p>Expires {expiryDay(doc.expiresAt)} (Pakistan time)</p>}
-          {!readOnly && (doc.scannedAt
+          {doc.scannedAt
             ? <a href={`/admin/documents/${doc.$id}/download`}>Download private file →</a>
-            : <p>Upload a scanned replacement to make this document available.</p>)}
+            : !readOnly && <p>Upload a scanned replacement to make this document available.</p>}
         </div>
         {!readOnly && doc.scannedAt && <Form method="post" className="crm-form" key={`${doc.$id}:${doc.reviewVersion ?? 0}`}>
           <input name="intent" value="review" type="hidden" />

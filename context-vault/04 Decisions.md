@@ -197,3 +197,7 @@ Only active counselors from the manager’s team can receive attribution from a 
 ## Team document checklist
 
 Use category as the team display label. File names, file IDs, and private notes stay outside the team response.
+
+## Team private downloads
+
+Team downloads use a generic name with the validated file extension. Existing attachment and no-store policy applies.

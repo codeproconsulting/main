@@ -27,10 +27,10 @@ before(async()=>{
  globalThis.fetch=async(input,options={})=>{
   const url=new URL(input);
   const method=options.method??'GET';
-  const doc=url.pathname.match(/\/collections\/(leads|documents|activities)\/documents(?:\/([^/]+))?$/);
+  const doc=url.pathname.match(/\/collections\/(leads|documents|activities|crm_teams)\/documents(?:\/([^/]+))?$/);
   if(doc){
    const [,collection,id]=doc;
-   const store=stores[collection];
+   const store=collection==='crm_teams'?new Map([['alpha',{status:'active'}]]):stores[collection];
    const body=options.body&&JSON.parse(options.body);
    if(method==='GET'){
     if(id){
@@ -240,4 +240,28 @@ test('document listing paginates and body limits apply to measured bytes',async(
  assert.equal((await workflow.documentsFor(counselor,leadId)).documents.length,105);
  const request=new Request('https://example.invalid',{method:'POST',headers:{'Content-Type':'multipart/form-data; boundary=x','Content-Length':'1'},body:new Uint8Array(1025)});
  await assert.rejects(()=>storage.boundedUploadForm(request,1024,'Document'),reject(413));
+});
+
+
+test('team downloads recheck current manager and parent, redact filenames and deny unscanned files',async()=>{
+ await upload();
+ const doc=saved();
+ const scoped={...manager,managerScope:'team',teamId:'alpha'};
+ const parent=stores.leads.get(leadId);
+ parent.teamId='beta';
+ await assert.rejects(()=>workflow.downloadClientDocument(scoped,doc.$id,async()=>scoped),reject(404));
+ parent.teamId='alpha';
+ await assert.rejects(()=>workflow.downloadClientDocument(scoped,doc.$id,async()=>({...scoped,teamId:'beta'})),reject(403));
+ await assert.rejects(()=>workflow.downloadClientDocument(scoped,doc.$id,async()=>{
+  parent.teamId='beta';
+  return scoped;
+ }),reject(404));
+ assert.equal(behavior.downloads,0);
+ parent.teamId='alpha';
+ const response=await workflow.downloadClientDocument(scoped,doc.$id,async()=>scoped);
+ assert.equal(response.headers.get('Content-Disposition'),'attachment; filename="document.pdf"');
+ assert.deepEqual(Buffer.from(await response.arrayBuffer()),pdf);
+ doc.scannedAt='';
+ await assert.rejects(()=>workflow.downloadClientDocument(scoped,doc.$id,async()=>scoped),reject(409));
+ assert.equal(behavior.downloads,1);
 });

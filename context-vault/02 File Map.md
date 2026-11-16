@@ -203,3 +203,7 @@ The consultation history route renders the team counselor selector and the servi
 ## Team document checklist
 
 documents.server.ts projects metadata and denies protected operations. documents.tsx renders the scoped checklist.
+
+## Team private downloads
+
+app/admin/document-download.ts supplies the auth refresh, and app/admin/documents.server.ts enforces scope and scan eligibility.

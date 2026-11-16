@@ -37,7 +37,7 @@ if(teamScope){
  for(const [suffix,leadId] of [['inside','synthetic-lead'],['outside','synthetic-repeat']]){
   stores.consultations.set('consult-'+suffix,{$id:'consult-'+suffix,leadId,counselor:'synthetic-counselor',counselorName:'Synthetic Counselor',destination:suffix==='inside'?'Germany':'Italy',destinationKey:suffix==='inside'?'germany':'italy',heldOn:'2026-11-01',recordedBy:'hidden-reference'});
  }
- stores.documents.set('team-document',{$id:'team-document',leadId:'synthetic-lead',name:'Hidden fixture filename.pdf',fileId:'hidden-file-id',category:'Passport',status:'Accepted',scannedAt:'2026-11-01T00:00:00Z',reviewNotes:'Hidden fixture review'});
+ stores.documents.set('team-document',{$id:'team-document',leadId:'synthetic-lead',name:'Hidden fixture filename.pdf',fileId:'hidden-file-id',mime:'application/pdf',category:'Passport',status:'Accepted',scannedAt:'2026-11-01T00:00:00Z',reviewNotes:'Hidden fixture review'});
  stores.tasks.set('task-outside',{$id:'task-outside',leadId:'synthetic-repeat',title:'Outside synthetic follow-up',status:'Open',version:1});
 }
 const authUsers=new Map([[userId,{$id:userId,status:true}]]);
@@ -50,6 +50,7 @@ if(teamPreview||contacts){
  }
 }
 const files=new Map();
+if(teamScope)files.set("crm-documents/hidden-file-id",{bytes:Buffer.from("%PDF-1.4 synthetic preview"),mime:"application/pdf"});
 const send=(response,status,value)=>{response.writeHead(status,{'Content-Type':'application/json'});response.end(JSON.stringify(value));};
 const server=http.createServer(async(request,response)=>{
  try{
