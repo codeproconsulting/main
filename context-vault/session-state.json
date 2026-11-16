@@ -1,38 +1,38 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-16-20",
+  "sessionId": "2026-11-16-21",
   "sessionStatus": "completed",
   "activeFeature": "COMMS-01",
-  "objective": "Queue and revalidate opt-in staff reminder emails.",
+  "objective": "Verify and persist Resend delivery events and suppress bounced or complained addresses.",
   "scope": [
-    "Staff reminder producer and guarded Resend send"
+    "Signed webhook, event dedup, suppression lookup"
   ],
   "outOfScope": [
-    "Live sending, provider webhooks and customer email"
+    "Live sending, webhook registration and operator UI"
   ],
   "acceptance": [
     {
-      "id": "COMMS01-STAFF-A",
-      "description": "Opt-in and current-source suppression",
+      "id": "COMMS01-WEBHOOK-A",
+      "description": "Signed event handling and suppression",
       "status": "passed",
-      "evidence": "Fake provider verifies valid send under locks; old reminders, changed owner, source version and address are excluded."
+      "evidence": "Synthetic signature and transport tests verify tamper and stale rejection, provider/recipient match, duplicate event handling and suppression."
     },
     {
-      "id": "COMMS01-STAFF-B",
-      "description": "Target queue field readiness",
+      "id": "COMMS01-WEBHOOK-B",
+      "description": "Target schema readiness",
       "status": "passed",
-      "evidence": "Optional noticeId field provisioned and verified available on target. Typecheck, full tests and production build passed. Delivery remains fake-tested only."
+      "evidence": "Private event collection and outbox provider index provisioned; exact provider and suppression query shapes verified read-only. Full typecheck, suite and build passed."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Build signed Resend webhook handling for delivery, bounce and complaint events. Match provider IDs, deduplicate events and test suppression without sending live email.",
+      "action": "Build owner/admin email delivery operations view with counts, provider outcome and suppression review. Keep message payload and recipient addresses outside browser responses.",
       "files": [
+        "app/admin/settings.tsx",
         "scripts/email-outbox.mjs",
-        "scripts/appwrite-schema.mjs",
-        "deploy/CRM-DEPLOYMENT.md"
+        "app/routes/api.resend-webhook.ts"
       ]
     }
   ],
@@ -107,31 +107,32 @@
     "appointmentReminders": "Opt-in source verified. VPS worker activation remains pending.",
     "caseReminders": "Verified opt-in source and target deadline query. Worker not activated on VPS.",
     "resendOutbox": "Private schema available. Provider fake-tested only. No credentials configured or worker activation performed.",
-    "staffReminderEmail": "Source and optional outbox link ready. Both production flags remain disabled; no Resend delivery attempted."
+    "staffReminderEmail": "Source and optional outbox link ready. Both production flags remain disabled; no Resend delivery attempted.",
+    "resendEvents": "Private ledger and indexes available; callback not registered or enabled. No sends attempted."
   },
   "checks": [
     {
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-16T18:21:17.475Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-HYfeN6/typecheck.log"
+      "checkedAt": "2026-11-16T18:33:10.718Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-z3y40O/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-16T18:21:18.710Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-HYfeN6/test.log"
+      "checkedAt": "2026-11-16T18:33:12.080Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-z3y40O/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-16T18:21:23.751Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-HYfeN6/build.log"
+      "checkedAt": "2026-11-16T18:33:17.226Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-z3y40O/build.log"
     }
   ],
-  "updatedAt": "2026-11-16T18:21:40.321Z",
-  "verifiedSourceFingerprint": "3321a2f31d3028f1eda41ec047446588f58394b35dcd44499b1ccca53a160811"
+  "updatedAt": "2026-11-16T18:33:40.779Z",
+  "verifiedSourceFingerprint": "de494c56ce65d09c7e43d375d785f8a639a02edf807d141804aa2cfe2b2ceaa6"
 }

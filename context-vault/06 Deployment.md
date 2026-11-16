@@ -221,3 +221,7 @@ Target outbox schema and due index are available. Worker activation and sender a
 ## Staff reminder email
 
 See deploy/CRM-DEPLOYMENT.md for flags, sender, allowlist and runtime user access.
+
+## Resend delivery events
+
+See deploy/CRM-DEPLOYMENT.md for event settings, private schema and webhook opt-in.

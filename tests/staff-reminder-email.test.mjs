@@ -8,9 +8,11 @@ test('staff reminder email is private, opted in, and revalidated under locks bef
   const user = { $id:'staff-one', status:true, emailVerification:true, email:'staff@example.invalid' };
   const source = { $id:'task-one', leadId:'lead-one', owner:'staff-one', status:'Open', version:1, dueAt:now };
   const lead = { $id:'lead-one', owner:'staff-one', stage:'New' };
+  let suppressed=false;
   const lock = new Map(), outbox = new Map();
   const records = { notifications:notice, leads:lead, tasks:source, staff:{active:true,role:'counselor'} };
   const api = async (path, method = 'GET', body) => {
+    if (path.includes('/email_events/documents?')) return {documents:suppressed?[{kind:'email.complained'}]:[]};
     if (path === '/users/staff-one') return user;
     const [, name, id] = path.match(/collections\/(\w+)\/documents(?:\/([^/]+))?/);
     if (name === 'email_outbox') {
@@ -47,6 +49,9 @@ test('staff reminder email is private, opted in, and revalidated under locks bef
   assert.deepEqual(await worker.send(message,transport),{suppressed:true});
   source.version=1;
   lead.owner='other';
+  assert.deepEqual(await worker.send(message,transport),{suppressed:true});
+  lead.owner=notice.recipient;
+  suppressed=true;
   assert.deepEqual(await worker.send(message,transport),{suppressed:true});
   assert.equal(sent,1);
   assert.equal(lock.size,0);

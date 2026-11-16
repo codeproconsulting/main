@@ -231,3 +231,7 @@ scripts/email-outbox.mjs stores and delivers durable requests; scripts/email-wor
 ## Staff reminder email
 
 scripts/staff-reminder-email.mjs implements producer and send authorization; scripts/worker.mjs and scripts/email-worker.mjs wire both sides.
+
+## Resend delivery events
+
+app/routes/api.resend-webhook.ts verifies and records provider events. scripts/staff-reminder-email.mjs checks suppression.

@@ -1,5 +1,6 @@
 import { createHash, randomUUID } from 'node:crypto';
 import { appointmentReminderDueAt, caseReminderDueAt, currentTaskNotice } from '../app/admin/reminder-policy.ts';
+import { q } from './appwrite-client.mjs';
 import { enqueueEmail } from './email-outbox.mjs';
 
 const idPattern = /^[a-zA-Z0-9][a-zA-Z0-9._-]{0,35}$/;
@@ -27,8 +28,15 @@ export function staffReminderEmail({ api, database, config, clock = Date.now }) 
         !['owner','admin','manager','counselor'].includes(staff.role) ||
         (staff.role === 'manager' && staff.managerScope && staff.managerScope !== 'global')) return null;
     const identity = await optional('/users/' + encodeURIComponent(id));
-    return identity?.$id === id && identity.status === true && identity.emailVerification === true &&
-      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identity.email ?? '') ? identity.email : null;
+    if (identity?.$id !== id || identity.status !== true || identity.emailVerification !== true ||
+        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identity.email ?? '')) return null;
+    const recipientKey = createHash('sha256').update(identity.email.trim().toLowerCase()).digest('hex');
+    const params = new URLSearchParams();
+    for (const item of [q('equal','recipientKey',[recipientKey]),q('equal','kind',['email.bounced','email.complained']),q('limit',undefined,[1])]) {
+      params.append('queries[]',item);
+    }
+    const { documents } = await api(path('email_events') + '?' + params);
+    return documents.length ? null : identity.email;
   }
   async function locked(key, work) {
     const id = createHash('sha256').update(key).digest('hex').slice(0,32);

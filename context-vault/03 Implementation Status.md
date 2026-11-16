@@ -273,3 +273,7 @@ Resend outbox storage and fake-provider delivery verified. No CRM producer or li
 ## Staff reminder email
 
 Opt-in staff email integration implemented. Provider delivery and webhook acceptance remain pending.
+
+## Resend delivery events
+
+Signed event handling and suppression implemented. Live webhook and sender setup remain pending.

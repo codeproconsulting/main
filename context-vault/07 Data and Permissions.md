@@ -187,3 +187,7 @@ Email payloads remain private and worker logs contain only counts; there is no p
 ## Staff reminder email
 
 Email contains no applicant fields. Send requires current source, current owner, active staff, opt-in and matching verified address.
+
+## Resend delivery events
+
+The callback requires a raw signed request. Event records contain a recipient hash and provider metadata without raw bodies or email addresses.

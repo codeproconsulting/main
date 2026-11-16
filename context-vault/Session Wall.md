@@ -3,39 +3,39 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-16-20]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-16-21]].
 
 ## Resume here
 
-**Session:** 2026-11-16-20
+**Session:** 2026-11-16-21
 
 **Active feature:** COMMS-01
 
 **State:** completed
 
-**Objective:** Queue and revalidate opt-in staff reminder emails.
+**Objective:** Verify and persist Resend delivery events and suppress bounced or complained addresses.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Staff reminder producer and guarded Resend send
+- Signed webhook, event dedup, suppression lookup
 
 ## Out of scope
 
-- Live sending, provider webhooks and customer email
+- Live sending, webhook registration and operator UI
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| COMMS01-STAFF-A | Opt-in and current-source suppression | passed | Fake provider verifies valid send under locks; old reminders, changed owner, source version and address are excluded. |
-| COMMS01-STAFF-B | Target queue field readiness | passed | Optional noticeId field provisioned and verified available on target. Typecheck, full tests and production build passed. Delivery remains fake-tested only. |
+| COMMS01-WEBHOOK-A | Signed event handling and suppression | passed | Synthetic signature and transport tests verify tamper and stale rejection, provider/recipient match, duplicate event handling and suppression. |
+| COMMS01-WEBHOOK-B | Target schema readiness | passed | Private event collection and outbox provider index provisioned; exact provider and suppression query shapes verified read-only. Full typecheck, suite and build passed. |
 
 ## Exact next actions
 
-1. Build signed Resend webhook handling for delivery, bounce and complaint events. Match provider IDs, deduplicate events and test suppression without sending live email.
-   Files: `scripts/email-outbox.mjs`, `scripts/appwrite-schema.mjs`, `deploy/CRM-DEPLOYMENT.md`
+1. Build owner/admin email delivery operations view with counts, provider outcome and suppression review. Keep message payload and recipient addresses outside browser responses.
+   Files: `app/admin/settings.tsx`, `scripts/email-outbox.mjs`, `app/routes/api.resend-webhook.ts`
 
 ## Known risks and unfinished work
 
@@ -58,9 +58,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-16T18:21:17.475Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-HYfeN6/typecheck.log`
-- **passed**: `npm run test` (2026-11-16T18:21:18.710Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-HYfeN6/test.log`
-- **passed**: `npm run build` (2026-11-16T18:21:23.751Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-HYfeN6/build.log`
+- **passed**: `npm run typecheck` (2026-11-16T18:33:10.718Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-z3y40O/typecheck.log`
+- **passed**: `npm run test` (2026-11-16T18:33:12.080Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-z3y40O/test.log`
+- **passed**: `npm run build` (2026-11-16T18:33:17.226Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-z3y40O/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -119,5 +119,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **caseReminders**: Verified opt-in source and target deadline query. Worker not activated on VPS.
 - **resendOutbox**: Private schema available. Provider fake-tested only. No credentials configured or worker activation performed.
 - **staffReminderEmail**: Source and optional outbox link ready. Both production flags remain disabled; no Resend delivery attempted.
+- **resendEvents**: Private ledger and indexes available; callback not registered or enabled. No sends attempted.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

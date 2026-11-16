@@ -201,3 +201,7 @@ Resend email requests use a private Appwrite outbox and separate opt-in worker.
 ## Staff reminder email
 
 In-app reminders can enqueue generic staff email. The outbox sender holds the lead and staff locks while checking the current source and verified Auth address.
+
+## Resend delivery events
+
+The website accepts signed Resend events and stores a private ledger. The email worker reads bounce and complaint suppression.

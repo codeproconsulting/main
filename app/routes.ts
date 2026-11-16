@@ -8,6 +8,7 @@ import immigrationRoutes from "./immigration/routes";
 export default [
   route("media/:id", "routes/media.ts"),
   route("api/content", "routes/api.content.ts"),
+  route("api/webhooks/resend", "routes/api.resend-webhook.ts"),
   route("api/leads", "routes/api.leads.ts"),
   // Main app routes
   index("routes/home.tsx"),
