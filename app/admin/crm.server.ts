@@ -141,7 +141,7 @@ export async function serialized<T>(key: string, operation: () => Promise<T>): P
 }
 export const staffAccessLock = "staff:access";
 
-async function withCurrentTeamManager<T>(staff: Staff, operation: () => Promise<T>) {
+export async function withCurrentTeamManager<T>(staff: Staff, operation: () => Promise<T>) {
   return serialized(staffAccessLock, async () => {
     const actor = await getDocument<Staff>("staff", staff.$id);
     allow(actor.active && isRestrictedManager(actor) && actor.teamId === staff.teamId);

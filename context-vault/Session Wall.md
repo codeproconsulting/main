@@ -3,40 +3,39 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-16-06]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-16-07]].
 
 ## Resume here
 
-**Session:** 2026-11-16-06
+**Session:** 2026-11-16-07
 
 **Active feature:** CRM-03
 
 **State:** completed
 
-**Objective:** Allow team managers to complete, reschedule and cancel existing in-team follow-ups.
+**Objective:** Allow scoped stage and deadline edits to existing team applications.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Existing task mutations through team-scoped web queues
-- Current actor, parent team, task version and ownership checks
+- Existing application stage/deadline edits with current scope and version checks
 
 ## Out of scope
 
-- Task creation, application or appointment writes, mobile, and production rollout
+- Creation, reassignment, private notes, appointment edits and production rollout
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| CRM03-TASK-A | Scoped follow-up mutation safeguards | passed | Synthetic tests cover cross-team target and moved parent, actor team change, stale version, inconsistent ownership, ambiguous response and accepted reschedule. |
-| CRM03-TASK-B | Built-app follow-up interaction | passed | Chrome verified reschedule and UTC conversion, cancel, complete, and forged cross-team POST returning 404. Initial locale-sensitive selector was corrected. |
+| CRM03-CASE-A | Scoped application mutation safeguards | passed | Synthetic service tests verify allowed changes, forged hidden fields ignored, cross-team rejection, stale version, ownership mismatch, changed scope and ambiguous writes. |
+| CRM03-CASE-B | Built-app application edit acceptance | passed | Chrome verified stage and deadline save and UTC conversion, absent notes control, stale and cross-team denial, and blocked creation and appointment writes. |
 
 ## Exact next actions
 
-1. Build restricted manager application updates for existing in-team records. Recheck current actor, parent and assignment under locks, preserve hidden notes, and verify direct and stale writes before enabling the form.
-   Files: `app/admin/operations.server.ts`, `app/admin/work.tsx`, `app/admin/team-scope.server.ts`
+1. Enable team managers to update existing appointments using parent scope and current assignment checks. Reuse calendar conflict and audit rules without exposing hidden fields.
+   Files: `app/admin/operations.server.ts`, `app/admin/work.tsx`
 
 ## Known risks and unfinished work
 
@@ -59,9 +58,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-16T03:32:07.249Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-lLfMVR/typecheck.log`
-- **passed**: `npm run test` (2026-11-16T03:32:08.416Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-lLfMVR/test.log`
-- **passed**: `npm run build` (2026-11-16T03:32:13.436Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-lLfMVR/build.log`
+- **passed**: `npm run typecheck` (2026-11-16T04:34:21.847Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-1Icix4/typecheck.log`
+- **passed**: `npm run test` (2026-11-16T04:34:23.049Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-1Icix4/test.log`
+- **passed**: `npm run build` (2026-11-16T04:34:28.198Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-1Icix4/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 

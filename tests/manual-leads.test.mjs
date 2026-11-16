@@ -11,7 +11,7 @@ const manager={$id:'synthetic-manager',role:'manager',active:true};
 const counselor={$id:'synthetic-counselor',role:'counselor',active:true};
 const errorStatus=status=>error=>error instanceof Response&&error.status===status;
 const token='d21265d0-363f-4a4c-b777-0e67b36930da';
-let vite,manual,crm,views,bulk,routing,worker,teamQueues,leads,activities,profiles,queries,options,dependencies;
+let vite,manual,crm,views,bulk,routing,worker,teamQueues,operations,leads,activities,profiles,queries,options,dependencies;
 
 function form(changes={}){
  const fields=new FormData();
@@ -32,6 +32,7 @@ before(async()=>{
  routing=await vite.ssrLoadModule('/app/admin/lead-routing.server.ts');
  worker=await vite.ssrLoadModule('/app/admin/intake-routing.server.ts');
  teamQueues=await vite.ssrLoadModule('/app/admin/team-queues.server.ts');
+ operations=await vite.ssrLoadModule('/app/admin/operations.server.ts');
  globalThis.fetch=async(input,request)=>{
   const url=new URL(input);
   const [,collection,id]=url.pathname.match(/\/collections\/(\w+)\/documents(?:\/([^/]+))?$/)??[];
@@ -482,4 +483,32 @@ test('team follow-up mutations honor current parent, staff scope, version, and h
  await assert.rejects(()=>crm.changeTask(actor,'inside','complete','2','Synthetic outcome'),errorStatus(404));
  assert.equal(tasks.get('inside').status,'Open');
  assert.equal(tasks.get('outside').version,1);
+});
+
+
+test('team application edits preserve hidden fields and deny cross-team, stale and inconsistent writes',async()=>{
+ const actor={...manager,managerScope:'team',teamId:'team-alpha'};
+ profiles.set(actor.$id,actor);
+ dependencies.crm_teams.set('team-alpha',{$id:'team-alpha',status:'active'});
+ leads.set('alpha',{$id:'alpha',teamId:'team-alpha',owner:counselor.$id});
+ leads.set('beta',{$id:'beta',teamId:'team-beta',owner:counselor.$id});
+ const current={$id:'inside',leadId:'alpha',owner:counselor.$id,notes:'Synthetic hidden notes',kind:'Education',stage:'Shortlisted',version:1};
+ dependencies.cases.set('inside',current);
+ dependencies.cases.set('outside',{...current,$id:'outside',leadId:'beta'});
+ const fields=form({version:'1',stage:'Submitted',deadline:'2031-01-02T10:00:00+05:00',notes:'Forged',owner:'Forged',leadId:'beta'});
+ await assert.rejects(()=>operations.updateTeamCase(actor,'outside',fields),errorStatus(404));
+ fields.set('version','2');
+ await assert.rejects(()=>operations.updateTeamCase(actor,'inside',fields),errorStatus(409));
+ fields.set('version','1');
+ leads.get('alpha').owner='new-assignee';
+ await assert.rejects(()=>operations.updateTeamCase(actor,'inside',fields),errorStatus(409));
+ leads.get('alpha').owner=counselor.$id;
+ profiles.set(actor.$id,{...actor,teamId:'team-beta'});
+ await assert.rejects(()=>operations.updateTeamCase(actor,'inside',fields),errorStatus(403));
+ profiles.set(actor.$id,actor);
+ options.failPatch='cases';
+ await assert.rejects(()=>operations.updateTeamCase(actor,'inside',fields),errorStatus(503));
+ delete options.failPatch;
+ await operations.updateTeamCase(actor,'inside',fields);
+ assert.deepEqual(dependencies.cases.get('inside'),{...current,stage:'Submitted',deadline:'2031-01-02T05:00:00.000Z',version:2});
 });

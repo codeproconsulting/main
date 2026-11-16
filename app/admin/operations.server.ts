@@ -1,7 +1,7 @@
 import {randomUUID} from "node:crypto";
 import {AppwriteError,createDocument,getDocument,listDocuments,query,updateDocument} from "~/lib/appwrite.server";
-import {caseStagesFor,canManage,canUseCRM,type Staff} from "./domain";
-import {allow,audit,dateField,field,writableEnquiry,scopedQueue,serialized} from "./crm.server";
+import {caseStagesFor,canManage,canUseCRM,isRestrictedManager,type Staff} from "./domain";
+import {allow,audit,dateField,definitiveWriteRejection,field,writableEnquiry,scopedQueue,serialized,UnconfirmedMutation,withCurrentTeamManager} from "./crm.server";
 export type CaseRecord={$id:string;leadId:string;owner:string;kind:string;institution:string;course:string;country:string;intake:string;stage:string;deadline:string;notes:string;version:number};
 import {appointmentCalendarLock,appointmentTime,assertCalendarAvailable,type Appointment} from "./calendar.server";
 export type {Appointment} from "./calendar.server";
@@ -23,6 +23,43 @@ export async function saveCase(staff:Staff,form:FormData){const id=field(form,"i
  const record=current?await updateDocument<CaseRecord>("cases",caseId,payload):await createDocument("cases",payload,caseId);
  await updateDocument("activities",event.$id,{event:current?"Application updated":"Application created",details:JSON.stringify({state:"completed",caseId,stage,version:payload.version})});return record;
  });}
+export async function updateTeamCase(staff: Staff, id: string, form: FormData) {
+  allow(staff.active && isRestrictedManager(staff) && !!id);
+  const readCase = () => getDocument<CaseRecord>("cases", id).catch(error => {
+    if (error instanceof AppwriteError && error.status === 404) throw new Response("Application not found", {status:404});
+    throw error;
+  });
+  const readLead = (leadId: string) => writableEnquiry(staff, leadId).catch(error => {
+    if (error instanceof Response && error.status === 404) throw new Response("Application not found", {status:404});
+    throw error;
+  });
+  const initial = await readCase();
+  await readLead(initial.leadId);
+  return serialized(`lead:${initial.leadId}`, () => withCurrentTeamManager(staff, async () => {
+    const current = await readCase();
+    if (current.leadId !== initial.leadId) throw new Response("Application changed. Refresh before saving.", {status:409});
+    const lead = await readLead(current.leadId);
+    if (!lead.owner || current.owner !== lead.owner || Number(field(form, "version")) !== current.version) {
+      throw new Response("The application changed or its assignment needs reconciliation. Refresh before saving.", {status:409});
+    }
+    const stage = field(form, "stage", 80);
+    if (!caseStagesFor(current.kind).includes(stage)) throw new Response("Choose a valid application stage.", {status:400});
+    const deadline = form.has("deadline") ? dateField(field(form, "deadline", 40)) : current.deadline;
+    const changes = { stage, deadline, version: current.version + 1 };
+    const event = await audit(staff, current.leadId, "lead", "Application save requested", {
+      state:"pending", caseId:id, before:{stage:current.stage,deadline:current.deadline,version:current.version}, after:changes,
+    });
+    try {
+      await updateDocument("cases", id, changes);
+    } catch (error) {
+      if (definitiveWriteRejection(error)) throw error;
+      throw new UnconfirmedMutation("The application change may have saved. Ask an administrator to reconcile it before retrying.");
+    }
+    await updateDocument("activities", event.$id, {event:"Application updated",
+      details:JSON.stringify({state:"completed",caseId:id,...changes})}).catch(() => undefined);
+    return id;
+  }));
+}
 export async function saveAppointment(staff: Staff, form: FormData) {
   const id = field(form, "id", 36);
   const leadId = field(form, "leadId", 36);

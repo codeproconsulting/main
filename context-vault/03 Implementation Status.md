@@ -213,3 +213,7 @@ Team linked queues passed synthetic service and Chrome acceptance. Target query 
 Team follow-up completion, reschedule and cancellation implemented. Other linked mutations remain gated.
 
 Team follow-up edits passed synthetic service and Chrome acceptance. Runtime release remains pending.
+
+## Team application edits
+
+Team application stage and deadline edits implemented. Appointment writes remain gated.

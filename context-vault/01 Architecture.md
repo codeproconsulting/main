@@ -145,3 +145,7 @@ Restricted linked queues first resolve current team enquiry IDs, then query link
 ## Team follow-up edits
 
 Follow-up updates use the parent lead lock and staff-access lock for team managers, then recheck live membership and parent scope before mutation.
+
+## Team application edits
+
+Scoped application writes acquire the parent lead and staff-access locks and recheck current scope, ownership and version.

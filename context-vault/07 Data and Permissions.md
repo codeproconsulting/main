@@ -131,3 +131,7 @@ Team managers can view scoped follow-up titles and case and appointment summarie
 ## Team follow-up edits
 
 Team managers can edit existing open follow-ups only in their active team. Existing task outcome text remains excluded from queue payloads.
+
+## Team application edits
+
+Application editing preserves private notes, parent and ownership. Restricted managers cannot create applications or modify appointment records.

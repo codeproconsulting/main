@@ -175,3 +175,7 @@ app/admin/team-queues.server.ts serves read-only pages. app/admin/tasks.tsx and 
 ## Team follow-up edits
 
 app/admin/tasks.tsx enables the existing task controls for team-scoped sessions. app/admin/crm.server.ts guards the mutation.
+
+## Team application edits
+
+app/admin/work.tsx renders the restricted form. app/admin/operations.server.ts implements the narrow mutation.

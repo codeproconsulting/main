@@ -1,39 +1,37 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-16-06",
+  "sessionId": "2026-11-16-07",
   "sessionStatus": "completed",
   "activeFeature": "CRM-03",
-  "objective": "Allow team managers to complete, reschedule and cancel existing in-team follow-ups.",
+  "objective": "Allow scoped stage and deadline edits to existing team applications.",
   "scope": [
-    "Existing task mutations through team-scoped web queues",
-    "Current actor, parent team, task version and ownership checks"
+    "Existing application stage/deadline edits with current scope and version checks"
   ],
   "outOfScope": [
-    "Task creation, application or appointment writes, mobile, and production rollout"
+    "Creation, reassignment, private notes, appointment edits and production rollout"
   ],
   "acceptance": [
     {
-      "id": "CRM03-TASK-A",
-      "description": "Scoped follow-up mutation safeguards",
+      "id": "CRM03-CASE-A",
+      "description": "Scoped application mutation safeguards",
       "status": "passed",
-      "evidence": "Synthetic tests cover cross-team target and moved parent, actor team change, stale version, inconsistent ownership, ambiguous response and accepted reschedule."
+      "evidence": "Synthetic service tests verify allowed changes, forged hidden fields ignored, cross-team rejection, stale version, ownership mismatch, changed scope and ambiguous writes."
     },
     {
-      "id": "CRM03-TASK-B",
-      "description": "Built-app follow-up interaction",
+      "id": "CRM03-CASE-B",
+      "description": "Built-app application edit acceptance",
       "status": "passed",
-      "evidence": "Chrome verified reschedule and UTC conversion, cancel, complete, and forged cross-team POST returning 404. Initial locale-sensitive selector was corrected."
+      "evidence": "Chrome verified stage and deadline save and UTC conversion, absent notes control, stale and cross-team denial, and blocked creation and appointment writes."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Build restricted manager application updates for existing in-team records. Recheck current actor, parent and assignment under locks, preserve hidden notes, and verify direct and stale writes before enabling the form.",
+      "action": "Enable team managers to update existing appointments using parent scope and current assignment checks. Reuse calendar conflict and audit rules without exposing hidden fields.",
       "files": [
         "app/admin/operations.server.ts",
-        "app/admin/work.tsx",
-        "app/admin/team-scope.server.ts"
+        "app/admin/work.tsx"
       ]
     }
   ],
@@ -111,24 +109,24 @@
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-16T03:32:07.249Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-lLfMVR/typecheck.log"
+      "checkedAt": "2026-11-16T04:34:21.847Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-1Icix4/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-16T03:32:08.416Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-lLfMVR/test.log"
+      "checkedAt": "2026-11-16T04:34:23.049Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-1Icix4/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-16T03:32:13.436Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-lLfMVR/build.log"
+      "checkedAt": "2026-11-16T04:34:28.198Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-1Icix4/build.log"
     }
   ],
-  "updatedAt": "2026-11-16T03:37:13.762Z",
-  "verifiedSourceFingerprint": "3dfba30b811c3cdf0f782ffb5fcc4ba83839f9f5c9d03e75932a5a6bfd210aca"
+  "updatedAt": "2026-11-16T04:35:03.668Z",
+  "verifiedSourceFingerprint": "5e6f25b3df5e728ac43c6b16974788f4bcbf8c9c880ab06ad9d19986b83e62b6"
 }

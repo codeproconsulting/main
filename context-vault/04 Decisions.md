@@ -169,3 +169,7 @@ Team queues use an ID cursor and require a matching current parent. They support
 ## Team follow-up edits
 
 A team manager may change a task only when its owner agrees with the current lead owner. A task owner mismatch requires reconciliation. An ambiguous task write retains locks.
+
+## Team application edits
+
+Application edits use the route record ID and patch stage, deadline and version only. Ambiguous writes retain locks.

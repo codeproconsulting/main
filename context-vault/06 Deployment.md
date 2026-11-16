@@ -157,3 +157,7 @@ Read-only team queue release uses current lead team and linked leadId indexes. V
 ## Team follow-up edits
 
 No schema change. Verify the runtime key can read parent and staff scope and write tasks, audit and locks. Follow existing targeted lock recovery procedures after an ambiguous write.
+
+## Team application edits
+
+No new schema is required. Verify restricted application edits with the deployment runtime key.

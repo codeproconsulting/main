@@ -31,7 +31,7 @@ if(teamScope){
  for(const task of stores.tasks.values())task.owner=stores.leads.get(task.leadId).owner;
  stores.leads.get('synthetic-repeat').teamId='team-beta';
  for(const [suffix,leadId] of [['inside','synthetic-lead'],['outside','synthetic-repeat']]){
-  stores.cases.set('case-'+suffix,{$id:'case-'+suffix,leadId,kind:'Education',institution:'Synthetic application '+suffix,stage:'Shortlisted',version:1,notes:'Hidden fixture notes'});
+  stores.cases.set('case-'+suffix,{$id:'case-'+suffix,leadId,owner:stores.leads.get(leadId).owner,kind:'Education',institution:'Synthetic application '+suffix,stage:'Shortlisted',version:1,notes:'Hidden fixture notes'});
   stores.appointments.set('appointment-'+suffix,{$id:'appointment-'+suffix,leadId,title:'Synthetic appointment '+suffix,status:'Booked',startsAt:'2030-01-01T10:00:00Z',endsAt:'2030-01-01T11:00:00Z',version:1,notes:'Hidden fixture notes'});
  }
  stores.tasks.set('task-outside',{$id:'task-outside',leadId:'synthetic-repeat',title:'Outside synthetic follow-up',status:'Open',version:1});
