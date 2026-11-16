@@ -161,3 +161,7 @@ No schema change. Verify the runtime key can read parent and staff scope and wri
 ## Team application edits
 
 No new schema is required. Verify restricted application edits with the deployment runtime key.
+
+## Team appointment edits
+
+Scoped appointment edits require no schema change. Trial runtime checks must cover calendar conflicts and audit writes.

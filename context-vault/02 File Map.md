@@ -179,3 +179,7 @@ app/admin/tasks.tsx enables the existing task controls for team-scoped sessions.
 ## Team application edits
 
 app/admin/work.tsx renders the restricted form. app/admin/operations.server.ts implements the narrow mutation.
+
+## Team appointment edits
+
+Team appointment form is in app/admin/work.tsx. The shared saveAppointment service applies scope and patches only allowed fields.

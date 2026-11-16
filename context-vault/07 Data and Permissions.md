@@ -135,3 +135,7 @@ Team managers can edit existing open follow-ups only in their active team. Exist
 ## Team application edits
 
 Application editing preserves private notes, parent and ownership. Restricted managers cannot create applications or modify appointment records.
+
+## Team appointment edits
+
+Team managers can edit existing booked appointments in their current team; notes, meeting links and assignment remain protected.

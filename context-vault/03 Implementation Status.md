@@ -217,3 +217,7 @@ Team follow-up edits passed synthetic service and Chrome acceptance. Runtime rel
 ## Team application edits
 
 Team application stage and deadline edits implemented. Appointment writes remain gated.
+
+## Team appointment edits
+
+Team appointment reschedule and outcome updates implemented. Booking creation stays outside team scope.

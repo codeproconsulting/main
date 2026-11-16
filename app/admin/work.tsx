@@ -25,9 +25,15 @@ export async function loader({request,params}:LoaderFunctionArgs){const staff=aw
  }
  const leadId=record?.leadId||url.searchParams.get("leadId")||"";if(leadId)await leadFor(staff,leadId);
  const page=queuePage(url.searchParams.get("page"));const {records,hasMore}=record?{records:[],hasMore:false}:await scopedRecords<CaseRecord&Appointment>(staff,collection,page);return {calendar,record,records,leadId,page,hasMore,teamReadOnly,after:"",next:"",creating:url.searchParams.has("new")};}
-export async function action({request,params}:ActionFunctionArgs){const staff=await requireStaff(request, true);sameOrigin(request);const calendar=new URL(request.url).pathname.startsWith("/admin/appointments");try{if(isRestrictedManager(staff) && (calendar || !params.id)) throw new Response("Access denied",{status:403});
+export async function action({request,params}:ActionFunctionArgs){const staff=await requireStaff(request, true);sameOrigin(request);const calendar=new URL(request.url).pathname.startsWith("/admin/appointments");try{if(isRestrictedManager(staff) && !params.id) throw new Response("Access denied",{status:403});
  const form=await request.formData();
- if(isRestrictedManager(staff)) return redirect(`/admin/applications/${await updateTeamCase(staff,params.id!,form)}`);
+ if(isRestrictedManager(staff)) {
+  if(calendar) {
+   const record=await saveAppointment(staff,form,params.id);
+   return redirect(`/admin/appointments/${record.$id}`);
+  }
+  return redirect(`/admin/applications/${await updateTeamCase(staff,params.id!,form)}`);
+ }
  const record=calendar?await saveAppointment(staff,form):await saveCase(staff,form);return redirect(`/admin/${calendar?"appointments":"applications"}/${record.$id}`);}catch(error){if(error instanceof Response){if([400,409,503].includes(error.status))return data({error:await error.text()},{status:error.status});throw error;}return data({error:"Could not save. Refresh to check the latest state before retrying."},{status:503});}}
 export default function Work(){const {calendar,record,records,leadId,page,hasMore,creating,teamReadOnly,after,next}=useLoaderData<typeof loader>(),result=useActionData<typeof action>();const [kind,setKind]=useState(record?.kind??"Education");
  useEffect(()=>setKind(record?.kind??"Education"),[record?.$id,record?.version]);
@@ -40,13 +46,21 @@ export default function Work(){const {calendar,record,records,leadId,page,hasMor
     {calendar ? <><p>Starts {displayDate(record.startsAt)}</p><p>Ends {displayDate(record.endsAt)}</p></> :
       <><p>{[record.kind,record.course,record.country,record.intake].filter(Boolean).join(" · ")}</p><p>Deadline {displayDate(record.deadline)}</p></>}
     <Link to={`/admin/leads/${record.leadId}`}>Open lead</Link>
+    <ActionError error={result?.error}/>
+    {calendar && record.status === "Booked" && <Form key={record.version} method="post" className="crm-form">
+      <input type="hidden" name="version" value={record.version}/>
+      <label>Start (ISO with timezone)<input name="startsAt" required defaultValue={record.startsAt} maxLength={40}/></label>
+      <label>End (ISO with timezone)<input name="endsAt" required defaultValue={record.endsAt} maxLength={40}/></label>
+      <label>Status<select name="status" defaultValue={record.status}>{["Booked","Completed","Cancelled","No show"].map(status => <option key={status}>{status}</option>)}</select></label>
+      <label>Reason for reschedule, cancellation or no-show<input name="reason" maxLength={2000}/></label>
+      <div><Submit>Update appointment</Submit></div>
+    </Form>}
     {!calendar && <Form key={record.version} method="post" className="crm-form">
       <input type="hidden" name="version" value={record.version}/>
       <label>Stage<select name="stage" defaultValue={record.stage}>
         {caseStagesFor(record.kind).map(stage => <option key={stage}>{stage}</option>)}
       </select></label>
       <label>Deadline (ISO with timezone)<input name="deadline" defaultValue={record.deadline} maxLength={40}/></label>
-      <ActionError error={result?.error}/>
       <div><Submit>Update application</Submit></div>
     </Form>}
   </section>

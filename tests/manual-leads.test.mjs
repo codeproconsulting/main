@@ -512,3 +512,30 @@ test('team application edits preserve hidden fields and deny cross-team, stale a
  await operations.updateTeamCase(actor,'inside',fields);
  assert.deepEqual(dependencies.cases.get('inside'),{...current,stage:'Submitted',deadline:'2031-01-02T05:00:00.000Z',version:2});
 });
+
+
+test('team appointment edits preserve hidden fields and use shared calendar and version checks',async()=>{
+ const actor={...manager,managerScope:'team',teamId:'team-alpha'};
+ profiles.set(actor.$id,actor);
+ dependencies.crm_teams.set('team-alpha',{$id:'team-alpha',status:'active'});
+ leads.set('alpha',{$id:'alpha',teamId:'team-alpha',owner:counselor.$id});
+ leads.set('beta',{$id:'beta',teamId:'team-beta',owner:counselor.$id});
+ const current={$id:'inside',leadId:'alpha',owner:counselor.$id,title:'Synthetic booking',status:'Booked',
+  startsAt:'2030-01-01T10:00:00.000Z',endsAt:'2030-01-01T11:00:00.000Z',location:'Private fixture',notes:'Private notes',version:1};
+ dependencies.appointments.set('inside',current);
+ dependencies.appointments.set('outside',{...current,$id:'outside',leadId:'beta',startsAt:'2030-01-02T10:00:00.000Z',endsAt:'2030-01-02T11:00:00.000Z'});
+ const fields=form({version:'1',status:'Booked',startsAt:'2030-01-02T15:00:00+05:00',endsAt:'2030-01-02T16:00:00+05:00',reason:'Synthetic reschedule',notes:'Forged',location:'Forged',leadId:'beta'});
+ await assert.rejects(()=>operations.saveAppointment(actor,fields),errorStatus(403));
+ await assert.rejects(()=>operations.saveAppointment(actor,fields,'outside'),errorStatus(404));
+ await assert.rejects(()=>operations.saveAppointment(actor,fields,'inside'),errorStatus(409));
+ fields.set('startsAt','2030-01-02T16:00:00+05:00');
+ fields.set('endsAt','2030-01-02T17:00:00+05:00');
+ fields.set('version','2');
+ await assert.rejects(()=>operations.saveAppointment(actor,fields,'inside'),errorStatus(409));
+ fields.set('version','1');
+ options.failPatch='appointments';
+ await assert.rejects(()=>operations.saveAppointment(actor,fields,'inside'),errorStatus(503));
+ delete options.failPatch;
+ const updated=await operations.saveAppointment(actor,fields,'inside');
+ assert.deepEqual(updated,{...current,startsAt:'2030-01-02T11:00:00.000Z',endsAt:'2030-01-02T12:00:00.000Z',version:2});
+});

@@ -60,23 +60,30 @@ export async function updateTeamCase(staff: Staff, id: string, form: FormData) {
     return id;
   }));
 }
-export async function saveAppointment(staff: Staff, form: FormData) {
-  const id = field(form, "id", 36);
-  const leadId = field(form, "leadId", 36);
-  allow(canUseCRM(staff));
-  return serialized(`lead:${leadId}`, () => serialized(appointmentCalendarLock, async () => {
-    const lead = await writableEnquiry(staff, leadId);
+export async function saveAppointment(staff: Staff, form: FormData, teamRecordId?: string) {
+  const teamManager = isRestrictedManager(staff);
+  allow(staff.active && canUseCRM(staff) && (!teamManager || Boolean(teamRecordId)));
+  const id = teamManager ? teamRecordId! : field(form, "id", 36);
+  const readAppointment = () => getDocument<Appointment>("appointments", id).catch(error => {
+    if (error instanceof AppwriteError && error.status === 404) throw new Response("Appointment not found", { status: 404 });
+    throw error;
+  });
+  const leadId = teamManager ? (await readAppointment()).leadId : field(form, "leadId", 36);
+  const readLead = () => writableEnquiry(staff, leadId).catch(error => {
+    if (teamManager && error instanceof Response && error.status === 404) throw new Response("Appointment not found", { status: 404 });
+    throw error;
+  });
+  if (teamManager) await readLead();
+  const save = () => serialized(appointmentCalendarLock, async () => {
+    const lead = await readLead();
     if (!lead.owner) throw new Response("Assign the lead before booking an appointment.", { status: 400 });
     const assignee = await getDocument<Staff>("staff", lead.owner);
     allow(assignee.active && canUseCRM(assignee));
 
     let current: Appointment | null = null;
     if (id) {
-      try { current = await getDocument<Appointment>("appointments", id); }
-      catch (error) {
-        if (error instanceof AppwriteError && error.status === 404) throw new Response("Appointment not found", { status: 404 });
-        throw error;
-      }
+      current = await readAppointment();
+      if (teamManager && current.leadId !== leadId) throw new Response("Appointment changed. Refresh before saving.", { status: 409 });
       allow(current.leadId === leadId);
       if (current.owner !== lead.owner) throw new Response("Reconcile the lead handoff before editing this appointment.", { status: 409 });
       if (current.version !== Number(field(form, "version"))) throw new Response("Appointment changed. Refresh before saving.", { status: 409 });
@@ -85,7 +92,7 @@ export async function saveAppointment(staff: Staff, form: FormData) {
     const startsAt = appointmentTime(field(form, "startsAt", 40));
     const endsAt = appointmentTime(field(form, "endsAt", 40));
     const status = field(form, "status", 30);
-    const title = field(form, "title", 300);
+    const title = teamManager ? current!.title : field(form, "title", 300);
     const reason = field(form, "reason", 2000);
     if (!title || endsAt <= startsAt || !["Booked", "Completed", "Cancelled", "No show"].includes(status)) {
       throw new Response("Enter a title, a valid time range and a booking status.", { status: 400 });
@@ -93,7 +100,7 @@ export async function saveAppointment(staff: Staff, form: FormData) {
     const moved = !!current && (Date.parse(current.startsAt) !== Date.parse(startsAt) || Date.parse(current.endsAt) !== Date.parse(endsAt));
     const changedStatus = current?.status !== status;
     if (!current && status !== "Booked") throw new Response("New appointments must start as Booked.", { status: 400 });
-    if (current && current.status !== "Booked" && (moved || changedStatus)) {
+    if (current && current.status !== "Booked" && (teamManager || moved || changedStatus)) {
       throw new Response("This appointment is closed. Create a new booking to schedule another meeting.", { status: 400 });
     }
     if (moved && status !== "Booked") throw new Response("Save a reschedule separately from an outcome.", { status: 400 });
@@ -105,12 +112,27 @@ export async function saveAppointment(staff: Staff, form: FormData) {
     }
     if (status === "Booked") await assertCalendarAvailable(lead.owner, [{ startsAt, endsAt }], new Set(id ? [id] : []));
 
-    const payload = { leadId, owner: lead.owner, title, startsAt, endsAt, status, location: field(form, "location", 1000), notes: field(form, "notes", 10000), version: (current?.version ?? 0) + 1 };
+    const payload = { leadId, owner: lead.owner, title, startsAt, endsAt, status, location: teamManager ? "" : field(form, "location", 1000), notes: teamManager ? "" : field(form, "notes", 10000), version: (current?.version ?? 0) + 1 };
     const appointmentId = current?.$id ?? randomUUID();
     const details = { appointmentId, fromVersion: current?.version ?? 0, toVersion: payload.version, status, startsAt, endsAt, reason };
     const event = await audit(staff, leadId, "lead", "Appointment save requested", { ...details, state: "pending" });
-    const record = current ? await updateDocument<Appointment>("appointments", appointmentId, payload) : await createDocument("appointments", payload, appointmentId);
-    await updateDocument("activities", event.$id, { event: "Appointment saved", details: JSON.stringify({ ...details, state: "completed" }) });
+    let record;
+    try {
+      record = current
+        ? await updateDocument<Appointment>("appointments", appointmentId, teamManager
+          ? { startsAt, endsAt, status, version: payload.version }
+          : payload)
+        : await createDocument("appointments", payload, appointmentId);
+    } catch (error) {
+      if (teamManager && !definitiveWriteRejection(error)) {
+        throw new UnconfirmedMutation("The appointment change may have saved. Ask an administrator to reconcile it before retrying.");
+      }
+      throw error;
+    }
+    const complete = updateDocument("activities", event.$id, { event: "Appointment saved", details: JSON.stringify({ ...details, state: "completed" }) });
+    if (teamManager) await complete.catch(() => undefined);
+    else await complete;
     return record;
-  }));
+  });
+  return serialized(`lead:${leadId}`, () => teamManager ? withCurrentTeamManager(staff, save) : save());
 }

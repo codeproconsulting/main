@@ -149,3 +149,7 @@ Follow-up updates use the parent lead lock and staff-access lock for team manage
 ## Team application edits
 
 Scoped application writes acquire the parent lead and staff-access locks and recheck current scope, ownership and version.
+
+## Team appointment edits
+
+Team appointment edits reuse existing calendar rules under lead, staff access and calendar locks.

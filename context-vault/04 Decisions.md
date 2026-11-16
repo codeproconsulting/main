@@ -173,3 +173,7 @@ A team manager may change a task only when its owner agrees with the current lea
 ## Team application edits
 
 Application edits use the route record ID and patch stage, deadline and version only. Ambiguous writes retain locks.
+
+## Team appointment edits
+
+Appointment record identity comes from the route and current parent. Time, status and version are the only fields patched. Ambiguous writes retain locks.
