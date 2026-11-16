@@ -11,7 +11,7 @@ const manager={$id:'synthetic-manager',role:'manager',active:true};
 const counselor={$id:'synthetic-counselor',role:'counselor',active:true};
 const errorStatus=status=>error=>error instanceof Response&&error.status===status;
 const token='d21265d0-363f-4a4c-b777-0e67b36930da';
-let vite,manual,crm,views,bulk,routing,worker,leads,activities,profiles,queries,options,dependencies;
+let vite,manual,crm,views,bulk,routing,worker,teamQueues,leads,activities,profiles,queries,options,dependencies;
 
 function form(changes={}){
  const fields=new FormData();
@@ -31,6 +31,7 @@ before(async()=>{
  bulk=await vite.ssrLoadModule('/app/admin/bulk-leads.server.ts');
  routing=await vite.ssrLoadModule('/app/admin/lead-routing.server.ts');
  worker=await vite.ssrLoadModule('/app/admin/intake-routing.server.ts');
+ teamQueues=await vite.ssrLoadModule('/app/admin/team-queues.server.ts');
  globalThis.fetch=async(input,request)=>{
   const url=new URL(input);
   const [,collection,id]=url.pathname.match(/\/collections\/(\w+)\/documents(?:\/([^/]+))?$/)??[];
@@ -39,9 +40,17 @@ before(async()=>{
   if(request.method==='GET'){
    if(id)return store.has(id)?Response.json(store.get(id)):Response.json({}, {status:404});
    queries=url.searchParams.getAll('queries[]').map(JSON.parse);
-   const matches=[...store.values()].filter(row=>queries.every(q=>(q.method!=='equal'||q.values.includes(row[q.attribute]))&&(q.method!=='notEqual'||!q.values.includes(row[q.attribute]))));
+   let matches=[...store.values()].filter(row=>queries.every(q=>(q.method!=='equal'||q.values.includes(row[q.attribute]))&&(q.method!=='notEqual'||!q.values.includes(row[q.attribute]))&&(q.method!=='greaterThan'||row[q.attribute]>q.values[0])));
    const latest=queries.find(q=>q.method==='orderDesc'&&q.attribute==='routedAt');
    if(latest) matches.sort((a,b)=>(b.routedAt??'').localeCompare(a.routedAt??''));
+   if(options.strictQueue){
+    if(queries.some(q=>q.method==="orderAsc"&&q.attribute==="$id")) matches.sort((a,b)=>a.$id.localeCompare(b.$id));
+    const cursor=queries.find(q=>q.method==="cursorAfter")?.values[0];
+    if(cursor)matches=matches.filter(row=>row.$id>cursor);
+    const selected=queries.find(q=>q.method==="select")?.values;
+    if(selected)matches=matches.map(row=>Object.fromEntries(selected.filter(key=>key in row).map(key=>[key,row[key]])));
+    if(collection==="tasks"&&options.moveParent) leads.get(options.moveParent).teamId="team-beta";
+   }
    const limit=queries.find(q=>q.method==='limit')?.values[0];
    return Response.json({documents:matches.slice(0,limit??matches.length),total:matches.length});
   }
@@ -410,4 +419,36 @@ test('restricted managers see and change only team enquiries and fail closed aft
  await assert.rejects(()=>crm.updateLead(scoped,alpha.$id,update,'stage-priority'),errorStatus(403));
  await assert.rejects(()=>crm.leadsFor({...scoped,teamId:''}),errorStatus(403));
  assert.equal((await crm.leadsFor(manager)).total,3);
+});
+
+
+test('team queues paginate only matching parent teams and hide work after a team move',async()=>{
+ options.strictQueue=true;
+ const actor={...manager,managerScope:'team',teamId:'team-alpha'};
+ dependencies.crm_teams.set('team-alpha',{$id:'team-alpha',status:'active'});
+ leads.set('alpha',{$id:'alpha',teamId:'team-alpha'});
+ leads.set('beta',{$id:'beta',teamId:'team-beta'});
+ for(let i=1;i<=26;i++){
+  const id='task-'+String(i).padStart(2,'0');
+  dependencies.tasks.set(id,{$id:id,leadId:'alpha',owner:'synthetic-counselor',status:'Open',outcome:'Private'});
+ }
+ dependencies.tasks.set('task-00',{$id:'task-00',leadId:'beta',status:'Open'});
+ dependencies.tasks.set('task-27',{$id:'task-27',leadId:'alpha',status:'Completed'});
+ for(const name of ['cases','appointments']){
+  dependencies[name].set('same',{$id:'same',leadId:'alpha',notes:'Private'});
+  dependencies[name].set('outside',{$id:'outside',leadId:'beta',notes:'Private'});
+  const result=await teamQueues.teamQueue(actor,name,'');
+  assert.deepEqual(result,{records:[{$id:'same',leadId:'alpha'}],next:''});
+ }
+ const first=await teamQueues.teamQueue(actor,'tasks','');
+ assert.equal(first.records.length,25);
+ assert.equal(first.records[0].$id,'task-01');
+ assert.equal(first.next,'task-25');
+ assert.ok(first.records.every(row=>!('outcome' in row)));
+ const second=await teamQueues.teamQueue(actor,'tasks',first.next);
+ assert.deepEqual(second.records.map(row=>row.$id),['task-26']);
+ assert.equal(second.next,'');
+ await assert.rejects(()=>teamQueues.teamQueue(actor,'tasks','invalid/cursor'),errorStatus(400));
+ options.moveParent='alpha';
+ assert.deepEqual(await teamQueues.teamQueue(actor,'tasks',''),{records:[],next:''});
 });

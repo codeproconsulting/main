@@ -1,41 +1,40 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-16-04",
+  "sessionId": "2026-11-16-05",
   "sessionStatus": "completed",
   "activeFeature": "CRM-03",
-  "objective": "Manage CRM teams and configure manager scopes from Team & access.",
+  "objective": "Expose read-only work queues to team managers without passing team boundaries.",
   "scope": [
-    "Owner/admin team directory create, edit and safe deactivation",
-    "Explicit manager scope in staff profile edits"
+    "Follow-up, application and appointment queues",
+    "Safely projected application and appointment detail and cursor paging"
   ],
   "outOfScope": [
-    "Production rollout and classification",
-    "Team access to linked workflows or mobile"
+    "Linked record mutation, document and reporting access, mobile parity",
+    "Production rollout"
   ],
   "acceptance": [
     {
-      "id": "CRM03-ADMIN-A",
-      "description": "Directory and scope access checks",
+      "id": "CRM03-QUEUE-A",
+      "description": "Parent-team authority, projections and pagination",
       "status": "passed",
-      "evidence": "Synthetic service tests cover owner/admin controls, stale records, in-use deactivation block, active team requirements, existing-session scope and explicit confirmation before global access."
+      "evidence": "Synthetic two-team tests cover 25-row pagination, retired/moved parent, closed task exclusion and withheld linked fields."
     },
     {
-      "id": "CRM03-ADMIN-B",
-      "description": "Built-app browser and target query verification",
+      "id": "CRM03-QUEUE-B",
+      "description": "Browser and target queue query verification",
       "status": "passed",
-      "evidence": "Chrome verified team creation, restricted manager web access and explicit confirmation to restore organization-wide access. Read-only target checks accepted both in-use filters and confirmed private directory permissions."
+      "evidence": "Chrome verified all three lists, allowed summary details, cross-team 404, absent internal notes and POST/creation denial. Target Appwrite accepted the projected list, ID cursor and parent team query shapes with synthetic references."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Build the next CRM-03 slice for team-scoped linked work queues. Use current parent enquiry team as authority and verify two-team isolation, pagination and direct route access before enabling any linked writes.",
+      "action": "Build scoped follow-up mutations for restricted managers. Recheck actor, team, and parent under the existing locks and verify cross-team, stale-version and ownership transfer behavior before enabling writes.",
       "files": [
         "app/admin/crm.server.ts",
-        "app/admin/work.tsx",
         "app/admin/tasks.tsx",
-        "context-vault/Sessions/2026-11-16-02.md"
+        "app/admin/team-queues.server.ts"
       ]
     }
   ],
@@ -104,31 +103,32 @@
     "routingSchema": "Four optional routing fields and rotation index provisioned. No other staff schema changed. Runtime release pending.",
     "intakeRouting": "Queue schema provisioned; isolated worker and target query accepted. Worker activation, audit actor configuration and VPS runtime key verification pending.",
     "teamScopeSchema": "Private team directory, optional staff manager scope, and optional indexed leads team field available. Aggregate scan returned no active teams, visible lead rows, or active managers. No real staff scope or enquiry assignments changed.",
-    "teamDirectoryAdmin": "Local administration workflow verified with synthetic staff. Target directory verified read-only. No production team or staff changes."
+    "teamDirectoryAdmin": "Local administration workflow verified with synthetic staff. Target directory verified read-only. No production team or staff changes.",
+    "teamQueueRelease": "Read-only target query compatibility verified. No schema or data changes and no VPS rollout."
   },
   "checks": [
     {
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-16T01:50:24.313Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-bJlXPB/typecheck.log"
+      "checkedAt": "2026-11-16T02:13:08.963Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ynmn4p/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-16T01:50:25.511Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-bJlXPB/test.log"
+      "checkedAt": "2026-11-16T02:13:10.336Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ynmn4p/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-16T01:50:30.853Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-bJlXPB/build.log"
+      "checkedAt": "2026-11-16T02:13:15.877Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ynmn4p/build.log"
     }
   ],
-  "updatedAt": "2026-11-16T01:51:14.971Z",
-  "verifiedSourceFingerprint": "5906660d3f31d1f3b034d5b43ddde29fb20687fa495a86864ccd91276502b1ec"
+  "updatedAt": "2026-11-16T02:14:13.815Z",
+  "verifiedSourceFingerprint": "1f8f190c2562bc16fe48d49664921ef278419238fbf53ca075b2b8b73ad2970d"
 }

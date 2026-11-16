@@ -161,3 +161,7 @@ Classification changes only an empty enquiry team. The reviewed version is check
 ## Team directory administration
 
 Changing a new or restricted manager to organization-wide scope requires explicit confirmation. Teams with active staff or enquiries cannot be deactivated.
+
+## Team linked work queues
+
+Team queues use an ID cursor and require a matching current parent. They support up to 500 team enquiries; an indexed linked-team projection is needed beyond that limit.

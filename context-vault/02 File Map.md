@@ -167,3 +167,7 @@ scripts/classify-lead-teams.mjs implements inventory, manifest preview and guard
 ## Team directory administration
 
 Team directory forms are in app/admin/team.tsx. app/admin/team.server.ts validates, audits and applies directory and staff changes.
+
+## Team linked work queues
+
+app/admin/team-queues.server.ts serves read-only pages. app/admin/tasks.tsx and app/admin/work.tsx opt in only for loaders.

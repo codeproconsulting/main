@@ -137,3 +137,7 @@ Team classification tools scan private directory, staff and enquiry metadata for
 ## Team directory administration
 
 The Team & access route maintains the directory and configures manager scope under the shared staff-access lock.
+
+## Team linked work queues
+
+Restricted linked queues first resolve current team enquiry IDs, then query linked records and recheck each visible parent. Summary fields are projected.

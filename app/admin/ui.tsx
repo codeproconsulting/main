@@ -15,6 +15,13 @@ export function WorkspaceBrand() {
 }
 
 
+export function TeamQueuePagination({ after, next }: { after: string; next: string }) {
+  if (!after && !next) return null;
+  return <nav aria-label="Queue pages" className="crm-pagination">
+    {after && <Link to="?">First page</Link>}
+    {next && <Link to={`?${new URLSearchParams({ after: next })}`}>Next</Link>}
+  </nav>;
+}
 export function QueuePagination({ page, hasMore }: { page: number; hasMore: boolean }) {
   if (page === 1 && !hasMore) return null;
   return <nav aria-label="Queue pages" className="crm-pagination">

@@ -201,3 +201,9 @@ Team directory, optional manager scope and indexed lead field now exist in targe
 Team directory administration and manager scope controls implemented. Linked workflow and mobile access remain gated.
 
 Team administration passed isolated Chrome and service acceptance. Target directory and guard query shapes passed read-only checks.
+
+## Team linked work queues
+
+Team manager read-only tasks, cases and appointments implemented. Linked writes and other restricted surfaces remain denied.
+
+Team linked queues passed synthetic service and Chrome acceptance. Target query compatibility passed read-only.

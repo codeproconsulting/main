@@ -123,3 +123,7 @@ Migration apply requires an active owner or administrator profile and writes per
 ## Team directory administration
 
 Owners and admins manage directory entries and staff scope. Manager team access validates live membership on each request. Existing legacy managers retain their scope until edited.
+
+## Team linked work queues
+
+Team managers can view scoped follow-up titles and case and appointment summaries. Internal notes, meeting links, and task outcomes are withheld. The existing auth gate denies linked POST actions.

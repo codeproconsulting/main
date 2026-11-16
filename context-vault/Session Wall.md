@@ -3,41 +3,41 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-16-04]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-16-05]].
 
 ## Resume here
 
-**Session:** 2026-11-16-04
+**Session:** 2026-11-16-05
 
 **Active feature:** CRM-03
 
 **State:** completed
 
-**Objective:** Manage CRM teams and configure manager scopes from Team & access.
+**Objective:** Expose read-only work queues to team managers without passing team boundaries.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Owner/admin team directory create, edit and safe deactivation
-- Explicit manager scope in staff profile edits
+- Follow-up, application and appointment queues
+- Safely projected application and appointment detail and cursor paging
 
 ## Out of scope
 
-- Production rollout and classification
-- Team access to linked workflows or mobile
+- Linked record mutation, document and reporting access, mobile parity
+- Production rollout
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| CRM03-ADMIN-A | Directory and scope access checks | passed | Synthetic service tests cover owner/admin controls, stale records, in-use deactivation block, active team requirements, existing-session scope and explicit confirmation before global access. |
-| CRM03-ADMIN-B | Built-app browser and target query verification | passed | Chrome verified team creation, restricted manager web access and explicit confirmation to restore organization-wide access. Read-only target checks accepted both in-use filters and confirmed private directory permissions. |
+| CRM03-QUEUE-A | Parent-team authority, projections and pagination | passed | Synthetic two-team tests cover 25-row pagination, retired/moved parent, closed task exclusion and withheld linked fields. |
+| CRM03-QUEUE-B | Browser and target queue query verification | passed | Chrome verified all three lists, allowed summary details, cross-team 404, absent internal notes and POST/creation denial. Target Appwrite accepted the projected list, ID cursor and parent team query shapes with synthetic references. |
 
 ## Exact next actions
 
-1. Build the next CRM-03 slice for team-scoped linked work queues. Use current parent enquiry team as authority and verify two-team isolation, pagination and direct route access before enabling any linked writes.
-   Files: `app/admin/crm.server.ts`, `app/admin/work.tsx`, `app/admin/tasks.tsx`, `context-vault/Sessions/2026-11-16-02.md`
+1. Build scoped follow-up mutations for restricted managers. Recheck actor, team, and parent under the existing locks and verify cross-team, stale-version and ownership transfer behavior before enabling writes.
+   Files: `app/admin/crm.server.ts`, `app/admin/tasks.tsx`, `app/admin/team-queues.server.ts`
 
 ## Known risks and unfinished work
 
@@ -60,9 +60,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-16T01:50:24.313Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-bJlXPB/typecheck.log`
-- **passed**: `npm run test` (2026-11-16T01:50:25.511Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-bJlXPB/test.log`
-- **passed**: `npm run build` (2026-11-16T01:50:30.853Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-bJlXPB/build.log`
+- **passed**: `npm run typecheck` (2026-11-16T02:13:08.963Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ynmn4p/typecheck.log`
+- **passed**: `npm run test` (2026-11-16T02:13:10.336Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ynmn4p/test.log`
+- **passed**: `npm run build` (2026-11-16T02:13:15.877Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ynmn4p/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -115,5 +115,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **intakeRouting**: Queue schema provisioned; isolated worker and target query accepted. Worker activation, audit actor configuration and VPS runtime key verification pending.
 - **teamScopeSchema**: Private team directory, optional staff manager scope, and optional indexed leads team field available. Aggregate scan returned no active teams, visible lead rows, or active managers. No real staff scope or enquiry assignments changed.
 - **teamDirectoryAdmin**: Local administration workflow verified with synthetic staff. Target directory verified read-only. No production team or staff changes.
+- **teamQueueRelease**: Read-only target query compatibility verified. No schema or data changes and no VPS rollout.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]
