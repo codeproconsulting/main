@@ -1,7 +1,8 @@
+import { teamQueue } from "./team-queues.server";
 import { createHash } from "node:crypto";
 import { AppwriteError, createDocument, getDocument, listDocuments, query } from "~/lib/appwrite.server";
 import { allow, field, leadFor, writableEnquiry, serialized, staffAccessLock } from "./crm.server";
-import { canManage, canUseCRM, type Lead, type Staff } from "./domain";
+import { canManage, canUseCRM, isRestrictedManager, type Lead, type Staff } from "./domain";
 
 type Consultation = {
   $id: string;
@@ -20,12 +21,13 @@ function destinationKey(value: string) {
   return value.normalize("NFKC").trim().replace(/\s+/gu, " ").toLowerCase();
 }
 
-export async function consultationStaff() {
+export async function consultationStaff(teamId?: string) {
   const staff: Staff[] = [];
   let cursor: string | undefined;
   do {
     const { documents } = await listDocuments<Staff>("staff", [
       query("select", undefined, ["$id", "name", "role", "active"]),
+      ...(teamId ? [query("equal", "teamId", [teamId])] : []),
       query("orderAsc", "$id"), query("limit", undefined, [100]),
       ...(cursor ? [query("cursorAfter", undefined, [cursor])] : []),
     ]);
@@ -57,16 +59,19 @@ export async function leadConsultations(staff: Staff, leadId: string, page: numb
     listConsultations([query("equal", "leadId", [leadId])], page),
     canManage(staff) ? consultationStaff() : Promise.resolve([staff]),
   ]);
+  const teamScoped = isRestrictedManager(staff);
+  if (teamScoped) await leadFor(staff, leadId);
   return {
+    teamScoped,
     lead: { id: lead.$id, name: lead.name, country: lead.country },
-    history,
+    history: teamScoped ? { total: history.total, documents: history.documents.map(({ $id, destination, counselorName, heldOn }) => ({ $id, destination, counselorName, heldOn })) } : history,
     people: people.filter(person => person.active && canUseCRM(person)).map(person => ({ id: person.$id, name: person.name })),
     manager: canManage(staff),
   };
 }
 
 export async function recordConsultation(staff: Staff, leadId: string, form: FormData) {
-  allow(staff.active && canUseCRM(staff));
+  allow(staff.active && canUseCRM(staff) && !isRestrictedManager(staff));
   const token = field(form, "submissionId", 36);
   const destination = field(form, "destination", 100).normalize("NFKC").replace(/\s+/gu, " ").trim();
   const key = destinationKey(destination);
@@ -80,7 +85,7 @@ export async function recordConsultation(staff: Staff, leadId: string, form: For
   }
   return serialized(`lead:${leadId}`, () => serialized(staffAccessLock, async () => {
     const actor = await getDocument<Staff>("staff", staff.$id);
-    allow(actor.active && canUseCRM(actor));
+    allow(actor.active && canUseCRM(actor) && !isRestrictedManager(actor));
     await writableEnquiry(actor, leadId);
     const counselor = canManage(actor) ? field(form, "counselor", 36) : actor.$id;
     if (!/^[a-zA-Z0-9][a-zA-Z0-9._-]{0,35}$/.test(counselor)) {
@@ -111,7 +116,8 @@ export async function recordConsultation(staff: Staff, leadId: string, form: For
 }
 
 export async function consultationReport(staff: Staff, params: URLSearchParams) {
-  allow(staff.active && canManage(staff));
+  const teamScoped = isRestrictedManager(staff);
+  allow(staff.active && (canManage(staff) || teamScoped));
   const destination = (params.get("destination") ?? "").trim().slice(0, 100);
   const key = destinationKey(destination);
   const counselor = params.get("counselor") ?? "";
@@ -122,18 +128,36 @@ export async function consultationReport(staff: Staff, params: URLSearchParams) 
   if (key) filters.push(query("equal", "destinationKey", [key]));
   if (counselor) filters.push(query("equal", "counselor", [counselor]));
   const page = consultationPage(params);
-  const [history, people] = await Promise.all([listConsultations(filters, page), consultationStaff()]);
+  const from = params.get("from") ?? "";
+  const through = params.get("through") ?? "";
+  for (const value of [from, through]) {
+    if (!value) continue;
+    const date = new Date(value + "T00:00:00Z");
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(value) || !Number.isFinite(+date) || date.toISOString().slice(0, 10) !== value) {
+      throw new Response("Invalid consultation date.", { status: 400 });
+    }
+  }
+  if (from && through && from > through) throw new Response("Invalid consultation date range.", { status: 400 });
+  if (from) filters.push(query("greaterThanEqual", "heldOn", [from]));
+  if (through) filters.push(query("lessThanEqual", "heldOn", [through]));
+  const after = teamScoped ? params.get("after") ?? "" : "";
+  const scoped = teamScoped ? await teamQueue<Consultation>(staff, collection, after, filters) : null;
+  const history = scoped ? { documents: scoped.records, total: scoped.records.length } : await listConsultations(filters, page);
+  const people = await consultationStaff(teamScoped ? staff.teamId : undefined);
   const names = new Map<string, string>();
   const ids = [...new Set(history.documents.map(row => row.leadId))];
   if (ids.length) {
     const leads = await listDocuments<Pick<Lead, "name">>("leads", [
+      ...(teamScoped ? [query("equal", "teamId", [staff.teamId])] : []),
       query("equal", "$id", ids), query("select", undefined, ["$id", "name"]), query("limit", undefined, [ids.length]),
     ]);
     for (const lead of leads.documents) names.set(lead.$id, lead.name);
   }
+  const visible = teamScoped ? history.documents.filter(row => names.has(row.leadId)) : history.documents;
   return {
-    history: history.documents.map(row => ({ ...row, leadName: names.get(row.leadId) })),
-    total: history.total, page, destination, counselor,
+    history: visible.map(row => ({ ...row, leadName: names.get(row.leadId) })),
+    total: history.total, page, destination, counselor, from, through, teamScoped, after,
+    next: scoped?.next === visible.at(-1)?.$id ? scoped?.next ?? "" : "",
     people: people.map(person => ({ id: person.$id, name: person.name })),
   };
 }

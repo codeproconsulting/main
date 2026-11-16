@@ -6,7 +6,7 @@ import { consultationPage, consultationPageSize, leadConsultations, recordConsul
 import { ActionError, Back, Empty, PageHeading, Submit } from "./ui";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
-  const staff = await requireStaff(request);
+  const staff = await requireStaff(request, true);
   const page = consultationPage(new URL(request.url).searchParams);
   return {
     ...await leadConsultations(staff, params.id!, page),
@@ -31,13 +31,13 @@ export async function action({ request, params }: ActionFunctionArgs) {
 }
 
 export default function Consultations() {
-  const { lead, history, people, manager, counselor, page, pageSize, submissionId, today } = useLoaderData<typeof loader>();
+  const { lead, history, people, manager, teamScoped, counselor, page, pageSize, submissionId, today } = useLoaderData<typeof loader>();
   const result = useActionData<typeof action>();
   return <>
     <Back to={`/admin/leads/${lead.id}`}>Back to {lead.name}</Back>
     <PageHeading eyebrow="ENQUIRY HISTORY" title="Consultations" description={`Completed consultations for ${lead.name}.`} />
     <ActionError error={result?.error} />
-    <section className="crm-panel crm-padded">
+    {!teamScoped && <section className="crm-panel crm-padded">
       <h2>Log a completed consultation</h2>
       <Form method="post" className="crm-form">
         <input name="submissionId" type="hidden" value={submissionId} />
@@ -52,7 +52,7 @@ export default function Consultations() {
         </div>
         <Submit>Log consultation</Submit>
       </Form>
-    </section>
+    </section>}
     <section className="crm-panel crm-padded">
       <h2>Consultation history</h2>
       {!history.documents.length && <Empty title="No consultations on this page">Completed sessions appear here when logged.</Empty>}

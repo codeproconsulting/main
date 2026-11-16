@@ -8,13 +8,14 @@ const parentBatch = 50;
 // shortcut: scan at most 500 team enquiries, add an indexed linked-work team projection before raising this limit.
 const parentLimit = 500;
 const queueFields = {
+  consultations: ["$id", "leadId", "counselor", "counselorName", "destination", "heldOn"],
   tasks: ["$id", "leadId", "title", "dueAt", "version"],
   cases: ["$id", "leadId", "kind", "institution", "course", "stage", "country", "intake", "deadline", "version"],
   appointments: ["$id", "leadId", "title", "status", "startsAt", "endsAt", "version"],
 } as const;
 type Collection = keyof typeof queueFields;
 
-export async function teamQueue<T extends { $id: string; leadId: string }>(staff: Staff, collection: Collection, after: string) {
+export async function teamQueue<T extends { $id: string; leadId: string }>(staff: Staff, collection: Collection, after: string, filters: string[] = []) {
   allow(staff.active && isRestrictedManager(staff));
   if (after && !/^[a-z0-9][a-z0-9._-]{0,35}$/i.test(after)) throw new Response("Invalid queue cursor.", { status: 400 });
   await requireActiveTeam(staff);
@@ -41,7 +42,7 @@ export async function teamQueue<T extends { $id: string; leadId: string }>(staff
       .map(index => parentIds.slice(start + parentBatch * index, start + parentBatch * (index + 1)))
       .filter(ids => ids.length);
     const results = await Promise.all(batches.map(ids => listDocuments<T>(collection, [
-      query("select", undefined, [...queueFields[collection]]), query("equal", "leadId", ids),
+      ...filters, query("select", undefined, [...queueFields[collection]]), query("equal", "leadId", ids),
       ...(collection === "tasks" ? [query("equal", "status", ["Open"])] : []),
       ...(after ? [query("greaterThan", "$id", [after])] : []),
       query("orderAsc", "$id"), query("limit", undefined, [pageSize + 1]),

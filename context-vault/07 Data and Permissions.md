@@ -147,3 +147,7 @@ Restricted managers may read their team aggregate reports; consultation overview
 ## Team CSV export
 
 Only active authorized managers may export. Team file rows correspond to the current team and audit records contain scope and count.
+
+## Team consultation reads
+
+Team managers can see consultation history for in-team leads. Scoped rows omit the recorder reference; writes remain denied.

@@ -11,7 +11,7 @@ const manager={$id:'synthetic-manager',role:'manager',active:true};
 const counselor={$id:'synthetic-counselor',role:'counselor',active:true};
 const errorStatus=status=>error=>error instanceof Response&&error.status===status;
 const token='d21265d0-363f-4a4c-b777-0e67b36930da';
-let vite,manual,crm,views,bulk,routing,worker,teamQueues,operations,leads,activities,profiles,queries,options,dependencies;
+let vite,manual,crm,views,bulk,routing,worker,teamQueues,operations,consultations,leads,activities,profiles,queries,options,dependencies;
 
 function form(changes={}){
  const fields=new FormData();
@@ -33,6 +33,7 @@ before(async()=>{
  worker=await vite.ssrLoadModule('/app/admin/intake-routing.server.ts');
  teamQueues=await vite.ssrLoadModule('/app/admin/team-queues.server.ts');
  operations=await vite.ssrLoadModule('/app/admin/operations.server.ts');
+ consultations=await vite.ssrLoadModule('/app/admin/consultations.server.ts');
  globalThis.fetch=async(input,request)=>{
   const url=new URL(input);
   const [,collection,id]=url.pathname.match(/\/collections\/(\w+)\/documents(?:\/([^/]+))?$/)??[];
@@ -41,7 +42,7 @@ before(async()=>{
   if(request.method==='GET'){
    if(id)return store.has(id)?Response.json(store.get(id)):Response.json({}, {status:404});
    queries=url.searchParams.getAll('queries[]').map(JSON.parse);
-   let matches=[...store.values()].filter(row=>queries.every(q=>(q.method!=='equal'||q.values.includes(row[q.attribute]))&&(q.method!=='notEqual'||!q.values.includes(row[q.attribute]))&&(q.method!=='greaterThan'||row[q.attribute]>q.values[0])));
+   let matches=[...store.values()].filter(row=>queries.every(q=>(q.method!=='equal'||q.values.includes(row[q.attribute]))&&(q.method!=='notEqual'||!q.values.includes(row[q.attribute]))&&(q.method!=='greaterThan'||row[q.attribute]>q.values[0])&&(q.method!=='greaterThanEqual'||row[q.attribute]>=q.values[0])&&(q.method!=='lessThanEqual'||row[q.attribute]<=q.values[0])));
    const latest=queries.find(q=>q.method==='orderDesc'&&q.attribute==='routedAt');
    if(latest) matches.sort((a,b)=>(b.routedAt??'').localeCompare(a.routedAt??''));
    if(options.strictQueue){
@@ -538,4 +539,29 @@ test('team appointment edits preserve hidden fields and use shared calendar and 
  delete options.failPatch;
  const updated=await operations.saveAppointment(actor,fields,'inside');
  assert.deepEqual(updated,{...current,startsAt:'2030-01-02T11:00:00.000Z',endsAt:'2030-01-02T12:00:00.000Z',version:2});
+});
+
+
+test('team consultations filter date, counselor and destination without returning outside records',async()=>{
+ options.strictQueue=true;
+ const actor={...manager,managerScope:'team',teamId:'team-alpha'};
+ dependencies.crm_teams.set('team-alpha',{$id:'team-alpha',status:'active'});
+ leads.set('alpha',{$id:'alpha',teamId:'team-alpha',name:'Synthetic Alpha'});
+ leads.set('beta',{$id:'beta',teamId:'team-beta',name:'Synthetic Beta'});
+ profiles.set(counselor.$id,{...counselor,name:'Synthetic counselor',teamId:'team-alpha'});
+ const row={$id:'one',leadId:'alpha',counselor:counselor.$id,counselorName:'Synthetic counselor',destination:'Italy',destinationKey:'italy',heldOn:'2026-11-01',recordedBy:'private-reference'};
+ for(const [id,changes] of [['one',{}],['outside',{leadId:'beta'}],['later',{heldOn:'2026-11-02'}],['other',{destinationKey:'germany'}],['different',{counselor:'different'}]]){
+  dependencies.consultations.set(id,{...row,...changes,$id:id});
+ }
+ const params=new URLSearchParams({destination:'ITALY',counselor:counselor.$id,from:'2026-11-01',through:'2026-11-01'});
+ const report=await consultations.consultationReport(actor,params);
+ assert.deepEqual(report.history.map(row=>row.$id),['one']);
+ assert.deepEqual(report.people.map(row=>row.id),[counselor.$id]);
+ assert.equal(report.history[0].leadName,'Synthetic Alpha');
+ assert.ok(!('recordedBy' in report.history[0]));
+ assert.ok((await consultations.leadConsultations(actor,'alpha',1)).history.documents.every(row=>!('recordedBy' in row)));
+ await assert.rejects(()=>consultations.leadConsultations(actor,'beta',1),errorStatus(404));
+ await assert.rejects(()=>consultations.recordConsultation(actor,'alpha',form()),errorStatus(403));
+ params.set('from','2026-11-03');
+ await assert.rejects(()=>consultations.consultationReport(actor,params),errorStatus(400));
 });

@@ -185,3 +185,7 @@ Retain the 10,000 lead cap. The team report projects grouping fields and teamId 
 ## Team CSV export
 
 Reuse the existing CSV allowlist and formula protection. Team ID is used for verification and audit and is not a CSV column.
+
+## Team consultation reads
+
+Use the existing 500-enquiry queue cap and ID cursor. Global reports retain date ordering. Team filter options use the current team roster.

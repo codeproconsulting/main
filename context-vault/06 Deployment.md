@@ -173,3 +173,7 @@ Reports use the existing lead team index. Verify scoped report and export denial
 ## Team CSV export
 
 No schema change. Verify target team index, staff refresh and audit write permissions with the release key.
+
+## Team consultation reads
+
+No schema change. Verify combined date, counselor and destination filters after release.

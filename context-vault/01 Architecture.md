@@ -161,3 +161,7 @@ Aggregate scans filter and verify every page by current team and refresh the sta
 ## Team CSV export
 
 Team CSV reuses the verified paginated scan and confirms current scope before and after the audit.
+
+## Team consultation reads
+
+Team consultation reports reuse the current parent enquiry queue and recheck team when resolving customer names.

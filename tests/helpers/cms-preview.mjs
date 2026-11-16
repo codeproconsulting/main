@@ -34,6 +34,9 @@ if(teamScope){
   stores.cases.set('case-'+suffix,{$id:'case-'+suffix,leadId,owner:stores.leads.get(leadId).owner,kind:'Education',institution:'Synthetic application '+suffix,stage:'Shortlisted',version:1,notes:'Hidden fixture notes'});
   stores.appointments.set('appointment-'+suffix,{$id:'appointment-'+suffix,leadId,owner:stores.leads.get(leadId).owner,title:'Synthetic appointment '+suffix,status:'Booked',startsAt:'2030-01-01T10:00:00Z',endsAt:'2030-01-01T11:00:00Z',version:1,notes:'Hidden fixture notes'});
  }
+ for(const [suffix,leadId] of [['inside','synthetic-lead'],['outside','synthetic-repeat']]){
+  stores.consultations.set('consult-'+suffix,{$id:'consult-'+suffix,leadId,counselor:'synthetic-counselor',counselorName:'Synthetic Counselor',destination:suffix==='inside'?'Germany':'Italy',destinationKey:suffix==='inside'?'germany':'italy',heldOn:'2026-11-01',recordedBy:'hidden-reference'});
+ }
  stores.tasks.set('task-outside',{$id:'task-outside',leadId:'synthetic-repeat',title:'Outside synthetic follow-up',status:'Open',version:1});
 }
 const authUsers=new Map([[userId,{$id:userId,status:true}]]);
@@ -42,7 +45,7 @@ let failRevocation=teamPreview;
 if(teamPreview||contacts){
  for(const [id,name] of [['synthetic-counselor','Synthetic Counselor'],['synthetic-new','Synthetic New Staff']]){
   authUsers.set(id,{$id:id,status:true});
-  if(id==='synthetic-counselor')stores.staff.set(id,{$id:id,name,role:'counselor',active:true,teamId:'',$updatedAt:new Date().toISOString()});
+  if(id==='synthetic-counselor')stores.staff.set(id,{$id:id,name,role:'counselor',active:true,teamId:teamScope?'team-alpha':'',$updatedAt:new Date().toISOString()});
  }
 }
 const files=new Map();
@@ -79,7 +82,7 @@ const server=http.createServer(async(request,response)=>{
   }
   const match=url.pathname.match(/^\/v1\/databases\/preview\/collections\/(posts|revisions|activities|locks|staff|crm_teams|media|leads|lead_views|tasks|notifications|worker_health|cases|appointments|documents|consultations)\/documents(?:\/([^/]+))?$/);if(!match)return send(response,404,{});
   const [,collection,id]=match,store=stores[collection];
-  if(request.method==='GET'){if(id)return store.has(id)?send(response,200,store.get(id)):send(response,404,{});let documents=[...store.values()];for(const q of url.searchParams.getAll('queries[]').map(JSON.parse)){if(q.method==='equal')documents=documents.filter(d=>q.values.includes(d[q.attribute]));if(q.method==='notEqual')documents=documents.filter(d=>!q.values.includes(d[q.attribute]));if(q.method==='greaterThan')documents=documents.filter(d=>d[q.attribute]>q.values[0]);if(q.method==='lessThanEqual')documents=documents.filter(d=>d[q.attribute]<=q.values[0]);if(q.method==='orderAsc')documents.sort((a,b)=>String(a[q.attribute]??'').localeCompare(String(b[q.attribute]??'')));if(q.method==='orderDesc')documents.sort((a,b)=>String(b[q.attribute]??'').localeCompare(String(a[q.attribute]??'')));}const total=documents.length;const queries=url.searchParams.getAll('queries[]').map(JSON.parse),offset=queries.find(q=>q.method==='offset')?.values[0]||0,limit=queries.find(q=>q.method==='limit')?.values[0]||100;const cursor=queries.find(q=>q.method==='cursorAfter')?.values[0];if(cursor)documents=documents.slice(documents.findIndex(d=>d.$id===cursor)+1);const select=teamScope&&queries.find(q=>q.method==='select')?.values;
+  if(request.method==='GET'){if(id)return store.has(id)?send(response,200,store.get(id)):send(response,404,{});let documents=[...store.values()];for(const q of url.searchParams.getAll('queries[]').map(JSON.parse)){if(q.method==='equal')documents=documents.filter(d=>q.values.includes(d[q.attribute]));if(q.method==='notEqual')documents=documents.filter(d=>!q.values.includes(d[q.attribute]));if(q.method==='greaterThan')documents=documents.filter(d=>d[q.attribute]>q.values[0]);if(q.method==='greaterThanEqual')documents=documents.filter(d=>d[q.attribute]>=q.values[0]);if(q.method==='lessThanEqual')documents=documents.filter(d=>d[q.attribute]<=q.values[0]);if(q.method==='orderAsc')documents.sort((a,b)=>String(a[q.attribute]??'').localeCompare(String(b[q.attribute]??'')));if(q.method==='orderDesc')documents.sort((a,b)=>String(b[q.attribute]??'').localeCompare(String(a[q.attribute]??'')));}const total=documents.length;const queries=url.searchParams.getAll('queries[]').map(JSON.parse),offset=queries.find(q=>q.method==='offset')?.values[0]||0,limit=queries.find(q=>q.method==='limit')?.values[0]||100;const cursor=queries.find(q=>q.method==='cursorAfter')?.values[0];if(cursor)documents=documents.slice(documents.findIndex(d=>d.$id===cursor)+1);const select=teamScope&&queries.find(q=>q.method==='select')?.values;
   const page=documents.slice(offset,offset+limit);
   return send(response,200,{documents:select?page.map(row=>Object.fromEntries(select.filter(key=>key in row).map(key=>[key,row[key]]))):page,total});}
   if(request.method==='POST'){if(store.has(body.documentId))return send(response,409,{});const doc={...body.data,$id:body.documentId,$createdAt:new Date().toISOString(),$updatedAt:new Date().toISOString()};store.set(doc.$id,doc);return send(response,201,doc);}

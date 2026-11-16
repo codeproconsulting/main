@@ -17,7 +17,7 @@ export default function Reports() {
   return <>
     <PageHeading eyebrow="LEAD INVENTORY" title="Operational reports" description={report.teamScoped ? "Your team’s lead counts by stage, source and destination." : "Current lead counts by stage, source and destination."}>
       <div className="flex flex-wrap gap-2">
-        {!report.teamScoped && <Link className="crm-button secondary" to="/admin/reports/consultations">Consultation tracking</Link>}
+        <Link className="crm-button secondary" to="/admin/reports/consultations">Consultation tracking</Link>
         {!report.truncated && <a className="crm-button" href="/admin/leads.csv">{report.teamScoped ? "Export team leads as CSV" : "Export leads as CSV"}</a>}
       </div>
     </PageHeading>

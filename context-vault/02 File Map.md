@@ -191,3 +191,7 @@ app/admin/reports.server.ts implements team scans. app/admin/reports.tsx shows a
 ## Team CSV export
 
 app/admin/export.ts accepts team sessions. app/admin/reports.server.ts scopes and audits the export.
+
+## Team consultation reads
+
+Consultations service builds date and contact filters; report and history routes accept team sessions for reads.
