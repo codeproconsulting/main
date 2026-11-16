@@ -11,7 +11,7 @@ const manager={$id:'synthetic-manager',role:'manager',active:true};
 const counselor={$id:'synthetic-counselor',role:'counselor',active:true};
 const errorStatus=status=>error=>error instanceof Response&&error.status===status;
 const token='d21265d0-363f-4a4c-b777-0e67b36930da';
-let vite,manual,crm,views,bulk,routing,worker,teamQueues,operations,consultations,leads,activities,profiles,queries,options,dependencies;
+let vite,manual,crm,views,bulk,routing,worker,teamQueues,operations,consultations,documentWorkflow,leads,activities,profiles,queries,options,dependencies;
 
 function form(changes={}){
  const fields=new FormData();
@@ -34,6 +34,7 @@ before(async()=>{
  teamQueues=await vite.ssrLoadModule('/app/admin/team-queues.server.ts');
  operations=await vite.ssrLoadModule('/app/admin/operations.server.ts');
  consultations=await vite.ssrLoadModule('/app/admin/consultations.server.ts');
+ documentWorkflow=await vite.ssrLoadModule('/app/admin/documents.server.ts');
  globalThis.fetch=async(input,request)=>{
   const url=new URL(input);
   const [,collection,id]=url.pathname.match(/\/collections\/(\w+)\/documents(?:\/([^/]+))?$/)??[];
@@ -589,4 +590,19 @@ test('team consultation writes require current manager scope and a same-team cou
  assert.equal(first.counselor,counselor.$id);
  assert.equal(first.recordedBy,actor.$id);
  assert.equal(dependencies.consultations.size,1);
+});
+
+
+test('team document reads project checklist metadata and deny private operations',async()=>{
+ options.strictQueue=true;
+ const actor={...manager,managerScope:'team',teamId:'team-alpha'};
+ leads.set('alpha',{$id:'alpha',teamId:'team-alpha'});
+ leads.set('beta',{$id:'beta',teamId:'team-beta'});
+ dependencies.documents.set('inside',{$id:'inside',leadId:'alpha',fileId:'hidden',name:'hidden.pdf',reviewNotes:'hidden',category:'Passport',status:'Accepted',scannedAt:'2030-01-01'});
+ const {documents}=await documentWorkflow.documentsFor(actor,'alpha');
+ assert.deepEqual(documents,[{$id:'inside',category:'Passport',status:'Accepted',scannedAt:'2030-01-01'}]);
+ await assert.rejects(()=>documentWorkflow.documentsFor(actor,'beta'),errorStatus(404));
+ await assert.rejects(()=>documentWorkflow.downloadClientDocument(actor,'inside'),errorStatus(403));
+ await assert.rejects(()=>documentWorkflow.uploadClientDocument(actor,'alpha',null,'Passport',''),errorStatus(403));
+ await assert.rejects(()=>documentWorkflow.reviewClientDocument(actor,'alpha','inside','Accepted','','','1'),errorStatus(403));
 });

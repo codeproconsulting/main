@@ -193,3 +193,7 @@ Use the existing 500-enquiry queue cap and ID cursor. Global reports retain date
 ## Team consultation recording
 
 Only active counselors from the manager’s team can receive attribution from a restricted manager. Retain deterministic submission IDs.
+
+## Team document checklist
+
+Use category as the team display label. File names, file IDs, and private notes stay outside the team response.

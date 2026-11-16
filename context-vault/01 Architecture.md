@@ -169,3 +169,7 @@ Team consultation reports reuse the current parent enquiry queue and recheck tea
 ## Team consultation recording
 
 Consultation recording shares the existing lead and staff-access locks. The team-manager path rechecks live actor, directory, parent and counselor scope.
+
+## Team document checklist
+
+Team document lists use a restricted metadata projection and verify current parent team again after pagination.

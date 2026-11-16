@@ -237,3 +237,7 @@ Scoped consultation history and reporting implemented. Recording remains gated f
 ## Team consultation recording
 
 Team consultation recording implemented.
+
+## Team document checklist
+
+A read-only team document checklist is implemented.

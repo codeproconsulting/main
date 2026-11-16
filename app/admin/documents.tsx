@@ -1,3 +1,4 @@
+import { isRestrictedManager } from "./domain";
 import { Form, data, useActionData, useLoaderData } from "react-router";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { requireStaff, sameOrigin } from "./auth.server";
@@ -8,12 +9,15 @@ import { boundedUploadForm } from "./storage.server";
 import { ActionError, Back, Badge, Empty, PageHeading, Submit } from "./ui";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
-  const staff = await requireStaff(request);
+  const staff = await requireStaff(request, true);
   const { lead, documents } = await documentsFor(staff, params.id!);
+  const readOnly = isRestrictedManager(staff);
   return data({
+    readOnly,
     lead: { $id: lead.$id, name: lead.name },
     documents: documents.map(({ $id, name, category, status, expiresAt, scannedAt, reviewVersion, reviewNotes }) =>
-      ({ $id, name, category, status, expiresAt, scannedAt, reviewVersion, reviewNotes })),
+      ({ $id, category, status, expiresAt, scannedAt, name: readOnly ? category : name,
+        ...(!readOnly ? { reviewVersion, reviewNotes } : {}) })),
   }, { headers: { "Cache-Control": "private, no-store" } });
 }
 
@@ -47,15 +51,15 @@ export async function action({ request, params }: ActionFunctionArgs) {
 }
 
 export default function Documents() {
-  const { lead, documents } = useLoaderData<typeof loader>();
+  const { lead, documents, readOnly } = useLoaderData<typeof loader>();
   const result = useActionData<typeof action>();
   return <>
     <Back to={`/admin/leads/${lead.$id}`}>Back to {lead.name}</Back>
-    <PageHeading eyebrow="PRIVATE CLIENT DOCUMENTS" title="Documents & review"
-      description="Files are scanned before saving. Every download requires access to this lead." />
+    <PageHeading eyebrow="PRIVATE CLIENT DOCUMENTS" title={readOnly ? "Document checklist" : "Documents & review"}
+      description={readOnly ? "Document categories, scan status and expiry for this enquiry." : "Files are scanned before saving. Every download requires access to this lead."} />
     <ActionError error={result?.error} />
     {result?.success && <p className="crm-success" role="status">Document record saved.</p>}
-    <section className="crm-panel crm-padded">
+    {!readOnly && <section className="crm-panel crm-padded">
       <Form method="post" encType="multipart/form-data" className="crm-form">
         <input name="intent" value="upload" type="hidden" />
         <label>Document category<select name="category">{documentCategories.map(category => <option key={category}>{category}</option>)}</select></label>
@@ -63,7 +67,7 @@ export default function Documents() {
         <label>Expiry date (optional, Pakistan time)<input name="expiresAt" type="date" /></label>
         <Submit>Upload private document</Submit>
       </Form>
-    </section>
+    </section>}
     <section className="crm-panel crm-padded" aria-labelledby="document-checklist">
       <h2 id="document-checklist">Document checklist</h2>
       <p>Use the categories relevant to this client. A category is ready when it has an accepted document that has been scanned and has not expired.</p>
@@ -78,17 +82,17 @@ export default function Documents() {
       </ul>
     </section>
     <section className="crm-panel">
-      {!documents.length && <Empty title="No documents uploaded">Choose a relevant category and upload the first file.</Empty>}
+      {!documents.length && <Empty title="No documents uploaded">{readOnly ? "No document records are available for this enquiry." : "Choose a relevant category and upload the first file."}</Empty>}
       {documents.map(doc => <article className="crm-followup" key={doc.$id}>
         <div>
           <h2>{doc.name}</h2>
           <p>{doc.category} · <Badge>{documentState(doc)}</Badge></p>
           {doc.expiresAt && <p>Expires {expiryDay(doc.expiresAt)} (Pakistan time)</p>}
-          {doc.scannedAt
+          {!readOnly && (doc.scannedAt
             ? <a href={`/admin/documents/${doc.$id}/download`}>Download private file →</a>
-            : <p>Upload a scanned replacement to make this document available.</p>}
+            : <p>Upload a scanned replacement to make this document available.</p>)}
         </div>
-        {doc.scannedAt && <Form method="post" className="crm-form" key={`${doc.$id}:${doc.reviewVersion ?? 0}`}>
+        {!readOnly && doc.scannedAt && <Form method="post" className="crm-form" key={`${doc.$id}:${doc.reviewVersion ?? 0}`}>
           <input name="intent" value="review" type="hidden" />
           <input name="id" value={doc.$id} type="hidden" />
           <input name="reviewVersion" value={doc.reviewVersion ?? 0} type="hidden" />

@@ -155,3 +155,7 @@ Team managers can see consultation history for in-team leads. Scoped rows omit t
 ## Team consultation recording
 
 Team managers can add consultation records for their current team. The record keeps recorder and counselor as separate identities.
+
+## Team document checklist
+
+Team managers can see category, scan state, review status and expiry on their own leads. Upload, review and download remain excluded.

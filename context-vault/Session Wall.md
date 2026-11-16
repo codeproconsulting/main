@@ -3,39 +3,40 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-16-12]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-16-13]].
 
 ## Resume here
 
-**Session:** 2026-11-16-12
+**Session:** 2026-11-16-13
 
 **Active feature:** CRM-03
 
 **State:** completed
 
-**Objective:** Allow team managers to record completed consultations on their own team’s enquiries.
+**Objective:** Expose team-scoped document checklist metadata with private file access gated.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Team counselor picker, locked scope verification and idempotent recording
+- Read-only document category, status, scan and expiry for current team enquiries
 
 ## Out of scope
 
-- Production rollout and changing past consultation attribution
+- Team file download, uploads or reviews
+- Production rollout
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| CRM03-LOG-A | Current team checks and idempotency | passed | 24 focused tests passed, including cross-team enquiry and counselor denial, stale manager team denial and replay protection. |
-| CRM03-LOG-B | Built-app browser recording | passed | Chrome verified recording and attribution, forged staff rejection and wrong-team enquiry denial. |
+| CRM03-DOC-A | Metadata projection and operation denial | passed | 28 focused tests passed, with named-file and private metadata absent and cross-team, upload, review and download denied. |
+| CRM03-DOC-B | Browser and target query acceptance | passed | Chrome verified checklist, redacted payload, cross-team 404 and direct download/write 403. Initial target projection rejected missing scannedAt. Added that one optional attribute and reran target query successfully. |
 
 ## Exact next actions
 
-1. Build read-only team-scoped document metadata. Verify current parent scope and keep file downloads and document writes gated until separate review.
-   Files: `app/admin/documents.tsx`, `app/admin/documents.server.ts`, `app/admin/document-download.ts`
+1. Design and verify scoped file download access for scanned documents. Recheck lead and current team on the download route, preserve private storage and unsafe/legacy file denial, and keep document writes gated.
+   Files: `app/admin/document-download.ts`, `app/admin/documents.server.ts`, `tests/documents.test.mjs`
 
 ## Known risks and unfinished work
 
@@ -58,9 +59,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-16T17:38:09.788Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-R9NyqC/typecheck.log`
-- **passed**: `npm run test` (2026-11-16T17:38:11.275Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-R9NyqC/test.log`
-- **passed**: `npm run build` (2026-11-16T17:38:16.672Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-R9NyqC/build.log`
+- **passed**: `npm run typecheck` (2026-11-16T17:41:50.178Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-2H4F6e/typecheck.log`
+- **passed**: `npm run test` (2026-11-16T17:41:51.904Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-2H4F6e/test.log`
+- **passed**: `npm run build` (2026-11-16T17:41:57.687Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-2H4F6e/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -91,7 +92,7 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **caseSchema**: Read-only cases setup preview completed; no schema changes applied
 - **appointmentSchema**: Existing private collection and owner/lead query shapes verified read-only
 - **appointmentWorkflow**: CAL-01 locally accepted including synthetic browser checks
-- **documentSchema**: Private bucket configuration verified and three additive attributes identified by read-only preview. No schema changes applied.
+- **documentSchema**: Optional scannedAt provisioned for checklist. reviewVersion, reviewNotes and target scanner acceptance remain pending.
 - **documentStorage**: Disposable 20 MB Appwrite chunk upload, byte comparison and anonymous denial passed. Synthetic file removed.
 - **documentScanner**: Synthetic Unix socket verdicts verified. Actual ClamAV daemon and target host smoke checks pending.
 - **staffSchema**: Read-only Appwrite check found revocationPending and role_active absent. No schema changes applied.

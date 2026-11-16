@@ -2,7 +2,7 @@ import { documentCategories, documentLimit, documentStatuses, type ClientDocumen
 import { randomUUID } from "node:crypto";
 import { AppwriteError, createDocument, getDocument, listDocuments, query, updateDocument } from "~/lib/appwrite.server";
 import { allow, audit, leadFor, writableEnquiry, serialized } from "./crm.server";
-import { canUseCRM, type Staff } from "./domain";
+import { canUseCRM, isRestrictedManager, type Staff } from "./domain";
 import { scanDocument } from "./document-scan.server";
 import { downloadFile, fileSignature, privateBucket, removeFile, uploadFile } from "./storage.server";
 
@@ -23,14 +23,20 @@ export function documentExpiry(value: string) {
 
 export async function documentsFor(staff: Staff, leadId: string) {
   const lead = await leadFor(staff, leadId);
+  const teamScoped = isRestrictedManager(staff);
   const documents: ClientDocument[] = [];
   let cursor: string | undefined;
   while (true) {
     const filters = [query("equal", "leadId", [lead.$id]), query("orderDesc", "$createdAt"), query("limit", undefined, [100])];
+    if (teamScoped) filters.push(query("select", undefined, ["$id", "category", "status", "expiresAt", "scannedAt"]));
     if (cursor) filters.push(query("cursorAfter", undefined, [cursor]));
     const page = (await listDocuments<ClientDocument>("documents", filters)).documents;
     documents.push(...page);
-    if (page.length < 100) return { lead, documents };
+    if (page.length < 100) {
+      if (teamScoped) await leadFor(staff, leadId);
+      return { lead, documents };
+    }
+    if (page.at(-1)?.$id === cursor) throw new Response("Could not page documents safely.", {status:503});
     cursor = page.at(-1)!.$id;
   }
 }
@@ -54,6 +60,7 @@ async function recordOutcome(eventId: string, event: string, details: object) {
 }
 
 export async function uploadClientDocument(staff: Staff, leadId: string, file: File, category: string, expiry: string) {
+  allow(!isRestrictedManager(staff));
   await leadFor(staff, leadId);
   if (!documentCategories.some(item => item === category)) {
     throw new Response("Select a document category.", { status: 400 });
@@ -122,6 +129,7 @@ export async function uploadClientDocument(staff: Staff, leadId: string, file: F
 export async function reviewClientDocument(
   staff: Staff, leadId: string, id: string, status: string, expiry: string, notes: string, expected: string,
 ) {
+  allow(!isRestrictedManager(staff));
   if (!documentStatuses.some(item => item === status)) throw new Response("Invalid review status.", { status: 400 });
   const expiresAt = documentExpiry(expiry);
   return serialized(`lead:${leadId}`, async () => {
@@ -149,7 +157,7 @@ export async function reviewClientDocument(
 }
 
 export async function downloadClientDocument(staff: Staff, id: string) {
-  allow(canUseCRM(staff));
+  allow(canUseCRM(staff) && !isRestrictedManager(staff));
   const doc = await documentFor(id);
   await leadFor(staff, doc.leadId);
   if (!doc.scannedAt) throw new Response("This document must be re-uploaded and scanned before download.", { status: 409 });

@@ -1,38 +1,39 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-16-12",
+  "sessionId": "2026-11-16-13",
   "sessionStatus": "completed",
   "activeFeature": "CRM-03",
-  "objective": "Allow team managers to record completed consultations on their own team’s enquiries.",
+  "objective": "Expose team-scoped document checklist metadata with private file access gated.",
   "scope": [
-    "Team counselor picker, locked scope verification and idempotent recording"
+    "Read-only document category, status, scan and expiry for current team enquiries"
   ],
   "outOfScope": [
-    "Production rollout and changing past consultation attribution"
+    "Team file download, uploads or reviews",
+    "Production rollout"
   ],
   "acceptance": [
     {
-      "id": "CRM03-LOG-A",
-      "description": "Current team checks and idempotency",
+      "id": "CRM03-DOC-A",
+      "description": "Metadata projection and operation denial",
       "status": "passed",
-      "evidence": "24 focused tests passed, including cross-team enquiry and counselor denial, stale manager team denial and replay protection."
+      "evidence": "28 focused tests passed, with named-file and private metadata absent and cross-team, upload, review and download denied."
     },
     {
-      "id": "CRM03-LOG-B",
-      "description": "Built-app browser recording",
+      "id": "CRM03-DOC-B",
+      "description": "Browser and target query acceptance",
       "status": "passed",
-      "evidence": "Chrome verified recording and attribution, forged staff rejection and wrong-team enquiry denial."
+      "evidence": "Chrome verified checklist, redacted payload, cross-team 404 and direct download/write 403. Initial target projection rejected missing scannedAt. Added that one optional attribute and reran target query successfully."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Build read-only team-scoped document metadata. Verify current parent scope and keep file downloads and document writes gated until separate review.",
+      "action": "Design and verify scoped file download access for scanned documents. Recheck lead and current team on the download route, preserve private storage and unsafe/legacy file denial, and keep document writes gated.",
       "files": [
-        "app/admin/documents.tsx",
+        "app/admin/document-download.ts",
         "app/admin/documents.server.ts",
-        "app/admin/document-download.ts"
+        "tests/documents.test.mjs"
       ]
     }
   ],
@@ -80,7 +81,7 @@
     "caseSchema": "Read-only cases setup preview completed; no schema changes applied",
     "appointmentSchema": "Existing private collection and owner/lead query shapes verified read-only",
     "appointmentWorkflow": "CAL-01 locally accepted including synthetic browser checks",
-    "documentSchema": "Private bucket configuration verified and three additive attributes identified by read-only preview. No schema changes applied.",
+    "documentSchema": "Optional scannedAt provisioned for checklist. reviewVersion, reviewNotes and target scanner acceptance remain pending.",
     "documentStorage": "Disposable 20 MB Appwrite chunk upload, byte comparison and anonymous denial passed. Synthetic file removed.",
     "documentScanner": "Synthetic Unix socket verdicts verified. Actual ClamAV daemon and target host smoke checks pending.",
     "staffSchema": "Read-only Appwrite check found revocationPending and role_active absent. No schema changes applied.",
@@ -110,24 +111,24 @@
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-16T17:38:09.788Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-R9NyqC/typecheck.log"
+      "checkedAt": "2026-11-16T17:41:50.178Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-2H4F6e/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-16T17:38:11.275Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-R9NyqC/test.log"
+      "checkedAt": "2026-11-16T17:41:51.904Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-2H4F6e/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-16T17:38:16.672Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-R9NyqC/build.log"
+      "checkedAt": "2026-11-16T17:41:57.687Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-2H4F6e/build.log"
     }
   ],
-  "updatedAt": "2026-11-16T17:39:05.557Z",
-  "verifiedSourceFingerprint": "7faf4813ef4085dc2b54c0b446de62755fff5012b2d1e764c4a74b67c0406184"
+  "updatedAt": "2026-11-16T17:42:56.463Z",
+  "verifiedSourceFingerprint": "e46efeaf808a09a9eb606f0e48572fa756b9db6b4c23199836755f7b5d78dee6"
 }

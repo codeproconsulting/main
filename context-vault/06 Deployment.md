@@ -181,3 +181,9 @@ No schema change. Verify combined date, counselor and destination filters after 
 ## Team consultation recording
 
 No new schema. Verify consultation write and scope against the release runtime before staff rollout.
+
+## Team document checklist
+
+No schema change for team checklist. Verify private projection and closed download gate with the release runtime.
+
+Target optional scannedAt now exists. Team checklist projection passed. The remaining review attributes and trusted scanner acceptance are still outstanding for the document write rollout.

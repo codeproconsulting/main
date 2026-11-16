@@ -37,6 +37,7 @@ if(teamScope){
  for(const [suffix,leadId] of [['inside','synthetic-lead'],['outside','synthetic-repeat']]){
   stores.consultations.set('consult-'+suffix,{$id:'consult-'+suffix,leadId,counselor:'synthetic-counselor',counselorName:'Synthetic Counselor',destination:suffix==='inside'?'Germany':'Italy',destinationKey:suffix==='inside'?'germany':'italy',heldOn:'2026-11-01',recordedBy:'hidden-reference'});
  }
+ stores.documents.set('team-document',{$id:'team-document',leadId:'synthetic-lead',name:'Hidden fixture filename.pdf',fileId:'hidden-file-id',category:'Passport',status:'Accepted',scannedAt:'2026-11-01T00:00:00Z',reviewNotes:'Hidden fixture review'});
  stores.tasks.set('task-outside',{$id:'task-outside',leadId:'synthetic-repeat',title:'Outside synthetic follow-up',status:'Open',version:1});
 }
 const authUsers=new Map([[userId,{$id:userId,status:true}]]);

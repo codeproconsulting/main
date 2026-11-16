@@ -199,3 +199,7 @@ Consultations service builds date and contact filters; report and history routes
 ## Team consultation recording
 
 The consultation history route renders the team counselor selector and the service validates team access during writes.
+
+## Team document checklist
+
+documents.server.ts projects metadata and denies protected operations. documents.tsx renders the scoped checklist.
