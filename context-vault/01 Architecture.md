@@ -185,3 +185,7 @@ Team document review reuses the lead and staff-access locks and rechecks current
 ## Team document uploads
 
 Team uploads reuse private storage, scan, audit and recovery. Membership is rechecked under the lead and staff-access locks after scanning.
+
+## Appointment reminders
+
+The reminder worker can scan the next hour of booked appointments and reuse private notification storage.

@@ -171,3 +171,7 @@ Scoped reviewers cannot upload or read or alter private notes; review is tied to
 ## Team document uploads
 
 Team managers may upload only to their current team when enabled.
+
+## Appointment reminders
+
+Appointment reminders belong to the current enquiry and booking assignee and require current lead scope.

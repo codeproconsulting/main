@@ -1,12 +1,20 @@
 import {AppwriteError,getDocument,listDocuments,query,updateDocument} from "~/lib/appwrite.server";
 import {allow,leadFor,serialized} from "./crm.server";
 import {canManage,canUseCRM,type Staff,type Task} from "./domain";
-import {currentTaskNotice} from "./reminder-policy";
+import type {Appointment} from "./calendar.server";
+import {appointmentReminderDueAt,currentTaskNotice} from "./reminder-policy";
 export type Notice={$id:string;$createdAt:string;recipient:string;entityId:string;kind:string;title:string;body:string;read:boolean;sourceId:string;sourceVersion:number;dueAt:string};
 async function currentNotice(staff:Staff,notice:Notice,now:string){
- if(notice.recipient!==staff.$id||notice.kind!=="task"||!notice.sourceId)return null;
+ if(notice.recipient!==staff.$id||!["task","appointment"].includes(notice.kind)||!notice.sourceId)return null;
  try{
-  const lead=await leadFor(staff,notice.entityId),task=await getDocument<Task>("tasks",notice.sourceId);
+  const lead=await leadFor(staff,notice.entityId);
+  if(notice.kind==="appointment"){
+   const booking=await getDocument<Appointment>("appointments",notice.sourceId);
+   const dueAt=appointmentReminderDueAt(booking,lead,now);
+   if(!dueAt||lead.owner!==staff.$id||notice.sourceVersion!==booking.version||notice.dueAt!==dueAt)return null;
+   return {...notice,title:`Upcoming appointment: ${booking.title}`,body:`Starts ${booking.startsAt}.`};
+  }
+  const task=await getDocument<Task>("tasks",notice.sourceId);
   if(!currentTaskNotice(notice,task,lead,staff.$id,now))return null;
   return {...notice,title:`Follow-up due: ${task.title}`,body:`Due ${task.dueAt}. Open the lead to record an outcome.`};
  }catch(error){if((error instanceof Response&&[403,404].includes(error.status))||(error instanceof AppwriteError&&error.status===404))return null;throw error;}

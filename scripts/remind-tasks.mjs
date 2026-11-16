@@ -1,11 +1,11 @@
 import {createHash,randomUUID} from 'node:crypto';
-import {dueTask} from '../app/admin/reminder-policy.ts';
+import {appointmentReminderDueAt,appointmentReminderLeadTime,dueTask} from '../app/admin/reminder-policy.ts';
 const hash=key=>createHash('sha256').update(key).digest('hex').slice(0,32);
 const q=(method,attribute,values)=>JSON.stringify({method,attribute,values});
 export const reminderId=task=>hash(`task:${task.$id}:${task.version}:${task.owner}:${task.dueAt}`);
 
 // In-app delivery is the durable notification write itself, not an external send.
-export async function remindDueTasks({api,allDocuments,databaseId,now=new Date().toISOString(),clock=()=>new Date().toISOString(),onError=()=>{},signal}){
+export async function remindDueTasks({api,allDocuments,databaseId,now=new Date().toISOString(),clock=()=>new Date().toISOString(),onError=()=>{},signal,includeAppointments=false}){
  if(!Number.isFinite(Date.parse(now)))throw new Error('Invalid reminder cycle time');
  const base=`/databases/${encodeURIComponent(databaseId)}/collections`;
  const path=(collection,id)=>`${base}/${collection}/documents${id?'/'+encodeURIComponent(id):''}`;
@@ -29,19 +29,34 @@ export async function remindDueTasks({api,allDocuments,databaseId,now=new Date()
  const acquired=await lock('worker:reminders',async()=>{
   await health({status:'running',startedAt:now,finishedAt:'',summary:'',errorCount:0});
   try{
-   const candidates=await allDocuments('tasks',[q('equal','status',['Open']),q('lessThanEqual','dueAt',[now])]);result.checked=candidates.length;
-   for(const candidate of candidates){
+   const tasks=await allDocuments('tasks',[q('equal','status',['Open']),q('lessThanEqual','dueAt',[now])]);
+   const appointments=includeAppointments ? await allDocuments('appointments',[
+    q('equal','status',['Booked']),q('greaterThan','startsAt',[now]),
+    q('lessThanEqual','startsAt',[new Date(Date.parse(now)+appointmentReminderLeadTime).toISOString()]),
+   ]).catch(() => { result.failed++; return []; }) : [];
+   result.checked=tasks.length+appointments.length;
+   for(const [collection,candidate] of [...tasks.map(row=>['tasks',row]),...appointments.map(row=>['appointments',row])]){
     if(signal?.aborted){result.stopped=true;break;}
     try{
      const done=await lock(`lead:${candidate.leadId}`,async()=>{
-      // Re-read after the same lock used by assignment and task lifecycle writes.
-      const [task,lead]=await Promise.all([optional('tasks',candidate.$id),optional('leads',candidate.leadId)]);
-      if(!task||!lead||!dueTask(task,lead,now)){result.skipped++;return;}
+      const [source,lead]=await Promise.all([optional(collection,candidate.$id),optional('leads',candidate.leadId)]);
+      const appointment=collection==='appointments';
+      const dueAt=source&&lead&&(appointment ? appointmentReminderDueAt(source,lead,now) : dueTask(source,lead,now) && source.dueAt);
+      if(!dueAt){result.skipped++;return;}
       const staff=await optional('staff',lead.owner);
       if(!staff?.active||!['owner','admin','manager','counselor'].includes(staff.role)){result.skipped++;return;}
-      const data={recipient:lead.owner,entityId:lead.$id,kind:'task',sourceId:task.$id,sourceVersion:task.version,dueAt:task.dueAt,title:`Follow-up due: ${task.title}`.slice(0,300),body:`Due ${task.dueAt}. Open the lead to record an outcome.`,read:false};
-      try{await api(path('notifications'),'POST',{documentId:reminderId(task),data,permissions:[]});result.created++;}
-      catch(error){if(error.status!==409)throw error;const saved=await api(path('notifications',reminderId(task)));if(saved.recipient!==data.recipient||saved.sourceId!==data.sourceId||saved.sourceVersion!==data.sourceVersion||saved.dueAt!==data.dueAt||saved.entityId!==data.entityId||saved.kind!=='task')throw new Error('Notification identity conflict');result.duplicate++;}
+      const kind=appointment?'appointment':'task';
+      const documentId=appointment?hash(`appointment:${source.$id}:${source.version}:${source.owner}:${dueAt}`):reminderId(source);
+      const title=(appointment?`Upcoming appointment: ${source.title}`:`Follow-up due: ${source.title}`).slice(0,300);
+      const body=appointment?`Starts ${source.startsAt}.`:`Due ${dueAt}. Open the lead to record an outcome.`;
+      const data={recipient:lead.owner,entityId:lead.$id,kind,sourceId:source.$id,sourceVersion:source.version,dueAt,title,body,read:false};
+      try{await api(path('notifications'),'POST',{documentId,data,permissions:[]});result.created++;}
+      catch(error){
+       if(error.status!==409)throw error;
+       const saved=await api(path('notifications',documentId));
+       if(saved.recipient!==data.recipient||saved.sourceId!==data.sourceId||saved.sourceVersion!==data.sourceVersion||saved.dueAt!==data.dueAt||saved.entityId!==data.entityId||saved.kind!==kind)throw new Error('Notification identity conflict');
+       result.duplicate++;
+      }
      });
      if(!done){result.skipped++;result.failed++;onError({id:candidate.$id,status:'lead_lock_busy'});}
     }catch(error){result.failed++;onError({id:candidate.$id,status:error.status??'operation_failed'});}

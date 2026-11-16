@@ -255,3 +255,7 @@ Team document status and expiry edits are implemented. Uploads remain gated.
 Team uploads implemented behind opt-in. Scanner acceptance and rollout remain pending.
 
 Opted-in team uploads passed synthetic service and isolated Chrome acceptance. Production scanner verification remains pending.
+
+## Appointment reminders
+
+Opt-in in-app appointment reminders implemented.

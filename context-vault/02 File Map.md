@@ -215,3 +215,7 @@ documents.tsx enables the restricted review form; documents.server.ts checks sca
 ## Team document uploads
 
 documents.tsx exposes the opted-in upload form. documents.server.ts enforces team scope and scanner checks.
+
+## Appointment reminders
+
+The worker candidate scan is in scripts/remind-tasks.mjs. app/admin/reminder-policy.ts supplies current appointment logic.

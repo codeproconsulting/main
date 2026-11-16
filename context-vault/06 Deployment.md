@@ -203,3 +203,7 @@ Target scannedAt and reviewVersion are available. Private reviewNotes and produc
 See docs/PRIVATE-DOCUMENTS.md for the ENABLE_TEAM_DOCUMENT_UPLOADS flag and release checks.
 
 All optional document attributes are now available on target storage. Team uploads are opt-in and production activation remains pending.
+
+## Appointment reminders
+
+The optional ENABLE_APPOINTMENT_REMINDERS flag belongs on the existing reminder worker. See deploy/CRM-DEPLOYMENT.md.

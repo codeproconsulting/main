@@ -3,39 +3,39 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-16-16]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-16-17]].
 
 ## Resume here
 
-**Session:** 2026-11-16-16
+**Session:** 2026-11-16-17
 
-**Active feature:** CRM-03
+**Active feature:** REMIND-01
 
 **State:** completed
 
-**Objective:** Allow opted-in team document uploads through the existing scanner.
+**Objective:** Deliver opt-in reminders in the hour before assigned appointments.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Team document uploads
+- In-app appointment reminder worker and current-source inbox
 
 ## Out of scope
 
-- Production scanner acceptance and activation
+- Case reminders, email, and production activation
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| CRM03-UPLOAD-A | Upload permission and scan safeguards | passed | Focused tests verify opt-in, wrong team, stale membership and scanned upload. |
-| CRM03-UPLOAD-B | Built-app synthetic upload | passed | Chrome verified clean upload, synthetic scanner rejection and wrong-team denial. Typecheck, full suite and production build passed. |
+| REMIND-CAL-A | Appointment delivery and stale suppression | passed | 50 focused tests passed. Verified opt-in, boundary, dedup after lost acknowledgement and stale source suppression. |
+| REMIND-CAL-B | Target query and built app | passed | Target accepted the booked one-hour window. Isolated real CLI and Chrome verified delivery, repeat dedup, mark-read and cancellation suppression. |
 
 ## Exact next actions
 
-1. Build the appointment in-app reminder adapter with scheduled start offsets and current scope, stale booking suppression and retries. Keep case and provider delivery separate.
-   Files: `scripts/remind-tasks.mjs`, `app/admin/notifications.server.ts`, `context-vault/Feature Ledger.md`
+1. Implement opt-in in-app case deadline reminders with current owner and version checks. Verify task and appointment delivery remain intact.
+   Files: `scripts/remind-tasks.mjs`, `app/admin/reminder-policy.ts`, `app/admin/notifications.server.ts`
 
 ## Known risks and unfinished work
 
@@ -58,9 +58,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-16T17:55:19.252Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-NprvOZ/typecheck.log`
-- **passed**: `npm run test` (2026-11-16T17:55:20.504Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-NprvOZ/test.log`
-- **passed**: `npm run build` (2026-11-16T17:55:25.686Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-NprvOZ/build.log`
+- **passed**: `npm run typecheck` (2026-11-16T17:58:32.764Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-kvIR1C/typecheck.log`
+- **passed**: `npm run test` (2026-11-16T17:58:33.985Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-kvIR1C/test.log`
+- **passed**: `npm run build` (2026-11-16T17:58:39.332Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-kvIR1C/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -115,5 +115,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **teamDirectoryAdmin**: Local administration workflow verified with synthetic staff. Target directory verified read-only. No production team or staff changes.
 - **teamQueueRelease**: Read-only target query compatibility verified. No schema or data changes and no VPS rollout.
 - **teamTaskEdits**: Synthetic service and built-app Chrome acceptance passed. No production records or schema changed.
+- **appointmentReminders**: Opt-in source verified. VPS worker activation remains pending.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

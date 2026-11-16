@@ -7,7 +7,7 @@ const now='2030-01-01T12:00:00.000Z';
 const hash=key=>createHash('sha256').update(key).digest('hex').slice(0,32);
 const task=(id='task-one',changes={})=>({$id:id,leadId:'lead-one',owner:'counselor-one',status:'Open',title:'Synthetic follow-up',dueAt:'2030-01-01T11:00:00.000Z',version:1,...changes});
 function fixture(tasks=[task()]){
- const stores={tasks:new Map(tasks.map(row=>[row.$id,row])),leads:new Map([['lead-one',{$id:'lead-one',owner:'counselor-one',stage:'New'}]]),staff:new Map([['counselor-one',{$id:'counselor-one',role:'counselor',active:true}]]),notifications:new Map(),locks:new Map(),worker_health:new Map()},calls=[],errors=[];
+ const stores={appointments:new Map(),tasks:new Map(tasks.map(row=>[row.$id,row])),leads:new Map([['lead-one',{$id:'lead-one',owner:'counselor-one',stage:'New'}]]),staff:new Map([['counselor-one',{$id:'counselor-one',role:'counselor',active:true}]]),notifications:new Map(),locks:new Map(),worker_health:new Map()},calls=[],errors=[];
  let beforeNotification=false,afterNotification=false,afterList=null,failQuery=false,failHealth=false,releaseFailure=false,signal;
  const failure=status=>Object.assign(new Error('Synthetic failure'),{status});
  const api=async(path,method='GET',payload)=>{
@@ -24,10 +24,16 @@ function fixture(tasks=[task()]){
   if(method==='DELETE'){if(releaseFailure&&collection==='locks')throw failure(503);store.delete(id);return;}
  };
  const allDocuments=async(collection,queries)=>{
+  if(collection==='appointments'){
+   const constraints=queries.map(JSON.parse);
+   assert.ok(constraints.some(q=>q.attribute==='startsAt'&&q.method==='greaterThan'&&q.values[0]===now));
+   assert.ok(constraints.some(q=>q.attribute==='startsAt'&&q.method==='lessThanEqual'&&q.values[0]==='2030-01-01T13:00:00.000Z'));
+   return [...stores.appointments.values()];
+  }
   assert.equal(collection,'tasks');if(failQuery)throw failure(503);assert.ok(queries.map(JSON.parse).some(q=>q.method==='equal'&&q.attribute==='status'&&q.values[0]==='Open'));
   const rows=[...stores.tasks.values()].filter(t=>t.status==='Open'&&t.dueAt<=now).map(t=>structuredClone(t));if(afterList){afterList(stores);afterList=null;}return rows;
  };
- return {stores,calls,errors,setSignal:value=>signal=value,run:()=>remindDueTasks({api,allDocuments,databaseId:'synthetic',now,clock:()=>now,onError:event=>errors.push(event),signal}),failBefore:()=>beforeNotification=true,loseAck:()=>afterNotification=true,afterList:fn=>afterList=fn,failQuery:()=>failQuery=true,failHealth:()=>failHealth=true,failRelease:()=>releaseFailure=true};
+ return {stores,calls,errors,setSignal:value=>signal=value,run:(includeAppointments=false)=>remindDueTasks({includeAppointments,api,allDocuments,databaseId:'synthetic',now,clock:()=>now,onError:event=>errors.push(event),signal}),failBefore:()=>beforeNotification=true,loseAck:()=>afterNotification=true,afterList:fn=>afterList=fn,failQuery:()=>failQuery=true,failHealth:()=>failHealth=true,failRelease:()=>releaseFailure=true};
 }
 test('due task is delivered once with private metadata and remains read across retry/restart',async()=>{
  const f=fixture([task(),task('future',{dueAt:'2031-01-01T00:00:00.000Z'})]);let result=await f.run();assert.equal(result.created,1);assert.equal(f.stores.notifications.size,1);const notice=[...f.stores.notifications.values()][0];assert.equal(notice.read,false);assert.equal(notice.sourceId,'task-one');assert.equal(notice.sourceVersion,1);assert.equal(notice.recipient,'counselor-one');assert.equal(f.stores.worker_health.get('reminders').status,'healthy');notice.read=true;
@@ -84,3 +90,20 @@ test('worker stops between tasks and releases its cycle lock without claiming a 
  const controller=new AbortController(),f=fixture();f.setSignal(controller.signal);f.afterList(()=>controller.abort());const result=await f.run();assert.equal(result.stopped,true);assert.equal(result.created,0);assert.equal(f.stores.locks.size,0);assert.equal(f.stores.worker_health.get('reminders').status,'stopped');assert.equal(f.stores.worker_health.get('reminders').lastSuccessAt,undefined);
 });
 test('already stopped worker performs no I/O',async()=>{const controller=new AbortController();controller.abort();const f=fixture();f.setSignal(controller.signal);assert.equal((await f.run()).stopped,true);assert.equal(f.calls.length,0);});
+
+
+test('appointment reminders are opt-in, deduplicated and only delivered for current booked slots',async()=>{
+ const f=fixture([]);
+ const booking={$id:'booking-one',leadId:'lead-one',owner:'counselor-one',status:'Booked',version:1,title:'Synthetic booking',startsAt:'2030-01-01T13:00:00.000Z'};
+ f.stores.appointments.set(booking.$id,booking);
+ f.stores.appointments.set('expired',{...booking,$id:'expired',startsAt:now});
+ f.stores.appointments.set('cancelled',{...booking,$id:'cancelled',status:'Cancelled'});
+ assert.equal((await f.run()).created,0);
+ f.loseAck();
+ assert.equal((await f.run(true)).failed,1);
+ assert.equal((await f.run(true)).duplicate,1);
+ const notice=[...f.stores.notifications.values()][0];
+ assert.equal(notice.kind,'appointment');
+ assert.equal(notice.dueAt,now);
+ assert.equal(notice.sourceId,booking.$id);
+});

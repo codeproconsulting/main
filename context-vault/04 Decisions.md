@@ -209,3 +209,7 @@ Team review changes status, expiry and version only. Ambiguous writes retain loc
 ## Team document uploads
 
 Team upload defaults disabled. Activate only after scanner and storage acceptance.
+
+## Appointment reminders
+
+Send one reminder per booking version in the hour before start. Use the current owner and suppress stale notices.

@@ -319,3 +319,18 @@ test('queue reaches records past 100 and checks a repeated lead once per page', 
   assert.equal(leadReads,2);
  }finally{globalThis.fetch=transport;}
 });
+
+
+test('appointment inbox hides reminders after the booking starts, changes or leaves the owner',async()=>{
+ reset();
+ const booking={$id:'booking',leadId:'lead-one',owner:'counselor-one',status:'Booked',startsAt:'2030-01-01T13:00:00.000Z',title:'Synthetic booking',version:1};
+ stores.appointments.set(booking.$id,booking);
+ stores.notifications.set('notice-one',{...stores.notifications.get('notice-one'),kind:'appointment',sourceId:booking.$id,dueAt:now});
+ assert.equal((await notices.noticesFor(staff('counselor'),'',now)).notices[0].title,'Upcoming appointment: Synthetic booking');
+ assert.equal((await notices.noticesFor(staff('counselor'),'',booking.startsAt)).notices.length,0);
+ booking.version++;
+ assert.equal((await notices.noticesFor(staff('counselor'),'',now)).notices.length,0);
+ booking.version--;
+ stores.leads.get('lead-one').owner='counselor-two';
+ await assert.rejects(()=>notices.readNotice(staff('counselor'),'notice-one',now),rejects(409));
+});
