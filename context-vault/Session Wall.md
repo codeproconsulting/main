@@ -11,11 +11,11 @@ Generated from `session-state.json` by `npm run session:status`. Edit that struc
 
 **Active feature:** CRM-03
 
-**State:** in_progress
+**State:** completed
 
 **Objective:** Add branch-labelled team directory schema and enforce team access on the web lead workflow.
 
-A user saying **continue** means resume this feature's next unfinished acceptance check. Do not start unrelated modules or repeat completed infrastructure work. Verify current files and drift before trusting the checkpoint.
+This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
@@ -34,12 +34,13 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 | --- | --- | --- | --- |
 | CRM03-SCOPE-A | Two-team scoped lead access and writes | passed | Service tests verify team-only list and matches, direct read and edit denial, stale team recheck, inactive team, preserved ownership and legacy manager behavior. |
 | CRM03-SCOPE-B | Browser routing and restricted surface denial | passed | Chrome verified team redirect, allowed stage edit, cross-team 404, and 403 for reports, tasks, documents, consultation reports and mobile sign-in. |
-| CRM03-SCOPE-C | Target schema and migration acceptance | pending | Target read-only preview confirmed the team directory and manager/lead scope attributes are absent. No schema or profile changes applied. |
+| CRM03-SCOPE-C | Target team schema and indexed read acceptance | passed | Target private directory, manager scope and indexed lead team field provisioned. Synthetic manifest preview and two-team indexed totals verified, then four test records removed. No real classification or activation. |
+| CRM03-SCOPE-MIGRATION | Aggregate inventory and reviewed manifest tooling | passed | Synthetic checks cover inventory pagination, dry-run, exhaustive validation, admin-only writes, idempotent version changes, audit and retained locks on ambiguous writes. |
 
 ## Exact next actions
 
-1. Build the aggregate team inventory and reviewed classification workflow. Before activating team managers, provision the additive team schema and verify indexed team counts with synthetic data.
-   Files: `context-vault/Sessions/2026-11-16-02.md`, `scripts/appwrite-schema.mjs`, `app/admin/team-scope.server.ts`
+1. Build owner/admin team directory administration and reviewed manager-scope configuration. Keep linked and mobile surfaces denied until separately accepted.
+   Files: `app/admin/team.tsx`, `app/admin/team.server.ts`, `app/admin/team-scope.server.ts`, `context-vault/Sessions/2026-11-16-02.md`
 
 ## Known risks and unfinished work
 
@@ -62,9 +63,9 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-16T01:36:49.505Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-QY68lB/typecheck.log`
-- **passed**: `npm run test` (2026-11-16T01:36:50.702Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-QY68lB/test.log`
-- **passed**: `npm run build` (2026-11-16T01:36:56.307Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-QY68lB/build.log`
+- **passed**: `npm run typecheck` (2026-11-16T01:44:40.939Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Uyn1U6/typecheck.log`
+- **passed**: `npm run test` (2026-11-16T01:44:42.471Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Uyn1U6/test.log`
+- **passed**: `npm run build` (2026-11-16T01:44:47.834Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Uyn1U6/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -115,5 +116,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **leadViewsSchema**: Private lead_views collection and leads priority index provisioned. Synthetic storage and query smoke passed. VPS runtime acceptance pending.
 - **routingSchema**: Four optional routing fields and rotation index provisioned. No other staff schema changed. Runtime release pending.
 - **intakeRouting**: Queue schema provisioned; isolated worker and target query accepted. Worker activation, audit actor configuration and VPS runtime key verification pending.
+- **teamScopeSchema**: Private team directory, optional staff manager scope, and optional indexed leads team field available. Aggregate scan returned no active teams, visible lead rows, or active managers. No real staff scope or enquiry assignments changed.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

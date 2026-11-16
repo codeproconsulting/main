@@ -129,3 +129,7 @@ Branch and team authorization boundaries and current call paths are mapped in [[
 ## Team-scoped lead workspace
 
 The first restricted-manager slice joins staff to an active private team directory record and reads enquiries by indexed teamId. Web lead routes opt in; other workspace surfaces deny restricted managers by default.
+
+## Team classification tooling
+
+Team classification tools scan private directory, staff and enquiry metadata for aggregate counts. A reviewed manifest fills empty lead team references under existing locks.

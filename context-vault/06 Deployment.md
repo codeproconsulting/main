@@ -137,3 +137,9 @@ Team scope is design only. Do not enable restricted managers until additive sche
 Preview private crm_teams and additive staff and leads scope fields. Do not configure team manager profiles in the release environment until migration and target acceptance are recorded.
 
 Read-only target preview confirmed the new team directory and scope fields are absent. Apply only after migration review. Keep existing staff profiles unchanged until a reviewed classification and runtime checks pass.
+
+## Team classification tooling
+
+The deployment runbook documents aggregate inventory, reviewed manifests, operator role checks and recovery. Never commit classification manifests.
+
+The target aggregate inventory completed before synthetic testing. It returned zero active teams, lead rows and active managers in the configured database. Verify intended release database before using a reviewed manifest or activating managers.

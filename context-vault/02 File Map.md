@@ -159,3 +159,7 @@ See [[Sessions/2026-11-16-02]] for the branch and team authorization call-path i
 ## Team-scoped lead workspace
 
 app/admin/team-scope.server.ts validates active teams. app/admin/auth.server.ts gates web routes and validates current profile scope. app/admin/crm.server.ts applies team scope before pagination and during edits.
+
+## Team classification tooling
+
+scripts/classify-lead-teams.mjs implements inventory, manifest preview and guarded apply. tests/team-migration.test.mjs verifies write behavior and lock recovery.

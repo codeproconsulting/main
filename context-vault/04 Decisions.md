@@ -153,3 +153,7 @@ Proposed team ownership, explicit manager scope and safe rollback order are reco
 ## Team-scoped lead workspace
 
 Existing managers without a scope retain global access. Profiles explicitly configured for team access fail closed on missing, inactive or invalid membership. Branch names label teams and confer no additional access.
+
+## Team classification tooling
+
+Classification changes only an empty enquiry team. The reviewed version is checked before and during apply, and reruns skip already applied assignments.

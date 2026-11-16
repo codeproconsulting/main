@@ -189,3 +189,9 @@ The branch/team authorization map and migration design are documented in [[Sessi
 ## Team-scoped lead workspace
 
 Restricted manager web leads, matches and stage/priority edits implemented. Schema provisioning, classification and activation remain pending.
+
+## Team classification tooling
+
+Aggregate inventory and reviewed classification tools are implemented. Real staff and enquiry classification still requires reviewed mappings.
+
+Team directory, optional manager scope and indexed lead field now exist in target storage. Synthetic preview and two-team index checks passed. Production profile configuration and activation remain pending.

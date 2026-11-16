@@ -115,3 +115,7 @@ The proposed restricted manager policy and legacy defaults are detailed in [[Ses
 ## Team-scoped lead workspace
 
 Team managers have scoped web lead list, match, read and stage/priority edit access. Linked workflows, audit history, reports, exports, cross-team writes and mobile are denied. Writes recheck current team membership under existing locks.
+
+## Team classification tooling
+
+Migration apply requires an active owner or administrator profile and writes per-enquiry audit intent. Inventory outputs aggregate counts only.
