@@ -171,3 +171,7 @@ Team directory forms are in app/admin/team.tsx. app/admin/team.server.ts validat
 ## Team linked work queues
 
 app/admin/team-queues.server.ts serves read-only pages. app/admin/tasks.tsx and app/admin/work.tsx opt in only for loaders.
+
+## Team follow-up edits
+
+app/admin/tasks.tsx enables the existing task controls for team-scoped sessions. app/admin/crm.server.ts guards the mutation.

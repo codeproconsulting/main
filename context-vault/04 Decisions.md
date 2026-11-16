@@ -165,3 +165,7 @@ Changing a new or restricted manager to organization-wide scope requires explici
 ## Team linked work queues
 
 Team queues use an ID cursor and require a matching current parent. They support up to 500 team enquiries; an indexed linked-team projection is needed beyond that limit.
+
+## Team follow-up edits
+
+A team manager may change a task only when its owner agrees with the current lead owner. A task owner mismatch requires reconciliation. An ambiguous task write retains locks.

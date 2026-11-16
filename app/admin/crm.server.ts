@@ -141,6 +141,15 @@ export async function serialized<T>(key: string, operation: () => Promise<T>): P
 }
 export const staffAccessLock = "staff:access";
 
+async function withCurrentTeamManager<T>(staff: Staff, operation: () => Promise<T>) {
+  return serialized(staffAccessLock, async () => {
+    const actor = await getDocument<Staff>("staff", staff.$id);
+    allow(actor.active && isRestrictedManager(actor) && actor.teamId === staff.teamId);
+    await requireActiveTeam(actor);
+    return operation();
+  });
+}
+
 export function contactEnquiries(staff: Staff, lead: Lead, page: number) {
   allow(staff.active && canManage(staff));
   if (!lead.contactGroup) return { documents: [], total: 0 };
@@ -359,12 +368,7 @@ export async function updateLead(
     };
     if (isRestrictedManager(staff)) {
       allow(mode === "stage-priority" && !route);
-      return serialized(staffAccessLock, async () => {
-        const actor = await getDocument<Staff>("staff", staff.$id);
-        allow(actor.active && isRestrictedManager(actor) && actor.teamId === staff.teamId);
-        await requireActiveTeam(actor);
-        return apply();
-      });
+      return withCurrentTeamManager(staff, apply);
     }
     if (!route) return apply();
     return serialized(staffAccessLock, async () => {
@@ -392,24 +396,56 @@ export async function createTask(staff: Staff, id: string, form: FormData) {
     return task;
   });
 }
-export async function changeTask(staff:Staff,id:string,intent:string,expectedVersion:string,outcome:string,dueAt=""){
-  allow(canUseCRM(staff));
-  const initial=await getDocument<Task>("tasks",id);
-  return serialized(`lead:${initial.leadId}`,async()=>{
-    const task=await getDocument<Task>("tasks",id);
-    allow(task.leadId===initial.leadId);
-    const lead=await leadFor(staff,task.leadId);
-    allow(canManage(staff)||(task.owner===staff.$id&&lead.owner===staff.$id));
-    if(!expectedVersion||Number(expectedVersion)!==task.version||task.status!=="Open")throw new Response("This follow-up changed. Refresh before saving.",{status:409});
-    if(!["complete","cancel","reschedule"].includes(intent))throw new Response("Unknown follow-up action",{status:400});
-    if(!outcome.trim()||outcome.length>2000)throw new Response("Record an outcome or change reason (up to 2000 characters).",{status:400});
-    const nextDue=intent==="reschedule"?dateField(dueAt):task.dueAt;
-    if(!nextDue)throw new Response("Enter a due date with timezone.",{status:400});
-    const changes={status:intent==="complete"?"Completed":intent==="cancel"?"Cancelled":"Open",dueAt:nextDue,outcome:outcome.trim(),version:task.version+1};
-    const event=await audit(staff,task.leadId,"lead","Follow-up change requested",{state:"pending",taskId:id,intent,before:{status:task.status,dueAt:task.dueAt,version:task.version},after:changes});
-    const updated=await updateDocument<Task>("tasks",id,changes);
-    await updateDocument("activities",event.$id,{event:intent==="complete"?"Follow-up completed":intent==="cancel"?"Follow-up cancelled":"Follow-up rescheduled",details:JSON.stringify({state:"completed",taskId:id,intent,after:changes})});
-    return updated;
+export async function changeTask(staff: Staff, id: string, intent: string, expectedVersion: string, outcome: string, dueAt = "") {
+  allow(staff.active && canUseCRM(staff));
+  const teamManager = isRestrictedManager(staff);
+  const readTask = () => getDocument<Task>("tasks", id).catch(error => {
+    if (error instanceof AppwriteError && error.status === 404) throw new Response("Follow-up not found", { status: 404 });
+    throw error;
+  });
+  const readTeamLead = (id: string) => writableEnquiry(staff, id).catch(error => {
+    if (error instanceof Response && error.status === 404) throw new Response("Follow-up not found", { status: 404 });
+    throw error;
+  });
+  const initial = await readTask();
+  if (teamManager) await readTeamLead(initial.leadId);
+  return serialized(`lead:${initial.leadId}`, async () => {
+    const apply = async () => {
+      const task = await readTask();
+      allow(task.leadId === initial.leadId);
+      const lead = teamManager ? await readTeamLead(task.leadId) : await leadFor(staff, task.leadId);
+      if (teamManager) {
+        if (task.owner !== lead.owner) throw new Response("This follow-up’s assignment needs reconciliation before editing.", { status: 409 });
+      } else {
+        allow(canManage(staff) || (task.owner === staff.$id && lead.owner === staff.$id));
+      }
+      if (!expectedVersion || Number(expectedVersion) !== task.version || task.status !== "Open") {
+        throw new Response("This follow-up changed. Refresh before saving.", { status: 409 });
+      }
+      if (!["complete", "cancel", "reschedule"].includes(intent)) throw new Response("Unknown follow-up action", { status: 400 });
+      if (!outcome.trim() || outcome.length > 2000) {
+        throw new Response("Record an outcome or change reason (up to 2000 characters).", { status: 400 });
+      }
+      const nextDue = intent === "reschedule" ? dateField(dueAt) : task.dueAt;
+      if (!nextDue) throw new Response("Enter a due date with timezone.", { status: 400 });
+      const changes = { status: intent === "complete" ? "Completed" : intent === "cancel" ? "Cancelled" : "Open",
+        dueAt: nextDue, outcome: outcome.trim(), version: task.version + 1 };
+      const event = await audit(staff, task.leadId, "lead", "Follow-up change requested", {
+        state: "pending", taskId: id, intent, before: { status: task.status, dueAt: task.dueAt, version: task.version }, after: changes,
+      });
+      const updated = await updateDocument<Task>("tasks", id, changes).catch(error => {
+        if (teamManager && !definitiveWriteRejection(error)) {
+          throw new UnconfirmedMutation("The follow-up change may have saved. Ask an administrator to reconcile it before retrying.");
+        }
+        throw error;
+      });
+      await updateDocument("activities", event.$id, {
+        event: intent === "complete" ? "Follow-up completed" : intent === "cancel" ? "Follow-up cancelled" : "Follow-up rescheduled",
+        details: JSON.stringify({ state: "completed", taskId: id, intent, after: changes }),
+      });
+      return updated;
+    };
+    return teamManager ? withCurrentTeamManager(staff, apply) : apply();
   });
 }
 export async function completeTask(staff:Staff,id:string,outcome:string,expectedVersion:string){return changeTask(staff,id,"complete",expectedVersion,outcome);}

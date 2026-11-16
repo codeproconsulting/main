@@ -3,41 +3,40 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-16-05]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-16-06]].
 
 ## Resume here
 
-**Session:** 2026-11-16-05
+**Session:** 2026-11-16-06
 
 **Active feature:** CRM-03
 
 **State:** completed
 
-**Objective:** Expose read-only work queues to team managers without passing team boundaries.
+**Objective:** Allow team managers to complete, reschedule and cancel existing in-team follow-ups.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Follow-up, application and appointment queues
-- Safely projected application and appointment detail and cursor paging
+- Existing task mutations through team-scoped web queues
+- Current actor, parent team, task version and ownership checks
 
 ## Out of scope
 
-- Linked record mutation, document and reporting access, mobile parity
-- Production rollout
+- Task creation, application or appointment writes, mobile, and production rollout
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| CRM03-QUEUE-A | Parent-team authority, projections and pagination | passed | Synthetic two-team tests cover 25-row pagination, retired/moved parent, closed task exclusion and withheld linked fields. |
-| CRM03-QUEUE-B | Browser and target queue query verification | passed | Chrome verified all three lists, allowed summary details, cross-team 404, absent internal notes and POST/creation denial. Target Appwrite accepted the projected list, ID cursor and parent team query shapes with synthetic references. |
+| CRM03-TASK-A | Scoped follow-up mutation safeguards | passed | Synthetic tests cover cross-team target and moved parent, actor team change, stale version, inconsistent ownership, ambiguous response and accepted reschedule. |
+| CRM03-TASK-B | Built-app follow-up interaction | passed | Chrome verified reschedule and UTC conversion, cancel, complete, and forged cross-team POST returning 404. Initial locale-sensitive selector was corrected. |
 
 ## Exact next actions
 
-1. Build scoped follow-up mutations for restricted managers. Recheck actor, team, and parent under the existing locks and verify cross-team, stale-version and ownership transfer behavior before enabling writes.
-   Files: `app/admin/crm.server.ts`, `app/admin/tasks.tsx`, `app/admin/team-queues.server.ts`
+1. Build restricted manager application updates for existing in-team records. Recheck current actor, parent and assignment under locks, preserve hidden notes, and verify direct and stale writes before enabling the form.
+   Files: `app/admin/operations.server.ts`, `app/admin/work.tsx`, `app/admin/team-scope.server.ts`
 
 ## Known risks and unfinished work
 
@@ -60,9 +59,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-16T02:13:08.963Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ynmn4p/typecheck.log`
-- **passed**: `npm run test` (2026-11-16T02:13:10.336Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ynmn4p/test.log`
-- **passed**: `npm run build` (2026-11-16T02:13:15.877Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ynmn4p/build.log`
+- **passed**: `npm run typecheck` (2026-11-16T03:32:07.249Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-lLfMVR/typecheck.log`
+- **passed**: `npm run test` (2026-11-16T03:32:08.416Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-lLfMVR/test.log`
+- **passed**: `npm run build` (2026-11-16T03:32:13.436Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-lLfMVR/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -116,5 +115,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **teamScopeSchema**: Private team directory, optional staff manager scope, and optional indexed leads team field available. Aggregate scan returned no active teams, visible lead rows, or active managers. No real staff scope or enquiry assignments changed.
 - **teamDirectoryAdmin**: Local administration workflow verified with synthetic staff. Target directory verified read-only. No production team or staff changes.
 - **teamQueueRelease**: Read-only target query compatibility verified. No schema or data changes and no VPS rollout.
+- **teamTaskEdits**: Synthetic service and built-app Chrome acceptance passed. No production records or schema changed.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

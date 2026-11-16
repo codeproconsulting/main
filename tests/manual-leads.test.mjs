@@ -452,3 +452,34 @@ test('team queues paginate only matching parent teams and hide work after a team
  options.moveParent='alpha';
  assert.deepEqual(await teamQueues.teamQueue(actor,'tasks',''),{records:[],next:''});
 });
+
+
+test('team follow-up mutations honor current parent, staff scope, version, and handoff consistency',async()=>{
+ const actor={...manager,managerScope:'team',teamId:'team-alpha'};
+ profiles.set(actor.$id,actor);
+ dependencies.crm_teams.set('team-alpha',{$id:'team-alpha',status:'active'});
+ leads.set('alpha',{$id:'alpha',teamId:'team-alpha',owner:counselor.$id});
+ leads.set('beta',{$id:'beta',teamId:'team-beta',owner:counselor.$id});
+ const slot={$id:'inside',leadId:'alpha',owner:counselor.$id,status:'Open',version:1,dueAt:'2030-01-01T10:00:00Z'};
+ const tasks=dependencies.tasks;
+ tasks.set(slot.$id,slot);
+ tasks.set('outside',{...slot,$id:'outside',leadId:'beta'});
+ await assert.rejects(()=>crm.changeTask(actor,'outside','complete','1','Synthetic outcome'),errorStatus(404));
+ await assert.rejects(()=>crm.changeTask(actor,'inside','complete','2','Synthetic outcome'),errorStatus(409));
+ tasks.set(slot.$id,{...slot,owner:'previous-owner'});
+ await assert.rejects(()=>crm.changeTask(actor,'inside','complete','1','Synthetic outcome'),errorStatus(409));
+ tasks.set(slot.$id,slot);
+ profiles.set(actor.$id,{...actor,teamId:'team-beta'});
+ await assert.rejects(()=>crm.changeTask(actor,'inside','complete','1','Synthetic outcome'),errorStatus(403));
+ profiles.set(actor.$id,actor);
+ options.failPatch='tasks';
+ await assert.rejects(()=>crm.changeTask(actor,'inside','complete','1','Synthetic outcome'),errorStatus(503));
+ delete options.failPatch;
+ const rescheduled=await crm.changeTask(actor,'inside','reschedule','1','Synthetic reschedule','2030-01-02T10:00:00+05:00');
+ assert.equal(rescheduled.dueAt,'2030-01-02T05:00:00.000Z');
+ assert.equal(rescheduled.owner,counselor.$id);
+ leads.set('alpha',{...leads.get('alpha'),teamId:'team-beta'});
+ await assert.rejects(()=>crm.changeTask(actor,'inside','complete','2','Synthetic outcome'),errorStatus(404));
+ assert.equal(tasks.get('inside').status,'Open');
+ assert.equal(tasks.get('outside').version,1);
+});

@@ -28,6 +28,7 @@ if(teamScope){
  stores.crm_teams.set('team-beta',{$id:'team-beta',name:'Synthetic team Beta',status:'active'});
  Object.assign(stores.staff.get(userId),{managerScope:'team',teamId:'team-alpha'});
  stores.leads.get('synthetic-lead').teamId='team-alpha';
+ for(const task of stores.tasks.values())task.owner=stores.leads.get(task.leadId).owner;
  stores.leads.get('synthetic-repeat').teamId='team-beta';
  for(const [suffix,leadId] of [['inside','synthetic-lead'],['outside','synthetic-repeat']]){
   stores.cases.set('case-'+suffix,{$id:'case-'+suffix,leadId,kind:'Education',institution:'Synthetic application '+suffix,stage:'Shortlisted',version:1,notes:'Hidden fixture notes'});

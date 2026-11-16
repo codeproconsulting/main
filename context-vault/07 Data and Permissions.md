@@ -127,3 +127,7 @@ Owners and admins manage directory entries and staff scope. Manager team access 
 ## Team linked work queues
 
 Team managers can view scoped follow-up titles and case and appointment summaries. Internal notes, meeting links, and task outcomes are withheld. The existing auth gate denies linked POST actions.
+
+## Team follow-up edits
+
+Team managers can edit existing open follow-ups only in their active team. Existing task outcome text remains excluded from queue payloads.

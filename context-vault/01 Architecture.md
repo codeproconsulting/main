@@ -141,3 +141,7 @@ The Team & access route maintains the directory and configures manager scope und
 ## Team linked work queues
 
 Restricted linked queues first resolve current team enquiry IDs, then query linked records and recheck each visible parent. Summary fields are projected.
+
+## Team follow-up edits
+
+Follow-up updates use the parent lead lock and staff-access lock for team managers, then recheck live membership and parent scope before mutation.

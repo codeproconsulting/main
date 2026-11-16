@@ -207,3 +207,9 @@ Team administration passed isolated Chrome and service acceptance. Target direct
 Team manager read-only tasks, cases and appointments implemented. Linked writes and other restricted surfaces remain denied.
 
 Team linked queues passed synthetic service and Chrome acceptance. Target query compatibility passed read-only.
+
+## Team follow-up edits
+
+Team follow-up completion, reschedule and cancellation implemented. Other linked mutations remain gated.
+
+Team follow-up edits passed synthetic service and Chrome acceptance. Runtime release remains pending.
