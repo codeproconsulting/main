@@ -229,3 +229,7 @@ Use generic content, a staff allowlist and verified Auth addresses. Exclude rest
 ## Resend delivery events
 
 Use immutable event records to avoid delivery order overwriting bounce or complaint. Check provider ID and single recipient against outbox. Unknown IDs request retry.
+
+## Email delivery operations
+
+Show provider counts as event counts, distinct from the queue acceptance state. Keep the latest 25 entries for each table.

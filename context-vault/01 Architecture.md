@@ -205,3 +205,7 @@ In-app reminders can enqueue generic staff email. The outbox sender holds the le
 ## Resend delivery events
 
 The website accepts signed Resend events and stores a private ledger. The email worker reads bounce and complaint suppression.
+
+## Email delivery operations
+
+The CRM email delivery page reads private outbox and event storage through projected server queries.

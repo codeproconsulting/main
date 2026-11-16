@@ -57,6 +57,7 @@ export default [
     route("appointments/:id", "admin/work.tsx", {id:"appointment-detail"}),
     route("team", "admin/team.tsx"),
     route("settings", "admin/settings.tsx"),
+    route("settings/email-delivery", "admin/email-delivery.tsx"),
   ]),
 
   // Root level sitemap, robots, and llms.txt for AI crawlers

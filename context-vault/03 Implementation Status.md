@@ -277,3 +277,7 @@ Opt-in staff email integration implemented. Provider delivery and webhook accept
 ## Resend delivery events
 
 Signed event handling and suppression implemented. Live webhook and sender setup remain pending.
+
+## Email delivery operations
+
+Email delivery dashboard implemented for owner and admin accounts.

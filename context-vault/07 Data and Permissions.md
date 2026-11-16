@@ -191,3 +191,7 @@ Email contains no applicant fields. Send requires current source, current owner,
 ## Resend delivery events
 
 The callback requires a raw signed request. Event records contain a recipient hash and provider metadata without raw bodies or email addresses.
+
+## Email delivery operations
+
+The email operations response omits payloads, addresses, recipient hashes and source reminder IDs.

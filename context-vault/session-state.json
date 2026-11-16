@@ -1,38 +1,38 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-16-21",
+  "sessionId": "2026-11-16-22",
   "sessionStatus": "completed",
   "activeFeature": "COMMS-01",
-  "objective": "Verify and persist Resend delivery events and suppress bounced or complained addresses.",
+  "objective": "Expose a private, read-only email delivery dashboard for owners and admins.",
   "scope": [
-    "Signed webhook, event dedup, suppression lookup"
+    "Outbox and provider event totals and recent activity"
   ],
   "outOfScope": [
-    "Live sending, webhook registration and operator UI"
+    "Live email and mutation of suppression decisions"
   ],
   "acceptance": [
     {
-      "id": "COMMS01-WEBHOOK-A",
-      "description": "Signed event handling and suppression",
+      "id": "COMMS01-OPS-A",
+      "description": "Owner/admin authorization and private projections",
       "status": "passed",
-      "evidence": "Synthetic signature and transport tests verify tamper and stale rejection, provider/recipient match, duplicate event handling and suppression."
+      "evidence": "Synthetic test verifies denial and excludes payload, address hashes and reminder references."
     },
     {
-      "id": "COMMS01-WEBHOOK-B",
-      "description": "Target schema readiness",
+      "id": "COMMS01-OPS-B",
+      "description": "Target query compatibility and build",
       "status": "passed",
-      "evidence": "Private event collection and outbox provider index provisioned; exact provider and suppression query shapes verified read-only. Full typecheck, suite and build passed."
+      "evidence": "Read-only target queries accepted counts and projections for both collections. Typecheck, full test suite and production build passed. Browser and VPS runtime were not exercised."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Build owner/admin email delivery operations view with counts, provider outcome and suppression review. Keep message payload and recipient addresses outside browser responses.",
+      "action": "Build staff email reminder preferences with explicit opt-in and immediate opt-out. Keep the operations allowlist as a rollout gate and revalidate preferences at send time.",
       "files": [
         "app/admin/settings.tsx",
-        "scripts/email-outbox.mjs",
-        "app/routes/api.resend-webhook.ts"
+        "scripts/staff-reminder-email.mjs",
+        "scripts/appwrite-schema.mjs"
       ]
     }
   ],
@@ -115,24 +115,24 @@
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-16T18:33:10.718Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-z3y40O/typecheck.log"
+      "checkedAt": "2026-11-16T18:38:56.508Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-sIwU4n/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-16T18:33:12.080Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-z3y40O/test.log"
+      "checkedAt": "2026-11-16T18:38:57.833Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-sIwU4n/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-16T18:33:17.226Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-z3y40O/build.log"
+      "checkedAt": "2026-11-16T18:39:03.325Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-sIwU4n/build.log"
     }
   ],
-  "updatedAt": "2026-11-16T18:33:40.779Z",
-  "verifiedSourceFingerprint": "de494c56ce65d09c7e43d375d785f8a639a02edf807d141804aa2cfe2b2ceaa6"
+  "updatedAt": "2026-11-16T18:39:21.022Z",
+  "verifiedSourceFingerprint": "65c7ede25158197c51dd90b95de1d0a62adc358529b14d22a8e0dad79543df69"
 }

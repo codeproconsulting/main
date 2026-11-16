@@ -3,39 +3,39 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-16-21]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-16-22]].
 
 ## Resume here
 
-**Session:** 2026-11-16-21
+**Session:** 2026-11-16-22
 
 **Active feature:** COMMS-01
 
 **State:** completed
 
-**Objective:** Verify and persist Resend delivery events and suppress bounced or complained addresses.
+**Objective:** Expose a private, read-only email delivery dashboard for owners and admins.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Signed webhook, event dedup, suppression lookup
+- Outbox and provider event totals and recent activity
 
 ## Out of scope
 
-- Live sending, webhook registration and operator UI
+- Live email and mutation of suppression decisions
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| COMMS01-WEBHOOK-A | Signed event handling and suppression | passed | Synthetic signature and transport tests verify tamper and stale rejection, provider/recipient match, duplicate event handling and suppression. |
-| COMMS01-WEBHOOK-B | Target schema readiness | passed | Private event collection and outbox provider index provisioned; exact provider and suppression query shapes verified read-only. Full typecheck, suite and build passed. |
+| COMMS01-OPS-A | Owner/admin authorization and private projections | passed | Synthetic test verifies denial and excludes payload, address hashes and reminder references. |
+| COMMS01-OPS-B | Target query compatibility and build | passed | Read-only target queries accepted counts and projections for both collections. Typecheck, full test suite and production build passed. Browser and VPS runtime were not exercised. |
 
 ## Exact next actions
 
-1. Build owner/admin email delivery operations view with counts, provider outcome and suppression review. Keep message payload and recipient addresses outside browser responses.
-   Files: `app/admin/settings.tsx`, `scripts/email-outbox.mjs`, `app/routes/api.resend-webhook.ts`
+1. Build staff email reminder preferences with explicit opt-in and immediate opt-out. Keep the operations allowlist as a rollout gate and revalidate preferences at send time.
+   Files: `app/admin/settings.tsx`, `scripts/staff-reminder-email.mjs`, `scripts/appwrite-schema.mjs`
 
 ## Known risks and unfinished work
 
@@ -58,9 +58,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-16T18:33:10.718Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-z3y40O/typecheck.log`
-- **passed**: `npm run test` (2026-11-16T18:33:12.080Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-z3y40O/test.log`
-- **passed**: `npm run build` (2026-11-16T18:33:17.226Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-z3y40O/build.log`
+- **passed**: `npm run typecheck` (2026-11-16T18:38:56.508Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-sIwU4n/typecheck.log`
+- **passed**: `npm run test` (2026-11-16T18:38:57.833Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-sIwU4n/test.log`
+- **passed**: `npm run build` (2026-11-16T18:39:03.325Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-sIwU4n/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 

@@ -235,3 +235,7 @@ scripts/staff-reminder-email.mjs implements producer and send authorization; scr
 ## Resend delivery events
 
 app/routes/api.resend-webhook.ts verifies and records provider events. scripts/staff-reminder-email.mjs checks suppression.
+
+## Email delivery operations
+
+app/admin/email-delivery.tsx renders operations; app/admin/email-delivery.server.ts gates and projects the data.

@@ -225,3 +225,7 @@ See deploy/CRM-DEPLOYMENT.md for flags, sender, allowlist and runtime user acces
 ## Resend delivery events
 
 See deploy/CRM-DEPLOYMENT.md for event settings, private schema and webhook opt-in.
+
+## Email delivery operations
+
+Workspace setup links to Email delivery for owners and admins. Runtime needs read access to email_outbox and email_events.

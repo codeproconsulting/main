@@ -1,6 +1,6 @@
 # File updates
 
-Generated snapshot of changes since the previous inventory; Nov 16, 2026, 11:33 p.m. (Asia/Karachi).
+Generated snapshot of changes since the previous inventory; Nov 16, 2026, 11:38 p.m. (Asia/Karachi).
 
 [[02 File Map]] · [[Source Inventory]] · [[05 Maintenance]]
 
@@ -8,13 +8,11 @@ Review these changes and update human-authored architecture/status notes where n
 
 ## Added
 
-- `app/routes/api.resend-webhook.ts`
-- `tests/resend-webhook.test.mjs`
+- `app/admin/email-delivery.server.ts`
+- `app/admin/email-delivery.tsx`
+- `tests/email-delivery.test.mjs`
 
 ## Modified
 
+- `app/admin/settings.tsx`
 - `app/routes.ts`
-- `deploy/CRM-DEPLOYMENT.md`
-- `scripts/appwrite-schema.mjs`
-- `scripts/staff-reminder-email.mjs`
-- `tests/staff-reminder-email.test.mjs`
