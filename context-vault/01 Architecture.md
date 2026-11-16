@@ -177,3 +177,7 @@ Team document lists use a restricted metadata projection and verify current pare
 ## Team private downloads
 
 The download route audits access and refreshes current team and parent before opening the private storage stream.
+
+## Team document reviews
+
+Team document review reuses the lead and staff-access locks and rechecks current team before writes.

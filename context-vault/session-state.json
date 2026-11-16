@@ -1,38 +1,39 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-16-14",
+  "sessionId": "2026-11-16-15",
   "sessionStatus": "completed",
   "activeFeature": "CRM-03",
-  "objective": "Allow safe scanned document downloads for current team managers.",
+  "objective": "Allow team managers to review scanned documents while preserving private notes.",
   "scope": [
-    "Private attachment delivery, active team and parent recheck"
+    "Existing scanned document status and expiry edits",
+    "Current team, parent and review version checks"
   ],
   "outOfScope": [
-    "Team document uploads and reviews, production rollout"
+    "Uploads, private note edits, and production rollout"
   ],
   "acceptance": [
     {
-      "id": "CRM03-FILE-A",
-      "description": "Attachment scope and scan gating",
+      "id": "CRM03-REVIEW-A",
+      "description": "Scoped review safeguards",
       "status": "passed",
-      "evidence": "29 focused tests passed, including changed scope and parent after audit, legacy denial, generic filename and byte integrity."
+      "evidence": "30 focused tests passed, including stale scope, wrong parent, stale version and preservation of notes."
     },
     {
-      "id": "CRM03-FILE-B",
-      "description": "Built-app download",
+      "id": "CRM03-REVIEW-B",
+      "description": "Built-app browser and target schema",
       "status": "passed",
-      "evidence": "Chrome verified private attachment bytes, generic serving filename, unscanned file denial, cross-team denial and blocked document writes."
+      "evidence": "Chrome verified review, expiry and preserved notes plus denied cross-team, stale and upload requests. Appwrite optional reviewVersion provisioned and scoped projection accepted."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Implement scoped team document reviews for scanned existing records. Enforce current team, lead and version under lock. Keep uploads gated and verify review attributes and runtime prerequisites separately.",
+      "action": "Implement team-scoped uploads with current team rechecked under locks and the existing scanner, storage and failure cleanup. Verify scoped synthetic intake and leave production disabled pending actual scanner acceptance.",
       "files": [
         "app/admin/documents.tsx",
         "app/admin/documents.server.ts",
-        "scripts/appwrite-schema.mjs"
+        "docs/PRIVATE-DOCUMENTS.md"
       ]
     }
   ],
@@ -80,7 +81,7 @@
     "caseSchema": "Read-only cases setup preview completed; no schema changes applied",
     "appointmentSchema": "Existing private collection and owner/lead query shapes verified read-only",
     "appointmentWorkflow": "CAL-01 locally accepted including synthetic browser checks",
-    "documentSchema": "Optional scannedAt provisioned for checklist. reviewVersion, reviewNotes and target scanner acceptance remain pending.",
+    "documentSchema": "Optional scannedAt and reviewVersion available. reviewNotes and actual production scanner acceptance remain pending.",
     "documentStorage": "Disposable 20 MB Appwrite chunk upload, byte comparison and anonymous denial passed. Synthetic file removed.",
     "documentScanner": "Synthetic Unix socket verdicts verified. Actual ClamAV daemon and target host smoke checks pending.",
     "staffSchema": "Read-only Appwrite check found revocationPending and role_active absent. No schema changes applied.",
@@ -110,24 +111,24 @@
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-16T17:49:21.125Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-7uozNL/typecheck.log"
+      "checkedAt": "2026-11-16T17:52:14.767Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-zX6XMd/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-16T17:49:22.621Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-7uozNL/test.log"
+      "checkedAt": "2026-11-16T17:52:16.353Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-zX6XMd/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-16T17:49:28.931Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-7uozNL/build.log"
+      "checkedAt": "2026-11-16T17:52:21.929Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-zX6XMd/build.log"
     }
   ],
-  "updatedAt": "2026-11-16T17:50:05.859Z",
-  "verifiedSourceFingerprint": "5cc273aea69d440d511ba1b400b1885bc27bd2f1eb13454e41afd859ab0a1f9d"
+  "updatedAt": "2026-11-16T17:53:05.294Z",
+  "verifiedSourceFingerprint": "2f4786d9e47ea94e45ceb25ff4760687343dfa1d6a5ad0fd636196db15097a71"
 }

@@ -191,3 +191,9 @@ Target optional scannedAt now exists. Team checklist projection passed. The rema
 ## Team private downloads
 
 No schema change. Verify document scanner acceptance and release storage read permissions before staff use.
+
+## Team document reviews
+
+Team review requires the optional reviewVersion attribute. The private reviewNotes attribute and production scanner remain separate rollout checks.
+
+Target scannedAt and reviewVersion are available. Private reviewNotes and production ClamAV validation remain separate checks.

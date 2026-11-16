@@ -163,3 +163,7 @@ Team managers can see category, scan state, review status and expiry on their ow
 ## Team private downloads
 
 Team file access requires a valid scan marker, supported file MIME and current actor and parent within the same team.
+
+## Team document reviews
+
+Scoped reviewers cannot upload or read or alter private notes; review is tied to the current parent and scan marker.

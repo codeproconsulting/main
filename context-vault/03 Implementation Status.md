@@ -245,3 +245,7 @@ A read-only team document checklist is implemented.
 ## Team private downloads
 
 Team scanned document downloads implemented. Upload and review remain gated.
+
+## Team document reviews
+
+Team document status and expiry edits are implemented. Uploads remain gated.

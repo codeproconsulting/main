@@ -207,3 +207,7 @@ documents.server.ts projects metadata and denies protected operations. documents
 ## Team private downloads
 
 app/admin/document-download.ts supplies the auth refresh, and app/admin/documents.server.ts enforces scope and scan eligibility.
+
+## Team document reviews
+
+documents.tsx enables the restricted review form; documents.server.ts checks scan, ownership scope and version.

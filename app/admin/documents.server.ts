@@ -1,7 +1,7 @@
 import { documentCategories, documentLimit, documentStatuses, type ClientDocument } from "./document-domain";
 import { randomUUID } from "node:crypto";
 import { AppwriteError, createDocument, getDocument, listDocuments, query, updateDocument } from "~/lib/appwrite.server";
-import { allow, audit, leadFor, writableEnquiry, serialized } from "./crm.server";
+import { allow, audit, definitiveWriteRejection, leadFor, writableEnquiry, serialized, UnconfirmedMutation, withCurrentTeamManager } from "./crm.server";
 import { canUseCRM, isRestrictedManager, type Staff } from "./domain";
 import { requireActiveTeam } from "./team-scope.server";
 import { scanDocument } from "./document-scan.server";
@@ -29,7 +29,7 @@ export async function documentsFor(staff: Staff, leadId: string) {
   let cursor: string | undefined;
   while (true) {
     const filters = [query("equal", "leadId", [lead.$id]), query("orderDesc", "$createdAt"), query("limit", undefined, [100])];
-    if (teamScoped) filters.push(query("select", undefined, ["$id", "category", "status", "expiresAt", "scannedAt"]));
+    if (teamScoped) filters.push(query("select", undefined, ["$id", "category", "status", "expiresAt", "scannedAt", "reviewVersion"]));
     if (cursor) filters.push(query("cursorAfter", undefined, [cursor]));
     const page = (await listDocuments<ClientDocument>("documents", filters)).documents;
     documents.push(...page);
@@ -130,31 +130,39 @@ export async function uploadClientDocument(staff: Staff, leadId: string, file: F
 export async function reviewClientDocument(
   staff: Staff, leadId: string, id: string, status: string, expiry: string, notes: string, expected: string,
 ) {
-  allow(!isRestrictedManager(staff));
+  const teamScoped = isRestrictedManager(staff);
+  if (teamScoped) await leadFor(staff, leadId);
   if (!documentStatuses.some(item => item === status)) throw new Response("Invalid review status.", { status: 400 });
   const expiresAt = documentExpiry(expiry);
-  return serialized(`lead:${leadId}`, async () => {
+  const review = async () => {
     await writableEnquiry(staff, leadId);
     const doc = await documentFor(id);
+    if (teamScoped && doc.leadId !== leadId) throw new Response("Document not found", { status: 404 });
     allow(doc.leadId === leadId);
-    if (!doc.scannedAt) throw new Response("Re-upload this document to scan it before review.", { status: 409 });
+    if (!doc.scannedAt || (teamScoped && !Number.isFinite(Date.parse(doc.scannedAt)))) {
+      throw new Response("Re-upload this document to scan it before review.", { status: 409 });
+    }
     const version = doc.reviewVersion ?? 0;
     if (String(version) !== expected) throw new Response("This review changed. Refresh before saving.", { status: 409 });
-    if (status === doc.status && expiresAt === doc.expiresAt && notes === (doc.reviewNotes ?? "")) return;
-    const changes = { status, expiresAt, reviewNotes: notes, reviewVersion: version + 1 };
+    if (status === doc.status && expiresAt === (doc.expiresAt ?? "") && (teamScoped || notes === (doc.reviewNotes ?? ""))) return;
+    const changes = { status, expiresAt, ...(!teamScoped ? { reviewNotes: notes } : {}), reviewVersion: version + 1 };
     const details = { documentId: id, reviewVersion: changes.reviewVersion, status };
     const event = await audit(staff, leadId, "lead", "Document review requested", { ...details, state: "pending" });
     try {
       await updateDocument("documents", id, changes);
-    } catch {
+    } catch (error) {
       const current = await documentFor(id).catch(() => null);
       if (!current || current.reviewVersion !== changes.reviewVersion || current.status !== status ||
-          current.expiresAt !== expiresAt || current.reviewNotes !== notes) {
+          current.expiresAt !== expiresAt || (!teamScoped && current.reviewNotes !== notes)) {
+        if (teamScoped && !definitiveWriteRejection(error)) {
+          throw new UnconfirmedMutation("The document review may have saved. Ask an administrator to reconcile it before retrying.");
+        }
         throw new Response("Could not confirm the review. Refresh and check the saved record before retrying.", { status: 503 });
       }
     }
     await recordOutcome(event.$id, "Document reviewed", { ...details, state: "completed" });
-  });
+  };
+  return serialized(`lead:${leadId}`, () => teamScoped ? withCurrentTeamManager(staff, review) : review());
 }
 
 export async function downloadClientDocument(staff: Staff, id: string, refreshStaff?: () => Promise<Staff>) {

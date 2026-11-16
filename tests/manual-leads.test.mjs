@@ -604,5 +604,25 @@ test('team document reads project checklist metadata and deny private operations
  await assert.rejects(()=>documentWorkflow.documentsFor(actor,'beta'),errorStatus(404));
  await assert.rejects(()=>documentWorkflow.downloadClientDocument(actor,'inside'),errorStatus(403));
  await assert.rejects(()=>documentWorkflow.uploadClientDocument(actor,'alpha',null,'Passport',''),errorStatus(403));
- await assert.rejects(()=>documentWorkflow.reviewClientDocument(actor,'alpha','inside','Accepted','','','1'),errorStatus(403));
+
+});
+
+
+test('team document reviews preserve private notes and enforce current team and version',async()=>{
+ const actor={...manager,managerScope:'team',teamId:'team-alpha'};
+ profiles.set(actor.$id,actor);
+ dependencies.crm_teams.set('team-alpha',{$id:'team-alpha',status:'active'});
+ leads.set('alpha',{$id:'alpha',teamId:'team-alpha'});
+ leads.set('beta',{$id:'beta',teamId:'team-beta'});
+ const record={$id:'inside',leadId:'alpha',scannedAt:'2026-11-01T00:00:00Z',reviewVersion:1,status:'Pending review',reviewNotes:'Synthetic private'};
+ dependencies.documents.set('inside',record);
+ dependencies.documents.set('outside',{...record,$id:'outside',leadId:'beta'});
+ const review=(id,version)=>documentWorkflow.reviewClientDocument(actor,'alpha',id,'Accepted','2031-01-02','Forged',version);
+ await assert.rejects(()=>review('outside','1'),errorStatus(404));
+ await assert.rejects(()=>review('inside','2'),errorStatus(409));
+ profiles.set(actor.$id,{...actor,teamId:'team-beta'});
+ await assert.rejects(()=>review('inside','1'),errorStatus(403));
+ profiles.set(actor.$id,actor);
+ await review('inside','1');
+ assert.deepEqual(dependencies.documents.get('inside'),{...record,status:'Accepted',expiresAt:'2031-01-02T18:59:59.999Z',reviewVersion:2});
 });

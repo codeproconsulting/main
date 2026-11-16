@@ -201,3 +201,7 @@ Use category as the team display label. File names, file IDs, and private notes 
 ## Team private downloads
 
 Team downloads use a generic name with the validated file extension. Existing attachment and no-store policy applies.
+
+## Team document reviews
+
+Team review changes status, expiry and version only. Ambiguous writes retain locks.

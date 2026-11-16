@@ -11,26 +11,28 @@ import { ActionError, Back, Badge, Empty, PageHeading, Submit } from "./ui";
 export async function loader({ request, params }: LoaderFunctionArgs) {
   const staff = await requireStaff(request, true);
   const { lead, documents } = await documentsFor(staff, params.id!);
-  const readOnly = isRestrictedManager(staff);
+  const teamScoped = isRestrictedManager(staff);
   return data({
-    readOnly,
+    teamScoped,
     lead: { $id: lead.$id, name: lead.name },
     documents: documents.map(({ $id, name, category, status, expiresAt, scannedAt, reviewVersion, reviewNotes }) =>
-      ({ $id, category, status, expiresAt, scannedAt, name: readOnly ? category : name,
-        ...(!readOnly ? { reviewVersion, reviewNotes } : {}) })),
+      ({ $id, category, status, expiresAt, scannedAt, name: teamScoped ? category : name,
+        reviewVersion, ...(!teamScoped ? { reviewNotes } : {}) })),
   }, { headers: { "Cache-Control": "private, no-store" } });
 }
 
 export async function action({ request, params }: ActionFunctionArgs) {
-  const staff = await requireStaff(request);
+  const staff = await requireStaff(request, true);
+  const teamScoped = isRestrictedManager(staff);
   sameOrigin(request);
   const lead = await leadFor(staff, params.id!);
   try {
-    const form = await boundedUploadForm(request, documentLimit + 256 * 1024, "Document");
+    const form = await boundedUploadForm(request, teamScoped ? 16 * 1024 : documentLimit + 256 * 1024, "Document");
     const intent = field(form, "intent", 20);
+    if (teamScoped && intent !== "review") throw new Response("Access denied", { status: 403 });
     if (intent === "review") {
       await reviewClientDocument(staff, lead.$id, field(form, "id", 36), field(form, "status", 30),
-        field(form, "expiresAt", 10), field(form, "reviewNotes", 2000), field(form, "reviewVersion", 20));
+        field(form, "expiresAt", 10), teamScoped ? "" : field(form, "reviewNotes", 2000), field(form, "reviewVersion", 20));
     } else if (intent === "upload") {
       const file = form.get("file");
       if (!(file instanceof File)) throw new Response("Select a file.", { status: 400 });
@@ -51,15 +53,15 @@ export async function action({ request, params }: ActionFunctionArgs) {
 }
 
 export default function Documents() {
-  const { lead, documents, readOnly } = useLoaderData<typeof loader>();
+  const { lead, documents, teamScoped } = useLoaderData<typeof loader>();
   const result = useActionData<typeof action>();
   return <>
     <Back to={`/admin/leads/${lead.$id}`}>Back to {lead.name}</Back>
-    <PageHeading eyebrow="PRIVATE CLIENT DOCUMENTS" title={readOnly ? "Document checklist" : "Documents & review"}
-      description={readOnly ? "Document categories, scan status and expiry for this enquiry." : "Files are scanned before saving. Every download requires access to this lead."} />
+    <PageHeading eyebrow="PRIVATE CLIENT DOCUMENTS" title={teamScoped ? "Document checklist" : "Documents & review"}
+      description={teamScoped ? "Document categories, scan status and expiry for this enquiry." : "Files are scanned before saving. Every download requires access to this lead."} />
     <ActionError error={result?.error} />
     {result?.success && <p className="crm-success" role="status">Document record saved.</p>}
-    {!readOnly && <section className="crm-panel crm-padded">
+    {!teamScoped && <section className="crm-panel crm-padded">
       <Form method="post" encType="multipart/form-data" className="crm-form">
         <input name="intent" value="upload" type="hidden" />
         <label>Document category<select name="category">{documentCategories.map(category => <option key={category}>{category}</option>)}</select></label>
@@ -82,7 +84,7 @@ export default function Documents() {
       </ul>
     </section>
     <section className="crm-panel">
-      {!documents.length && <Empty title="No documents uploaded">{readOnly ? "No document records are available for this enquiry." : "Choose a relevant category and upload the first file."}</Empty>}
+      {!documents.length && <Empty title="No documents uploaded">{teamScoped ? "No document records are available for this enquiry." : "Choose a relevant category and upload the first file."}</Empty>}
       {documents.map(doc => <article className="crm-followup" key={doc.$id}>
         <div>
           <h2>{doc.name}</h2>
@@ -90,9 +92,9 @@ export default function Documents() {
           {doc.expiresAt && <p>Expires {expiryDay(doc.expiresAt)} (Pakistan time)</p>}
           {doc.scannedAt
             ? <a href={`/admin/documents/${doc.$id}/download`}>Download private file →</a>
-            : !readOnly && <p>Upload a scanned replacement to make this document available.</p>}
+            : !teamScoped && <p>Upload a scanned replacement to make this document available.</p>}
         </div>
-        {!readOnly && doc.scannedAt && <Form method="post" className="crm-form" key={`${doc.$id}:${doc.reviewVersion ?? 0}`}>
+        {doc.scannedAt && <Form method="post" className="crm-form" key={`${doc.$id}:${doc.reviewVersion ?? 0}`}>
           <input name="intent" value="review" type="hidden" />
           <input name="id" value={doc.$id} type="hidden" />
           <input name="reviewVersion" value={doc.reviewVersion ?? 0} type="hidden" />
@@ -100,7 +102,7 @@ export default function Documents() {
             {documentStatuses.map(status => <option key={status}>{status}</option>)}
           </select></label>
           <label>Expiry date (optional, Pakistan time)<input name="expiresAt" type="date" defaultValue={expiryDay(doc.expiresAt)} /></label>
-          <label>Review notes<textarea name="reviewNotes" defaultValue={doc.reviewNotes ?? ""} maxLength={2000} rows={2} /></label>
+          {!teamScoped && <label>Review notes<textarea name="reviewNotes" defaultValue={doc.reviewNotes ?? ""} maxLength={2000} rows={2} /></label>}
           <Submit>Save review</Submit>
         </Form>}
       </article>)}
