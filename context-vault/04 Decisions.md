@@ -205,3 +205,7 @@ Team downloads use a generic name with the validated file extension. Existing at
 ## Team document reviews
 
 Team review changes status, expiry and version only. Ambiguous writes retain locks.
+
+## Team document uploads
+
+Team upload defaults disabled. Activate only after scanner and storage acceptance.

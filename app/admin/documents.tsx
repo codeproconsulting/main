@@ -14,6 +14,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const teamScoped = isRestrictedManager(staff);
   return data({
     teamScoped,
+    canUpload: !teamScoped || process.env.ENABLE_TEAM_DOCUMENT_UPLOADS === "true",
     lead: { $id: lead.$id, name: lead.name },
     documents: documents.map(({ $id, name, category, status, expiresAt, scannedAt, reviewVersion, reviewNotes }) =>
       ({ $id, category, status, expiresAt, scannedAt, name: teamScoped ? category : name,
@@ -24,12 +25,13 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 export async function action({ request, params }: ActionFunctionArgs) {
   const staff = await requireStaff(request, true);
   const teamScoped = isRestrictedManager(staff);
+  const canUpload = !teamScoped || process.env.ENABLE_TEAM_DOCUMENT_UPLOADS === "true";
   sameOrigin(request);
   const lead = await leadFor(staff, params.id!);
   try {
-    const form = await boundedUploadForm(request, teamScoped ? 16 * 1024 : documentLimit + 256 * 1024, "Document");
+    const form = await boundedUploadForm(request, canUpload ? documentLimit + 256 * 1024 : 16 * 1024, "Document");
     const intent = field(form, "intent", 20);
-    if (teamScoped && intent !== "review") throw new Response("Access denied", { status: 403 });
+    if (!canUpload && intent !== "review") throw new Response("Access denied", { status: 403 });
     if (intent === "review") {
       await reviewClientDocument(staff, lead.$id, field(form, "id", 36), field(form, "status", 30),
         field(form, "expiresAt", 10), teamScoped ? "" : field(form, "reviewNotes", 2000), field(form, "reviewVersion", 20));
@@ -53,7 +55,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 }
 
 export default function Documents() {
-  const { lead, documents, teamScoped } = useLoaderData<typeof loader>();
+  const { lead, documents, teamScoped, canUpload } = useLoaderData<typeof loader>();
   const result = useActionData<typeof action>();
   return <>
     <Back to={`/admin/leads/${lead.$id}`}>Back to {lead.name}</Back>
@@ -61,7 +63,7 @@ export default function Documents() {
       description={teamScoped ? "Document categories, scan status and expiry for this enquiry." : "Files are scanned before saving. Every download requires access to this lead."} />
     <ActionError error={result?.error} />
     {result?.success && <p className="crm-success" role="status">Document record saved.</p>}
-    {!teamScoped && <section className="crm-panel crm-padded">
+    {canUpload && <section className="crm-panel crm-padded">
       <Form method="post" encType="multipart/form-data" className="crm-form">
         <input name="intent" value="upload" type="hidden" />
         <label>Document category<select name="category">{documentCategories.map(category => <option key={category}>{category}</option>)}</select></label>

@@ -249,3 +249,9 @@ Team scanned document downloads implemented. Upload and review remain gated.
 ## Team document reviews
 
 Team document status and expiry edits are implemented. Uploads remain gated.
+
+## Team document uploads
+
+Team uploads implemented behind opt-in. Scanner acceptance and rollout remain pending.
+
+Opted-in team uploads passed synthetic service and isolated Chrome acceptance. Production scanner verification remains pending.

@@ -211,3 +211,7 @@ app/admin/document-download.ts supplies the auth refresh, and app/admin/document
 ## Team document reviews
 
 documents.tsx enables the restricted review form; documents.server.ts checks scan, ownership scope and version.
+
+## Team document uploads
+
+documents.tsx exposes the opted-in upload form. documents.server.ts enforces team scope and scanner checks.

@@ -197,3 +197,9 @@ No schema change. Verify document scanner acceptance and release storage read pe
 Team review requires the optional reviewVersion attribute. The private reviewNotes attribute and production scanner remain separate rollout checks.
 
 Target scannedAt and reviewVersion are available. Private reviewNotes and production ClamAV validation remain separate checks.
+
+## Team document uploads
+
+See docs/PRIVATE-DOCUMENTS.md for the ENABLE_TEAM_DOCUMENT_UPLOADS flag and release checks.
+
+All optional document attributes are now available on target storage. Team uploads are opt-in and production activation remains pending.

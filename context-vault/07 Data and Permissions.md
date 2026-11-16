@@ -167,3 +167,7 @@ Team file access requires a valid scan marker, supported file MIME and current a
 ## Team document reviews
 
 Scoped reviewers cannot upload or read or alter private notes; review is tied to the current parent and scan marker.
+
+## Team document uploads
+
+Team managers may upload only to their current team when enabled.

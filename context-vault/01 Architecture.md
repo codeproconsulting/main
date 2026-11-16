@@ -181,3 +181,7 @@ The download route audits access and refreshes current team and parent before op
 ## Team document reviews
 
 Team document review reuses the lead and staff-access locks and rechecks current team before writes.
+
+## Team document uploads
+
+Team uploads reuse private storage, scan, audit and recovery. Membership is rechecked under the lead and staff-access locks after scanning.

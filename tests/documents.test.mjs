@@ -27,7 +27,7 @@ before(async()=>{
  globalThis.fetch=async(input,options={})=>{
   const url=new URL(input);
   const method=options.method??'GET';
-  const doc=url.pathname.match(/\/collections\/(leads|documents|activities|crm_teams)\/documents(?:\/([^/]+))?$/);
+  const doc=url.pathname.match(/\/collections\/(leads|documents|activities|crm_teams|staff)\/documents(?:\/([^/]+))?$/);
   if(doc){
    const [,collection,id]=doc;
    const store=collection==='crm_teams'?new Map([['alpha',{status:'active'}]]):stores[collection];
@@ -264,4 +264,33 @@ test('team downloads recheck current manager and parent, redact filenames and de
  doc.scannedAt='';
  await assert.rejects(()=>workflow.downloadClientDocument(scoped,doc.$id,async()=>scoped),reject(409));
  assert.equal(behavior.downloads,1);
+});
+
+
+test('team document uploads require opt-in and current scope and still use the scanner',async()=>{
+ const previous=process.env.ENABLE_TEAM_DOCUMENT_UPLOADS;
+ const scoped={...manager,managerScope:'team',teamId:'alpha'};
+ const parent=stores.leads.get(leadId);
+ parent.teamId='alpha';
+ stores.staff=new Map([[scoped.$id,scoped]]);
+ const uploadTeam=()=>workflow.uploadClientDocument(scoped,leadId,new File([pdf],'synthetic.pdf',{type:'application/pdf'}),'Passport','');
+ try {
+  delete process.env.ENABLE_TEAM_DOCUMENT_UPLOADS;
+  await assert.rejects(uploadTeam,reject(403));
+  process.env.ENABLE_TEAM_DOCUMENT_UPLOADS='true';
+  parent.teamId='beta';
+  await assert.rejects(uploadTeam,reject(404));
+  parent.teamId='alpha';
+  stores.staff.set(scoped.$id,{...scoped,teamId:'beta'});
+  await assert.rejects(uploadTeam,reject(403));
+  assert.equal(files.size,0);
+  stores.staff.set(scoped.$id,scoped);
+  await uploadTeam();
+  assert.equal(saved().uploadedBy,scoped.$id);
+  assert.ok(saved().scannedAt);
+  assert.equal(files.size,1);
+ }finally{
+  if(previous===undefined)delete process.env.ENABLE_TEAM_DOCUMENT_UPLOADS;
+  else process.env.ENABLE_TEAM_DOCUMENT_UPLOADS=previous;
+ }
 });

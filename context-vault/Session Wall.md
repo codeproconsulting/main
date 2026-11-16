@@ -3,40 +3,39 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-16-15]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-16-16]].
 
 ## Resume here
 
-**Session:** 2026-11-16-15
+**Session:** 2026-11-16-16
 
 **Active feature:** CRM-03
 
 **State:** completed
 
-**Objective:** Allow team managers to review scanned documents while preserving private notes.
+**Objective:** Allow opted-in team document uploads through the existing scanner.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Existing scanned document status and expiry edits
-- Current team, parent and review version checks
+- Team document uploads
 
 ## Out of scope
 
-- Uploads, private note edits, and production rollout
+- Production scanner acceptance and activation
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| CRM03-REVIEW-A | Scoped review safeguards | passed | 30 focused tests passed, including stale scope, wrong parent, stale version and preservation of notes. |
-| CRM03-REVIEW-B | Built-app browser and target schema | passed | Chrome verified review, expiry and preserved notes plus denied cross-team, stale and upload requests. Appwrite optional reviewVersion provisioned and scoped projection accepted. |
+| CRM03-UPLOAD-A | Upload permission and scan safeguards | passed | Focused tests verify opt-in, wrong team, stale membership and scanned upload. |
+| CRM03-UPLOAD-B | Built-app synthetic upload | passed | Chrome verified clean upload, synthetic scanner rejection and wrong-team denial. Typecheck, full suite and production build passed. |
 
 ## Exact next actions
 
-1. Implement team-scoped uploads with current team rechecked under locks and the existing scanner, storage and failure cleanup. Verify scoped synthetic intake and leave production disabled pending actual scanner acceptance.
-   Files: `app/admin/documents.tsx`, `app/admin/documents.server.ts`, `docs/PRIVATE-DOCUMENTS.md`
+1. Build the appointment in-app reminder adapter with scheduled start offsets and current scope, stale booking suppression and retries. Keep case and provider delivery separate.
+   Files: `scripts/remind-tasks.mjs`, `app/admin/notifications.server.ts`, `context-vault/Feature Ledger.md`
 
 ## Known risks and unfinished work
 
@@ -59,9 +58,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-16T17:52:14.767Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-zX6XMd/typecheck.log`
-- **passed**: `npm run test` (2026-11-16T17:52:16.353Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-zX6XMd/test.log`
-- **passed**: `npm run build` (2026-11-16T17:52:21.929Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-zX6XMd/build.log`
+- **passed**: `npm run typecheck` (2026-11-16T17:55:19.252Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-NprvOZ/typecheck.log`
+- **passed**: `npm run test` (2026-11-16T17:55:20.504Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-NprvOZ/test.log`
+- **passed**: `npm run build` (2026-11-16T17:55:25.686Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-NprvOZ/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -92,7 +91,7 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **caseSchema**: Read-only cases setup preview completed; no schema changes applied
 - **appointmentSchema**: Existing private collection and owner/lead query shapes verified read-only
 - **appointmentWorkflow**: CAL-01 locally accepted including synthetic browser checks
-- **documentSchema**: Optional scannedAt and reviewVersion available. reviewNotes and actual production scanner acceptance remain pending.
+- **documentSchema**: All three optional document attributes verified on target. Actual production scanner and activation pending.
 - **documentStorage**: Disposable 20 MB Appwrite chunk upload, byte comparison and anonymous denial passed. Synthetic file removed.
 - **documentScanner**: Synthetic Unix socket verdicts verified. Actual ClamAV daemon and target host smoke checks pending.
 - **staffSchema**: Read-only Appwrite check found revocationPending and role_active absent. No schema changes applied.

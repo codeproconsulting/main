@@ -20,3 +20,5 @@ Use the lead activity history to identify **Document upload requested** with pen
 - If a review shows a pending intent, compare its version and intended status to the current record before retrying or reconciling. Use the existing abandoned lock procedure if the per-lead lock remains held after the original process stops.
 
 The app compensates automatically only after a definite metadata rejection and a confirmed missing record. A timeout, failed cleanup or ambiguous storage response retains the pending intent for an administrator.
+
+Team managers can upload for their current team's enquiries when the CRM process has `ENABLE_TEAM_DOCUMENT_UPLOADS=true`. Keep this flag off until the target scanner, private storage, document schema, and proxy upload limits pass acceptance. The team write rechecks current membership under the lead and staff-access locks after scanning. Team review notes remain private.

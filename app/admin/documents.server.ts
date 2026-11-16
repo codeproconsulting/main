@@ -61,7 +61,8 @@ async function recordOutcome(eventId: string, event: string, details: object) {
 }
 
 export async function uploadClientDocument(staff: Staff, leadId: string, file: File, category: string, expiry: string) {
-  allow(!isRestrictedManager(staff));
+  const teamScoped = isRestrictedManager(staff);
+  allow(!teamScoped || process.env.ENABLE_TEAM_DOCUMENT_UPLOADS === "true");
   await leadFor(staff, leadId);
   if (!documentCategories.some(item => item === category)) {
     throw new Response("Select a document category.", { status: 400 });
@@ -77,7 +78,7 @@ export async function uploadClientDocument(staff: Staff, leadId: string, file: F
   }
   await scanDocument(bytes);
   const scannedAt = new Date().toISOString();
-  return serialized(`lead:${leadId}`, async () => {
+  const save = async () => {
     await writableEnquiry(staff, leadId);
     const id = randomUUID();
     const bucket = privateBucket();
@@ -124,7 +125,8 @@ export async function uploadClientDocument(staff: Staff, leadId: string, file: F
       }
     }
     await recordOutcome(event.$id, "Document uploaded", { state: "completed", documentId: id, fileId: id });
-  });
+  };
+  return serialized(`lead:${leadId}`, () => teamScoped ? withCurrentTeamManager(staff, save) : save());
 }
 
 export async function reviewClientDocument(
