@@ -211,3 +211,9 @@ The optional ENABLE_APPOINTMENT_REMINDERS flag belongs on the existing reminder 
 ## Case deadline reminders
 
 Set ENABLE_CASE_REMINDERS only after runtime acceptance. See deploy/CRM-DEPLOYMENT.md.
+
+## Resend outbox
+
+Keep ENABLE_RESEND_OUTBOX disabled pending sender, producer and release acceptance. See deploy/CRM-DEPLOYMENT.md.
+
+Target outbox schema and due index are available. Worker activation and sender acceptance are pending.

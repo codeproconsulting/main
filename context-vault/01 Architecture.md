@@ -193,3 +193,7 @@ The reminder worker can scan the next hour of booked appointments and reuse priv
 ## Case deadline reminders
 
 The reminder worker can scan active case deadlines over the next 24 hours.
+
+## Resend outbox
+
+Resend email requests use a private Appwrite outbox and separate opt-in worker.

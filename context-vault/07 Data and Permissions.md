@@ -179,3 +179,7 @@ Appointment reminders belong to the current enquiry and booking assignee and req
 ## Case deadline reminders
 
 Case recipients must be the current enquiry and case owner. Inbox checks current scope, stage, deadline, and version.
+
+## Resend outbox
+
+Email payloads remain private and worker logs contain only counts; there is no public enqueue route.

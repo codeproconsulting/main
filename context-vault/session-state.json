@@ -1,39 +1,39 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-16-18",
+  "sessionId": "2026-11-16-19",
   "sessionStatus": "completed",
-  "activeFeature": "REMIND-01",
-  "objective": "Deliver opt-in reminders for upcoming application and immigration case deadlines.",
+  "activeFeature": "COMMS-01",
+  "objective": "Persist email delivery requests and retry safely through Resend.",
   "scope": [
-    "24-hour in-app reminder window",
-    "Shared worker and stale notification checks"
+    "Private Appwrite outbox and optional sender worker",
+    "Resend idempotency and bounded retries"
   ],
   "outOfScope": [
-    "External delivery and VPS activation"
+    "CRM email producer, real delivery, webhook and suppression"
   ],
   "acceptance": [
     {
-      "id": "REMIND-CASE-A",
-      "description": "Scoped case reminders and preserved existing delivery",
+      "id": "COMMS01-OUTBOX-A",
+      "description": "Fake-provider retry and dedup",
       "status": "passed",
-      "evidence": "52 focused tests passed, including task, booking and case coexistence; cutoff, ownership, version, stage and dedup verified."
+      "evidence": "Tests verify immutable payload, duplicate event handling, transient errors and retry expiry."
     },
     {
-      "id": "REMIND-CASE-B",
-      "description": "Target query and isolated inbox acceptance",
+      "id": "COMMS01-OUTBOX-B",
+      "description": "Appwrite schema readiness",
       "status": "passed",
-      "evidence": "Target accepted deadline range after removing unsupported multi-value exclusion. Isolated CLI and Chrome verified delivery, dedup, mark-read and withdrawal suppression. Initial Chrome navigation timed out and a local-only retry passed."
+      "evidence": "Target collection and index verified private and available. Original oversized attribute on the empty new collection exceeded its row budget. Recreated it at 8,000 characters, verified synthetic enqueue/query and cleanup. No Resend calls."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Start COMMS-01 with an opt-in durable Resend email outbox. Verify current provider idempotency behavior and test with a fake provider before any real delivery.",
+      "action": "Connect an explicitly opted-in staff reminder producer to the outbox. Recheck current staff recipient and source scope, suppress stale messages, and keep external delivery off until verified sender and release checks.",
       "files": [
-        "context-vault/Feature Ledger.md",
-        "deploy/CRM-DEPLOYMENT.md",
-        "scripts/appwrite-schema.mjs"
+        "scripts/remind-tasks.mjs",
+        "scripts/email-outbox.mjs",
+        "deploy/CRM-DEPLOYMENT.md"
       ]
     }
   ],
@@ -106,31 +106,32 @@
     "teamQueueRelease": "Read-only target query compatibility verified. No schema or data changes and no VPS rollout.",
     "teamTaskEdits": "Synthetic service and built-app Chrome acceptance passed. No production records or schema changed.",
     "appointmentReminders": "Opt-in source verified. VPS worker activation remains pending.",
-    "caseReminders": "Verified opt-in source and target deadline query. Worker not activated on VPS."
+    "caseReminders": "Verified opt-in source and target deadline query. Worker not activated on VPS.",
+    "resendOutbox": "Private schema available. Provider fake-tested only. No credentials configured or worker activation performed."
   },
   "checks": [
     {
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-16T18:07:39.876Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-1u1So1/typecheck.log"
+      "checkedAt": "2026-11-16T18:17:14.476Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-e3tyCN/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-16T18:07:41.153Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-1u1So1/test.log"
+      "checkedAt": "2026-11-16T18:17:16.001Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-e3tyCN/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-16T18:07:46.434Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-1u1So1/build.log"
+      "checkedAt": "2026-11-16T18:17:21.876Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-e3tyCN/build.log"
     }
   ],
-  "updatedAt": "2026-11-16T18:09:01.254Z",
-  "verifiedSourceFingerprint": "6465d346d939414631baa3dc541ef622b88de0af4d60d699594c89ce8c7a83f3"
+  "updatedAt": "2026-11-16T18:18:09.943Z",
+  "verifiedSourceFingerprint": "3bec68e56ea325f89124033e7ad99442bbc6b778daf43685a34a9d1c30b3d20a"
 }

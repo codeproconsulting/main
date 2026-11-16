@@ -3,40 +3,40 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-16-18]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-16-19]].
 
 ## Resume here
 
-**Session:** 2026-11-16-18
+**Session:** 2026-11-16-19
 
-**Active feature:** REMIND-01
+**Active feature:** COMMS-01
 
 **State:** completed
 
-**Objective:** Deliver opt-in reminders for upcoming application and immigration case deadlines.
+**Objective:** Persist email delivery requests and retry safely through Resend.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- 24-hour in-app reminder window
-- Shared worker and stale notification checks
+- Private Appwrite outbox and optional sender worker
+- Resend idempotency and bounded retries
 
 ## Out of scope
 
-- External delivery and VPS activation
+- CRM email producer, real delivery, webhook and suppression
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| REMIND-CASE-A | Scoped case reminders and preserved existing delivery | passed | 52 focused tests passed, including task, booking and case coexistence; cutoff, ownership, version, stage and dedup verified. |
-| REMIND-CASE-B | Target query and isolated inbox acceptance | passed | Target accepted deadline range after removing unsupported multi-value exclusion. Isolated CLI and Chrome verified delivery, dedup, mark-read and withdrawal suppression. Initial Chrome navigation timed out and a local-only retry passed. |
+| COMMS01-OUTBOX-A | Fake-provider retry and dedup | passed | Tests verify immutable payload, duplicate event handling, transient errors and retry expiry. |
+| COMMS01-OUTBOX-B | Appwrite schema readiness | passed | Target collection and index verified private and available. Original oversized attribute on the empty new collection exceeded its row budget. Recreated it at 8,000 characters, verified synthetic enqueue/query and cleanup. No Resend calls. |
 
 ## Exact next actions
 
-1. Start COMMS-01 with an opt-in durable Resend email outbox. Verify current provider idempotency behavior and test with a fake provider before any real delivery.
-   Files: `context-vault/Feature Ledger.md`, `deploy/CRM-DEPLOYMENT.md`, `scripts/appwrite-schema.mjs`
+1. Connect an explicitly opted-in staff reminder producer to the outbox. Recheck current staff recipient and source scope, suppress stale messages, and keep external delivery off until verified sender and release checks.
+   Files: `scripts/remind-tasks.mjs`, `scripts/email-outbox.mjs`, `deploy/CRM-DEPLOYMENT.md`
 
 ## Known risks and unfinished work
 
@@ -59,9 +59,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-16T18:07:39.876Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-1u1So1/typecheck.log`
-- **passed**: `npm run test` (2026-11-16T18:07:41.153Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-1u1So1/test.log`
-- **passed**: `npm run build` (2026-11-16T18:07:46.434Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-1u1So1/build.log`
+- **passed**: `npm run typecheck` (2026-11-16T18:17:14.476Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-e3tyCN/typecheck.log`
+- **passed**: `npm run test` (2026-11-16T18:17:16.001Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-e3tyCN/test.log`
+- **passed**: `npm run build` (2026-11-16T18:17:21.876Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-e3tyCN/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -118,5 +118,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **teamTaskEdits**: Synthetic service and built-app Chrome acceptance passed. No production records or schema changed.
 - **appointmentReminders**: Opt-in source verified. VPS worker activation remains pending.
 - **caseReminders**: Verified opt-in source and target deadline query. Worker not activated on VPS.
+- **resendOutbox**: Private schema available. Provider fake-tested only. No credentials configured or worker activation performed.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

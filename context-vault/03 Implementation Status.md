@@ -263,3 +263,9 @@ Opt-in in-app appointment reminders implemented.
 ## Case deadline reminders
 
 Case deadline reminders implemented behind opt-in.
+
+## Resend outbox
+
+Resend transport and outbox implemented. Producer, webhook and delivery acceptance remain pending.
+
+Resend outbox storage and fake-provider delivery verified. No CRM producer or live email configured.

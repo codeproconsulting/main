@@ -223,3 +223,7 @@ The worker candidate scan is in scripts/remind-tasks.mjs. app/admin/reminder-pol
 ## Case deadline reminders
 
 Case candidate lookup and notification revalidation share scripts/remind-tasks.mjs and app/admin/reminder-policy.ts.
+
+## Resend outbox
+
+scripts/email-outbox.mjs stores and delivers durable requests; scripts/email-worker.mjs runs them under PM2.

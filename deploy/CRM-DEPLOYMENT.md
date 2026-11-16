@@ -309,3 +309,9 @@ Set `ENABLE_APPOINTMENT_REMINDERS=true` on the existing reminder worker after ru
 ### Case deadline reminders
 
 Set `ENABLE_CASE_REMINDERS=true` on the existing reminder worker after runtime acceptance. The worker creates one in-app reminder per case version during the 24 hours before a deadline. Approved, refused, enrolled, and withdrawn cases are excluded. Reminders disappear once the deadline passes or the source changes. The flag defaults off and runs independently of appointment reminders.
+
+### Resend email outbox
+
+Use scoped `email_outbox` Appwrite setup and verify document permissions and the due index. The outbox stores private message payloads. Keep the worker disabled until a CRM producer, recipient rules, verified sender, and release acceptance are in place. Put `RESEND_API_KEY` in the worker environment and export `ENABLE_RESEND_OUTBOX=true` before loading the PM2 ecosystem when ready.
+
+The worker retries with the original payload and idempotency key within 23 hours of the queue record's creation. Resend documents a 24-hour key lifetime. Expired or uncertain terminal items go to review. Reconcile in Resend before taking manual action. An accepted provider response indicates acceptance, not inbox delivery. Logs contain counts only. Stop the worker before recovering a stale worker lock.

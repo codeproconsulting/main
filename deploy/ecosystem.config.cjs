@@ -1,6 +1,7 @@
 // Run from the repository root. Both processes use one build and the ignored .env.
 module.exports = {
   apps: [
+    ...(process.env.ENABLE_RESEND_OUTBOX === "true" ? [{ name: "proconsulting-email", script: "scripts/email-worker.mjs", instances: 1, kill_timeout: 360000 }] : []),
     ...(process.env.ENABLE_INTAKE_ROUTING === "true" ? [{ name: "proconsulting-intake-routing", script: "scripts/intake-routing-worker.mjs", instances: 1, kill_timeout: 360000, env: { NODE_ENV: "production" } }] : []),
     ...(process.env.ENABLE_SCHEDULED_PUBLISHING === "true" ? [{ name: "proconsulting-publishing", script: "scripts/publishing-worker.mjs", instances: 1, env: { NODE_ENV: "production" } }] : []),
     ...(process.env.ENABLE_BACKGROUND_WORKER === "true" ? [{ name: "proconsulting-worker", script: "scripts/worker.mjs", instances: 1, kill_timeout: 360000, env: { NODE_ENV: "production" } }] : []),
