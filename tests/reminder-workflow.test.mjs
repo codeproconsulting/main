@@ -334,3 +334,18 @@ test('appointment inbox hides reminders after the booking starts, changes or lea
  stores.leads.get('lead-one').owner='counselor-two';
  await assert.rejects(()=>notices.readNotice(staff('counselor'),'notice-one',now),rejects(409));
 });
+
+
+test('case deadline inbox follows current version, deadline, stage and owner',async()=>{
+ reset();
+ const record={$id:'case-one',leadId:'lead-one',owner:'counselor-one',stage:'Visa submitted',deadline:'2030-01-02T12:00:00.000Z',version:1};
+ stores.cases.set(record.$id,record);
+ stores.notifications.set('notice-one',{...stores.notifications.get('notice-one'),kind:'case',sourceId:record.$id,dueAt:now});
+ assert.equal((await notices.noticesFor(staff('counselor'),'',now)).notices[0].title,'Upcoming application deadline');
+ assert.equal((await notices.noticesFor(staff('counselor'),'',record.deadline)).notices.length,0);
+ for(const changes of [{stage:'Enrolled'},{version:2},{owner:'counselor-two'},{deadline:'2030-01-02T11:00:00Z'}]){
+  stores.cases.set(record.$id,{...record,...changes});
+  assert.equal((await notices.noticesFor(staff('counselor'),'',now)).notices.length,0);
+  await assert.rejects(()=>notices.readNotice(staff('counselor'),'notice-one',now),rejects(409));
+ }
+});

@@ -1,11 +1,11 @@
 import {createHash,randomUUID} from 'node:crypto';
-import {appointmentReminderDueAt,appointmentReminderLeadTime,dueTask} from '../app/admin/reminder-policy.ts';
+import {appointmentReminderDueAt,appointmentReminderLeadTime,caseReminderDueAt,caseReminderLeadTime,dueTask} from '../app/admin/reminder-policy.ts';
 const hash=key=>createHash('sha256').update(key).digest('hex').slice(0,32);
 const q=(method,attribute,values)=>JSON.stringify({method,attribute,values});
 export const reminderId=task=>hash(`task:${task.$id}:${task.version}:${task.owner}:${task.dueAt}`);
 
 // In-app delivery is the durable notification write itself, not an external send.
-export async function remindDueTasks({api,allDocuments,databaseId,now=new Date().toISOString(),clock=()=>new Date().toISOString(),onError=()=>{},signal,includeAppointments=false}){
+export async function remindDueTasks({api,allDocuments,databaseId,now=new Date().toISOString(),clock=()=>new Date().toISOString(),onError=()=>{},signal,includeAppointments=false,includeCases=false}){
  if(!Number.isFinite(Date.parse(now)))throw new Error('Invalid reminder cycle time');
  const base=`/databases/${encodeURIComponent(databaseId)}/collections`;
  const path=(collection,id)=>`${base}/${collection}/documents${id?'/'+encodeURIComponent(id):''}`;
@@ -34,21 +34,26 @@ export async function remindDueTasks({api,allDocuments,databaseId,now=new Date()
     q('equal','status',['Booked']),q('greaterThan','startsAt',[now]),
     q('lessThanEqual','startsAt',[new Date(Date.parse(now)+appointmentReminderLeadTime).toISOString()]),
    ]).catch(() => { result.failed++; return []; }) : [];
-   result.checked=tasks.length+appointments.length;
-   for(const [collection,candidate] of [...tasks.map(row=>['tasks',row]),...appointments.map(row=>['appointments',row])]){
+   const cases=includeCases ? await allDocuments('cases',[
+    q('greaterThan','deadline',[now]),
+    q('lessThanEqual','deadline',[new Date(Date.parse(now)+caseReminderLeadTime).toISOString()]),
+   ]).catch(() => { result.failed++; return []; }) : [];
+   result.checked=tasks.length+appointments.length+cases.length;
+   for(const [collection,candidate] of [...tasks.map(row=>['tasks',row]),...appointments.map(row=>['appointments',row]),...cases.map(row=>['cases',row])]){
     if(signal?.aborted){result.stopped=true;break;}
     try{
      const done=await lock(`lead:${candidate.leadId}`,async()=>{
       const [source,lead]=await Promise.all([optional(collection,candidate.$id),optional('leads',candidate.leadId)]);
-      const appointment=collection==='appointments';
-      const dueAt=source&&lead&&(appointment ? appointmentReminderDueAt(source,lead,now) : dueTask(source,lead,now) && source.dueAt);
+      const kind=collection==='appointments'?'appointment':collection==='cases'?'case':'task';
+      if(!source||!lead){result.skipped++;return;}
+      const dueAt=kind==='appointment' ? appointmentReminderDueAt(source,lead,now)
+       : kind==='case' ? caseReminderDueAt(source,lead,now) : dueTask(source,lead,now) && source.dueAt;
       if(!dueAt){result.skipped++;return;}
       const staff=await optional('staff',lead.owner);
       if(!staff?.active||!['owner','admin','manager','counselor'].includes(staff.role)){result.skipped++;return;}
-      const kind=appointment?'appointment':'task';
-      const documentId=appointment?hash(`appointment:${source.$id}:${source.version}:${source.owner}:${dueAt}`):reminderId(source);
-      const title=(appointment?`Upcoming appointment: ${source.title}`:`Follow-up due: ${source.title}`).slice(0,300);
-      const body=appointment?`Starts ${source.startsAt}.`:`Due ${dueAt}. Open the lead to record an outcome.`;
+      const documentId=kind==='task'?reminderId(source):hash(`${kind}:${source.$id}:${source.version}:${source.owner}:${dueAt}`);
+      const title=(kind==='appointment'?`Upcoming appointment: ${source.title}`:kind==='case'?'Upcoming application deadline':`Follow-up due: ${source.title}`).slice(0,300);
+      const body=kind==='appointment'?`Starts ${source.startsAt}.`:kind==='case'?`Deadline ${source.deadline}.`:`Due ${dueAt}. Open the lead to record an outcome.`;
       const data={recipient:lead.owner,entityId:lead.$id,kind,sourceId:source.$id,sourceVersion:source.version,dueAt,title,body,read:false};
       try{await api(path('notifications'),'POST',{documentId,data,permissions:[]});result.created++;}
       catch(error){

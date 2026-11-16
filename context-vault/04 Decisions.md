@@ -213,3 +213,7 @@ Team upload defaults disabled. Activate only after scanner and storage acceptanc
 ## Appointment reminders
 
 Send one reminder per booking version in the hour before start. Use the current owner and suppress stale notices.
+
+## Case deadline reminders
+
+Deliver once per current case version in the 24 hours before a deadline. Exclude terminal cases and preserve existing task and appointment options.

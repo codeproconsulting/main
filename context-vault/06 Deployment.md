@@ -207,3 +207,7 @@ All optional document attributes are now available on target storage. Team uploa
 ## Appointment reminders
 
 The optional ENABLE_APPOINTMENT_REMINDERS flag belongs on the existing reminder worker. See deploy/CRM-DEPLOYMENT.md.
+
+## Case deadline reminders
+
+Set ENABLE_CASE_REMINDERS only after runtime acceptance. See deploy/CRM-DEPLOYMENT.md.

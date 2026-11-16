@@ -175,3 +175,7 @@ Team managers may upload only to their current team when enabled.
 ## Appointment reminders
 
 Appointment reminders belong to the current enquiry and booking assignee and require current lead scope.
+
+## Case deadline reminders
+
+Case recipients must be the current enquiry and case owner. Inbox checks current scope, stage, deadline, and version.

@@ -189,3 +189,7 @@ Team uploads reuse private storage, scan, audit and recovery. Membership is rech
 ## Appointment reminders
 
 The reminder worker can scan the next hour of booked appointments and reuse private notification storage.
+
+## Case deadline reminders
+
+The reminder worker can scan active case deadlines over the next 24 hours.

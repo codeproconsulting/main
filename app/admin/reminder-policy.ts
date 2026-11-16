@@ -21,3 +21,16 @@ export function appointmentReminderDueAt(appointment:ReminderAppointment,lead:Re
     !Number.isFinite(due)||time<due||time>=starts)return null;
  return new Date(due).toISOString();
 }
+
+export const caseReminderLeadTime = 24 * 60 * 60 * 1000;
+export const closedCaseStages = ["Approved", "Refused", "Enrolled", "Withdrawn"];
+type ReminderCase = {$id:string;leadId:string;owner:string;stage:string;deadline:string;version:number};
+export function caseReminderDueAt(record:ReminderCase,lead:ReminderLead,now:string){
+ const deadline=Date.parse(record.deadline),time=Date.parse(now);
+ const due=deadline-caseReminderLeadTime;
+ if(record.leadId!==lead.$id||!lead.owner||record.owner!==lead.owner||
+    closedLeadStages.includes(lead.stage)||!record.stage||closedCaseStages.includes(record.stage)||
+    !Number.isInteger(record.version)||record.version<1||!Number.isFinite(time)||
+    !Number.isFinite(due)||time<due||time>=deadline)return null;
+ return new Date(due).toISOString();
+}

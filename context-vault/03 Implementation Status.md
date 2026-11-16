@@ -259,3 +259,7 @@ Opted-in team uploads passed synthetic service and isolated Chrome acceptance. P
 ## Appointment reminders
 
 Opt-in in-app appointment reminders implemented.
+
+## Case deadline reminders
+
+Case deadline reminders implemented behind opt-in.

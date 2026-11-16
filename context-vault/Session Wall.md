@@ -3,39 +3,40 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-16-17]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-16-18]].
 
 ## Resume here
 
-**Session:** 2026-11-16-17
+**Session:** 2026-11-16-18
 
 **Active feature:** REMIND-01
 
 **State:** completed
 
-**Objective:** Deliver opt-in reminders in the hour before assigned appointments.
+**Objective:** Deliver opt-in reminders for upcoming application and immigration case deadlines.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- In-app appointment reminder worker and current-source inbox
+- 24-hour in-app reminder window
+- Shared worker and stale notification checks
 
 ## Out of scope
 
-- Case reminders, email, and production activation
+- External delivery and VPS activation
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| REMIND-CAL-A | Appointment delivery and stale suppression | passed | 50 focused tests passed. Verified opt-in, boundary, dedup after lost acknowledgement and stale source suppression. |
-| REMIND-CAL-B | Target query and built app | passed | Target accepted the booked one-hour window. Isolated real CLI and Chrome verified delivery, repeat dedup, mark-read and cancellation suppression. |
+| REMIND-CASE-A | Scoped case reminders and preserved existing delivery | passed | 52 focused tests passed, including task, booking and case coexistence; cutoff, ownership, version, stage and dedup verified. |
+| REMIND-CASE-B | Target query and isolated inbox acceptance | passed | Target accepted deadline range after removing unsupported multi-value exclusion. Isolated CLI and Chrome verified delivery, dedup, mark-read and withdrawal suppression. Initial Chrome navigation timed out and a local-only retry passed. |
 
 ## Exact next actions
 
-1. Implement opt-in in-app case deadline reminders with current owner and version checks. Verify task and appointment delivery remain intact.
-   Files: `scripts/remind-tasks.mjs`, `app/admin/reminder-policy.ts`, `app/admin/notifications.server.ts`
+1. Start COMMS-01 with an opt-in durable Resend email outbox. Verify current provider idempotency behavior and test with a fake provider before any real delivery.
+   Files: `context-vault/Feature Ledger.md`, `deploy/CRM-DEPLOYMENT.md`, `scripts/appwrite-schema.mjs`
 
 ## Known risks and unfinished work
 
@@ -58,9 +59,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-16T17:58:32.764Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-kvIR1C/typecheck.log`
-- **passed**: `npm run test` (2026-11-16T17:58:33.985Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-kvIR1C/test.log`
-- **passed**: `npm run build` (2026-11-16T17:58:39.332Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-kvIR1C/build.log`
+- **passed**: `npm run typecheck` (2026-11-16T18:07:39.876Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-1u1So1/typecheck.log`
+- **passed**: `npm run test` (2026-11-16T18:07:41.153Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-1u1So1/test.log`
+- **passed**: `npm run build` (2026-11-16T18:07:46.434Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-1u1So1/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -116,5 +117,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **teamQueueRelease**: Read-only target query compatibility verified. No schema or data changes and no VPS rollout.
 - **teamTaskEdits**: Synthetic service and built-app Chrome acceptance passed. No production records or schema changed.
 - **appointmentReminders**: Opt-in source verified. VPS worker activation remains pending.
+- **caseReminders**: Verified opt-in source and target deadline query. Worker not activated on VPS.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

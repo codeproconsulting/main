@@ -219,3 +219,7 @@ documents.tsx exposes the opted-in upload form. documents.server.ts enforces tea
 ## Appointment reminders
 
 The worker candidate scan is in scripts/remind-tasks.mjs. app/admin/reminder-policy.ts supplies current appointment logic.
+
+## Case deadline reminders
+
+Case candidate lookup and notification revalidation share scripts/remind-tasks.mjs and app/admin/reminder-policy.ts.

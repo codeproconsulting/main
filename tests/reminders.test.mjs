@@ -7,7 +7,7 @@ const now='2030-01-01T12:00:00.000Z';
 const hash=key=>createHash('sha256').update(key).digest('hex').slice(0,32);
 const task=(id='task-one',changes={})=>({$id:id,leadId:'lead-one',owner:'counselor-one',status:'Open',title:'Synthetic follow-up',dueAt:'2030-01-01T11:00:00.000Z',version:1,...changes});
 function fixture(tasks=[task()]){
- const stores={appointments:new Map(),tasks:new Map(tasks.map(row=>[row.$id,row])),leads:new Map([['lead-one',{$id:'lead-one',owner:'counselor-one',stage:'New'}]]),staff:new Map([['counselor-one',{$id:'counselor-one',role:'counselor',active:true}]]),notifications:new Map(),locks:new Map(),worker_health:new Map()},calls=[],errors=[];
+ const stores={cases:new Map(),appointments:new Map(),tasks:new Map(tasks.map(row=>[row.$id,row])),leads:new Map([['lead-one',{$id:'lead-one',owner:'counselor-one',stage:'New'}]]),staff:new Map([['counselor-one',{$id:'counselor-one',role:'counselor',active:true}]]),notifications:new Map(),locks:new Map(),worker_health:new Map()},calls=[],errors=[];
  let beforeNotification=false,afterNotification=false,afterList=null,failQuery=false,failHealth=false,releaseFailure=false,signal;
  const failure=status=>Object.assign(new Error('Synthetic failure'),{status});
  const api=async(path,method='GET',payload)=>{
@@ -30,10 +30,14 @@ function fixture(tasks=[task()]){
    assert.ok(constraints.some(q=>q.attribute==='startsAt'&&q.method==='lessThanEqual'&&q.values[0]==='2030-01-01T13:00:00.000Z'));
    return [...stores.appointments.values()];
   }
+  if(collection==='cases'){
+   assert.ok(queries.map(JSON.parse).some(q=>q.attribute==='deadline'&&q.method==='lessThanEqual'&&q.values[0]==='2030-01-02T12:00:00.000Z'));
+   return [...stores.cases.values()];
+  }
   assert.equal(collection,'tasks');if(failQuery)throw failure(503);assert.ok(queries.map(JSON.parse).some(q=>q.method==='equal'&&q.attribute==='status'&&q.values[0]==='Open'));
   const rows=[...stores.tasks.values()].filter(t=>t.status==='Open'&&t.dueAt<=now).map(t=>structuredClone(t));if(afterList){afterList(stores);afterList=null;}return rows;
  };
- return {stores,calls,errors,setSignal:value=>signal=value,run:(includeAppointments=false)=>remindDueTasks({includeAppointments,api,allDocuments,databaseId:'synthetic',now,clock:()=>now,onError:event=>errors.push(event),signal}),failBefore:()=>beforeNotification=true,loseAck:()=>afterNotification=true,afterList:fn=>afterList=fn,failQuery:()=>failQuery=true,failHealth:()=>failHealth=true,failRelease:()=>releaseFailure=true};
+ return {stores,calls,errors,setSignal:value=>signal=value,run:(includeAppointments=false,includeCases=false)=>remindDueTasks({includeAppointments,includeCases,api,allDocuments,databaseId:'synthetic',now,clock:()=>now,onError:event=>errors.push(event),signal}),failBefore:()=>beforeNotification=true,loseAck:()=>afterNotification=true,afterList:fn=>afterList=fn,failQuery:()=>failQuery=true,failHealth:()=>failHealth=true,failRelease:()=>releaseFailure=true};
 }
 test('due task is delivered once with private metadata and remains read across retry/restart',async()=>{
  const f=fixture([task(),task('future',{dueAt:'2031-01-01T00:00:00.000Z'})]);let result=await f.run();assert.equal(result.created,1);assert.equal(f.stores.notifications.size,1);const notice=[...f.stores.notifications.values()][0];assert.equal(notice.read,false);assert.equal(notice.sourceId,'task-one');assert.equal(notice.sourceVersion,1);assert.equal(notice.recipient,'counselor-one');assert.equal(f.stores.worker_health.get('reminders').status,'healthy');notice.read=true;
@@ -106,4 +110,22 @@ test('appointment reminders are opt-in, deduplicated and only delivered for curr
  assert.equal(notice.kind,'appointment');
  assert.equal(notice.dueAt,now);
  assert.equal(notice.sourceId,booking.$id);
+});
+
+
+test('case reminders coexist with follow-ups and bookings and suppress closed, expired and mismatched records',async()=>{
+ const f=fixture();
+ const record={$id:'case-one',leadId:'lead-one',owner:'counselor-one',stage:'Visa submitted',deadline:'2030-01-02T12:00:00.000Z',version:1};
+ for(const [id,change] of [['case-one',{}],['closed',{stage:'Withdrawn'}],['expired',{deadline:now}],['wrong-owner',{owner:'outside'}]]){
+  f.stores.cases.set(id,{...record,...change,$id:id});
+ }
+ f.stores.appointments.set('booking',{$id:'booking',leadId:'lead-one',owner:'counselor-one',status:'Booked',startsAt:'2030-01-01T13:00:00.000Z',version:1,title:'Synthetic'});
+ assert.equal((await f.run(true,false)).created,2);
+ const next=await f.run(true,true);
+ assert.equal(next.created,1);
+ assert.equal(next.duplicate,2);
+ assert.equal((await f.run(true,true)).duplicate,3);
+ const notice=[...f.stores.notifications.values()].find(row=>row.kind==='case');
+ assert.equal(notice.sourceId,'case-one');
+ assert.equal(notice.dueAt,now);
 });

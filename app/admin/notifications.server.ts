@@ -1,11 +1,12 @@
 import {AppwriteError,getDocument,listDocuments,query,updateDocument} from "~/lib/appwrite.server";
 import {allow,leadFor,serialized} from "./crm.server";
 import {canManage,canUseCRM,type Staff,type Task} from "./domain";
+import type {CaseRecord} from "./operations.server";
 import type {Appointment} from "./calendar.server";
-import {appointmentReminderDueAt,currentTaskNotice} from "./reminder-policy";
+import {appointmentReminderDueAt,caseReminderDueAt,currentTaskNotice} from "./reminder-policy";
 export type Notice={$id:string;$createdAt:string;recipient:string;entityId:string;kind:string;title:string;body:string;read:boolean;sourceId:string;sourceVersion:number;dueAt:string};
 async function currentNotice(staff:Staff,notice:Notice,now:string){
- if(notice.recipient!==staff.$id||!["task","appointment"].includes(notice.kind)||!notice.sourceId)return null;
+ if(notice.recipient!==staff.$id||!["task","appointment","case"].includes(notice.kind)||!notice.sourceId)return null;
  try{
   const lead=await leadFor(staff,notice.entityId);
   if(notice.kind==="appointment"){
@@ -13,6 +14,12 @@ async function currentNotice(staff:Staff,notice:Notice,now:string){
    const dueAt=appointmentReminderDueAt(booking,lead,now);
    if(!dueAt||lead.owner!==staff.$id||notice.sourceVersion!==booking.version||notice.dueAt!==dueAt)return null;
    return {...notice,title:`Upcoming appointment: ${booking.title}`,body:`Starts ${booking.startsAt}.`};
+  }
+  if(notice.kind==="case"){
+   const record=await getDocument<CaseRecord>("cases",notice.sourceId);
+   const dueAt=caseReminderDueAt(record,lead,now);
+   if(!dueAt||lead.owner!==staff.$id||notice.sourceVersion!==record.version||notice.dueAt!==dueAt)return null;
+   return {...notice,title:"Upcoming application deadline",body:`Deadline ${record.deadline}.`};
   }
   const task=await getDocument<Task>("tasks",notice.sourceId);
   if(!currentTaskNotice(notice,task,lead,staff.$id,now))return null;

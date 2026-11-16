@@ -305,3 +305,7 @@ Repeat the aggregate inventory after each batch. Review mismatches and intention
 ### Appointment reminders
 
 Set `ENABLE_APPOINTMENT_REMINDERS=true` on the existing reminder worker after runtime acceptance. The worker creates one in-app reminder during the hour before a booked appointment starts, for its current assignee. Repeat cycles reuse the same notification. Cancelled, changed, reassigned or started appointments disappear from the inbox. The flag defaults off, and regular task reminders continue even if the appointment query fails.
+
+### Case deadline reminders
+
+Set `ENABLE_CASE_REMINDERS=true` on the existing reminder worker after runtime acceptance. The worker creates one in-app reminder per case version during the 24 hours before a deadline. Approved, refused, enrolled, and withdrawn cases are excluded. Reminders disappear once the deadline passes or the source changes. The flag defaults off and runs independently of appointment reminders.

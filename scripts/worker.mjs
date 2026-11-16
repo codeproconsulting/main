@@ -5,7 +5,7 @@ loadEnvironment();
 const controller=new AbortController();
 for(const signal of ['SIGTERM','SIGINT'])process.on(signal,()=>controller.abort());
 async function tick(){
- const result=await remindDueTasks({api,allDocuments,databaseId:process.env.APPWRITE_DATABASE_ID,includeAppointments:process.env.ENABLE_APPOINTMENT_REMINDERS==="true",signal:controller.signal,onError:({id,status})=>console.error('Task reminder needs attention:',id,status)});
+ const result=await remindDueTasks({api,allDocuments,databaseId:process.env.APPWRITE_DATABASE_ID,includeAppointments:process.env.ENABLE_APPOINTMENT_REMINDERS==="true",includeCases:process.env.ENABLE_CASE_REMINDERS==="true",signal:controller.signal,onError:({id,status})=>console.error('Task reminder needs attention:',id,status)});
  console.log(JSON.stringify({at:new Date().toISOString(),...result}));
  return result;
 }

@@ -1,38 +1,39 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-16-17",
+  "sessionId": "2026-11-16-18",
   "sessionStatus": "completed",
   "activeFeature": "REMIND-01",
-  "objective": "Deliver opt-in reminders in the hour before assigned appointments.",
+  "objective": "Deliver opt-in reminders for upcoming application and immigration case deadlines.",
   "scope": [
-    "In-app appointment reminder worker and current-source inbox"
+    "24-hour in-app reminder window",
+    "Shared worker and stale notification checks"
   ],
   "outOfScope": [
-    "Case reminders, email, and production activation"
+    "External delivery and VPS activation"
   ],
   "acceptance": [
     {
-      "id": "REMIND-CAL-A",
-      "description": "Appointment delivery and stale suppression",
+      "id": "REMIND-CASE-A",
+      "description": "Scoped case reminders and preserved existing delivery",
       "status": "passed",
-      "evidence": "50 focused tests passed. Verified opt-in, boundary, dedup after lost acknowledgement and stale source suppression."
+      "evidence": "52 focused tests passed, including task, booking and case coexistence; cutoff, ownership, version, stage and dedup verified."
     },
     {
-      "id": "REMIND-CAL-B",
-      "description": "Target query and built app",
+      "id": "REMIND-CASE-B",
+      "description": "Target query and isolated inbox acceptance",
       "status": "passed",
-      "evidence": "Target accepted the booked one-hour window. Isolated real CLI and Chrome verified delivery, repeat dedup, mark-read and cancellation suppression."
+      "evidence": "Target accepted deadline range after removing unsupported multi-value exclusion. Isolated CLI and Chrome verified delivery, dedup, mark-read and withdrawal suppression. Initial Chrome navigation timed out and a local-only retry passed."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Implement opt-in in-app case deadline reminders with current owner and version checks. Verify task and appointment delivery remain intact.",
+      "action": "Start COMMS-01 with an opt-in durable Resend email outbox. Verify current provider idempotency behavior and test with a fake provider before any real delivery.",
       "files": [
-        "scripts/remind-tasks.mjs",
-        "app/admin/reminder-policy.ts",
-        "app/admin/notifications.server.ts"
+        "context-vault/Feature Ledger.md",
+        "deploy/CRM-DEPLOYMENT.md",
+        "scripts/appwrite-schema.mjs"
       ]
     }
   ],
@@ -104,31 +105,32 @@
     "teamDirectoryAdmin": "Local administration workflow verified with synthetic staff. Target directory verified read-only. No production team or staff changes.",
     "teamQueueRelease": "Read-only target query compatibility verified. No schema or data changes and no VPS rollout.",
     "teamTaskEdits": "Synthetic service and built-app Chrome acceptance passed. No production records or schema changed.",
-    "appointmentReminders": "Opt-in source verified. VPS worker activation remains pending."
+    "appointmentReminders": "Opt-in source verified. VPS worker activation remains pending.",
+    "caseReminders": "Verified opt-in source and target deadline query. Worker not activated on VPS."
   },
   "checks": [
     {
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-16T17:58:32.764Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-kvIR1C/typecheck.log"
+      "checkedAt": "2026-11-16T18:07:39.876Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-1u1So1/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-16T17:58:33.985Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-kvIR1C/test.log"
+      "checkedAt": "2026-11-16T18:07:41.153Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-1u1So1/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-16T17:58:39.332Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-kvIR1C/build.log"
+      "checkedAt": "2026-11-16T18:07:46.434Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-1u1So1/build.log"
     }
   ],
-  "updatedAt": "2026-11-16T17:59:18.575Z",
-  "verifiedSourceFingerprint": "bfceb218552b8346e03f1bc9abd14f3bf68be449f6f5483a73cae9dec0f552d3"
+  "updatedAt": "2026-11-16T18:09:01.254Z",
+  "verifiedSourceFingerprint": "6465d346d939414631baa3dc541ef622b88de0af4d60d699594c89ce8c7a83f3"
 }
