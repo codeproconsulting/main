@@ -133,3 +133,7 @@ The first restricted-manager slice joins staff to an active private team directo
 ## Team classification tooling
 
 Team classification tools scan private directory, staff and enquiry metadata for aggregate counts. A reviewed manifest fills empty lead team references under existing locks.
+
+## Team directory administration
+
+The Team & access route maintains the directory and configures manager scope under the shared staff-access lock.

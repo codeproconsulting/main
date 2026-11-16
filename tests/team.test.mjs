@@ -87,7 +87,7 @@ before(async()=>{
 });
 
 beforeEach(()=>{
- stores=Object.fromEntries(['staff','leads','activities','tasks','cases','appointments','locks'].map(collection=>[collection,new Map()]));
+ stores=Object.fromEntries(['staff','crm_teams','leads','activities','tasks','cases','appointments','locks'].map(collection=>[collection,new Map()]));
  for(const [id,role] of [[owner,'owner'],[admin,'admin'],[counselor,'counselor'],[replacement,'counselor']])stores.staff.set(id,staff(id,role));
  identities=new Map([...stores.staff.keys(),otherOwner,'new-staff'].map(id=>[id,{$id:id,status:true}]));
  sessions=new Map();
@@ -273,4 +273,39 @@ test('unconfirmed profile or assignment writes retain the persistent staff lock'
   assert.ok([...stores.locks.values()].some(lock=>lock.key===crm.staffAccessLock));
   await assert.rejects(()=>edit(counselor,{active:'false'}),status(409));
  }finally{process.env.NODE_ENV='test';}
+});
+
+
+test('only administrators can maintain teams and an in-use team cannot be deactivated',async()=>{
+ const form=new FormData();
+ for(const [key,value] of Object.entries({teamName:'Synthetic advisory',branch:'Synthetic branch',status:'active'}))form.set(key,value);
+ await assert.rejects(()=>team.saveDirectoryTeam(stores.staff.get(counselor),form),status(403));
+ await team.saveDirectoryTeam(stores.staff.get(admin),form);
+ const created=[...stores.crm_teams.values()][0];
+ assert.equal(created.status,'active');
+ assert.equal((await team.teamFor(stores.staff.get(admin),new URLSearchParams())).directory.length,1);
+ form.set('teamReference',created.$id);form.set('status','inactive');
+ await assert.rejects(()=>team.saveDirectoryTeam(stores.staff.get(admin),form),status(409));
+ form.set('expected',created.$updatedAt);
+ stores.leads.set('member-lead',{$id:'member-lead',teamId:created.$id});
+ await assert.rejects(()=>team.saveDirectoryTeam(stores.staff.get(admin),form),status(409));
+ stores.leads.clear();
+ stores.staff.set(counselor,{...stores.staff.get(counselor),teamId:created.$id});
+ await assert.rejects(()=>team.saveDirectoryTeam(stores.staff.get(admin),form),status(409));
+ stores.staff.set(counselor,{...stores.staff.get(counselor),teamId:''});
+ await team.saveDirectoryTeam(stores.staff.get(admin),form);
+ assert.equal(stores.crm_teams.get(created.$id).status,'inactive');
+});
+
+test('manager scope requires explicit selection, active team membership, and confirmation for global grants',async()=>{
+ stores.crm_teams.set('synthetic-alpha',{$id:'synthetic-alpha',status:'active'});
+ await assert.rejects(()=>edit(counselor,{role:'manager'}),status(400));
+ await assert.rejects(()=>edit(counselor,{role:'manager',managerScope:'team',teamId:'missing'}),status(400));
+ sessions.set('existing-synthetic-session',counselor);
+ await edit(counselor,{role:'manager',managerScope:'team',teamId:'synthetic-alpha'},admin);
+ assert.equal((await auth.staffForSession('existing-synthetic-session')).managerScope,'team');
+ await assert.rejects(()=>edit(counselor,{managerScope:'global'}),status(400));
+ await edit(counselor,{managerScope:'global',confirmGlobal:'yes'},admin);
+ assert.equal((await auth.staffForSession('existing-synthetic-session')).managerScope,'global');
+ assert.ok([...stores.activities.values()].some(row=>row.event==='Staff access updated'&&JSON.parse(row.details).managerScope==='team'));
 });

@@ -157,3 +157,7 @@ Existing managers without a scope retain global access. Profiles explicitly conf
 ## Team classification tooling
 
 Classification changes only an empty enquiry team. The reviewed version is checked before and during apply, and reruns skip already applied assignments.
+
+## Team directory administration
+
+Changing a new or restricted manager to organization-wide scope requires explicit confirmation. Teams with active staff or enquiries cannot be deactivated.

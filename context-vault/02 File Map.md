@@ -163,3 +163,7 @@ app/admin/team-scope.server.ts validates active teams. app/admin/auth.server.ts 
 ## Team classification tooling
 
 scripts/classify-lead-teams.mjs implements inventory, manifest preview and guarded apply. tests/team-migration.test.mjs verifies write behavior and lock recovery.
+
+## Team directory administration
+
+Team directory forms are in app/admin/team.tsx. app/admin/team.server.ts validates, audits and applies directory and staff changes.

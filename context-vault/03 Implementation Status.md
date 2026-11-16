@@ -195,3 +195,9 @@ Restricted manager web leads, matches and stage/priority edits implemented. Sche
 Aggregate inventory and reviewed classification tools are implemented. Real staff and enquiry classification still requires reviewed mappings.
 
 Team directory, optional manager scope and indexed lead field now exist in target storage. Synthetic preview and two-team index checks passed. Production profile configuration and activation remain pending.
+
+## Team directory administration
+
+Team directory administration and manager scope controls implemented. Linked workflow and mobile access remain gated.
+
+Team administration passed isolated Chrome and service acceptance. Target directory and guard query shapes passed read-only checks.

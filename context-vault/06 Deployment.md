@@ -143,3 +143,9 @@ Read-only target preview confirmed the new team directory and scope fields are a
 The deployment runbook documents aggregate inventory, reviewed manifests, operator role checks and recovery. Never commit classification manifests.
 
 The target aggregate inventory completed before synthetic testing. It returned zero active teams, lead rows and active managers in the configured database. Verify intended release database before using a reviewed manifest or activating managers.
+
+## Team directory administration
+
+Team administration uses the existing target scope schema. Verify the release runtime key can read and write the private directory and audit collections.
+
+Directory and dependency query compatibility verified with the configured Appwrite key. Runtime rollout remains pending.

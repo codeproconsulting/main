@@ -1,3 +1,5 @@
+import { randomUUID } from "node:crypto";
+import { requireActiveTeam } from "./team-scope.server";
 import { AppwriteError, appwrite, createDocument, getDocument, listDocuments, query, updateDocument } from "~/lib/appwrite.server";
 import { allow, audit, definitiveWriteRejection, field, serialized, staffAccessLock, UnconfirmedMutation } from "./crm.server";
 import { canUseCRM, roles, type Staff } from "./domain";
@@ -7,9 +9,63 @@ export const canEditStaff = (actor: Staff, target: Staff) =>
   canManageStaff(actor) && actor.$id !== target.$id && (actor.role === "owner" || target.role !== "owner");
 
 const validId = (value: string) => /^[a-zA-Z0-9][a-zA-Z0-9._-]{0,35}$/.test(value);
-type Profile = Pick<Staff, "name" | "role" | "active" | "teamId" | "revocationPending">;
+type Profile = Pick<Staff, "name" | "role" | "active" | "teamId" | "managerScope" | "revocationPending">;
 type AuthUser = { $id: string; status: boolean };
 const pageSize = 30;
+// shortcut: one directory page, add pagination before supporting more than 100 teams.
+const directoryLimit = 100;
+type DirectoryTeam = { $id: string; $updatedAt: string; name: string; branch: string; status: string };
+
+async function directory() {
+  try {
+    return await listDocuments<DirectoryTeam>("crm_teams", [query("orderAsc", "$id"), query("limit", undefined, [directoryLimit])]);
+  } catch (error) {
+    if (error instanceof AppwriteError && error.status === 404) return null;
+    throw error;
+  }
+}
+
+export async function saveDirectoryTeam(actor: Staff, form: FormData) {
+  allow(canManageStaff(actor));
+  const id = field(form, "teamReference", 36);
+  const expected = field(form, "expected", 40);
+  const name = field(form, "teamName", 200);
+  const branch = field(form, "branch", 150);
+  const status = field(form, "status", 12);
+  if ((id && !validId(id)) || !name || !branch || !["active", "inactive"].includes(status)) {
+    throw new Response("Enter a team name, branch and valid status.", { status: 400 });
+  }
+  return serialized(staffAccessLock, async () => {
+    const currentActor = await staffFor(actor.$id);
+    if (!currentActor || !canManageStaff(currentActor)) throw new Response("Access denied", { status: 403 });
+    const current = id ? await getDocument<DirectoryTeam>("crm_teams", id) : null;
+    if (current && current.$updatedAt !== expected) {
+      throw new Response("This team changed. Refresh before saving.", { status: 409 });
+    }
+    if (!current && ((await directory())?.total ?? 0) >= directoryLimit) {
+      throw new Response("The team directory has reached its 100-team limit.", { status: 409 });
+    }
+    if (current && status === "inactive" && current.status !== "inactive") {
+      const filters = [query("equal", "teamId", [id]), query("limit", undefined, [1])];
+      const [leads, staff] = await Promise.all([
+        listDocuments("leads", filters),
+        listDocuments("staff", [...filters, query("equal", "active", [true])]),
+      ]);
+      if (leads.total || staff.total) throw new Response("Move active staff and enquiries before deactivating this team.", { status: 409 });
+    }
+    const target = id || randomUUID();
+    const changes = { name, branch, status };
+    const intent = await audit(currentActor, target, "team", "Team directory change requested", { ...changes, state: "pending" });
+    try {
+      if (current) await updateDocument("crm_teams", target, changes);
+      else await createDocument("crm_teams", changes, target);
+    } catch (error) {
+      if (definitiveWriteRejection(error)) throw error;
+      throw new UnconfirmedMutation("The team change may have saved. Ask an administrator to reconcile it before retrying.");
+    }
+    await finishAudit(intent.$id, "Team directory updated", { ...changes, state: "completed" });
+  });
+}
 
 async function staffFor(id: string) {
   try {
@@ -25,16 +81,17 @@ export async function teamFor(actor: Staff, search: URLSearchParams) {
   const cursor = search.get("after") ?? "";
   const id = search.get("edit") ?? "";
   if ((cursor && !validId(cursor)) || (id && !validId(id))) throw new Response("Invalid staff reference.", { status: 400 });
-  const page = await listDocuments<Staff>("staff", [
+  const [directoryResult, page] = await Promise.all([directory(), listDocuments<Staff>("staff", [
     query("orderAsc", "$id"), query("limit", undefined, [pageSize + 1]),
     ...(cursor ? [query("cursorAfter", undefined, [cursor])] : []),
-  ]);
+  ])]);
   const team = page.documents.slice(0, pageSize);
   const selected = id ? await staffFor(id) : null;
   if (id && !selected) throw new Response("Staff profile not found.", { status: 404 });
   if (selected) allow(canEditStaff(actor, selected));
   return {
     team,
+    directory: directoryResult?.documents ?? null,
     selected,
     editableIds: team.filter(target => canEditStaff(actor, target)).map(target => target.$id),
     next: page.documents.length > pageSize ? team.at(-1)!.$id : "",
@@ -72,6 +129,7 @@ export async function updateStaffAccess(actor: Staff, form: FormData) {
   const role = roles.find(value => value === requestedRole);
   const access = field(form, "active", 5);
   const teamId = field(form, "teamId", 36);
+  const requestedScope = field(form, "managerScope", 12);
   const expected = field(form, "expected", 40);
   if (!validId(id) || !name || !role || !["true", "false"].includes(access)) {
     throw new Response("Enter a valid Auth user ID, display name, role and access status.", { status: 400 });
@@ -86,6 +144,20 @@ export async function updateStaffAccess(actor: Staff, form: FormData) {
     allow(currentActor.role === "owner" || (existing?.role !== "owner" && role !== "owner"));
     if ((existing?.$updatedAt ?? "") !== expected) {
       throw new Response("This staff profile changed. Open it again before saving.", { status: 409 });
+    }
+    const previousScope = existing?.role === "manager" ? existing.managerScope || "global" : "";
+    const managerScope = role === "manager" ? requestedScope || previousScope : "";
+    if (role === "manager" && !["team", "global"].includes(managerScope)) {
+      throw new Response("Choose an explicit manager scope.", { status: 400 });
+    }
+    if (managerScope === "global" && previousScope !== "global" && field(form, "confirmGlobal", 3) !== "yes") {
+      throw new Response("Confirm organization-wide manager access before saving.", { status: 400 });
+    }
+    if (active && managerScope === "team") {
+      await requireActiveTeam({ ...currentActor, role: "manager", teamId, managerScope }).catch(error => {
+        if (error instanceof Response && error.status === 403) throw new Response("Choose an active directory team for this manager.", { status: 400 });
+        throw error;
+      });
     }
     if (!existing && !active) throw new Response("Link a new staff profile with active access.", { status: 400 });
     if (active && existing?.revocationPending) {
@@ -117,10 +189,11 @@ export async function updateStaffAccess(actor: Staff, form: FormData) {
 
     const revoking = Boolean(existing && !active && (existing.active || existing.revocationPending));
     const reactivating = Boolean(existing && active && !existing.active);
-    const profile = { name, role, active, teamId, revocationPending: revoking ? existing?.revocationPending || new Date().toISOString() : "" };
+    const profile = { name, role, active, teamId,
+      ...(requestedScope || existing?.managerScope ? { managerScope } : {}), revocationPending: revoking ? existing?.revocationPending || new Date().toISOString() : "" };
     const profileChanged = !existing || Object.entries(profile).some(([key, value]) => (existing[key as keyof Profile] ?? "") !== value);
     if (!profileChanged && !revoking) return { pending: false };
-    const details = { before: existing ? { role: existing.role, active: existing.active } : null, role, active };
+    const details = { before: existing ? { role: existing.role, active: existing.active, teamId: existing.teamId, managerScope: previousScope } : null, role, active, teamId, managerScope };
     const intent = await audit(currentActor, id, "staff", "Staff access change requested", { ...details, state: "pending" });
     if (reactivating) {
       // Clear any old sessions, including for profiles deactivated before this workflow existed.

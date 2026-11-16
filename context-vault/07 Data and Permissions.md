@@ -119,3 +119,7 @@ Team managers have scoped web lead list, match, read and stage/priority edit acc
 ## Team classification tooling
 
 Migration apply requires an active owner or administrator profile and writes per-enquiry audit intent. Inventory outputs aggregate counts only.
+
+## Team directory administration
+
+Owners and admins manage directory entries and staff scope. Manager team access validates live membership on each request. Existing legacy managers retain their scope until edited.
