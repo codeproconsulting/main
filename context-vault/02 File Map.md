@@ -183,3 +183,7 @@ app/admin/work.tsx renders the restricted form. app/admin/operations.server.ts i
 ## Team appointment edits
 
 Team appointment form is in app/admin/work.tsx. The shared saveAppointment service applies scope and patches only allowed fields.
+
+## Team aggregate reports
+
+app/admin/reports.server.ts implements team scans. app/admin/reports.tsx shows aggregate totals and restricts export controls.

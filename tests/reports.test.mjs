@@ -9,7 +9,7 @@ const originalEnv={...process.env};
 const staff={ $id:'synthetic-manager',role:'manager',active:true };
 const refresh=async()=>staff;
 const isStatus=expected=>error=>error instanceof Response&&error.status===expected;
-let vite,reports,leads,requests,audits,failAudit,repeatPage;
+let vite,reports,leads,requests,audits,failAudit,repeatPage,ignoreTeamFilter;
 
 function makeLead(index, fields={}){
  return {
@@ -26,14 +26,16 @@ before(async()=>{
  reports=await vite.ssrLoadModule('/app/admin/reports.server.ts');
  globalThis.fetch=async(input,options)=>{
   const url=new URL(input);
+  if(url.pathname.endsWith('/collections/crm_teams/documents/team-alpha'))return Response.json({status:'active'});
   if(url.pathname.endsWith('/collections/leads/documents')){
    const queries=url.searchParams.getAll('queries[]').map(JSON.parse);
    const filters=Object.fromEntries(queries.map(item=>[item.method,item.values??item.attribute]));
    assert.equal(filters.orderAsc,'$id');
    assert.ok(filters.limit[0]<=100);
    requests.push(filters);
-   const start=filters.cursorAfter&&!repeatPage?leads.findIndex(lead=>lead.$id===filters.cursorAfter[0])+1:0;
-   const documents=leads.slice(start,start+filters.limit[0]).map(lead=>
+   const matching=filters.equal&&!ignoreTeamFilter?leads.filter(row=>row.teamId===filters.equal[0]):leads;
+   const start=filters.cursorAfter&&!repeatPage?matching.findIndex(lead=>lead.$id===filters.cursorAfter[0])+1:0;
+   const documents=matching.slice(start,start+filters.limit[0]).map(lead=>
     Object.fromEntries(filters.select.map(key=>[key,lead[key]])));
    // Deliberately inaccurate provider total, including for the cap cases.
    return Response.json({documents,total:0});
@@ -46,7 +48,7 @@ before(async()=>{
   throw new Error('Unexpected synthetic request');
  };
 });
-beforeEach(()=>{leads=[];requests=[];audits=[];failAudit=false;repeatPage=false;});
+beforeEach(()=>{leads=[];requests=[];audits=[];failAudit=false;repeatPage=false;ignoreTeamFilter=false;});
 after(async()=>{
  globalThis.fetch=originalFetch;
  await vite.close();
@@ -141,4 +143,25 @@ test('access is checked again and audit failure prevents releasing the file',asy
  assert.equal(audits.length,0);
  failAudit=true;
  await assert.rejects(()=>reports.exportLeads(staff,refresh),error=>error.status===503);
+});
+
+
+test('team aggregates filter every page and fail closed on mismatched rows or changed staff scope',async()=>{
+ const actor={...staff,managerScope:'team',teamId:'team-alpha'};
+ leads=[
+  makeLead(0,{teamId:'team-beta',country:'Outside',source:'Outside',stage:'Converted'}),
+  ...Array.from({length:101},(_,i)=>makeLead(i+1,{teamId:'team-alpha',country:'Italy',source:'In scope'})),
+ ];
+ const report=await reports.operationalReport(actor,async()=>actor);
+ assert.equal(report.teamScoped,true);
+ assert.equal(report.total,101);
+ assert.equal(report.converted,0);
+ assert.deepEqual(report.sources.rows,[['In scope',101]]);
+ assert.deepEqual(report.countries.rows,[['Italy',101]]);
+ assert.equal(requests.length,2);
+ assert.ok(requests.every(q=>q.equal[0]==='team-alpha'&&!q.select.includes('email')));
+ await assert.rejects(()=>reports.operationalReport(actor,async()=>({...actor,teamId:'team-beta'})),isStatus(403));
+ ignoreTeamFilter=true;
+ await assert.rejects(()=>reports.operationalReport(actor,async()=>actor),isStatus(503));
+ await assert.rejects(()=>reports.exportLeads(actor,async()=>actor),isStatus(403));
 });

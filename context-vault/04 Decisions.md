@@ -177,3 +177,7 @@ Application edits use the route record ID and patch stage, deadline and version 
 ## Team appointment edits
 
 Appointment record identity comes from the route and current parent. Time, status and version are the only fields patched. Ambiguous writes retain locks.
+
+## Team aggregate reports
+
+Retain the 10,000 lead cap. The team report projects grouping fields and teamId for verification, never contact fields for CSV.

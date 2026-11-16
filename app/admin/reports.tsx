@@ -5,7 +5,8 @@ import { operationalReport } from "./reports.server";
 import { PageHeading, Empty } from "./ui";
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  return operationalReport(await requireStaff(request));
+  const refresh = () => requireStaff(request, true);
+  return operationalReport(await refresh(), refresh);
 }
 
 export default function Reports() {
@@ -14,13 +15,13 @@ export default function Reports() {
   const sections = [["By stage", report.stages], ["By source", report.sources], ["By destination", report.countries]] as const;
 
   return <>
-    <PageHeading eyebrow="LEAD INVENTORY" title="Operational reports" description="Current lead counts by stage, source and destination.">
-      <div className="flex flex-wrap gap-2">
+    <PageHeading eyebrow="LEAD INVENTORY" title="Operational reports" description={report.teamScoped ? "Your team’s lead counts by stage, source and destination." : "Current lead counts by stage, source and destination."}>
+      {!report.teamScoped && <div className="flex flex-wrap gap-2">
         <Link className="crm-button secondary" to="/admin/reports/consultations">Consultation tracking</Link>
         {!report.truncated && <a className="crm-button" href="/admin/leads.csv">Export leads as CSV</a>}
-      </div>
+      </div>}
     </PageHeading>
-    {report.truncated && <p className="crm-alert" role="status">Counts cover the first 10,000 leads by record ID. CSV export is unavailable above this limit.</p>}
+    {report.truncated && <p className="crm-alert" role="status">Counts cover the first 10,000 {report.teamScoped ? "team enquiries" : "leads"} by record ID.{!report.teamScoped && " CSV export is unavailable above this limit."}</p>}
     <div className="crm-stats">
       {counts.map(([label, value]) => <div className="crm-stat" key={label}><p>{label}</p><strong>{value.toLocaleString("en-GB")}</strong></div>)}
     </div>

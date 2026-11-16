@@ -153,3 +153,7 @@ Scoped application writes acquire the parent lead and staff-access locks and rec
 ## Team appointment edits
 
 Team appointment edits reuse existing calendar rules under lead, staff access and calendar locks.
+
+## Team aggregate reports
+
+Aggregate scans filter and verify every page by current team and refresh the staff session before releasing restricted totals.

@@ -165,3 +165,7 @@ No new schema is required. Verify restricted application edits with the deployme
 ## Team appointment edits
 
 Scoped appointment edits require no schema change. Trial runtime checks must cover calendar conflicts and audit writes.
+
+## Team aggregate reports
+
+Reports use the existing lead team index. Verify scoped report and export denial with the release key and runtime.

@@ -221,3 +221,7 @@ Team application stage and deadline edits implemented. Appointment writes remain
 ## Team appointment edits
 
 Team appointment reschedule and outcome updates implemented. Booking creation stays outside team scope.
+
+## Team aggregate reports
+
+Team aggregate reports implemented. CSV and consultation reports remain gated.

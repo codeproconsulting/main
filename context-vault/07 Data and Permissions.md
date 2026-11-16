@@ -139,3 +139,7 @@ Application editing preserves private notes, parent and ownership. Restricted ma
 ## Team appointment edits
 
 Team managers can edit existing booked appointments in their current team; notes, meeting links and assignment remain protected.
+
+## Team aggregate reports
+
+Restricted managers may read their team aggregate reports; consultation overview and CSV export remain global only.

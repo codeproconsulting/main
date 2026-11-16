@@ -3,39 +3,40 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-16-08]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-16-09]].
 
 ## Resume here
 
-**Session:** 2026-11-16-08
+**Session:** 2026-11-16-09
 
 **Active feature:** CRM-03
 
 **State:** completed
 
-**Objective:** Allow existing team appointment reschedules and outcomes.
+**Objective:** Show team managers aggregate lead reports restricted to their current team.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Scoped appointment time and outcome updates with existing calendar rules
+- Team-scoped stage, source and destination totals
+- Access recheck before release
 
 ## Out of scope
 
-- Booking creation, reassignment, private fields, and production rollout
+- Team CSV export, consultations, and production rollout
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| CRM03-CAL-A | Calendar and scoped mutation safeguards | passed | 49 focused tests passed including cross-team denial, calendar conflict, stale version, ambiguous writes and preserved private fields. |
-| CRM03-CAL-B | Built-app appointment edit acceptance | passed | Chrome verified rescheduling and timezone conversion, cancellation, hidden fields, cross-team 404 and booking creation 403. |
+| CRM03-REPORT-A | Scoped aggregation and authorization | passed | Synthetic test verifies filters on every page, two-team isolation, changed membership denial, unexpected row rejection, and continued CSV denial. |
+| CRM03-REPORT-B | Browser and target query checks | passed | Chrome verified one-team totals, hidden export and consultation links, and direct 403 on both routes. Target accepted the exact report projection and team filter for a synthetic team reference. |
 
 ## Exact next actions
 
-1. Build team-scoped aggregate CRM reports. Filter by indexed parent enquiry team before aggregation, verify two-team isolation, and keep CSV and consultation reports gated pending separate acceptance.
-   Files: `app/admin/reports.server.ts`, `app/admin/reports.tsx`, `tests/reports.test.mjs`
+1. Build a team-scoped audited CSV export with a team filter on every page and current staff scope rechecked before release. Verify cross-team exclusion and formula safety.
+   Files: `app/admin/export.ts`, `app/admin/reports.server.ts`, `tests/reports.test.mjs`
 
 ## Known risks and unfinished work
 
@@ -58,9 +59,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-16T04:48:57.774Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Ig2MvQ/typecheck.log`
-- **passed**: `npm run test` (2026-11-16T04:48:59.189Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Ig2MvQ/test.log`
-- **passed**: `npm run build` (2026-11-16T04:49:04.549Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Ig2MvQ/build.log`
+- **passed**: `npm run typecheck` (2026-11-16T04:51:41.748Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-YVdRiq/typecheck.log`
+- **passed**: `npm run test` (2026-11-16T04:51:42.982Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-YVdRiq/test.log`
+- **passed**: `npm run build` (2026-11-16T04:51:48.578Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-YVdRiq/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 

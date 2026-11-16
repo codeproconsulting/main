@@ -1,37 +1,38 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-16-08",
+  "sessionId": "2026-11-16-09",
   "sessionStatus": "completed",
   "activeFeature": "CRM-03",
-  "objective": "Allow existing team appointment reschedules and outcomes.",
+  "objective": "Show team managers aggregate lead reports restricted to their current team.",
   "scope": [
-    "Scoped appointment time and outcome updates with existing calendar rules"
+    "Team-scoped stage, source and destination totals",
+    "Access recheck before release"
   ],
   "outOfScope": [
-    "Booking creation, reassignment, private fields, and production rollout"
+    "Team CSV export, consultations, and production rollout"
   ],
   "acceptance": [
     {
-      "id": "CRM03-CAL-A",
-      "description": "Calendar and scoped mutation safeguards",
+      "id": "CRM03-REPORT-A",
+      "description": "Scoped aggregation and authorization",
       "status": "passed",
-      "evidence": "49 focused tests passed including cross-team denial, calendar conflict, stale version, ambiguous writes and preserved private fields."
+      "evidence": "Synthetic test verifies filters on every page, two-team isolation, changed membership denial, unexpected row rejection, and continued CSV denial."
     },
     {
-      "id": "CRM03-CAL-B",
-      "description": "Built-app appointment edit acceptance",
+      "id": "CRM03-REPORT-B",
+      "description": "Browser and target query checks",
       "status": "passed",
-      "evidence": "Chrome verified rescheduling and timezone conversion, cancellation, hidden fields, cross-team 404 and booking creation 403."
+      "evidence": "Chrome verified one-team totals, hidden export and consultation links, and direct 403 on both routes. Target accepted the exact report projection and team filter for a synthetic team reference."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Build team-scoped aggregate CRM reports. Filter by indexed parent enquiry team before aggregation, verify two-team isolation, and keep CSV and consultation reports gated pending separate acceptance.",
+      "action": "Build a team-scoped audited CSV export with a team filter on every page and current staff scope rechecked before release. Verify cross-team exclusion and formula safety.",
       "files": [
+        "app/admin/export.ts",
         "app/admin/reports.server.ts",
-        "app/admin/reports.tsx",
         "tests/reports.test.mjs"
       ]
     }
@@ -110,24 +111,24 @@
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-16T04:48:57.774Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Ig2MvQ/typecheck.log"
+      "checkedAt": "2026-11-16T04:51:41.748Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-YVdRiq/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-16T04:48:59.189Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Ig2MvQ/test.log"
+      "checkedAt": "2026-11-16T04:51:42.982Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-YVdRiq/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-16T04:49:04.549Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Ig2MvQ/build.log"
+      "checkedAt": "2026-11-16T04:51:48.578Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-YVdRiq/build.log"
     }
   ],
-  "updatedAt": "2026-11-16T04:49:42.980Z",
-  "verifiedSourceFingerprint": "68fb8854de90a5b806caccd01266fd1b4eb2217f32829364c9dbdf12a3cc54ef"
+  "updatedAt": "2026-11-16T04:52:22.140Z",
+  "verifiedSourceFingerprint": "5e8bdc060052e0378ef8a4b82f4341044b4dacce0000e5bdf61b2034ad8da58b"
 }

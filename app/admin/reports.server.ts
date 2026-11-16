@@ -1,6 +1,7 @@
 import { listDocuments, query } from "~/lib/appwrite.server";
 import { allow, audit } from "./crm.server";
-import { canManage, type Lead, type Staff } from "./domain";
+import { requireActiveTeam } from "./team-scope.server";
+import { canManage, isRestrictedManager, type Lead, type Staff } from "./domain";
 
 export const reportLimit = 10_000;
 const pageSize = 100;
@@ -15,6 +16,7 @@ export function requireReportAccess(staff: Staff) {
 async function scanLeads<K extends keyof Lead>(
   fields: readonly K[],
   visit: (lead: Pick<Lead, K>) => void,
+  teamId?: string,
 ) {
   let cursor: string | undefined;
   let count = 0;
@@ -23,14 +25,16 @@ async function scanLeads<K extends keyof Lead>(
   while (true) {
     // Read one extra record to distinguish exactly 10,000 from an incomplete report.
     const limit = Math.min(pageSize, reportLimit + 1 - count);
-    const { documents } = await listDocuments<Pick<Lead, K>>("leads", [
-      query("select", undefined, [...fields]),
+    const { documents } = await listDocuments<Pick<Lead, K> & { teamId?: string }>("leads", [
+      query("select", undefined, teamId ? [...fields, "teamId"] : [...fields]),
+      ...(teamId ? [query("equal", "teamId", [teamId])] : []),
       query("orderAsc", "$id"),
       query("limit", undefined, [limit]),
       ...(cursor ? [query("cursorAfter", undefined, [cursor])] : []),
     ]);
     if (documents.length > limit) throw new Response("Reporting data could not be paged safely.", { status: 503 });
     for (const lead of documents) {
+      if (teamId && lead.teamId !== teamId) throw new Response("Reporting data could not be scoped safely.", { status: 503 });
       if (!lead.$id || seen.has(lead.$id)) throw new Response("Reporting data could not be paged safely.", { status: 503 });
       if (count === reportLimit) return { count, truncated: true };
       seen.add(lead.$id);
@@ -50,8 +54,12 @@ function groups(counts: Map<string, number>) {
   };
 }
 
-export async function operationalReport(staff: Staff) {
-  requireReportAccess(staff);
+export async function operationalReport(staff: Staff, refreshStaff?: () => Promise<Staff>) {
+  const teamScoped = isRestrictedManager(staff);
+  if (teamScoped) {
+    allow(staff.active && Boolean(refreshStaff));
+    await requireActiveTeam(staff);
+  } else requireReportAccess(staff);
   const stages = new Map<string, number>();
   const sources = new Map<string, number>();
   const countries = new Map<string, number>();
@@ -69,8 +77,13 @@ export async function operationalReport(staff: Staff) {
     add(countries, lead.country);
     if (!lead.owner?.trim()) unassigned++;
     if (lead.stage === "Converted") converted++;
-  });
-  return { total: count, truncated, unassigned, converted, stages: groups(stages), sources: groups(sources), countries: groups(countries) };
+  }, teamScoped ? staff.teamId : undefined);
+  if (teamScoped) {
+    const current = await refreshStaff!();
+    allow(current.active && current.$id === staff.$id && isRestrictedManager(current) &&
+      current.managerScope === "team" && current.teamId === staff.teamId);
+  }
+  return { teamScoped, total: count, truncated, unassigned, converted, stages: groups(stages), sources: groups(sources), countries: groups(countries) };
 }
 
 export function csvCell(value: unknown) {
