@@ -3,42 +3,39 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-16-01]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-16-02]].
 
 ## Resume here
 
-**Session:** 2026-11-16-01
+**Session:** 2026-11-16-02
 
 **Active feature:** CRM-03
 
-**State:** completed
+**State:** in_progress
 
-**Objective:** Route eligible website enquiries from a separate opt-in worker.
+**Objective:** Map CRM access and define safe branch and team scope migration.
 
-This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
+A user saying **continue** means resume this feature's next unfinished acceptance check. Do not start unrelated modules or repeat completed infrastructure work. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Durable public-intake queue marker
-- Shared locked round robin and bounded worker
-- VPS wiring and safe opt-in
+- Read and write surface inventory
+- Access defaults, staged migration, and release gates
 
 ## Out of scope
 
-- Branch and team scoping
-- VPS activation
+- Schema provisioning and runtime authorization changes
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| CRM03-AUTO-A | Intake fallback and worker eligibility | passed | Synthetic tests cover opt-in, definitive schema-rejection fallback, ambiguous response, actor role, capacity deferral, manual lead exclusion and manager override. |
-| CRM03-AUTO-B | Built worker and target queue | passed | Built CLI assigned an isolated queued enquiry and cleared its marker. Target queue field and index available; scoped synthetic Appwrite query advanced past a cleared row and cleanup was verified. |
+| CRM03-SCOPE-DESIGN | Authorization inventory and migration design | passed | Reviewed lead, mobile, linked queues, documents, notifications, consultation, reports, staff and routing paths. Recorded policy and release order. |
 
 ## Exact next actions
 
-1. Start the next CRM-03 session by mapping branch and team scopes across lead, linked records, reports and assignment. Define manager access defaults and migration before enabling narrower access.
-   Files: `app/admin/domain.ts`, `app/admin/crm.server.ts`, `context-vault/Feature Ledger.md`
+1. Implement additive directory and scope fields, common lead policy and two-team synthetic tests. Deny unverified linked/report surfaces to restricted managers server-side before activation.
+   Files: `context-vault/Sessions/2026-11-16-02.md`, `app/admin/domain.ts`, `app/admin/crm.server.ts`, `app/admin/auth.server.ts`, `scripts/appwrite-schema.mjs`
 
 ## Known risks and unfinished work
 

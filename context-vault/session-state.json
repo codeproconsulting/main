@@ -1,41 +1,35 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-16-01",
-  "sessionStatus": "completed",
+  "sessionId": "2026-11-16-02",
+  "sessionStatus": "in_progress",
   "activeFeature": "CRM-03",
-  "objective": "Route eligible website enquiries from a separate opt-in worker.",
+  "objective": "Map CRM access and define safe branch and team scope migration.",
   "scope": [
-    "Durable public-intake queue marker",
-    "Shared locked round robin and bounded worker",
-    "VPS wiring and safe opt-in"
+    "Read and write surface inventory",
+    "Access defaults, staged migration, and release gates"
   ],
   "outOfScope": [
-    "Branch and team scoping",
-    "VPS activation"
+    "Schema provisioning and runtime authorization changes"
   ],
   "acceptance": [
     {
-      "id": "CRM03-AUTO-A",
-      "description": "Intake fallback and worker eligibility",
+      "id": "CRM03-SCOPE-DESIGN",
+      "description": "Authorization inventory and migration design",
       "status": "passed",
-      "evidence": "Synthetic tests cover opt-in, definitive schema-rejection fallback, ambiguous response, actor role, capacity deferral, manual lead exclusion and manager override."
-    },
-    {
-      "id": "CRM03-AUTO-B",
-      "description": "Built worker and target queue",
-      "status": "passed",
-      "evidence": "Built CLI assigned an isolated queued enquiry and cleared its marker. Target queue field and index available; scoped synthetic Appwrite query advanced past a cleared row and cleanup was verified."
+      "evidence": "Reviewed lead, mobile, linked queues, documents, notifications, consultation, reports, staff and routing paths. Recorded policy and release order."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Start the next CRM-03 session by mapping branch and team scopes across lead, linked records, reports and assignment. Define manager access defaults and migration before enabling narrower access.",
+      "action": "Implement additive directory and scope fields, common lead policy and two-team synthetic tests. Deny unverified linked/report surfaces to restricted managers server-side before activation.",
       "files": [
+        "context-vault/Sessions/2026-11-16-02.md",
         "app/admin/domain.ts",
         "app/admin/crm.server.ts",
-        "context-vault/Feature Ledger.md"
+        "app/admin/auth.server.ts",
+        "scripts/appwrite-schema.mjs"
       ]
     }
   ],
@@ -127,6 +121,6 @@
       "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-1Q8yhB/build.log"
     }
   ],
-  "updatedAt": "2026-11-16T01:17:56.868Z",
+  "updatedAt": "2026-11-16T01:21:07.931Z",
   "verifiedSourceFingerprint": "1e6d30b38ff42501e886626d6ac3d7ea6ad4dfaad8a3f13cf162cdc7a7e22687"
 }

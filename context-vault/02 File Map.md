@@ -153,3 +153,5 @@ Routing policy and settings writes live in app/admin/lead-routing.server.ts. The
 ## Automatic intake routing
 
 app/admin/intake-routing.server.ts processes a five-row queue page. scripts/intake-routing-worker.mjs runs the bundled service every minute.
+
+See [[Sessions/2026-11-16-02]] for the branch and team authorization call-path inventory.

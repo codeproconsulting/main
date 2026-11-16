@@ -147,3 +147,5 @@ Active workloads exclude Converted and closure stages. Counselors are paused unt
 ## Automatic intake routing
 
 Intake records the marker with the new enquiry. A definitive rejection of the marked write retries ordinary intake; ambiguous writes retain existing error behavior. Worker logs use counts only.
+
+Proposed team ownership, explicit manager scope and safe rollback order are recorded in [[Sessions/2026-11-16-02]].

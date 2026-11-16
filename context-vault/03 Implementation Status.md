@@ -183,3 +183,5 @@ Manager-triggered routing passed service, Chrome and target storage checks. VPS 
 Automatic intake routing implemented behind explicit opt-in. VPS activation remains pending.
 
 The built CLI and target queue acceptance passed. Production activation remains pending.
+
+The branch/team authorization map and migration design are documented in [[Sessions/2026-11-16-02]]. Runtime enforcement remains planned.

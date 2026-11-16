@@ -129,3 +129,5 @@ The routing-only staff and leads fields and rotation index are available on targ
 Enable automatic routing only after the queue schema, worker actor and runtime key are verified. See deploy/CRM-DEPLOYMENT.md.
 
 Target intakeRouting and intake_routing are available. Production website opt-in and worker remain disabled pending VPS configuration and runtime acceptance.
+
+Team scope is design only. Do not enable restricted managers until additive schema, backfill and surface-specific acceptance pass. See [[Sessions/2026-11-16-02]].

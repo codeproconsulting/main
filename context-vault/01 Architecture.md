@@ -123,3 +123,5 @@ Manager-triggered routing evaluates candidates under the lead and staff-access l
 ## Automatic intake routing
 
 Public intake marks opted-in new records for the separate worker. Assignment uses the existing locked handoff policy; updates clear the marker when an enquiry is assigned or leaves New.
+
+Branch and team authorization boundaries and current call paths are mapped in [[Sessions/2026-11-16-02]].
