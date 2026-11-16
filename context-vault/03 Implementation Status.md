@@ -269,3 +269,7 @@ Case deadline reminders implemented behind opt-in.
 Resend transport and outbox implemented. Producer, webhook and delivery acceptance remain pending.
 
 Resend outbox storage and fake-provider delivery verified. No CRM producer or live email configured.
+
+## Staff reminder email
+
+Opt-in staff email integration implemented. Provider delivery and webhook acceptance remain pending.

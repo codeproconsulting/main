@@ -1,38 +1,37 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-16-19",
+  "sessionId": "2026-11-16-20",
   "sessionStatus": "completed",
   "activeFeature": "COMMS-01",
-  "objective": "Persist email delivery requests and retry safely through Resend.",
+  "objective": "Queue and revalidate opt-in staff reminder emails.",
   "scope": [
-    "Private Appwrite outbox and optional sender worker",
-    "Resend idempotency and bounded retries"
+    "Staff reminder producer and guarded Resend send"
   ],
   "outOfScope": [
-    "CRM email producer, real delivery, webhook and suppression"
+    "Live sending, provider webhooks and customer email"
   ],
   "acceptance": [
     {
-      "id": "COMMS01-OUTBOX-A",
-      "description": "Fake-provider retry and dedup",
+      "id": "COMMS01-STAFF-A",
+      "description": "Opt-in and current-source suppression",
       "status": "passed",
-      "evidence": "Tests verify immutable payload, duplicate event handling, transient errors and retry expiry."
+      "evidence": "Fake provider verifies valid send under locks; old reminders, changed owner, source version and address are excluded."
     },
     {
-      "id": "COMMS01-OUTBOX-B",
-      "description": "Appwrite schema readiness",
+      "id": "COMMS01-STAFF-B",
+      "description": "Target queue field readiness",
       "status": "passed",
-      "evidence": "Target collection and index verified private and available. Original oversized attribute on the empty new collection exceeded its row budget. Recreated it at 8,000 characters, verified synthetic enqueue/query and cleanup. No Resend calls."
+      "evidence": "Optional noticeId field provisioned and verified available on target. Typecheck, full tests and production build passed. Delivery remains fake-tested only."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Connect an explicitly opted-in staff reminder producer to the outbox. Recheck current staff recipient and source scope, suppress stale messages, and keep external delivery off until verified sender and release checks.",
+      "action": "Build signed Resend webhook handling for delivery, bounce and complaint events. Match provider IDs, deduplicate events and test suppression without sending live email.",
       "files": [
-        "scripts/remind-tasks.mjs",
         "scripts/email-outbox.mjs",
+        "scripts/appwrite-schema.mjs",
         "deploy/CRM-DEPLOYMENT.md"
       ]
     }
@@ -107,31 +106,32 @@
     "teamTaskEdits": "Synthetic service and built-app Chrome acceptance passed. No production records or schema changed.",
     "appointmentReminders": "Opt-in source verified. VPS worker activation remains pending.",
     "caseReminders": "Verified opt-in source and target deadline query. Worker not activated on VPS.",
-    "resendOutbox": "Private schema available. Provider fake-tested only. No credentials configured or worker activation performed."
+    "resendOutbox": "Private schema available. Provider fake-tested only. No credentials configured or worker activation performed.",
+    "staffReminderEmail": "Source and optional outbox link ready. Both production flags remain disabled; no Resend delivery attempted."
   },
   "checks": [
     {
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-16T18:17:14.476Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-e3tyCN/typecheck.log"
+      "checkedAt": "2026-11-16T18:21:17.475Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-HYfeN6/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-16T18:17:16.001Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-e3tyCN/test.log"
+      "checkedAt": "2026-11-16T18:21:18.710Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-HYfeN6/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-16T18:17:21.876Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-e3tyCN/build.log"
+      "checkedAt": "2026-11-16T18:21:23.751Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-HYfeN6/build.log"
     }
   ],
-  "updatedAt": "2026-11-16T18:18:09.943Z",
-  "verifiedSourceFingerprint": "3bec68e56ea325f89124033e7ad99442bbc6b778daf43685a34a9d1c30b3d20a"
+  "updatedAt": "2026-11-16T18:21:40.321Z",
+  "verifiedSourceFingerprint": "3321a2f31d3028f1eda41ec047446588f58394b35dcd44499b1ccca53a160811"
 }

@@ -217,3 +217,7 @@ Set ENABLE_CASE_REMINDERS only after runtime acceptance. See deploy/CRM-DEPLOYME
 Keep ENABLE_RESEND_OUTBOX disabled pending sender, producer and release acceptance. See deploy/CRM-DEPLOYMENT.md.
 
 Target outbox schema and due index are available. Worker activation and sender acceptance are pending.
+
+## Staff reminder email
+
+See deploy/CRM-DEPLOYMENT.md for flags, sender, allowlist and runtime user access.

@@ -1,11 +1,17 @@
+import { staffReminderConfig, staffReminderEmail } from "./staff-reminder-email.mjs";
 import {api,loadEnvironment,allDocuments} from './appwrite-client.mjs';
 import {remindDueTasks} from './remind-tasks.mjs';
 import {runReminderLoop} from './reminder-runner.mjs';
 loadEnvironment();
+let reminderEmail;
+try {
+ const config=staffReminderConfig(process.env);
+ if(config)reminderEmail=staffReminderEmail({api,database:process.env.APPWRITE_DATABASE_ID,config});
+}catch{console.error('Staff reminder email configuration is invalid. In-app reminders remain active.');}
 const controller=new AbortController();
 for(const signal of ['SIGTERM','SIGINT'])process.on(signal,()=>controller.abort());
 async function tick(){
- const result=await remindDueTasks({api,allDocuments,databaseId:process.env.APPWRITE_DATABASE_ID,includeAppointments:process.env.ENABLE_APPOINTMENT_REMINDERS==="true",includeCases:process.env.ENABLE_CASE_REMINDERS==="true",signal:controller.signal,onError:({id,status})=>console.error('Task reminder needs attention:',id,status)});
+ const result=await remindDueTasks({api,allDocuments,databaseId:process.env.APPWRITE_DATABASE_ID,includeAppointments:process.env.ENABLE_APPOINTMENT_REMINDERS==="true",includeCases:process.env.ENABLE_CASE_REMINDERS==="true",enqueueStaffReminder:reminderEmail?.enqueue,signal:controller.signal,onError:({id,status})=>console.error('Task reminder needs attention:',id,status)});
  console.log(JSON.stringify({at:new Date().toISOString(),...result}));
  return result;
 }

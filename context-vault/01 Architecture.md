@@ -197,3 +197,7 @@ The reminder worker can scan active case deadlines over the next 24 hours.
 ## Resend outbox
 
 Resend email requests use a private Appwrite outbox and separate opt-in worker.
+
+## Staff reminder email
+
+In-app reminders can enqueue generic staff email. The outbox sender holds the lead and staff locks while checking the current source and verified Auth address.

@@ -5,7 +5,7 @@ const q=(method,attribute,values)=>JSON.stringify({method,attribute,values});
 export const reminderId=task=>hash(`task:${task.$id}:${task.version}:${task.owner}:${task.dueAt}`);
 
 // In-app delivery is the durable notification write itself, not an external send.
-export async function remindDueTasks({api,allDocuments,databaseId,now=new Date().toISOString(),clock=()=>new Date().toISOString(),onError=()=>{},signal,includeAppointments=false,includeCases=false}){
+export async function remindDueTasks({api,allDocuments,databaseId,now=new Date().toISOString(),clock=()=>new Date().toISOString(),onError=()=>{},signal,includeAppointments=false,includeCases=false,enqueueStaffReminder}){
  if(!Number.isFinite(Date.parse(now)))throw new Error('Invalid reminder cycle time');
  const base=`/databases/${encodeURIComponent(databaseId)}/collections`;
  const path=(collection,id)=>`${base}/${collection}/documents${id?'/'+encodeURIComponent(id):''}`;
@@ -55,13 +55,16 @@ export async function remindDueTasks({api,allDocuments,databaseId,now=new Date()
       const title=(kind==='appointment'?`Upcoming appointment: ${source.title}`:kind==='case'?'Upcoming application deadline':`Follow-up due: ${source.title}`).slice(0,300);
       const body=kind==='appointment'?`Starts ${source.startsAt}.`:kind==='case'?`Deadline ${source.deadline}.`:`Due ${dueAt}. Open the lead to record an outcome.`;
       const data={recipient:lead.owner,entityId:lead.$id,kind,sourceId:source.$id,sourceVersion:source.version,dueAt,title,body,read:false};
-      try{await api(path('notifications'),'POST',{documentId,data,permissions:[]});result.created++;}
+      let notice;
+      try{notice=await api(path('notifications'),'POST',{documentId,data,permissions:[]});result.created++;}
       catch(error){
        if(error.status!==409)throw error;
        const saved=await api(path('notifications',documentId));
        if(saved.recipient!==data.recipient||saved.sourceId!==data.sourceId||saved.sourceVersion!==data.sourceVersion||saved.dueAt!==data.dueAt||saved.entityId!==data.entityId||saved.kind!==kind)throw new Error('Notification identity conflict');
+       notice=saved;
        result.duplicate++;
       }
+      if(enqueueStaffReminder) await enqueueStaffReminder(notice,documentId);
      });
      if(!done){result.skipped++;result.failed++;onError({id:candidate.$id,status:'lead_lock_busy'});}
     }catch(error){result.failed++;onError({id:candidate.$id,status:error.status??'operation_failed'});}

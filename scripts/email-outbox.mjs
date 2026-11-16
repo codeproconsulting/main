@@ -5,7 +5,8 @@ const retryWindow = 23 * 60 * 60 * 1000;
 const hash = value => createHash('sha256').update(value).digest('hex').slice(0, 32);
 const collection = (database, name) => '/databases/' + encodeURIComponent(database) + '/collections/' + name + '/documents';
 
-export async function enqueueEmail({ api, database, eventKey, from, to, subject, text, now = new Date().toISOString() }) {
+export async function enqueueEmail({ api, database, eventKey, from, to, subject, text, noticeId, now = new Date().toISOString() }) {
+  if (noticeId !== undefined && (typeof noticeId !== 'string' || !/^[a-f0-9]{32}$/.test(noticeId))) throw new Error('Invalid notice reference');
   if (!eventKey || typeof eventKey !== 'string' || ![from, to, subject, text].every(value => typeof value === 'string' && value.trim()) ||
       !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to) || /[\r\n]/.test(from + subject) || !Number.isFinite(Date.parse(now))) {
     throw new Error('Invalid outbox message');
@@ -15,10 +16,11 @@ export async function enqueueEmail({ api, database, eventKey, from, to, subject,
   const id = hash('email:' + eventKey);
   const path = collection(database, 'email_outbox');
   try {
-    await api(path, 'POST', { documentId: id, permissions: [], data: { payload, status: 'queued', nextAt: now, attempts: 0 } });
+    await api(path, 'POST', { documentId: id, permissions: [], data: { payload, ...(noticeId ? { noticeId } : {}), status: 'queued', nextAt: now, attempts: 0 } });
   } catch (error) {
     if (error.status !== 409) throw error;
-    if ((await api(path + '/' + id)).payload !== payload) throw new Error('Outbox event payload changed');
+    const existing = await api(path + '/' + id);
+    if (existing.payload !== payload || (existing.noticeId || undefined) !== noticeId) throw new Error('Outbox event payload changed');
   }
   return id;
 }
@@ -38,7 +40,7 @@ export async function sendResend({ key, id, payload, request = fetch }) {
 }
 
 export async function deliverEmailPage({ api, database, send, clock = Date.now, signal }) {
-  const result = { accepted: 0, deferred: 0, failed: 0, review: 0, contended: false };
+  const result = { accepted: 0, deferred: 0, failed: 0, review: 0, suppressed: 0, contended: false };
   if (signal?.aborted) return result;
   const outbox = collection(database, 'email_outbox');
   const locks = collection(database, 'locks');
@@ -69,13 +71,13 @@ export async function deliverEmailPage({ api, database, send, clock = Date.now, 
       const nextAt = new Date(clock() + Math.min(60, 2 ** Math.min(attempts, 6)) * 60000).toISOString();
       await api(path,'PATCH',{data:{attempts,nextAt}});
       if (signal?.aborted || clock() >= expires) break;
-      const outcome = await send({id:row.$id,payload:row.payload}).catch(() => ({retry:true}));
+      const outcome = await send({id:row.$id,payload:row.payload,noticeId:row.noticeId}).catch(() => ({retry:true}));
       if (outcome.id) {
         await api(path,'PATCH',{data:{status:'accepted',providerId:outcome.id}});
         result.accepted++;
       } else if (outcome.retry) result.deferred++;
       else {
-        const status = attempts > 1 ? 'review' : 'failed';
+        const status = attempts > 1 ? 'review' : outcome.suppressed ? 'suppressed' : 'failed';
         await api(path,'PATCH',{data:{status}});
         result[status]++;
       }

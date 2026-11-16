@@ -1,3 +1,4 @@
+import {staffReminderConfig,staffReminderEmail} from "./staff-reminder-email.mjs";
 import { api, loadEnvironment } from './appwrite-client.mjs';
 import { deliverEmailPage, sendResend } from './email-outbox.mjs';
 import { runReminderLoop } from './reminder-runner.mjs';
@@ -11,13 +12,16 @@ if (process.env.ENABLE_RESEND_OUTBOX !== 'true' || !key || !process.env.APPWRITE
 const controller = new AbortController();
 for (const signal of ['SIGTERM','SIGINT']) process.on(signal, () => controller.abort());
 try {
+  const config = staffReminderConfig(process.env);
+  if (!config) throw new Error("Staff reminder email opt-in required");
+  const reminderEmail = staffReminderEmail({api,database:process.env.APPWRITE_DATABASE_ID,config});
   const result = await runReminderLoop({
     signal: controller.signal, once: process.argv.includes('--once'),
     onError: () => console.error('Email outbox cycle unavailable. Retrying in 60 seconds.'),
     cycle: async () => {
       const result = await deliverEmailPage({
         api, database: process.env.APPWRITE_DATABASE_ID, signal: controller.signal,
-        send: message => sendResend({ ...message, key }),
+        send: message => reminderEmail.send(message, delivery => sendResend({ ...delivery, key })),
       });
       console.log(JSON.stringify(result));
       return result;

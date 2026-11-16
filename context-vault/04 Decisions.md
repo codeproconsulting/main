@@ -221,3 +221,7 @@ Deliver once per current case version in the 24 hours before a deadline. Exclude
 ## Resend outbox
 
 Use a stable event ID, immutable payload and a 23-hour cutoff within the documented Resend idempotency window.
+
+## Staff reminder email
+
+Use generic content, a staff allowlist and verified Auth addresses. Exclude restricted managers while their inbox route is unavailable. Only recent unread notices are enqueued.

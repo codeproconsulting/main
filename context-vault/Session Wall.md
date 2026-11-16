@@ -3,40 +3,39 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-16-19]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-16-20]].
 
 ## Resume here
 
-**Session:** 2026-11-16-19
+**Session:** 2026-11-16-20
 
 **Active feature:** COMMS-01
 
 **State:** completed
 
-**Objective:** Persist email delivery requests and retry safely through Resend.
+**Objective:** Queue and revalidate opt-in staff reminder emails.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Private Appwrite outbox and optional sender worker
-- Resend idempotency and bounded retries
+- Staff reminder producer and guarded Resend send
 
 ## Out of scope
 
-- CRM email producer, real delivery, webhook and suppression
+- Live sending, provider webhooks and customer email
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| COMMS01-OUTBOX-A | Fake-provider retry and dedup | passed | Tests verify immutable payload, duplicate event handling, transient errors and retry expiry. |
-| COMMS01-OUTBOX-B | Appwrite schema readiness | passed | Target collection and index verified private and available. Original oversized attribute on the empty new collection exceeded its row budget. Recreated it at 8,000 characters, verified synthetic enqueue/query and cleanup. No Resend calls. |
+| COMMS01-STAFF-A | Opt-in and current-source suppression | passed | Fake provider verifies valid send under locks; old reminders, changed owner, source version and address are excluded. |
+| COMMS01-STAFF-B | Target queue field readiness | passed | Optional noticeId field provisioned and verified available on target. Typecheck, full tests and production build passed. Delivery remains fake-tested only. |
 
 ## Exact next actions
 
-1. Connect an explicitly opted-in staff reminder producer to the outbox. Recheck current staff recipient and source scope, suppress stale messages, and keep external delivery off until verified sender and release checks.
-   Files: `scripts/remind-tasks.mjs`, `scripts/email-outbox.mjs`, `deploy/CRM-DEPLOYMENT.md`
+1. Build signed Resend webhook handling for delivery, bounce and complaint events. Match provider IDs, deduplicate events and test suppression without sending live email.
+   Files: `scripts/email-outbox.mjs`, `scripts/appwrite-schema.mjs`, `deploy/CRM-DEPLOYMENT.md`
 
 ## Known risks and unfinished work
 
@@ -59,9 +58,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-16T18:17:14.476Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-e3tyCN/typecheck.log`
-- **passed**: `npm run test` (2026-11-16T18:17:16.001Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-e3tyCN/test.log`
-- **passed**: `npm run build` (2026-11-16T18:17:21.876Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-e3tyCN/build.log`
+- **passed**: `npm run typecheck` (2026-11-16T18:21:17.475Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-HYfeN6/typecheck.log`
+- **passed**: `npm run test` (2026-11-16T18:21:18.710Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-HYfeN6/test.log`
+- **passed**: `npm run build` (2026-11-16T18:21:23.751Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-HYfeN6/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -119,5 +118,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **appointmentReminders**: Opt-in source verified. VPS worker activation remains pending.
 - **caseReminders**: Verified opt-in source and target deadline query. Worker not activated on VPS.
 - **resendOutbox**: Private schema available. Provider fake-tested only. No credentials configured or worker activation performed.
+- **staffReminderEmail**: Source and optional outbox link ready. Both production flags remain disabled; no Resend delivery attempted.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

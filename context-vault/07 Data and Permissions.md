@@ -183,3 +183,7 @@ Case recipients must be the current enquiry and case owner. Inbox checks current
 ## Resend outbox
 
 Email payloads remain private and worker logs contain only counts; there is no public enqueue route.
+
+## Staff reminder email
+
+Email contains no applicant fields. Send requires current source, current owner, active staff, opt-in and matching verified address.

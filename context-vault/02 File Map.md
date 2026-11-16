@@ -227,3 +227,7 @@ Case candidate lookup and notification revalidation share scripts/remind-tasks.m
 ## Resend outbox
 
 scripts/email-outbox.mjs stores and delivers durable requests; scripts/email-worker.mjs runs them under PM2.
+
+## Staff reminder email
+
+scripts/staff-reminder-email.mjs implements producer and send authorization; scripts/worker.mjs and scripts/email-worker.mjs wire both sides.
