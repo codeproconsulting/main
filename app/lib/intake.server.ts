@@ -20,6 +20,15 @@ export async function captureLead(request:Request,input:Record<string,unknown>) 
  const details=Object.fromEntries(allowed.map(key=>[key,read(key,key==='notes'||key==='message'?4000:1000)]).filter(([,value])=>value));
  const payload={name,email,phone,emailKey:emailKey(email),phoneKey:phoneKey(phone),service,source,country:read('targetCountry',150)||read('destinationCountry',150)||read('interestedCountry',150),stage:'New',owner:'',priority:'Normal',nextFollowUp:'',details:JSON.stringify(details),version:1};
  if(payload.details.length>16000)throw new Response('Submission is too large',{status:413});
- try {return await createDocument('leads',payload,id);}
+ try {
+  if(process.env.ENABLE_INTAKE_ROUTING === "true"){
+   try{return await createDocument('leads',{...payload,intakeRouting:'pending'},id);}
+   catch(error){
+    // A definitive schema rejection can fall back to the ordinary manager queue.
+    if(!(error instanceof AppwriteError) || error.status!==400)throw error;
+   }
+  }
+  return await createDocument('leads',payload,id);
+ }
  catch(e){if(e instanceof AppwriteError&&e.status===409){const previous=await getDocument<Lead>('leads',id);if(previous.email===email&&previous.name===name&&previous.phone===phone)return previous;throw new Response('This submission reference was already used. Refresh and try again.',{status:409});}throw e;}
 }

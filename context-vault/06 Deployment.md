@@ -123,3 +123,9 @@ Existing owner, lock and linked-work schemas cover bulk handoffs. Verify the dep
 Apply scoped staff and leads schema changes for counselor routing fields and the routed_at index. Verify workload and rotation queries with the release runtime key.
 
 The routing-only staff and leads fields and rotation index are available on target Appwrite. Tests used the setup key; runtime acceptance is separate.
+
+## Automatic intake routing
+
+Enable automatic routing only after the queue schema, worker actor and runtime key are verified. See deploy/CRM-DEPLOYMENT.md.
+
+Target intakeRouting and intake_routing are available. Production website opt-in and worker remain disabled pending VPS configuration and runtime acceptance.

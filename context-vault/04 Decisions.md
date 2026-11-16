@@ -143,3 +143,7 @@ Bulk assignment requires an explicit destination and reason. Rows keep independe
 ## Counselor routing
 
 Active workloads exclude Converted and closure stages. Counselors are paused until explicitly enabled. Manual assignment and stage changes may exceed routing capacity. Calendar conflicts skip the affected enquiry for manual review.
+
+## Automatic intake routing
+
+Intake records the marker with the new enquiry. A definitive rejection of the marked write retries ordinary intake; ambiguous writes retain existing error behavior. Worker logs use counts only.

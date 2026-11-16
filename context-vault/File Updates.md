@@ -1,6 +1,6 @@
 # File updates
 
-Generated snapshot of changes since the previous inventory; Nov 15, 2026, 8:45 p.m. (Asia/Karachi).
+Generated snapshot of changes since the previous inventory; Nov 16, 2026, 6:16 a.m. (Asia/Karachi).
 
 [[02 File Map]] · [[Source Inventory]] · [[05 Maintenance]]
 
@@ -8,14 +8,19 @@ Review these changes and update human-authored architecture/status notes where n
 
 ## Added
 
-- `app/admin/lead-routing.server.ts`
+- `app/admin/intake-routing.server.ts`
+- `scripts/build-intake-routing.mjs`
+- `scripts/intake-routing-worker.mjs`
 
 ## Modified
 
-- `app/admin/bulk-leads.server.ts`
 - `app/admin/crm.server.ts`
 - `app/admin/domain.ts`
-- `app/admin/leads.tsx`
+- `app/admin/lead-routing.server.ts`
+- `app/lib/intake.server.ts`
 - `deploy/CRM-DEPLOYMENT.md`
+- `deploy/ecosystem.config.cjs`
+- `package.json`
 - `scripts/appwrite-schema.mjs`
 - `tests/manual-leads.test.mjs`
+- `tests/workspace.test.mjs`

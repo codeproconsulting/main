@@ -146,3 +146,32 @@ test('upstream assessment attribution survives unified CRM intake',async()=>{
  await intake.captureLead(req,{fullName:'Synthetic Contact',email:'synthetic@example.invalid',phone:'+441234567890',submissionId:'33333333-3333-4333-8333-333333333333',source:'/education/contact',service:'Education',enquiringAs:'Parent',destination:'denmark',originPath:'/education/destinations/study-in-denmark',serviceContext:'Denmark study assessment'});
  const details=JSON.parse(saved.details);assert.equal(details.enquiringAs,'Parent');assert.equal(details.destination,'denmark');assert.equal(details.originPath,'/education/destinations/study-in-denmark');assert.equal(details.serviceContext,'Denmark study assessment');
 });
+
+
+test('intake queues only when enabled and falls back on a definitive schema rejection',async()=>{
+ const original=process.env.ENABLE_INTAKE_ROUTING;
+ const marker=[];
+ try{
+  process.env.ENABLE_INTAKE_ROUTING='true';
+  globalThis.fetch=async(_url,options)=>{
+   const {data,documentId}=JSON.parse(options.body);
+   marker.push(data.intakeRouting);
+   return data.intakeRouting?reply({},400):reply({...data,$id:documentId},201);
+  };
+  const req=request('/api/leads',{headers:{Origin:'http://localhost:5173'}});
+  const input={name:'Synthetic Contact',email:'insert-test@example.invalid',phone:'+441234567890',submissionId:'33333333-3333-4333-8333-333333333334'};
+  await intake.captureLead(req,input);
+  process.env.ENABLE_INTAKE_ROUTING='false';
+  await intake.captureLead(req,input);
+  process.env.ENABLE_INTAKE_ROUTING='true';
+  globalThis.fetch=async(_url,options)=>{
+   marker.push(JSON.parse(options.body).data.intakeRouting);
+   return reply({},503);
+  };
+  await assert.rejects(()=>intake.captureLead(req,input),error=>error.status===503);
+  assert.deepEqual(marker,['pending',undefined,undefined,'pending']);
+ }finally{
+  if(original===undefined)delete process.env.ENABLE_INTAKE_ROUTING;
+  else process.env.ENABLE_INTAKE_ROUTING=original;
+ }
+});

@@ -31,9 +31,12 @@ export async function saveRoutingSettings(staff: Staff, form: FormData) {
   });
 }
 
-export function routeEnquiry(staff: Staff, id: string, form: FormData) {
+export function routeEnquiry(staff: Staff, id: string, form: FormData, automatic = false) {
   allow(staff.active && canManage(staff));
   return updateLead(staff, id, form, "bulk", async lead => {
+    if (automatic && (lead.intakeRouting !== "pending" || lead.stage !== "New")) {
+      throw new Response("This enquiry is no longer queued for intake routing.", { status: 409 });
+    }
     if (lead.owner || !activeStages.some(stage => stage === lead.stage)) {
       throw new Response("Round robin requires an unassigned enquiry in an active stage.", { status: 409 });
     }

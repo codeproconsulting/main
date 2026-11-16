@@ -119,3 +119,7 @@ Bulk assignment reuses the single enquiry transfer under lead, staff access and 
 ## Counselor routing
 
 Manager-triggered routing evaluates candidates under the lead and staff-access locks. The lead write records rotation metadata with the new owner. The normal handoff transfers linked work.
+
+## Automatic intake routing
+
+Public intake marks opted-in new records for the separate worker. Assignment uses the existing locked handoff policy; updates clear the marker when an enquiry is assigned or leaves New.

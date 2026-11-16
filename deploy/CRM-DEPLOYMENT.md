@@ -285,3 +285,9 @@ Apply scoped schema setup for leads and lead_views before rollout to create the 
 ### Counselor routing
 
 Review and apply the scoped staff and leads schema setup before rollout. Routing requires routingAvailability and routingCapacity on staff and routedAt, routedCounselor and the routed_at index on leads. Existing counselor profiles remain paused until configured. Verify settings writes, rotation lookup, scoped workload counts and normal handoff permissions with the runtime key.
+
+### Automatic website intake routing
+
+Use scoped leads setup to apply the optional intakeRouting attribute and intake_routing index. Build the app with npm run build to produce the worker bundle. Set INTAKE_ROUTING_ACTOR_ID to the staff profile ID of an active manager authorized to own the audit trail. This ID is not a login credential. Confirm the runtime key can read staff and dependent records and write leads, activities and locks.
+
+After accepting the worker with synthetic data, set ENABLE_INTAKE_ROUTING=true for the website process and export it before loading the PM2 ecosystem. Start only proconsulting-intake-routing with --only and --update-env. Restart the website process in its own deployment procedure when ready to mark new enquiries. The worker checks up to five pending rows per cycle, keeps unassigned work in the manager queue when capacity is unavailable, and reports counts without applicant details. To disable, remove the website flag and reload the website, then stop the worker. Existing pending entries stay visible to managers. Preview with isolated configuration before running --once because it processes real pending rows against its configured database.

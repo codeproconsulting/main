@@ -11,7 +11,7 @@ const manager={$id:'synthetic-manager',role:'manager',active:true};
 const counselor={$id:'synthetic-counselor',role:'counselor',active:true};
 const errorStatus=status=>error=>error instanceof Response&&error.status===status;
 const token='d21265d0-363f-4a4c-b777-0e67b36930da';
-let vite,manual,crm,views,bulk,routing,leads,activities,profiles,queries,options,dependencies;
+let vite,manual,crm,views,bulk,routing,worker,leads,activities,profiles,queries,options,dependencies;
 
 function form(changes={}){
  const fields=new FormData();
@@ -30,6 +30,7 @@ before(async()=>{
  views=await vite.ssrLoadModule('/app/admin/lead-views.server.ts');
  bulk=await vite.ssrLoadModule('/app/admin/bulk-leads.server.ts');
  routing=await vite.ssrLoadModule('/app/admin/lead-routing.server.ts');
+ worker=await vite.ssrLoadModule('/app/admin/intake-routing.server.ts');
  globalThis.fetch=async(input,request)=>{
   const url=new URL(input);
   const [,collection,id]=url.pathname.match(/\/collections\/(\w+)\/documents(?:\/([^/]+))?$/)??[];
@@ -354,4 +355,25 @@ test('round robin persists turn order, respects capacity and pause, and audits a
  assert.equal((await bulk.bulkUpdateLeads(manager,retry))[0].status,'saved');
  assert.equal(leads.get(third.$id).owner,counselor.$id);
  assert.equal([...activities.values()].filter(row=>row.event==='Lead assigned by round robin').length,3);
+});
+
+
+test('intake worker assigns only queued website enquiries and retries deferred capacity',async()=>{
+ await routing.saveRoutingSettings(manager,form({counselor:counselor.$id,availability:'available',capacity:'1'}));
+ const manualLead=await manual.createManualLead(manager,form());
+ const second=await manual.createManualLead(manager,form({submissionId:'d21265d0-363f-4a4c-b777-0e67b36930dc'}));
+ const third=await manual.createManualLead(manager,form({submissionId:'d21265d0-363f-4a4c-b777-0e67b36930dd'}));
+ leads.set(second.$id,{...second,intakeRouting:'pending'});
+ leads.set(third.$id,{...third,intakeRouting:'pending'});
+ await assert.rejects(()=>worker.routeIntakePage(counselor.$id),errorStatus(403));
+ const run=await worker.routeIntakePage(manager.$id);
+ assert.deepEqual(run,{assigned:1,deferred:1,failed:0,cursor:undefined});
+ assert.equal(leads.get(manualLead.$id).owner,'');
+ assert.equal(leads.get(second.$id).owner,counselor.$id);
+ assert.equal(leads.get(second.$id).intakeRouting,'');
+ assert.equal(leads.get(third.$id).intakeRouting,'pending');
+ const edit=form({version:'1',stage:'Contacted',priority:'Normal'});
+ await crm.updateLead(manager,third.$id,edit,'bulk');
+ assert.equal(leads.get(third.$id).intakeRouting,'');
+ assert.equal((await worker.routeIntakePage(manager.$id)).assigned,0);
 });

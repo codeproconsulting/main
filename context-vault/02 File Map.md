@@ -149,3 +149,7 @@ The lead list offers counselor filters and a bulk assignment control. The bulk a
 ## Counselor routing
 
 Routing policy and settings writes live in app/admin/lead-routing.server.ts. The leads page renders controls. The scoped schema declares routing metadata.
+
+## Automatic intake routing
+
+app/admin/intake-routing.server.ts processes a five-row queue page. scripts/intake-routing-worker.mjs runs the bundled service every minute.

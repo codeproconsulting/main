@@ -177,3 +177,9 @@ Bulk assignment and counselor filters are implemented. Synthetic transfer, confl
 Counselor availability, capacity and manager-triggered round robin are implemented. Automatic intake and team-scoped assignment remain planned.
 
 Manager-triggered routing passed service, Chrome and target storage checks. VPS runtime and automatic intake routing remain pending.
+
+## Automatic intake routing
+
+Automatic intake routing implemented behind explicit opt-in. VPS activation remains pending.
+
+The built CLI and target queue acceptance passed. Production activation remains pending.

@@ -239,6 +239,7 @@ export async function resolveDuplicate(staff: Staff, id: string, form: FormData)
     }
 
     const changes = {
+      ...(!restore && lead.intakeRouting === "pending" ? { intakeRouting: "" } : {}),
       stage, duplicateOf: targetId, duplicatePriorStage: restore ? "" : lead.stage,
       version: lead.version + 1,
     };
@@ -285,7 +286,8 @@ export async function updateLead(
       if (requiresClosureReason(lead.stage, stage) || owner !== lead.owner) {
         if (!reason) throw new Response("A reason is required for closure or reassignment.", { status: 400 });
       }
-      const changes = { stage, owner, priority, nextFollowUp: mode === "full" ? dateField(field(form, "nextFollowUp")) : lead.nextFollowUp, version: lead.version + 1, ...routing };
+      const clearQueue = lead.intakeRouting === "pending" && (Boolean(owner) || stage !== "New");
+      const changes = { ...(clearQueue ? { intakeRouting: "" } : {}), stage, owner, priority, nextFollowUp: mode === "full" ? dateField(field(form, "nextFollowUp")) : lead.nextFollowUp, version: lead.version + 1, ...routing };
       const transferring = owner !== lead.owner;
       const save = async () => {
         if (owner) {
