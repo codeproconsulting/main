@@ -225,3 +225,7 @@ Team appointment reschedule and outcome updates implemented. Booking creation st
 ## Team aggregate reports
 
 Team aggregate reports implemented. CSV and consultation reports remain gated.
+
+## Team CSV export
+
+Team CSV export implemented; consultation report scope remains separate.

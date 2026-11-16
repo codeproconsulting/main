@@ -57,7 +57,7 @@ after(async()=>{
 });
 
 test('inactive managers and roles outside management cannot read reports or export',async()=>{
- for(const denied of [{...staff,active:false},{...staff,managerScope:'team',teamId:'team-alpha'},...['counselor','editor','publisher'].map(role=>({...staff,role}))]){
+ for(const denied of [{...staff,active:false},...['counselor','editor','publisher'].map(role=>({...staff,role}))]){
   await assert.rejects(()=>reports.operationalReport(denied),isStatus(403));
   await assert.rejects(()=>reports.exportLeads(denied,refresh),isStatus(403));
  }
@@ -163,5 +163,30 @@ test('team aggregates filter every page and fail closed on mismatched rows or ch
  await assert.rejects(()=>reports.operationalReport(actor,async()=>({...actor,teamId:'team-beta'})),isStatus(403));
  ignoreTeamFilter=true;
  await assert.rejects(()=>reports.operationalReport(actor,async()=>actor),isStatus(503));
- await assert.rejects(()=>reports.exportLeads(actor,async()=>actor),isStatus(403));
+ await assert.rejects(()=>reports.exportLeads(actor,async()=>actor),isStatus(503));
+});
+
+
+test('team CSV independently scopes every page, audits release, and neutralizes spreadsheet cells',async()=>{
+ const actor={...staff,managerScope:'team',teamId:'team-alpha'};
+ leads=[
+  makeLead(0,{teamId:'team-beta',email:'outside@example.invalid'}),
+  ...Array.from({length:101},(_,i)=>makeLead(i+1,{teamId:'team-alpha',name:i===100?'=1+1':'Inside',email:'inside@example.invalid'})),
+ ];
+ const scoped=()=>reports.exportLeads(actor,async()=>actor);
+ const response=await scoped();
+ assert.match(response.headers.get('content-disposition'),/proconsulting-team-leads\.csv/);
+ const csv=await response.text();
+ assert.match(csv,/"'=1\+1"/);
+ assert.doesNotMatch(csv,/outside@example\.invalid|teamId|Never exported/);
+ assert.equal(csv.trim().split('\r\n').length,102);
+ assert.equal(requests.length,2);
+ assert.ok(requests.every(row=>row.equal[0]==='team-alpha'));
+ assert.deepEqual(JSON.parse(audits[0].details),{count:101,scope:'team',teamId:'team-alpha'});
+ await assert.rejects(()=>reports.exportLeads(actor,async()=>({...actor,teamId:'team-beta'})),isStatus(403));
+ assert.equal(audits.length,1);
+ let refreshCount=0;
+ await assert.rejects(()=>reports.exportLeads(actor,async()=>++refreshCount===1?actor:{...actor,managerScope:'global'}),isStatus(403));
+ failAudit=true;
+ await assert.rejects(scoped,error=>error.status===503);
 });

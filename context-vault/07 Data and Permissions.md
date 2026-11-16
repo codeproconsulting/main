@@ -143,3 +143,7 @@ Team managers can edit existing booked appointments in their current team; notes
 ## Team aggregate reports
 
 Restricted managers may read their team aggregate reports; consultation overview and CSV export remain global only.
+
+## Team CSV export
+
+Only active authorized managers may export. Team file rows correspond to the current team and audit records contain scope and count.

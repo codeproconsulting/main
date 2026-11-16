@@ -187,3 +187,7 @@ Team appointment form is in app/admin/work.tsx. The shared saveAppointment servi
 ## Team aggregate reports
 
 app/admin/reports.server.ts implements team scans. app/admin/reports.tsx shows aggregate totals and restricts export controls.
+
+## Team CSV export
+
+app/admin/export.ts accepts team sessions. app/admin/reports.server.ts scopes and audits the export.

@@ -54,6 +54,11 @@ function groups(counts: Map<string, number>) {
   };
 }
 
+function requireSameTeam(staff: Staff, current: Staff) {
+  allow(current.active && current.$id === staff.$id && isRestrictedManager(current) &&
+    current.managerScope === "team" && current.teamId === staff.teamId);
+}
+
 export async function operationalReport(staff: Staff, refreshStaff?: () => Promise<Staff>) {
   const teamScoped = isRestrictedManager(staff);
   if (teamScoped) {
@@ -78,11 +83,7 @@ export async function operationalReport(staff: Staff, refreshStaff?: () => Promi
     if (!lead.owner?.trim()) unassigned++;
     if (lead.stage === "Converted") converted++;
   }, teamScoped ? staff.teamId : undefined);
-  if (teamScoped) {
-    const current = await refreshStaff!();
-    allow(current.active && current.$id === staff.$id && isRestrictedManager(current) &&
-      current.managerScope === "team" && current.teamId === staff.teamId);
-  }
+  if (teamScoped) requireSameTeam(staff, await refreshStaff!());
   return { teamScoped, total: count, truncated, unassigned, converted, stages: groups(stages), sources: groups(sources), countries: groups(countries) };
 }
 
@@ -93,20 +94,32 @@ export function csvCell(value: unknown) {
 }
 
 export async function exportLeads(staff: Staff, refreshStaff: () => Promise<Staff>) {
-  requireReportAccess(staff);
+  const teamScoped = isRestrictedManager(staff);
+  if (teamScoped) {
+    allow(staff.active);
+    await requireActiveTeam(staff);
+  } else requireReportAccess(staff);
   const rows = [exportFields.map(csvCell).join(",")];
   const { count, truncated } = await scanLeads(exportFields, lead => {
     rows.push(exportFields.map(field => csvCell(lead[field])).join(","));
-  });
+  }, teamScoped ? staff.teamId : undefined);
   if (truncated) throw new Response("Export exceeds 10,000 leads.", { status: 413 });
   const current = await refreshStaff();
-  requireReportAccess(current);
-  allow(current.$id === staff.$id);
-  await audit(current, current.$id, "export", "Lead export requested", { count });
+  if (teamScoped) requireSameTeam(staff, current);
+  else {
+    requireReportAccess(current);
+    allow(current.$id === staff.$id);
+  }
+  await audit(current, current.$id, "export", "Lead export requested", {
+    count, ...(teamScoped ? { scope: "team", teamId: staff.teamId } : {}),
+  });
+  if (teamScoped) requireSameTeam(staff, await refreshStaff());
   return new Response("\uFEFF" + rows.join("\r\n") + "\r\n", {
     headers: {
       "Content-Type": "text/csv; charset=utf-8",
-      "Content-Disposition": 'attachment; filename="proconsulting-leads.csv"',
+      "Content-Disposition": teamScoped
+        ? 'attachment; filename="proconsulting-team-leads.csv"'
+        : 'attachment; filename="proconsulting-leads.csv"',
       "Cache-Control": "private, no-store",
       "X-Content-Type-Options": "nosniff",
     },

@@ -1,39 +1,39 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-16-09",
+  "sessionId": "2026-11-16-10",
   "sessionStatus": "completed",
   "activeFeature": "CRM-03",
-  "objective": "Show team managers aggregate lead reports restricted to their current team.",
+  "objective": "Allow audited CSV downloads limited to a manager’s current team.",
   "scope": [
-    "Team-scoped stage, source and destination totals",
-    "Access recheck before release"
+    "Team-scoped CSV with existing column allowlist",
+    "Access refresh and audit before download"
   ],
   "outOfScope": [
-    "Team CSV export, consultations, and production rollout"
+    "Consultation reports, mobile access and production rollout"
   ],
   "acceptance": [
     {
-      "id": "CRM03-REPORT-A",
-      "description": "Scoped aggregation and authorization",
+      "id": "CRM03-CSV-A",
+      "description": "Scope, safe cells and audit",
       "status": "passed",
-      "evidence": "Synthetic test verifies filters on every page, two-team isolation, changed membership denial, unexpected row rejection, and continued CSV denial."
+      "evidence": "Nine focused report tests pass. Team CSV tests cover two pages, formula neutralization, audit and changed-scope refusal before and after audit."
     },
     {
-      "id": "CRM03-REPORT-B",
-      "description": "Browser and target query checks",
+      "id": "CRM03-CSV-B",
+      "description": "Browser download and target projection",
       "status": "passed",
-      "evidence": "Chrome verified one-team totals, hidden export and consultation links, and direct 403 on both routes. Target accepted the exact report projection and team filter for a synthetic team reference."
+      "evidence": "Chrome downloaded the expected one-team attachment, verified outside rows were absent and confirmed audit count/scope and consultation denial. Target accepted exact team export projection read-only."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Build a team-scoped audited CSV export with a team filter on every page and current staff scope rechecked before release. Verify cross-team exclusion and formula safety.",
+      "action": "Build scoped team consultation history and report views. Filter by current parent team, verify date/counselor/destination filters and cross-team denial, and keep consultation writes separately gated.",
       "files": [
-        "app/admin/export.ts",
-        "app/admin/reports.server.ts",
-        "tests/reports.test.mjs"
+        "app/admin/consultations.server.ts",
+        "app/admin/consultation-report.tsx",
+        "app/admin/consultations.tsx"
       ]
     }
   ],
@@ -111,24 +111,24 @@
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-16T04:51:41.748Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-YVdRiq/typecheck.log"
+      "checkedAt": "2026-11-16T05:06:30.200Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Q2AsBA/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-16T04:51:42.982Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-YVdRiq/test.log"
+      "checkedAt": "2026-11-16T05:06:31.554Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Q2AsBA/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-16T04:51:48.578Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-YVdRiq/build.log"
+      "checkedAt": "2026-11-16T05:06:37.069Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Q2AsBA/build.log"
     }
   ],
-  "updatedAt": "2026-11-16T04:52:22.140Z",
-  "verifiedSourceFingerprint": "5e8bdc060052e0378ef8a4b82f4341044b4dacce0000e5bdf61b2034ad8da58b"
+  "updatedAt": "2026-11-16T05:07:15.168Z",
+  "verifiedSourceFingerprint": "c5d14cbb0603e9bace555e33871355b6b0cc10c9b96c9b7b72c0f43e6e9d15de"
 }

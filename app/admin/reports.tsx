@@ -16,12 +16,12 @@ export default function Reports() {
 
   return <>
     <PageHeading eyebrow="LEAD INVENTORY" title="Operational reports" description={report.teamScoped ? "Your team’s lead counts by stage, source and destination." : "Current lead counts by stage, source and destination."}>
-      {!report.teamScoped && <div className="flex flex-wrap gap-2">
-        <Link className="crm-button secondary" to="/admin/reports/consultations">Consultation tracking</Link>
-        {!report.truncated && <a className="crm-button" href="/admin/leads.csv">Export leads as CSV</a>}
-      </div>}
+      <div className="flex flex-wrap gap-2">
+        {!report.teamScoped && <Link className="crm-button secondary" to="/admin/reports/consultations">Consultation tracking</Link>}
+        {!report.truncated && <a className="crm-button" href="/admin/leads.csv">{report.teamScoped ? "Export team leads as CSV" : "Export leads as CSV"}</a>}
+      </div>
     </PageHeading>
-    {report.truncated && <p className="crm-alert" role="status">Counts cover the first 10,000 {report.teamScoped ? "team enquiries" : "leads"} by record ID.{!report.teamScoped && " CSV export is unavailable above this limit."}</p>}
+    {report.truncated && <p className="crm-alert" role="status">Counts cover the first 10,000 {report.teamScoped ? "team enquiries" : "leads"} by record ID. CSV export is unavailable above this limit.</p>}
     <div className="crm-stats">
       {counts.map(([label, value]) => <div className="crm-stat" key={label}><p>{label}</p><strong>{value.toLocaleString("en-GB")}</strong></div>)}
     </div>

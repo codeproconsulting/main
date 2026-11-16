@@ -157,3 +157,7 @@ Team appointment edits reuse existing calendar rules under lead, staff access an
 ## Team aggregate reports
 
 Aggregate scans filter and verify every page by current team and refresh the staff session before releasing restricted totals.
+
+## Team CSV export
+
+Team CSV reuses the verified paginated scan and confirms current scope before and after the audit.

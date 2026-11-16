@@ -169,3 +169,7 @@ Scoped appointment edits require no schema change. Trial runtime checks must cov
 ## Team aggregate reports
 
 Reports use the existing lead team index. Verify scoped report and export denial with the release key and runtime.
+
+## Team CSV export
+
+No schema change. Verify target team index, staff refresh and audit write permissions with the release key.
