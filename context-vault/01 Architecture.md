@@ -165,3 +165,7 @@ Team CSV reuses the verified paginated scan and confirms current scope before an
 ## Team consultation reads
 
 Team consultation reports reuse the current parent enquiry queue and recheck team when resolving customer names.
+
+## Team consultation recording
+
+Consultation recording shares the existing lead and staff-access locks. The team-manager path rechecks live actor, directory, parent and counselor scope.

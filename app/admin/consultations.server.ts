@@ -1,3 +1,4 @@
+import { requireActiveTeam } from "./team-scope.server";
 import { teamQueue } from "./team-queues.server";
 import { createHash } from "node:crypto";
 import { AppwriteError, createDocument, getDocument, listDocuments, query } from "~/lib/appwrite.server";
@@ -55,23 +56,25 @@ export function consultationPage(params: URLSearchParams) {
 export async function leadConsultations(staff: Staff, leadId: string, page: number) {
   allow(staff.active && canUseCRM(staff));
   const lead = await leadFor(staff, leadId);
+  const teamScoped = isRestrictedManager(staff);
   const [history, people] = await Promise.all([
     listConsultations([query("equal", "leadId", [leadId])], page),
-    canManage(staff) ? consultationStaff() : Promise.resolve([staff]),
+    teamScoped ? consultationStaff(staff.teamId) : canManage(staff) ? consultationStaff() : Promise.resolve([staff]),
   ]);
-  const teamScoped = isRestrictedManager(staff);
   if (teamScoped) await leadFor(staff, leadId);
   return {
     teamScoped,
     lead: { id: lead.$id, name: lead.name, country: lead.country },
     history: teamScoped ? { total: history.total, documents: history.documents.map(({ $id, destination, counselorName, heldOn }) => ({ $id, destination, counselorName, heldOn })) } : history,
-    people: people.filter(person => person.active && canUseCRM(person)).map(person => ({ id: person.$id, name: person.name })),
+    people: people.filter(person => person.active && (teamScoped ? person.role === "counselor" : canUseCRM(person))).map(person => ({ id: person.$id, name: person.name })),
     manager: canManage(staff),
   };
 }
 
 export async function recordConsultation(staff: Staff, leadId: string, form: FormData) {
-  allow(staff.active && canUseCRM(staff) && !isRestrictedManager(staff));
+  allow(staff.active && canUseCRM(staff));
+  const teamScoped = isRestrictedManager(staff);
+  if (teamScoped) await leadFor(staff, leadId);
   const token = field(form, "submissionId", 36);
   const destination = field(form, "destination", 100).normalize("NFKC").replace(/\s+/gu, " ").trim();
   const key = destinationKey(destination);
@@ -85,9 +88,13 @@ export async function recordConsultation(staff: Staff, leadId: string, form: For
   }
   return serialized(`lead:${leadId}`, () => serialized(staffAccessLock, async () => {
     const actor = await getDocument<Staff>("staff", staff.$id);
-    allow(actor.active && canUseCRM(actor) && !isRestrictedManager(actor));
+    allow(actor.active && canUseCRM(actor) && isRestrictedManager(actor) === teamScoped);
+    if (teamScoped) {
+      allow(actor.teamId === staff.teamId);
+      await requireActiveTeam(actor);
+    }
     await writableEnquiry(actor, leadId);
-    const counselor = canManage(actor) ? field(form, "counselor", 36) : actor.$id;
+    const counselor = (teamScoped || canManage(actor)) ? field(form, "counselor", 36) : actor.$id;
     if (!/^[a-zA-Z0-9][a-zA-Z0-9._-]{0,35}$/.test(counselor)) {
       throw new Response("Choose the counselor who held the consultation.", { status: 400 });
     }
@@ -100,6 +107,9 @@ export async function recordConsultation(staff: Staff, leadId: string, form: For
     } catch (error) {
       if (error instanceof AppwriteError && error.status === 404) throw new Response("Choose an active counselor.", { status: 400 });
       throw error;
+    }
+    if (teamScoped && (person.role !== "counselor" || person.teamId !== actor.teamId)) {
+      throw new Response("Choose an active counselor from your team.", { status: 400 });
     }
     if (!person.active || !canUseCRM(person)) throw new Response("Choose an active counselor.", { status: 400 });
     try {

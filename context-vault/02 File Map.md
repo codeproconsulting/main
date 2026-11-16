@@ -195,3 +195,7 @@ app/admin/export.ts accepts team sessions. app/admin/reports.server.ts scopes an
 ## Team consultation reads
 
 Consultations service builds date and contact filters; report and history routes accept team sessions for reads.
+
+## Team consultation recording
+
+The consultation history route renders the team counselor selector and the service validates team access during writes.

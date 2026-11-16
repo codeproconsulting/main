@@ -1,39 +1,38 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-16-11",
+  "sessionId": "2026-11-16-12",
   "sessionStatus": "completed",
   "activeFeature": "CRM-03",
-  "objective": "Expose team consultation history and report filters with read-only scoped access.",
+  "objective": "Allow team managers to record completed consultations on their own team’s enquiries.",
   "scope": [
-    "Consultation history and report reads by current lead team",
-    "Date, counselor and destination filters"
+    "Team counselor picker, locked scope verification and idempotent recording"
   ],
   "outOfScope": [
-    "Consultation writes by restricted managers and production rollout"
+    "Production rollout and changing past consultation attribution"
   ],
   "acceptance": [
     {
-      "id": "CRM03-CONSULT-A",
-      "description": "Scoped consultation history and combined filters",
+      "id": "CRM03-LOG-A",
+      "description": "Current team checks and idempotency",
       "status": "passed",
-      "evidence": "23 focused tests passed. Combined filters, out-of-team exclusion, read projections and write denial verified."
+      "evidence": "24 focused tests passed, including cross-team enquiry and counselor denial, stale manager team denial and replay protection."
     },
     {
-      "id": "CRM03-CONSULT-B",
-      "description": "Browser and target consultation query acceptance",
+      "id": "CRM03-LOG-B",
+      "description": "Built-app browser recording",
       "status": "passed",
-      "evidence": "Chrome verified date/counselor/destination filters, visible team record, cross-team history 404 and write 403. Target accepted combined filters read-only."
+      "evidence": "Chrome verified recording and attribution, forged staff rejection and wrong-team enquiry denial."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Enable team-scoped consultation recording for in-team enquiries and eligible team counselors. Recheck actor, parent and counselor under locks and verify idempotent retry and forged cross-team requests.",
+      "action": "Build read-only team-scoped document metadata. Verify current parent scope and keep file downloads and document writes gated until separate review.",
       "files": [
-        "app/admin/consultations.server.ts",
-        "app/admin/consultations.tsx",
-        "tests/consultations.test.mjs"
+        "app/admin/documents.tsx",
+        "app/admin/documents.server.ts",
+        "app/admin/document-download.ts"
       ]
     }
   ],
@@ -111,24 +110,24 @@
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-16T17:34:42.338Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-JYGV36/typecheck.log"
+      "checkedAt": "2026-11-16T17:38:09.788Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-R9NyqC/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-16T17:34:43.681Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-JYGV36/test.log"
+      "checkedAt": "2026-11-16T17:38:11.275Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-R9NyqC/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-16T17:34:49.542Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-JYGV36/build.log"
+      "checkedAt": "2026-11-16T17:38:16.672Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-R9NyqC/build.log"
     }
   ],
-  "updatedAt": "2026-11-16T17:35:28.208Z",
-  "verifiedSourceFingerprint": "c799cf96796188d2ccc07703f4b2963022b351b7e90ed23abef15cbd3e445d42"
+  "updatedAt": "2026-11-16T17:39:05.557Z",
+  "verifiedSourceFingerprint": "7faf4813ef4085dc2b54c0b446de62755fff5012b2d1e764c4a74b67c0406184"
 }

@@ -16,7 +16,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 }
 
 export async function action({ request, params }: ActionFunctionArgs) {
-  const staff = await requireStaff(request);
+  const staff = await requireStaff(request, true);
   sameOrigin(request);
   try {
     await recordConsultation(staff, params.id!, await request.formData());
@@ -37,22 +37,22 @@ export default function Consultations() {
     <Back to={`/admin/leads/${lead.id}`}>Back to {lead.name}</Back>
     <PageHeading eyebrow="ENQUIRY HISTORY" title="Consultations" description={`Completed consultations for ${lead.name}.`} />
     <ActionError error={result?.error} />
-    {!teamScoped && <section className="crm-panel crm-padded">
+    <section className="crm-panel crm-padded">
       <h2>Log a completed consultation</h2>
-      <Form method="post" className="crm-form">
+      {teamScoped && !people.length ? <p>No active counselors are configured for this team.</p> : <Form method="post" className="crm-form">
         <input name="submissionId" type="hidden" value={submissionId} />
         <div className="crm-two-col">
           <label>Destination<input name="destination" maxLength={100} defaultValue={lead.country} placeholder="e.g. Germany or Italy" required /></label>
           <label>Consultation date<input name="heldOn" type="date" defaultValue={today} max={today} required /></label>
-          {manager && <label>Counselor who held it<select name="counselor" defaultValue="" required>
+          {(manager || teamScoped) && <label>Counselor who held it<select name="counselor" defaultValue="" required>
             <option value="" disabled>Select a counselor</option>
             {people.map(person => <option key={person.id} value={person.id}>{person.name}</option>)}
           </select></label>}
-          {!manager && <p>Recorded under {people.find(person => person.id === counselor)?.name ?? "your name"}.</p>}
+          {!manager && !teamScoped && <p>Recorded under {people.find(person => person.id === counselor)?.name ?? "your name"}.</p>}
         </div>
         <Submit>Log consultation</Submit>
-      </Form>
-    </section>}
+      </Form>}
+    </section>
     <section className="crm-panel crm-padded">
       <h2>Consultation history</h2>
       {!history.documents.length && <Empty title="No consultations on this page">Completed sessions appear here when logged.</Empty>}

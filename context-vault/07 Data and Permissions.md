@@ -151,3 +151,7 @@ Only active authorized managers may export. Team file rows correspond to the cur
 ## Team consultation reads
 
 Team managers can see consultation history for in-team leads. Scoped rows omit the recorder reference; writes remain denied.
+
+## Team consultation recording
+
+Team managers can add consultation records for their current team. The record keeps recorder and counselor as separate identities.

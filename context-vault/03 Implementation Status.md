@@ -233,3 +233,7 @@ Team CSV export implemented; consultation report scope remains separate.
 ## Team consultation reads
 
 Scoped consultation history and reporting implemented. Recording remains gated for team managers.
+
+## Team consultation recording
+
+Team consultation recording implemented.

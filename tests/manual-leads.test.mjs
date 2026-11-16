@@ -561,7 +561,32 @@ test('team consultations filter date, counselor and destination without returnin
  assert.ok(!('recordedBy' in report.history[0]));
  assert.ok((await consultations.leadConsultations(actor,'alpha',1)).history.documents.every(row=>!('recordedBy' in row)));
  await assert.rejects(()=>consultations.leadConsultations(actor,'beta',1),errorStatus(404));
- await assert.rejects(()=>consultations.recordConsultation(actor,'alpha',form()),errorStatus(403));
+
  params.set('from','2026-11-03');
  await assert.rejects(()=>consultations.consultationReport(actor,params),errorStatus(400));
+});
+
+
+test('team consultation writes require current manager scope and a same-team counselor and deduplicate retries',async()=>{
+ const actor={...manager,managerScope:'team',teamId:'team-alpha'};
+ profiles.set(actor.$id,actor);
+ profiles.set(counselor.$id,{...counselor,teamId:'team-alpha',name:'Synthetic counselor'});
+ profiles.set('outside-counselor',{...counselor,$id:'outside-counselor',teamId:'team-beta'});
+ dependencies.crm_teams.set('team-alpha',{$id:'team-alpha',status:'active'});
+ leads.set('alpha',{$id:'alpha',teamId:'team-alpha'});
+ leads.set('beta',{$id:'beta',teamId:'team-beta'});
+ const fields=form({destination:'Italy',heldOn:'2020-11-01',counselor:counselor.$id});
+ await assert.rejects(()=>consultations.recordConsultation(actor,'beta',fields),errorStatus(404));
+ fields.set('counselor','outside-counselor');
+ await assert.rejects(()=>consultations.recordConsultation(actor,'alpha',fields),errorStatus(400));
+ fields.set('counselor',counselor.$id);
+ profiles.set(actor.$id,{...actor,teamId:'team-beta'});
+ await assert.rejects(()=>consultations.recordConsultation(actor,'alpha',fields),errorStatus(403));
+ profiles.set(actor.$id,actor);
+ const first=await consultations.recordConsultation(actor,'alpha',fields);
+ const retry=await consultations.recordConsultation(actor,'alpha',fields);
+ assert.equal(first.$id,retry.$id);
+ assert.equal(first.counselor,counselor.$id);
+ assert.equal(first.recordedBy,actor.$id);
+ assert.equal(dependencies.consultations.size,1);
 });

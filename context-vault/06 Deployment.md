@@ -177,3 +177,7 @@ No schema change. Verify target team index, staff refresh and audit write permis
 ## Team consultation reads
 
 No schema change. Verify combined date, counselor and destination filters after release.
+
+## Team consultation recording
+
+No new schema. Verify consultation write and scope against the release runtime before staff rollout.

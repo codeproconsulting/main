@@ -3,40 +3,39 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-16-11]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-16-12]].
 
 ## Resume here
 
-**Session:** 2026-11-16-11
+**Session:** 2026-11-16-12
 
 **Active feature:** CRM-03
 
 **State:** completed
 
-**Objective:** Expose team consultation history and report filters with read-only scoped access.
+**Objective:** Allow team managers to record completed consultations on their own team’s enquiries.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Consultation history and report reads by current lead team
-- Date, counselor and destination filters
+- Team counselor picker, locked scope verification and idempotent recording
 
 ## Out of scope
 
-- Consultation writes by restricted managers and production rollout
+- Production rollout and changing past consultation attribution
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| CRM03-CONSULT-A | Scoped consultation history and combined filters | passed | 23 focused tests passed. Combined filters, out-of-team exclusion, read projections and write denial verified. |
-| CRM03-CONSULT-B | Browser and target consultation query acceptance | passed | Chrome verified date/counselor/destination filters, visible team record, cross-team history 404 and write 403. Target accepted combined filters read-only. |
+| CRM03-LOG-A | Current team checks and idempotency | passed | 24 focused tests passed, including cross-team enquiry and counselor denial, stale manager team denial and replay protection. |
+| CRM03-LOG-B | Built-app browser recording | passed | Chrome verified recording and attribution, forged staff rejection and wrong-team enquiry denial. |
 
 ## Exact next actions
 
-1. Enable team-scoped consultation recording for in-team enquiries and eligible team counselors. Recheck actor, parent and counselor under locks and verify idempotent retry and forged cross-team requests.
-   Files: `app/admin/consultations.server.ts`, `app/admin/consultations.tsx`, `tests/consultations.test.mjs`
+1. Build read-only team-scoped document metadata. Verify current parent scope and keep file downloads and document writes gated until separate review.
+   Files: `app/admin/documents.tsx`, `app/admin/documents.server.ts`, `app/admin/document-download.ts`
 
 ## Known risks and unfinished work
 
@@ -59,9 +58,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-16T17:34:42.338Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-JYGV36/typecheck.log`
-- **passed**: `npm run test` (2026-11-16T17:34:43.681Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-JYGV36/test.log`
-- **passed**: `npm run build` (2026-11-16T17:34:49.542Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-JYGV36/build.log`
+- **passed**: `npm run typecheck` (2026-11-16T17:38:09.788Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-R9NyqC/typecheck.log`
+- **passed**: `npm run test` (2026-11-16T17:38:11.275Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-R9NyqC/test.log`
+- **passed**: `npm run build` (2026-11-16T17:38:16.672Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-R9NyqC/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
