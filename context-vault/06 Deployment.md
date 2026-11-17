@@ -245,3 +245,7 @@ Run the Appwrite preflight with setup metadata access before the live pilot. The
 ## CRM edge smoke check
 
 Run `node scripts/check-crm-edge.mjs` after installing the final Nginx configuration. Signed-in staff and provider checks remain separate.
+
+## Linked contact profiles
+
+The contact profile uses the existing lead contact-group field and index. Verify the profile and scope with synthetic enquiries after deployment.

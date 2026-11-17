@@ -75,6 +75,7 @@ export default function LeadDetail() {
   <h2>Confirmed contact</h2>
   <p>Link enquiries only after confirming they belong to the same person.</p>
   {linked && <><p>{contact.total} other linked enquiries</p>
+    <Link className="crm-button secondary" to={`/admin/leads/${lead.$id}/contact`}>Open contact profile</Link>
     <ul>{contact.documents.map(row => <li key={row.$id}><Link to={`/admin/leads/${row.$id}`}>{row.name} · {row.country || row.service} · {row.stage}</Link>
       {!isDuplicate && row.service.trim().toLowerCase() === lead.service.trim().toLowerCase() &&
         row.country.trim().toLowerCase() === lead.country.trim().toLowerCase() &&

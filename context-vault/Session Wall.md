@@ -3,38 +3,38 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-17-04]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-17-05]].
 
 ## Resume here
 
-**Session:** 2026-11-17-04
+**Session:** 2026-11-17-05
 
-**Active feature:** COMMS-01
+**Active feature:** CRM-02
 
 **State:** completed
 
-**Objective:** Make the public CRM edge prerequisite for the live reminder pilot repeatable.
+**Objective:** Give global CRM staff a dedicated view of confirmed contacts and linked enquiries.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Read-only redirect, HTTPS login and anonymous mobile API smoke checks
+- Read-only contact profile, role gates, linked enquiry pagination and navigation
 
 ## Out of scope
 
-- VPS changes, authenticated checks and live email
+- Contact master editing, merging application dependencies and VPS rollout
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| COMMS01-EDGE-A | Checker detects an incorrect public edge and passes expected responses | passed | Simulated HTTP 308, HTTPS HTML 200 and private JSON 401 passed. Public check reported HTTP 301 and TLS hostname mismatch. |
+| CRM02-PROFILE-A | Show confirmed links with bounded pagination and protect private fields | passed | Synthetic service test verifies 26 linked records across two pages, rejects counselor and restricted manager access, excludes unmatched records and private fields, and returns 404 after unlinking. |
 
 ## Exact next actions
 
-1. Complete the controlled live reminder pilot when the CRM and website runtimes, Appwrite preference attribute and verified Resend sender are ready. Follow the documented acceptance and rollback sequence.
-   Files: `deploy/CRM-DEPLOYMENT.md`, `deploy/ecosystem.config.cjs`
+1. Define which dependent records must move for a duplicate merge. Add a manager-only read-only preview before any mutation.
+   Files: `app/admin/crm.server.ts`, `app/admin/lead.tsx`, `tests/manual-leads.test.mjs`
 
 ## Known risks and unfinished work
 
@@ -57,9 +57,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-17T07:50:44.635Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-g3qKcC/typecheck.log`
-- **passed**: `npm run test` (2026-11-17T07:50:46.081Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-g3qKcC/test.log`
-- **passed**: `npm run build` (2026-11-17T07:50:51.379Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-g3qKcC/build.log`
+- **passed**: `npm run typecheck` (2026-11-17T08:25:16.723Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-xbkAma/typecheck.log`
+- **passed**: `npm run test` (2026-11-17T08:25:18.142Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-xbkAma/test.log`
+- **passed**: `npm run build` (2026-11-17T08:25:23.458Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-xbkAma/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -75,7 +75,7 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **ownerPassword**: owner must set via Appwrite Console
 - **gitBranch**: codex/crm-workspace
 - **integratedUpstream**: origin/main through 0397d6d; TOEFL and service-location pages preserved
-- **githubCheckpoint**: CRM edge smoke checkpoint on codex/crm-workspace.
+- **githubCheckpoint**: Linked contact profile checkpoint on codex/crm-workspace.
 - **mainMergePolicy**: Tested features may be merged after exact release candidate review and creation of a prior-main rollback reference. No integration was performed in REPORT-01.
 - **rollbackReference**: rollback/main-2026-10-29-407977c preserves the existing main baseline for release recovery
 - **scheduleIndex**: posts schedule(status,publishedAt) available; live due query passed read-only with zero due posts
@@ -121,5 +121,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **resendEvents**: Private ledger and indexes available; callback not registered or enabled. No sends attempted.
 - **staffEmailPreference**: Optional reminderEmail attribute available on private target staff collection. No staff profile writes.
 - **resendPilot**: Appwrite metadata preflight passed. Public CRM edge fails the TLS hostname check and returns 301 in place of the template’s 308. Live pilot pending.
+- **contactProfile**: Local synthetic profile acceptance passed. Browser and VPS acceptance pending.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

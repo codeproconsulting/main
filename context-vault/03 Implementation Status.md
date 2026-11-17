@@ -297,3 +297,7 @@ The optional preference attribute is provisioned on the target and all six Appwr
 ## CRM edge smoke check
 
 The edge checker passed against simulated expected responses. The public edge returned 301 instead of the template’s 308 and served a certificate that does not cover the CRM hostname.
+
+## Linked contact profiles
+
+Linked contact profiles are implemented and checked with synthetic records. Contact master records, edits and duplicate dependency reconciliation remain open.

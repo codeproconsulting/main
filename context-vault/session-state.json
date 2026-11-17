@@ -1,31 +1,32 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-17-04",
+  "sessionId": "2026-11-17-05",
   "sessionStatus": "completed",
-  "activeFeature": "COMMS-01",
-  "objective": "Make the public CRM edge prerequisite for the live reminder pilot repeatable.",
+  "activeFeature": "CRM-02",
+  "objective": "Give global CRM staff a dedicated view of confirmed contacts and linked enquiries.",
   "scope": [
-    "Read-only redirect, HTTPS login and anonymous mobile API smoke checks"
+    "Read-only contact profile, role gates, linked enquiry pagination and navigation"
   ],
   "outOfScope": [
-    "VPS changes, authenticated checks and live email"
+    "Contact master editing, merging application dependencies and VPS rollout"
   ],
   "acceptance": [
     {
-      "id": "COMMS01-EDGE-A",
-      "description": "Checker detects an incorrect public edge and passes expected responses",
+      "id": "CRM02-PROFILE-A",
+      "description": "Show confirmed links with bounded pagination and protect private fields",
       "status": "passed",
-      "evidence": "Simulated HTTP 308, HTTPS HTML 200 and private JSON 401 passed. Public check reported HTTP 301 and TLS hostname mismatch."
+      "evidence": "Synthetic service test verifies 26 linked records across two pages, rejects counselor and restricted manager access, excludes unmatched records and private fields, and returns 404 after unlinking."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Complete the controlled live reminder pilot when the CRM and website runtimes, Appwrite preference attribute and verified Resend sender are ready. Follow the documented acceptance and rollback sequence.",
+      "action": "Define which dependent records must move for a duplicate merge. Add a manager-only read-only preview before any mutation.",
       "files": [
-        "deploy/CRM-DEPLOYMENT.md",
-        "deploy/ecosystem.config.cjs"
+        "app/admin/crm.server.ts",
+        "app/admin/lead.tsx",
+        "tests/manual-leads.test.mjs"
       ]
     }
   ],
@@ -58,7 +59,7 @@
     "ownerPassword": "owner must set via Appwrite Console",
     "gitBranch": "codex/crm-workspace",
     "integratedUpstream": "origin/main through 0397d6d; TOEFL and service-location pages preserved",
-    "githubCheckpoint": "CRM edge smoke checkpoint on codex/crm-workspace.",
+    "githubCheckpoint": "Linked contact profile checkpoint on codex/crm-workspace.",
     "mainMergePolicy": "Tested features may be merged after exact release candidate review and creation of a prior-main rollback reference. No integration was performed in REPORT-01.",
     "rollbackReference": "rollback/main-2026-10-29-407977c preserves the existing main baseline for release recovery",
     "scheduleIndex": "posts schedule(status,publishedAt) available; live due query passed read-only with zero due posts",
@@ -103,31 +104,32 @@
     "staffReminderEmail": "Source and optional outbox link ready. Both production flags remain disabled; no Resend delivery attempted.",
     "resendEvents": "Private ledger and indexes available; callback not registered or enabled. No sends attempted.",
     "staffEmailPreference": "Optional reminderEmail attribute available on private target staff collection. No staff profile writes.",
-    "resendPilot": "Appwrite metadata preflight passed. Public CRM edge fails the TLS hostname check and returns 301 in place of the template’s 308. Live pilot pending."
+    "resendPilot": "Appwrite metadata preflight passed. Public CRM edge fails the TLS hostname check and returns 301 in place of the template’s 308. Live pilot pending.",
+    "contactProfile": "Local synthetic profile acceptance passed. Browser and VPS acceptance pending."
   },
   "checks": [
     {
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-17T07:50:44.635Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-g3qKcC/typecheck.log"
+      "checkedAt": "2026-11-17T08:25:16.723Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-xbkAma/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-17T07:50:46.081Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-g3qKcC/test.log"
+      "checkedAt": "2026-11-17T08:25:18.142Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-xbkAma/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-17T07:50:51.379Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-g3qKcC/build.log"
+      "checkedAt": "2026-11-17T08:25:23.458Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-xbkAma/build.log"
     }
   ],
-  "updatedAt": "2026-11-17T07:50:59.871Z",
-  "verifiedSourceFingerprint": "afccfe5b98100df371c78e6c510728ec42536d47da0fe79287f0c62e627d86cf"
+  "updatedAt": "2026-11-17T08:25:33.200Z",
+  "verifiedSourceFingerprint": "e53e71840a98610970f9b62c7ecaca94a85866c86302b3b3a44a246a62af80ec"
 }

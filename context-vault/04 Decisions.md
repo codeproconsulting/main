@@ -237,3 +237,7 @@ Show provider counts as event counts, distinct from the queue acceptance state. 
 ## Staff email preferences
 
 Require explicit staff consent in addition to the operator allowlist. Missing or unrecognized values fail closed. Opt-out gates pending sends without altering in-app reminders or trying to recall accepted mail.
+
+## Linked contact profiles
+
+Show contact details from the anchor enquiry and keep each linked enquiry’s own stage and assignment. The profile does not infer a canonical email or phone from a match.

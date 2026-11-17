@@ -150,17 +150,33 @@ export async function withCurrentTeamManager<T>(staff: Staff, operation: () => P
   });
 }
 
-export function contactEnquiries(staff: Staff, lead: Lead, page: number) {
+export function contactEnquiries(staff: Staff, lead: Lead, page: number, includeAnchor = false) {
   allow(staff.active && canManage(staff));
   if (!lead.contactGroup) return { documents: [], total: 0 };
   return listDocuments<Pick<Lead, typeof leadListFields[number]>>("leads", [
     query("select", undefined, [...leadListFields]),
     query("equal", "contactGroup", [lead.contactGroup]),
-    query("notEqual", "$id", [lead.$id]),
+    ...(!includeAnchor ? [query("notEqual", "$id", [lead.$id])] : []),
     query("orderAsc", "$id"),
     query("limit", undefined, [25]),
     query("offset", undefined, [(page - 1) * 25]),
   ]);
+}
+
+export async function linkedContactProfile(staff: Staff, leadId: string, page: number) {
+  allow(staff.active && canManage(staff));
+  const lead = await leadFor(staff, leadId);
+  if (!lead.contactGroup) throw new Response("This enquiry is no longer linked to a contact.", { status: 404 });
+  const [enquiries, staffList] = await Promise.all([contactEnquiries(staff, lead, page, true), listStaff()]);
+  const { $id, name, email, phone } = lead;
+  return {
+    anchor: { $id, name, email, phone },
+    total: enquiries.total,
+    enquiries: enquiries.documents.map(({ $id, name, service, country, stage, owner, $createdAt }) => ({
+      $id, name, service, country, stage, $createdAt,
+      counselor: staffList.find(member => member.$id === owner)?.name || (owner ? "Assigned counselor" : "Unassigned"),
+    })),
+  };
 }
 
 export async function changeContactGroup(staff: Staff, id: string, form: FormData) {

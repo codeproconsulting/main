@@ -35,6 +35,7 @@ export default [
   route("admin", "admin/layout.tsx", [
     index("admin/overview.tsx"),
     route("leads", "admin/leads.tsx"),
+    route("leads/:id/contact", "admin/contact-profile.tsx"),
     route("leads/:id/consultations", "admin/consultations.tsx"),
     route("leads/:id/documents", "admin/documents.tsx"),
     route("documents/:id/download", "admin/document-download.ts"),

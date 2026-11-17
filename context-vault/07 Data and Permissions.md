@@ -199,3 +199,7 @@ The email operations response omits payloads, addresses, recipient hashes and so
 ## Staff email preferences
 
 `staff.reminderEmail` stores enabled/disabled; absent means off. The workspace action derives identity from the session and rechecks eligibility under lock. Team and assignment payloads omit the preference.
+
+## Linked contact profiles
+
+Only active owners, admins and global managers may open a linked profile. Related rows exclude contact details, group IDs, notes and raw owner identifiers.

@@ -217,3 +217,7 @@ Workspace setup changes only the signed-in staff member’s preference under the
 ## Staff email pilot
 
 The integrated local pilot connects the reminder producer, outbox, provider adapter, website callback and admin counts through one simulated Appwrite store.
+
+## Linked contact profiles
+
+Confirmed contact profiles are read-only views anchored to a linked enquiry. Group membership comes from the current contact group on that enquiry.

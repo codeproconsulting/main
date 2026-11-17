@@ -255,3 +255,7 @@ app/admin/email-delivery.tsx renders operations; app/admin/email-delivery.server
 ## CRM edge smoke check
 
 `scripts/check-crm-edge.mjs` checks the public redirect, HTTPS login and anonymous mobile endpoint without signing in.
+
+## Linked contact profiles
+
+`app/admin/contact-profile.tsx` renders the linked enquiry profile. `app/admin/crm.server.ts` scopes and projects its data.

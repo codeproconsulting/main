@@ -55,7 +55,8 @@ before(async()=>{
     if(collection==="tasks"&&options.moveParent) leads.get(options.moveParent).teamId="team-beta";
    }
    const limit=queries.find(q=>q.method==='limit')?.values[0];
-   return Response.json({documents:matches.slice(0,limit??matches.length),total:matches.length});
+   const offset=queries.find(q=>q.method==='offset')?.values[0]??0;
+   return Response.json({documents:matches.slice(offset,offset+(limit??matches.length)),total:matches.length});
   }
   if(request.method==='DELETE')return new Response(null,{status:store.delete(id)?204:404});
   const {data,documentId,permissions}=JSON.parse(request.body);
@@ -130,11 +131,12 @@ test('normalized contact searches preserve assignment and stage filters without 
  await manual.createManualLead(manager,form());
  const assigned=await manual.createManualLead(counselor,form());
  const byPhone=await crm.leadsFor(counselor,'0044 20 1234 5678','New',2);
- assert.deepEqual(byPhone.documents.map(row=>row.$id),[assigned.$id]);
+ assert.deepEqual(byPhone.documents,[]);
  for(const [field,value] of [['phoneKey','442012345678'],['owner',counselor.$id],['stage','New']]){
   assert.ok(queries.some(q=>q.attribute===field&&q.values[0]===value));
  }
  assert.ok(queries.some(q=>q.method==='offset'&&q.values[0]===25));
+ assert.deepEqual((await crm.leadsFor(counselor,'0044 20 1234 5678','New',1)).documents.map(row=>row.$id),[assigned.$id]);
  assert.equal((await crm.leadsFor(manager,'LEAD@EXAMPLE.INVALID')).total,2);
  assert.ok(queries.some(q=>q.attribute==='emailKey'&&q.values[0]==='lead@example.invalid'));
  await crm.leadsFor(manager,'Synthetic');
@@ -177,10 +179,11 @@ test('related enquiries exclude self and other counselors without merging record
  const other=await manual.createManualLead(manager,form());
  const repeat=await manual.createManualLead(counselor,form({submissionId:'d21265d0-363f-4a4c-b777-0e67b36930db',country:'Italy'}));
  const matches=await crm.relatedEnquiries(counselor,owned.$id,'email',2);
- assert.deepEqual(matches.documents.map(row=>row.$id),[repeat.$id]);
+ assert.deepEqual(matches.documents,[]);
  assert.equal(matches.total,1);
  assert.ok(queries.some(q=>q.method==='offset'&&q.values[0]===25));
  assert.ok(queries.some(q=>q.method==='limit'&&q.values[0]===25));
+ assert.deepEqual((await crm.relatedEnquiries(counselor,owned.$id,'email',1)).documents.map(row=>row.$id),[repeat.$id]);
  assert.equal((await crm.relatedEnquiries(manager,owned.$id,'phone')).total,2);
  await assert.rejects(()=>crm.relatedEnquiries(counselor,other.$id,'email'),errorStatus(403));
  await assert.rejects(()=>crm.relatedEnquiries({...manager,active:false},owned.$id,'email'),errorStatus(403));
@@ -625,4 +628,29 @@ test('team document reviews preserve private notes and enforce current team and 
  profiles.set(actor.$id,actor);
  await review('inside','1');
  assert.deepEqual(dependencies.documents.get('inside'),{...record,status:'Accepted',expiresAt:'2031-01-02T18:59:59.999Z',reviewVersion:2});
+});
+
+test('linked contact profile scopes access and returns only confirmed enquiries across pages', async () => {
+ options.strictQueue = true;
+ const anchor = {$id:'contact-00',contactGroup:'synthetic-group',owner:counselor.$id,name:'Synthetic contact',
+  email:'contact@example.invalid',phone:'',details:'hidden fixture detail'};
+ for (let i=0; i<26; i++) {
+  const id = 'contact-'+String(i).padStart(2,'0');
+  leads.set(id,{...anchor,$id:id,country:i%2?'Germany':'Italy'});
+ }
+ leads.set('outside',{...anchor,$id:'outside',contactGroup:'other-group'});
+ profiles.set(counselor.$id,{...counselor,name:'Synthetic counselor'});
+ await assert.rejects(crm.linkedContactProfile(counselor,anchor.$id,1),errorStatus(403));
+ await assert.rejects(crm.linkedContactProfile({...manager,managerScope:'team',teamId:'team-one'},anchor.$id,1),errorStatus(403));
+ const first = await crm.linkedContactProfile(manager,anchor.$id,1);
+ const second = await crm.linkedContactProfile(manager,anchor.$id,2);
+ assert.equal(first.total,26);
+ assert.equal(first.enquiries.length,25);
+ assert.equal(first.enquiries[0].$id,anchor.$id);
+ assert.equal(first.enquiries[0].counselor,'Synthetic counselor');
+ assert.deepEqual(second.enquiries.map(row=>row.$id),['contact-25']);
+ assert.doesNotMatch(JSON.stringify(first),/hidden fixture detail|synthetic-group|contactGroup|outside/);
+ assert.ok(first.enquiries.every(row=>!Object.hasOwn(row,'email') && !Object.hasOwn(row,'owner')));
+ delete leads.get(anchor.$id).contactGroup;
+ await assert.rejects(crm.linkedContactProfile(manager,anchor.$id,1),errorStatus(404));
 });
