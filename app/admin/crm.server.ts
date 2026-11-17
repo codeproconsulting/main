@@ -1,4 +1,5 @@
 import { emailKey, phoneKey } from "~/lib/lead-contact";
+import { closedLeadStages } from "./reminder-policy";
 import { requireActiveTeam } from "./team-scope.server";
 import { appointmentCalendarLock, appointmentsForHandoff } from "./calendar.server";
 import { createHash, randomUUID } from "node:crypto";
@@ -237,10 +238,12 @@ function requireDuplicatePair(source: Lead, retained: Lead) {
   }
 }
 
+const openFollowUpLabel = "Open follow-up tasks";
+
 const duplicateDependencies = [
   { collection: "leads", field: "duplicateOf", label: "Existing duplicate references",
     guidance: "Review each reference before repointing it to the retained enquiry." },
-  { collection: "tasks", field: "leadId", status: "equal", label: "Open follow-up tasks",
+  { collection: "tasks", field: "leadId", status: "equal", label: openFollowUpLabel,
     guidance: "Review due dates with the retained counselor and preserve the task history." },
   { collection: "cases", field: "leadId", label: "Applications and cases",
     guidance: "Review overlapping applications and preserve each case's stage, deadline and history." },
@@ -295,8 +298,69 @@ async function duplicateMergePlan(source: Lead, retained: Lead) {
   };
 }
 
+function taskMoveBlocker(source: Lead, retained: Lead, checks: Awaited<ReturnType<typeof duplicateArchiveChecks>>) {
+  if (!source.owner || source.owner !== retained.owner || (source.teamId || "") !== (retained.teamId || "")) {
+    return "Both enquiries must have the same assigned counselor and team.";
+  }
+  if (closedLeadStages.includes(retained.stage)) return "Retain an enquiry that is still open.";
+  if (checks.some(check => check.blocked && check.label !== openFollowUpLabel)) {
+    return "Resolve the other linked work before moving follow-ups.";
+  }
+  return null;
+}
+
+export async function moveDuplicateTask(staff: Staff, sourceId: string, form: FormData) {
+  allow(staff.active && !staff.revocationPending && canManage(staff));
+  const retainedId = field(form, "retainedEnquiry", 36);
+  const taskId = field(form, "taskId", 36);
+  const reason = field(form, "reason", 2000);
+  const sourceVersion = field(form, "version");
+  const retainedVersion = field(form, "targetVersion");
+  const taskVersion = field(form, "taskVersion");
+  if (sourceId === retainedId || ![sourceId, retainedId, taskId].every(id => enquiryIdPattern.test(id)) ||
+      ![sourceVersion, retainedVersion, taskVersion].every(version => /^[1-9][0-9]*$/.test(version)) || !reason) {
+    throw new Response("Select an open follow-up and enter a reason.", { status: 400 });
+  }
+  const [first, second] = [sourceId, retainedId].sort();
+  return serialized(`lead:${first}`, () => serialized(`lead:${second}`, () => serialized(staffAccessLock, async () => {
+    const actor = await getDocument<Staff>("staff", staff.$id);
+    allow(actor.active && !actor.revocationPending && canManage(actor));
+    const [source, retained, task] = await Promise.all([
+      leadFor(actor, sourceId), leadFor(actor, retainedId), getDocument<Task>("tasks", taskId).catch(error => {
+        if (error instanceof AppwriteError && error.status === 404) throw new Response("Follow-up not found.", { status: 404 });
+        throw error;
+      }),
+    ]);
+    requireDuplicatePair(source, retained);
+    if (String(source.version) !== sourceVersion || String(retained.version) !== retainedVersion ||
+        String(task.version) !== taskVersion || task.leadId !== sourceId || task.owner !== source.owner || task.status !== "Open") {
+      throw new Response("The enquiries or follow-up changed. Refresh before moving it.", { status: 409 });
+    }
+    const blocker = taskMoveBlocker(source, retained, await duplicateArchiveChecks(source));
+    if (blocker) throw new Response(blocker, { status: 409 });
+    const assignee = await getDocument<Staff>("staff", source.owner);
+    allow(assignee.active && !assignee.revocationPending && canUseCRM(assignee) && !isRestrictedManager(assignee));
+    const changes = { leadId: retainedId, version: task.version + 1 };
+    const details = { reason, taskId, before: { leadId: sourceId, version: task.version }, after: changes };
+    const event = await audit(actor, sourceId, "lead", "Duplicate follow-up move requested", { ...details, state: "pending" });
+    try {
+      await updateDocument<Task>("tasks", taskId, changes);
+    } catch (error) {
+      if (definitiveWriteRejection(error)) throw error;
+      throw new UnconfirmedMutation("The follow-up move could not be confirmed. Ask an administrator to reconcile it.");
+    }
+    try {
+      await updateDocument("activities", event.$id, {
+        event: "Duplicate follow-up moved", details: JSON.stringify({ ...details, state: "completed" }),
+      });
+    } catch {
+      throw new UnconfirmedMutation("The follow-up moved but its audit could not be confirmed. Ask an administrator to reconcile it.");
+    }
+  })));
+}
+
 export async function previewDuplicate(staff: Staff, sourceId: string, retainedId: string, includePlan = false) {
-  allow(staff.active && canManage(staff));
+  allow(staff.active && !staff.revocationPending && canManage(staff));
   if (!enquiryIdPattern.test(sourceId) || !enquiryIdPattern.test(retainedId) || sourceId === retainedId) {
     throw new Response("Choose two different enquiries.", { status: 400 });
   }
@@ -308,7 +372,19 @@ export async function previewDuplicate(staff: Staff, sourceId: string, retainedI
     duplicateArchiveChecks(source),
     includePlan ? duplicateMergePlan(source, retained) : null,
   ]);
-  return { source: summary(source), retained: summary(retained), checks, mergePlan };
+  const moveBlocker = includePlan ? taskMoveBlocker(source, retained, checks) : null;
+  // shortcut: show the first 25 movable tasks, add pagination if operators need to choose beyond this batch.
+  const tasks = includePlan && !moveBlocker && checks.some(check => check.label === openFollowUpLabel && check.blocked)
+    ? await listDocuments<Pick<Task, "$id" | "title" | "dueAt" | "version">>("tasks", [
+        query("equal", "leadId", [source.$id]), query("equal", "owner", [source.owner]), query("equal", "status", ["Open"]),
+        query("orderAsc", "$id"), query("select", undefined, ["$id", "title", "dueAt", "version"]),
+        query("limit", undefined, [25]),
+      ])
+    : null;
+  return {
+    source: summary(source), retained: summary(retained), checks, mergePlan, moveBlocker,
+    movableTasks: tasks?.documents.map(({ $id, title, dueAt, version }) => ({ $id, title, dueAt, version })) ?? [],
+  };
 }
 
 export async function resolveDuplicate(staff: Staff, id: string, form: FormData) {

@@ -706,3 +706,59 @@ test('duplicate merge planning compares both sides and keeps historical records 
  assert.equal(dependencies.tasks.get('closed').leadId,'source');
  assert.equal(activities.size,1);
 });
+
+test('duplicate follow-up moves preserve the task, reject stale or mixed work and allow a separate archive', async () => {
+ const owner = counselor.$id;
+ const lead = {contactGroup:'synthetic-group',service:'Education',country:'Italy',version:1,stage:'New',owner};
+ leads.set('source', {...lead,$id:'source'});
+ leads.set('retained', {...lead,$id:'retained'});
+ const task = {$id:'task',leadId:'source',owner,version:1,status:'Open',title:'Synthetic follow-up',dueAt:'2030-01-01T12:00:00Z'};
+ dependencies.tasks.set(task.$id,task);
+ dependencies.tasks.set('closed',{...task,$id:'closed',status:'Completed'});
+ const fields = form({retainedEnquiry:'retained',taskId:'task',reason:'Confirmed duplicate',version:'1',targetVersion:'1',taskVersion:'1'});
+ const move = (staff=manager) => crm.moveDuplicateTask(staff,'source',fields);
+ assert.deepEqual((await crm.previewDuplicate(manager,'source','retained',true)).movableTasks.map(row=>row.$id),['task']);
+ await assert.rejects(()=>move(counselor),errorStatus(403));
+ await assert.rejects(()=>move({...manager,managerScope:'team',teamId:'team-one'}),errorStatus(403));
+ leads.get('retained').teamId='other-team';
+ await assert.rejects(()=>move(),errorStatus(409));
+ delete leads.get('retained').teamId;
+ for (const key of ['version','targetVersion','taskVersion']) {
+  fields.set(key,'2');
+  await assert.rejects(()=>move(),errorStatus(409));
+  fields.set(key,'1');
+ }
+ dependencies.cases.set('case',{$id:'case',leadId:'source'});
+ await assert.rejects(()=>move(),errorStatus(409));
+ dependencies.cases.clear();
+ options.failAudit=true;
+ await assert.rejects(()=>move(),error=>error.status===503);
+ assert.deepEqual(dependencies.tasks.get('task'),task);
+ options.failAudit=false;
+ await move();
+ assert.deepEqual(dependencies.tasks.get('task'),{...task,leadId:'retained',version:2});
+ assert.equal(dependencies.tasks.get('closed').leadId,'source');
+ assert.equal(leads.get('source').stage,'New');
+ assert.equal([...activities.values()][0].event,'Duplicate follow-up moved');
+ await assert.rejects(()=>move(),errorStatus(409));
+ assert.equal(activities.size,1);
+ await crm.resolveDuplicate(manager,'source',form({
+  intent:'mark-duplicate',retainedEnquiry:'retained',version:'1',targetVersion:'1',reason:'Confirmed duplicate',
+ }));
+ assert.equal(leads.get('source').duplicateOf,'retained');
+});
+
+test('unconfirmed audit after task transfer requires reconciliation and leaves the archived decision untouched', async () => {
+ const owner=counselor.$id;
+ const lead={contactGroup:'synthetic-group',service:'Education',country:'Italy',version:1,stage:'New',owner};
+ leads.set('source',{...lead,$id:'source'});
+ leads.set('retained',{...lead,$id:'retained'});
+ dependencies.tasks.set('task',{$id:'task',leadId:'source',owner,status:'Open',version:1});
+ options.failPatch='activities';
+ await assert.rejects(()=>crm.moveDuplicateTask(manager,'source',form({
+  retainedEnquiry:'retained',taskId:'task',reason:'Confirmed duplicate',version:'1',targetVersion:'1',taskVersion:'1',
+ })), error=>error instanceof crm.UnconfirmedMutation);
+ assert.equal(dependencies.tasks.get('task').leadId,'retained');
+ assert.equal(leads.get('source').duplicateOf,undefined);
+ assert.equal([...activities.values()][0].event,'Duplicate follow-up move requested');
+});

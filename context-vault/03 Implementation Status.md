@@ -309,3 +309,7 @@ Global managers, admins and owners can preview duplicate archive blockers. Synth
 ## Duplicate merge planning
 
 Implemented and verified a read-only duplicate merge planning view. It compares both enquiries and separates open work from historical tasks and activity. Merge execution remains planned.
+
+## Duplicate follow-up transfer
+
+Open follow-up transfer is implemented for a confirmed pair with the same counselor and team. Archive remains a separate reviewed action. Browser and VPS acceptance pending.

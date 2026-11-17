@@ -3,38 +3,38 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-17-07]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-17-08]].
 
 ## Resume here
 
-**Session:** 2026-11-17-07
+**Session:** 2026-11-17-08
 
 **Active feature:** CRM-02
 
 **State:** completed
 
-**Objective:** Give managers a comparison of both enquiries before planning a duplicate merge.
+**Objective:** Transfer open duplicate follow-ups with version checks and audited recovery.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Read-only dependency counts, ownership and team differences, historical retention rules
+- One task transfer between same-assignment confirmed enquiries
 
 ## Out of scope
 
-- Moving linked records and VPS activation
+- Other dependency migrations and VPS rollout
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| CRM02-MERGE-PLAN | Compare both sides with separate active and historical work and safe field projections | passed | Synthetic tests verify counts, assignment signals, restricted role denial, privacy, archive regression and preservation of original closed tasks and audit history. |
+| CRM02-MOVE | Transfer preserves task data and protects stale, scoped and uncertain operations | passed | Synthetic tests passed for transfer, archive after transfer, role denial, mixed dependencies, stale versions, audit failure and uncertain audit completion. |
 
 ## Exact next actions
 
-1. Build a bounded merge execution design with dependency version checks and recovery. Start with open tasks only, blocking mixed dependencies and different team or counselor ownership until those migrations are explicitly supported.
-   Files: `app/admin/crm.server.ts`, `app/admin/duplicate-review.tsx`, `tests/manual-leads.test.mjs`, `context-vault/04 Decisions.md`
+1. Verify duplicate follow-up transfer in the built browser workflow, including stale submission and refresh after transfer.
+   Files: `app/admin/duplicate-review.tsx`, `tests/manual-leads.test.mjs`
 
 ## Known risks and unfinished work
 
@@ -57,9 +57,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-17T17:13:00.053Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-cQ51Sg/typecheck.log`
-- **passed**: `npm run test` (2026-11-17T17:13:01.536Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-cQ51Sg/test.log`
-- **passed**: `npm run build` (2026-11-17T17:13:06.674Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-cQ51Sg/build.log`
+- **passed**: `npm run typecheck` (2026-11-17T17:38:03.463Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-XD6uBG/typecheck.log`
+- **passed**: `npm run test` (2026-11-17T17:38:04.865Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-XD6uBG/test.log`
+- **passed**: `npm run build` (2026-11-17T17:38:10.375Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-XD6uBG/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 

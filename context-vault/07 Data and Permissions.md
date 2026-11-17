@@ -211,3 +211,7 @@ Only active owners, admins and global managers can preview. The response contain
 ## Duplicate merge planning
 
 The comparison returns counts and booleans for differences in team and counselor assignments. It does not return linked file metadata, task contents, audit details or staff/team IDs.
+
+## Duplicate follow-up transfer
+
+Active global CRM managers can transfer tasks between confirmed enquiries with matching service, destination, counselor and team. Pending revocation and unsupported linked dependencies block the move.

@@ -1,33 +1,31 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-17-07",
+  "sessionId": "2026-11-17-08",
   "sessionStatus": "completed",
   "activeFeature": "CRM-02",
-  "objective": "Give managers a comparison of both enquiries before planning a duplicate merge.",
+  "objective": "Transfer open duplicate follow-ups with version checks and audited recovery.",
   "scope": [
-    "Read-only dependency counts, ownership and team differences, historical retention rules"
+    "One task transfer between same-assignment confirmed enquiries"
   ],
   "outOfScope": [
-    "Moving linked records and VPS activation"
+    "Other dependency migrations and VPS rollout"
   ],
   "acceptance": [
     {
-      "id": "CRM02-MERGE-PLAN",
-      "description": "Compare both sides with separate active and historical work and safe field projections",
+      "id": "CRM02-MOVE",
+      "description": "Transfer preserves task data and protects stale, scoped and uncertain operations",
       "status": "passed",
-      "evidence": "Synthetic tests verify counts, assignment signals, restricted role denial, privacy, archive regression and preservation of original closed tasks and audit history."
+      "evidence": "Synthetic tests passed for transfer, archive after transfer, role denial, mixed dependencies, stale versions, audit failure and uncertain audit completion."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Build a bounded merge execution design with dependency version checks and recovery. Start with open tasks only, blocking mixed dependencies and different team or counselor ownership until those migrations are explicitly supported.",
+      "action": "Verify duplicate follow-up transfer in the built browser workflow, including stale submission and refresh after transfer.",
       "files": [
-        "app/admin/crm.server.ts",
         "app/admin/duplicate-review.tsx",
-        "tests/manual-leads.test.mjs",
-        "context-vault/04 Decisions.md"
+        "tests/manual-leads.test.mjs"
       ]
     }
   ],
@@ -115,24 +113,24 @@
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-17T17:13:00.053Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-cQ51Sg/typecheck.log"
+      "checkedAt": "2026-11-17T17:38:03.463Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-XD6uBG/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-17T17:13:01.536Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-cQ51Sg/test.log"
+      "checkedAt": "2026-11-17T17:38:04.865Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-XD6uBG/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-17T17:13:06.674Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-cQ51Sg/build.log"
+      "checkedAt": "2026-11-17T17:38:10.375Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-XD6uBG/build.log"
     }
   ],
-  "updatedAt": "2026-11-17T17:13:15.181Z",
-  "verifiedSourceFingerprint": "a50be434102659503113b847755ad085d7527f6ac8ed60b07f93249eb51e1b8f"
+  "updatedAt": "2026-11-17T17:38:16.855Z",
+  "verifiedSourceFingerprint": "229b57ac93be71f1a0a7920c3068c6860ed7b180ec7ceddb96523893335165f5"
 }

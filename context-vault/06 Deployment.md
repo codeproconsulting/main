@@ -261,3 +261,7 @@ The preview uses existing lead and linked-work collections and needs no schema c
 ## Duplicate merge planning
 
 The comparison depends on read access to the existing linked-work and activity collections. It requires no additional schema. Verify counts and scope on synthetic VPS records after rollout.
+
+## Duplicate follow-up transfer
+
+No new schema is required. For an uncertain transfer, stop competing writers and inspect the pending activity, task parent and version before using the existing retained-lock recovery procedure.

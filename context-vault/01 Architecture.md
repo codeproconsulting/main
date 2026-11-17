@@ -229,3 +229,7 @@ The duplicate review page uses the same dependency checks as the archive action.
 ## Duplicate merge planning
 
 The duplicate review can load an on-demand comparison of both enquiries. It reads aggregate dependency counts and assignment differences through the same global CRM role gate as archive review.
+
+## Duplicate follow-up transfer
+
+Duplicate review can move one open task under both enquiry locks and the staff access lock. Both enquiry versions and the task version are checked again before the write.

@@ -271,3 +271,7 @@ app/admin/email-delivery.tsx renders operations; app/admin/email-delivery.server
 ## Duplicate merge planning
 
 `app/admin/duplicate-review.tsx` exposes Compare linked work. `app/admin/crm.server.ts` gathers projected dependency counts for each side. `tests/manual-leads.test.mjs` verifies count separation and private-field boundaries.
+
+## Duplicate follow-up transfer
+
+The duplicate-review action calls moveDuplicateTask in crm.server.ts. Tests cover transfer, stale forms, blockers and uncertain audit completion.
