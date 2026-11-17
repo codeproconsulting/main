@@ -129,5 +129,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **offlineCacheControls**: Native cache clear control and account-switch cleanup implemented. Missing/invalid session expiry rejected. Mobile typecheck, lint, five tests and Android export passed. Local mobile commit pending OTA and device acceptance.
 - **offlineRecovery**: Foreground retry and expiry label implemented in native source. Typecheck, lint, six tests and Android export passed. APK still queued, OTA and device checks pending.
 - **offlineIntegrity**: Unicode chunk integrity, failed-write cleanup, concurrent cache clear and post-edit cache invalidation verified synthetically. Mobile typecheck, lint, six tests and Android export passed. APK queued and device acceptance pending.
+- **mobileFollowUpTriage**: All/overdue/next-24-hours filters and due sorting work locally on loaded or cached tasks. Mobile typecheck, lint, seven tests and Android export passed. Native build queued and OTA/device checks pending.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

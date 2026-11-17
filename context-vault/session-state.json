@@ -111,7 +111,8 @@
     "offlineSearch": "Mobile commit 0fdd6f9 implements saved lead/task search. Typecheck, lint, five tests and Android export passed. Not in queued APK and not OTA published. Mobile checkout still has no remote.",
     "offlineCacheControls": "Native cache clear control and account-switch cleanup implemented. Missing/invalid session expiry rejected. Mobile typecheck, lint, five tests and Android export passed. Local mobile commit pending OTA and device acceptance.",
     "offlineRecovery": "Foreground retry and expiry label implemented in native source. Typecheck, lint, six tests and Android export passed. APK still queued, OTA and device checks pending.",
-    "offlineIntegrity": "Unicode chunk integrity, failed-write cleanup, concurrent cache clear and post-edit cache invalidation verified synthetically. Mobile typecheck, lint, six tests and Android export passed. APK queued and device acceptance pending."
+    "offlineIntegrity": "Unicode chunk integrity, failed-write cleanup, concurrent cache clear and post-edit cache invalidation verified synthetically. Mobile typecheck, lint, six tests and Android export passed. APK queued and device acceptance pending.",
+    "mobileFollowUpTriage": "All/overdue/next-24-hours filters and due sorting work locally on loaded or cached tasks. Mobile typecheck, lint, seven tests and Android export passed. Native build queued and OTA/device checks pending."
   },
   "checks": [
     {
@@ -136,6 +137,6 @@
       "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-XD6uBG/build.log"
     }
   ],
-  "updatedAt": "2026-11-17T18:30:58.566Z",
+  "updatedAt": "2026-11-17T18:33:25.901Z",
   "verifiedSourceFingerprint": "229b57ac93be71f1a0a7920c3068c6860ed7b180ec7ceddb96523893335165f5"
 }
