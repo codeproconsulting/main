@@ -79,17 +79,9 @@ export default function LeadDetail() {
     <ul>{contact.documents.map(row => <li key={row.$id}><Link to={`/admin/leads/${row.$id}`}>{row.name} · {row.country || row.service} · {row.stage}</Link>
       {!isDuplicate && row.service.trim().toLowerCase() === lead.service.trim().toLowerCase() &&
         row.country.trim().toLowerCase() === lead.country.trim().toLowerCase() &&
-        <details>
-          <summary>Mark this enquiry as a duplicate of {row.name}</summary>
-          <Form method="post" className="crm-form">
-            <input type="hidden" name="intent" value="mark-duplicate"/>
-            <input type="hidden" name="version" value={lead.version}/>
-            <input type="hidden" name="retainedEnquiry" value={row.$id}/>
-            <input type="hidden" name="targetVersion" value={row.version}/>
-            <label>Reason for archiving<textarea name="reason" required maxLength={2000}/></label>
-            <div><Submit>Archive this duplicate</Submit></div>
-          </Form>
-        </details>}
+        <Link className="crm-button secondary" to={`/admin/leads/${lead.$id}/duplicate-review?retain=${encodeURIComponent(row.$id)}`}>
+          Review duplicate
+        </Link>}
     </li>)}</ul>
     <div className="crm-pagination">
       {contactPage > 1 && <Link to={`?match=${match}&relatedPage=${relatedPage}&contactPage=${contactPage - 1}`}>Previous linked enquiries</Link>}

@@ -253,3 +253,7 @@ The contact profile uses the existing lead contact-group field and index. Verify
 ## Existing VPS checkout
 
 The operator reports that the repository is already pulled into a VPS folder named `main` and is working through Nginx. Hermes should confirm the absolute path, deployed revision, processes, active upstreams and CRM hostname before changing routing. A working public site and an accepted CRM rollout are separate checks.
+
+## Duplicate enquiry review
+
+The preview uses existing lead and linked-work collections and needs no schema change. On the VPS, verify a clear pair and a blocked pair with synthetic enquiries before staff use.

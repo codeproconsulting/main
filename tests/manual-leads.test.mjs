@@ -227,15 +227,38 @@ test('duplicate decisions require confirmation and no dependent work, and restor
  leads.set(first.$id,{...first,stage:'Contacted',contactGroup:'synthetic-group'});
  leads.set(second.$id,{...second,contactGroup:'synthetic-group',country:'Italy'});
  const mark=form({intent:'mark-duplicate',retainedEnquiry:second.$id,version:'1',targetVersion:'1',reason:'Same request'});
+ const preview = (staff=manager) => crm.previewDuplicate(staff,first.$id,second.$id);
+ await assert.rejects(()=>preview(counselor),errorStatus(403));
+ await assert.rejects(()=>preview({...manager,managerScope:'team',teamId:'team-one'}),errorStatus(403));
  await assert.rejects(()=>crm.resolveDuplicate(counselor,first.$id,mark),errorStatus(403));
+ await assert.rejects(()=>preview(),errorStatus(400));
  await assert.rejects(()=>crm.resolveDuplicate(manager,first.$id,mark),errorStatus(400));
  leads.set(second.$id,{...second,contactGroup:'synthetic-group'});
+ const activityCount = activities.size;
+ const clear = await preview();
+ assert.equal(clear.source.version,1);
+ assert.equal(clear.retained.$id,second.$id);
+ assert.equal(clear.checks.length,7);
+ assert.ok(clear.checks.every(check=>!check.blocked));
+ assert.doesNotMatch(JSON.stringify(clear),/contactGroup|email|phone|owner|synthetic-group/);
  for (const [name,store] of Object.entries(dependencies)) {
   if(['lead_views','crm_teams'].includes(name))continue;
   store.set('synthetic-dependent',{leadId:first.$id,status:'Open'});
+  assert.equal((await preview()).checks.filter(check=>check.blocked).length,1,name);
   await assert.rejects(()=>crm.resolveDuplicate(manager,first.$id,mark),errorStatus(409),name);
   store.clear();
  }
+ const source=leads.get(first.$id);
+ source.nextFollowUp='2030-01-01T12:00:00Z';
+ assert.equal((await preview()).checks.find(check=>check.label==='Next follow-up date').blocked,true);
+ await assert.rejects(()=>crm.resolveDuplicate(manager,first.$id,mark),errorStatus(409));
+ delete source.nextFollowUp;
+ leads.set('synthetic-child',{$id:'synthetic-child',duplicateOf:first.$id});
+ assert.equal((await preview()).checks.find(check=>check.label==='Existing duplicate references').blocked,true);
+ await assert.rejects(()=>crm.resolveDuplicate(manager,first.$id,mark),errorStatus(409));
+ leads.delete('synthetic-child');
+ assert.equal(activities.size,activityCount);
+ assert.equal(leads.get(first.$id).version,1);
  mark.set('targetVersion','2');
  await assert.rejects(()=>crm.resolveDuplicate(manager,first.$id,mark),errorStatus(409));
  mark.set('targetVersion','1');

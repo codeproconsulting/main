@@ -301,3 +301,7 @@ The edge checker passed against simulated expected responses. The public edge re
 ## Linked contact profiles
 
 Linked contact profiles are implemented and checked with synthetic records. Contact master records, edits and duplicate dependency reconciliation remain open.
+
+## Duplicate enquiry review
+
+Global managers, admins and owners can preview duplicate archive blockers. Synthetic tests cover all blocker categories, private field projection and a new dependency appearing before submit. Actual record merge remains planned.

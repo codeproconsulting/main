@@ -263,3 +263,7 @@ app/admin/email-delivery.tsx renders operations; app/admin/email-delivery.server
 ## VPS operator handoff
 
 `deploy/HAMY-CRM-HANDOFF.md` maps implemented CRM workflows, feature gates and the pinned first-install release to the exact VPS runbook sections.
+
+## Duplicate enquiry review
+
+`app/admin/duplicate-review.tsx` displays the source, retained enquiry and archive blockers. `app/admin/crm.server.ts` supplies the read-only preview and the shared archive gate.

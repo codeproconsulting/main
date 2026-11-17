@@ -203,3 +203,7 @@ The email operations response omits payloads, addresses, recipient hashes and so
 ## Linked contact profiles
 
 Only active owners, admins and global managers may open a linked profile. Related rows exclude contact details, group IDs, notes and raw owner identifiers.
+
+## Duplicate enquiry review
+
+Only active owners, admins and global managers can preview. The response contains projected enquiry summaries and blocker flags, with no linked document, note or task contents.

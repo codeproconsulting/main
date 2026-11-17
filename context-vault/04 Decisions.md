@@ -241,3 +241,7 @@ Require explicit staff consent in addition to the operator allowlist. Missing or
 ## Linked contact profiles
 
 Show contact details from the anchor enquiry and keep each linked enquiry’s own stage and assignment. The profile does not infer a canonical email or phone from a match.
+
+## Duplicate enquiry review
+
+Archive keeps both enquiry histories. A future merge must explicitly reconcile follow-ups, case and appointment ownership, private document access, consultation attribution and inbound duplicate references. Closed task history and audit history need a retention decision before any records move.

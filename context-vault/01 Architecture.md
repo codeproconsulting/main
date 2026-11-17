@@ -221,3 +221,7 @@ The integrated local pilot connects the reminder producer, outbox, provider adap
 ## Linked contact profiles
 
 Confirmed contact profiles are read-only views anchored to a linked enquiry. Group membership comes from the current contact group on that enquiry.
+
+## Duplicate enquiry review
+
+The duplicate review page uses the same dependency checks as the archive action. The action repeats those checks with both enquiries and staff access locked.

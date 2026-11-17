@@ -226,6 +226,51 @@ export async function writableEnquiry(staff: Staff, id: string) {
   return lead;
 }
 
+const enquiryIdPattern = /^[a-zA-Z0-9][a-zA-Z0-9._-]{0,35}$/;
+
+function requireDuplicatePair(source: Lead, retained: Lead) {
+  if (!source.contactGroup || source.contactGroup !== retained.contactGroup ||
+      source.duplicateOf || retained.duplicateOf ||
+      source.service.trim().toLowerCase() !== retained.service.trim().toLowerCase() ||
+      source.country.trim().toLowerCase() !== retained.country.trim().toLowerCase()) {
+    throw new Response("Choose two confirmed contact enquiries for the same service and destination.", { status: 400 });
+  }
+}
+
+const duplicateDependencies = [
+  { collection: "leads", field: "duplicateOf", label: "Existing duplicate references" },
+  { collection: "tasks", field: "leadId", label: "Open follow-up tasks" },
+  { collection: "cases", field: "leadId", label: "Applications and cases" },
+  { collection: "appointments", field: "leadId", label: "Appointments" },
+  { collection: "documents", field: "leadId", label: "Private documents" },
+  { collection: "consultations", field: "leadId", label: "Consultations" },
+] as const;
+
+async function duplicateArchiveChecks(lead: Lead) {
+  const dependencies = await Promise.all(duplicateDependencies.map(async ({ collection, field, label }) => {
+    const { documents } = await listDocuments(collection, [
+      query("equal", field, [lead.$id]),
+      ...(collection === "tasks" ? [query("equal", "status", ["Open"])] : []),
+      query("select", undefined, ["$id"]),
+      query("limit", undefined, [1]),
+    ]);
+    return { label, blocked: documents.length > 0 };
+  }));
+  return [{ label: "Next follow-up date", blocked: Boolean(lead.nextFollowUp) }, ...dependencies];
+}
+
+export async function previewDuplicate(staff: Staff, sourceId: string, retainedId: string) {
+  allow(staff.active && canManage(staff));
+  if (!enquiryIdPattern.test(sourceId) || !enquiryIdPattern.test(retainedId) || sourceId === retainedId) {
+    throw new Response("Choose two different enquiries.", { status: 400 });
+  }
+  const [source, retained] = await Promise.all([leadFor(staff, sourceId), leadFor(staff, retainedId)]);
+  requireDuplicatePair(source, retained);
+  const summary = ({ $id, name, service, country, stage, version }: Lead) =>
+    ({ $id, name, service, country, stage, version });
+  return { source: summary(source), retained: summary(retained), checks: await duplicateArchiveChecks(source) };
+}
+
 export async function resolveDuplicate(staff: Staff, id: string, form: FormData) {
   allow(staff.active && canManage(staff));
   const intent = field(form, "intent");
@@ -233,7 +278,7 @@ export async function resolveDuplicate(staff: Staff, id: string, form: FormData)
   const targetId = restore ? "" : field(form, "retainedEnquiry", 36);
   const reason = field(form, "reason", 2000);
   if (!reason || (!restore && (intent !== "mark-duplicate" || targetId === id ||
-      !/^[a-zA-Z0-9][a-zA-Z0-9._-]{0,35}$/.test(targetId)))) {
+      !enquiryIdPattern.test(targetId)))) {
     throw new Response("Enter a reason and choose a different enquiry to retain.", { status: 400 });
   }
 
@@ -254,18 +299,8 @@ export async function resolveDuplicate(staff: Staff, id: string, form: FormData)
       if (Number(field(form, "targetVersion")) !== target.version) {
         throw new Response("The retained enquiry changed. Refresh before saving.", { status: 409 });
       }
-      if (!lead.contactGroup || lead.contactGroup !== target.contactGroup || target.duplicateOf ||
-          lead.service.trim().toLowerCase() !== target.service.trim().toLowerCase() ||
-          lead.country.trim().toLowerCase() !== target.country.trim().toLowerCase()) {
-        throw new Response("Choose a confirmed contact enquiry for the same service and destination.", { status: 400 });
-      }
-      const dependencies = await Promise.all([
-        listDocuments("leads", [query("equal", "duplicateOf", [id]), query("limit", undefined, [1])]),
-        ...(["tasks", "cases", "appointments", "documents", "consultations"] as const).map(collection =>
-          listDocuments(collection, [query("equal", "leadId", [id]), query("limit", undefined, [1]),
-            ...(collection === "tasks" ? [query("equal", "status", ["Open"])] : [])])),
-      ]);
-      if (lead.nextFollowUp || dependencies.some(result => result.documents.length > 0)) {
+      requireDuplicatePair(lead, target);
+      if ((await duplicateArchiveChecks(lead)).some(check => check.blocked)) {
         throw new Response("Resolve linked work or existing duplicate references before marking this enquiry.", { status: 409 });
       }
       stage = "Archived";
