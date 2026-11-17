@@ -1,5 +1,8 @@
 # 🚀 ProConsulting VPS Deployment Guide
 
+For a CRM installation beside the existing website, use the [Hamy CRM handoff](HAMY-CRM-HANDOFF.md) and [CRM first-install guide](CRM-FIRST-INSTALL.md). The quick-install commands below are for the public website.
+
+
 This guide provides step-by-step instructions for deploying the **unified ProConsulting platform** (Main, Education, and Immigration sections) to a Ubuntu/Debian VPS.
 
 ## 📋 Prerequisites

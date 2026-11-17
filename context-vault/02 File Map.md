@@ -259,3 +259,7 @@ app/admin/email-delivery.tsx renders operations; app/admin/email-delivery.server
 ## Linked contact profiles
 
 `app/admin/contact-profile.tsx` renders the linked enquiry profile. `app/admin/crm.server.ts` scopes and projects its data.
+
+## VPS operator handoff
+
+`deploy/HAMY-CRM-HANDOFF.md` maps implemented CRM workflows, feature gates and the pinned first-install release to the exact VPS runbook sections.

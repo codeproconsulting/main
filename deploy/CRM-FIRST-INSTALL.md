@@ -2,6 +2,8 @@
 
 Install the CRM beside the live public website and Appwrite. The first install uses a separate checkout, a separate PM2 process, and a new HTTPS hostname. Keep the existing website and Ghost services running during the trial.
 
+For the feature inventory, tested release baseline and operator handoff, start with the [Hamy CRM handoff](HAMY-CRM-HANDOFF.md).
+
 ## How the two hostnames share one application
 
 The public website, CRM pages under `/admin`, and CRM mobile API are in one React Router project. The repository's PM2 configuration can start both web surfaces from the same checkout and the same `npm run build` output. Each process gets its own `APP_SURFACE` and port.
@@ -41,7 +43,7 @@ Use an SSH-enabled GitHub deploy key or the deployment user's existing GitHub ac
 sudo install -d -o "$USER" -g "$(id -gn)" /srv/proconsulting-crm
 git clone --branch codex/crm-workspace git@github.com:codeproconsulting/main.git /srv/proconsulting-crm
 cd /srv/proconsulting-crm
-git checkout --detach b63d0c9
+git checkout --detach 8af70cb65657eb125cf96800787540c5229eaaaf
 npm ci
 cp -n deploy/env.example .env
 chmod 600 .env
