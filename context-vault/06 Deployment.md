@@ -233,3 +233,7 @@ Workspace setup links to Email delivery for owners and admins. Runtime needs rea
 ## Staff email preferences
 
 Add the optional `staff.reminderEmail` string attribute before rollout (see deployment guide). The read-only target check found it absent; no schema writes were made. Keep delivery disabled until the pilot passes.
+
+## Staff email pilot
+
+The deployment guide lists the pilot sequence, website callback dependency, evidence to check and rollback order. CRM-only routing does not expose the website callback.

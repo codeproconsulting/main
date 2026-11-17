@@ -3,39 +3,39 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-17-01]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-17-02]].
 
 ## Resume here
 
-**Session:** 2026-11-17-01
+**Session:** 2026-11-17-02
 
 **Active feature:** COMMS-01
 
 **State:** completed
 
-**Objective:** Let eligible staff explicitly enable and disable their own email reminders.
+**Objective:** Verify the full staff reminder email workflow and document the live pilot.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Workspace setup preference and enqueue/send-time consent checks
+- Task, appointment and case reminders through consent, retries, callbacks, suppression and admin visibility
 
 ## Out of scope
 
-- Live sends, staff account changes, target schema writes and VPS activation
+- Production provider activation and VPS changes
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| COMMS01-PREF-A | Eligible staff can save their own preference; missing state defaults off | passed | Synthetic route test covers load, enable/disable, same-origin checks, invalid values, posted staff ID ignored and pending-revocation denial. |
-| COMMS01-PREF-B | Queued notices respect current consent | passed | Synthetic worker test verifies no enqueue without explicit opt-in and no transport for an already queued reminder after opt-out. |
+| COMMS01-PILOT-A | Reminder generation and retry through provider acceptance | passed | Integrated synthetic test uses the real producer and outbox, verifies duplicate prevention and an identical provider request after a rate limit. |
+| COMMS01-PILOT-B | Callback reconciliation, opt-out, privacy and suppression | passed | Test verifies early callback retry, delivered replay, bounce blocking queued and future email, appointment and case opt-out, preserved in-app notices and projected admin counts. |
 
 ## Exact next actions
 
-1. Verify the Resend reminder pilot end to end locally with synthetic storage and transport, from in-app reminder through delivery event and suppression. Keep live provider activation separate.
-   Files: `scripts/staff-reminder-email.mjs`, `scripts/email-worker.mjs`, `app/routes/api.resend-webhook.ts`, `deploy/CRM-DEPLOYMENT.md`
+1. Complete the controlled live reminder pilot when the CRM and website runtimes, Appwrite preference attribute and verified Resend sender are ready. Follow the documented acceptance and rollback sequence.
+   Files: `deploy/CRM-DEPLOYMENT.md`, `deploy/ecosystem.config.cjs`
 
 ## Known risks and unfinished work
 
@@ -58,9 +58,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-17T01:50:37.658Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-USXM0d/typecheck.log`
-- **passed**: `npm run test` (2026-11-17T01:50:38.964Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-USXM0d/test.log`
-- **passed**: `npm run build` (2026-11-17T01:50:43.898Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-USXM0d/build.log`
+- **passed**: `npm run typecheck` (2026-11-17T01:59:35.061Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-rxdr6r/typecheck.log`
+- **passed**: `npm run test` (2026-11-17T01:59:36.682Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-rxdr6r/test.log`
+- **passed**: `npm run build` (2026-11-17T01:59:42.384Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-rxdr6r/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -76,7 +76,7 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **ownerPassword**: owner must set via Appwrite Console
 - **gitBranch**: codex/crm-workspace
 - **integratedUpstream**: origin/main through 0397d6d; TOEFL and service-location pages preserved
-- **githubCheckpoint**: Staff email preference checkpoint on codex/crm-workspace; previous remote tip 5a4058b.
+- **githubCheckpoint**: Integrated reminder pilot checkpoint on codex/crm-workspace; previous tip 5b893f7.
 - **mainMergePolicy**: Tested features may be merged after exact release candidate review and creation of a prior-main rollback reference. No integration was performed in REPORT-01.
 - **rollbackReference**: rollback/main-2026-10-29-407977c preserves the existing main baseline for release recovery
 - **scheduleIndex**: posts schedule(status,publishedAt) available; live due query passed read-only with zero due posts
@@ -121,5 +121,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **staffReminderEmail**: Source and optional outbox link ready. Both production flags remain disabled; no Resend delivery attempted.
 - **resendEvents**: Private ledger and indexes available; callback not registered or enabled. No sends attempted.
 - **staffEmailPreference**: Target staff collection confirmed private. Optional reminderEmail attribute absent. No production changes or sends.
+- **resendPilot**: End-to-end local acceptance with simulated transport and Appwrite responses. Live delivery, callback registration and VPS rollout pending.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

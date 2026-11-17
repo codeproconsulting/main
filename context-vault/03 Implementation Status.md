@@ -285,3 +285,7 @@ Email delivery dashboard implemented for owner and admin accounts.
 ## Staff email preferences
 
 Staff email preferences are implemented and verified with synthetic route and worker tests. A read-only target Appwrite check confirmed the staff collection is private and the new optional attribute is absent. No production release or live send.
+
+## Staff email pilot
+
+Local end-to-end acceptance passed for task email delivery, appointment and case opt-out, bounce suppression, callback replay and private admin counts. Live sender, callback and VPS worker acceptance remain pending.

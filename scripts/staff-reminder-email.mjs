@@ -56,7 +56,7 @@ export function staffReminderEmail({ api, database, config, clock = Date.now }) 
       if (!Number.isFinite(age) || age < 0 || age > 600000 || notice.read) return;
       const to = await recipient(notice.recipient);
       if (!to) return;
-      await enqueueEmail({ api,database,eventKey:'staff-reminder/'+noticeId,noticeId,from:config.from,to,...content });
+      await enqueueEmail({ api,database,eventKey:'staff-reminder/'+noticeId,noticeId,from:config.from,to,now:new Date(clock()).toISOString(),...content });
     },
     async send(message, transport) {
       const { noticeId, payload } = message;

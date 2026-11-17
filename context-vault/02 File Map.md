@@ -243,3 +243,7 @@ app/admin/email-delivery.tsx renders operations; app/admin/email-delivery.server
 ## Staff email preferences
 
 `app/admin/settings.tsx`: self-service email preference loader and action. `tests/reminder-preferences.test.mjs` and `tests/staff-reminder-email.test.mjs`: synthetic route and worker acceptance.
+
+## Staff email pilot
+
+`tests/reminder-email-pilot.test.mjs` exercises the full workflow using the real reminder and email modules and a simulated provider.
