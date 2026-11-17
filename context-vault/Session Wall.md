@@ -3,38 +3,38 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-17-08]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-17-09]].
 
 ## Resume here
 
-**Session:** 2026-11-17-08
+**Session:** 2026-11-17-09
 
-**Active feature:** CRM-02
+**Active feature:** MOB-02
 
-**State:** completed
+**State:** in_progress
 
-**Objective:** Transfer open duplicate follow-ups with version checks and audited recovery.
+**Objective:** Encrypted offline workspace on the native app.
 
-This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
+A user saying **continue** means resume this feature's next unfinished acceptance check. Do not start unrelated modules or repeat completed infrastructure work. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- One task transfer between same-assignment confirmed enquiries
+- Cold-start read-only snapshot and expiry
 
 ## Out of scope
 
-- Other dependency migrations and VPS rollout
+- Offline edit replay
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| CRM02-MOVE | Transfer preserves task data and protects stale, scoped and uncertain operations | passed | Synthetic tests passed for transfer, archive after transfer, role denial, mixed dependencies, stale versions, audit failure and uncertain audit completion. |
+| MOB-OFFLINE | Native device cold-start acceptance | pending | Mobile typecheck, lint, four tests and Android JS export passed. Native module and airplane-mode device checks pending. |
 
 ## Exact next actions
 
-1. Verify duplicate follow-up transfer in the built browser workflow, including stale submission and refresh after transfer.
-   Files: `app/admin/duplicate-review.tsx`, `tests/manual-leads.test.mjs`
+1. Build and verify the native SecureStore module, then test airplane-mode cold start, expiry and sign-out on Android. Mobile commit 798ee4d is local because the mobile checkout has no Git remote.
+   Files: `/Users/fidaali/Proconsulting-App/src/offline-cache.ts`, `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`
 
 ## Known risks and unfinished work
 

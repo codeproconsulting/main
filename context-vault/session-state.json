@@ -1,31 +1,31 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-17-08",
-  "sessionStatus": "completed",
-  "activeFeature": "CRM-02",
-  "objective": "Transfer open duplicate follow-ups with version checks and audited recovery.",
+  "sessionId": "2026-11-17-09",
+  "sessionStatus": "in_progress",
+  "activeFeature": "MOB-02",
+  "objective": "Encrypted offline workspace on the native app.",
   "scope": [
-    "One task transfer between same-assignment confirmed enquiries"
+    "Cold-start read-only snapshot and expiry"
   ],
   "outOfScope": [
-    "Other dependency migrations and VPS rollout"
+    "Offline edit replay"
   ],
   "acceptance": [
     {
-      "id": "CRM02-MOVE",
-      "description": "Transfer preserves task data and protects stale, scoped and uncertain operations",
-      "status": "passed",
-      "evidence": "Synthetic tests passed for transfer, archive after transfer, role denial, mixed dependencies, stale versions, audit failure and uncertain audit completion."
+      "id": "MOB-OFFLINE",
+      "description": "Native device cold-start acceptance",
+      "status": "pending",
+      "evidence": "Mobile typecheck, lint, four tests and Android JS export passed. Native module and airplane-mode device checks pending."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Verify duplicate follow-up transfer in the built browser workflow, including stale submission and refresh after transfer.",
+      "action": "Build and verify the native SecureStore module, then test airplane-mode cold start, expiry and sign-out on Android. Mobile commit 798ee4d is local because the mobile checkout has no Git remote.",
       "files": [
-        "app/admin/duplicate-review.tsx",
-        "tests/manual-leads.test.mjs"
+        "/Users/fidaali/Proconsulting-App/src/offline-cache.ts",
+        "/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx"
       ]
     }
   ],
@@ -131,6 +131,6 @@
       "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-XD6uBG/build.log"
     }
   ],
-  "updatedAt": "2026-11-17T17:38:16.855Z",
+  "updatedAt": "2026-11-17T17:43:54.379Z",
   "verifiedSourceFingerprint": "229b57ac93be71f1a0a7920c3068c6860ed7b180ec7ceddb96523893335165f5"
 }
