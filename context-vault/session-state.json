@@ -16,13 +16,13 @@
       "id": "MOB-OFFLINE",
       "description": "Native device cold-start acceptance",
       "status": "pending",
-      "evidence": "Mobile typecheck, lint, four tests and Android JS export passed. Native module and airplane-mode device checks pending."
+      "evidence": "Android prebuild, module backup exclusions and OTA runtime 1.0.3 verified. Mobile typecheck, lint and four tests passed. EAS Android build f3605d77-c7c0-4ae6-8a5d-507d256f6d11 is queued. Device acceptance pending."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Build and verify the native SecureStore module, then test airplane-mode cold start, expiry and sign-out on Android. Mobile commit 798ee4d is local because the mobile checkout has no Git remote.",
+      "action": "Monitor EAS build f3605d77-c7c0-4ae6-8a5d-507d256f6d11, download the APK after success and verify airplane-mode cold start, expiry and sign-out. Runtime 1.0.3 requires a new installed binary.",
       "files": [
         "/Users/fidaali/Proconsulting-App/src/offline-cache.ts",
         "/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx"
@@ -106,7 +106,8 @@
     "resendPilot": "Appwrite metadata preflight passed. Public CRM edge fails the TLS hostname check and returns 301 in place of the template’s 308. Live pilot pending.",
     "contactProfile": "Local synthetic profile acceptance passed. Browser and VPS acceptance pending.",
     "duplicateReview": "Synthetic acceptance passed. VPS and browser acceptance pending. No schema changes.",
-    "duplicateMergePlan": "Synthetic acceptance passed for read-only planning. No runtime deployment or data migration."
+    "duplicateMergePlan": "Synthetic acceptance passed for read-only planning. No runtime deployment or data migration.",
+    "offlineAndroidBuild": "Queued on EAS. Native project regenerated with SecureStore and updates enabled. No APK delivered yet."
   },
   "checks": [
     {
@@ -131,6 +132,6 @@
       "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-XD6uBG/build.log"
     }
   ],
-  "updatedAt": "2026-11-17T17:43:54.379Z",
+  "updatedAt": "2026-11-17T17:59:22.737Z",
   "verifiedSourceFingerprint": "229b57ac93be71f1a0a7920c3068c6860ed7b180ec7ceddb96523893335165f5"
 }

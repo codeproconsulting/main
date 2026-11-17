@@ -29,11 +29,11 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| MOB-OFFLINE | Native device cold-start acceptance | pending | Mobile typecheck, lint, four tests and Android JS export passed. Native module and airplane-mode device checks pending. |
+| MOB-OFFLINE | Native device cold-start acceptance | pending | Android prebuild, module backup exclusions and OTA runtime 1.0.3 verified. Mobile typecheck, lint and four tests passed. EAS Android build f3605d77-c7c0-4ae6-8a5d-507d256f6d11 is queued. Device acceptance pending. |
 
 ## Exact next actions
 
-1. Build and verify the native SecureStore module, then test airplane-mode cold start, expiry and sign-out on Android. Mobile commit 798ee4d is local because the mobile checkout has no Git remote.
+1. Monitor EAS build f3605d77-c7c0-4ae6-8a5d-507d256f6d11, download the APK after success and verify airplane-mode cold start, expiry and sign-out. Runtime 1.0.3 requires a new installed binary.
    Files: `/Users/fidaali/Proconsulting-App/src/offline-cache.ts`, `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`
 
 ## Known risks and unfinished work
@@ -124,5 +124,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **contactProfile**: Local synthetic profile acceptance passed. Browser and VPS acceptance pending.
 - **duplicateReview**: Synthetic acceptance passed. VPS and browser acceptance pending. No schema changes.
 - **duplicateMergePlan**: Synthetic acceptance passed for read-only planning. No runtime deployment or data migration.
+- **offlineAndroidBuild**: Queued on EAS. Native project regenerated with SecureStore and updates enabled. No APK delivered yet.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]
