@@ -247,3 +247,7 @@ app/admin/email-delivery.tsx renders operations; app/admin/email-delivery.server
 ## Staff email pilot
 
 `tests/reminder-email-pilot.test.mjs` exercises the full workflow using the real reminder and email modules and a simulated provider.
+
+## Staff email release preflight
+
+`scripts/check-email-pilot.mjs` checks six Appwrite collections using metadata reads and reports incompatible attributes or indexes.

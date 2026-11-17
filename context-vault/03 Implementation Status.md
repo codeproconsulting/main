@@ -289,3 +289,7 @@ Staff email preferences are implemented and verified with synthetic route and wo
 ## Staff email pilot
 
 Local end-to-end acceptance passed for task email delivery, appointment and case opt-out, bounce suppression, callback replay and private admin counts. Live sender, callback and VPS worker acceptance remain pending.
+
+## Staff email release preflight
+
+The optional preference attribute is provisioned on the target and all six Appwrite preflight checks passed. The public CRM HTTPS request failed certificate hostname validation, and the local checkout lacks the Resend pilot configuration.

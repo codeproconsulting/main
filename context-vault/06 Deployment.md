@@ -237,3 +237,7 @@ Add the optional `staff.reminderEmail` string attribute before rollout (see depl
 ## Staff email pilot
 
 The deployment guide lists the pilot sequence, website callback dependency, evidence to check and rollback order. CRM-only routing does not expose the website callback.
+
+## Staff email release preflight
+
+Run the Appwrite preflight with setup metadata access before the live pilot. The target passed. VPS TLS, scoped runtime access and verified Resend delivery still need live acceptance.

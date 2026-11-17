@@ -3,34 +3,34 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-17-02]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-17-03]].
 
 ## Resume here
 
-**Session:** 2026-11-17-02
+**Session:** 2026-11-17-03
 
 **Active feature:** COMMS-01
 
 **State:** completed
 
-**Objective:** Verify the full staff reminder email workflow and document the live pilot.
+**Objective:** Verify the Appwrite prerequisites for the staff email pilot and identify live release blockers.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Task, appointment and case reminders through consent, retries, callbacks, suppression and admin visibility
+- Read-only pilot preflight, additive staff consent schema and public CRM TLS smoke check
 
 ## Out of scope
 
-- Production provider activation and VPS changes
+- Starting production workers or sending live email
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| COMMS01-PILOT-A | Reminder generation and retry through provider acceptance | passed | Integrated synthetic test uses the real producer and outbox, verifies duplicate prevention and an identical provider request after a rate limit. |
-| COMMS01-PILOT-B | Callback reconciliation, opt-out, privacy and suppression | passed | Test verifies early callback retry, delivered replay, bounce blocking queued and future email, appointment and case opt-out, preserved in-app notices and projected admin counts. |
+| COMMS01-READY-A | Preflight detects incompatible target schema and passes after the additive setup | passed | First run detected the missing consent attribute. Only the optional staff attribute was added. Second run passed all six target metadata checks. |
+| COMMS01-READY-B | Record the results and remaining live dependencies | passed | Public HTTPS probe failed on a certificate hostname mismatch. Pilot Resend configuration was absent from the local checkout. Deployment guide includes the preflight command. |
 
 ## Exact next actions
 
@@ -58,9 +58,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-17T01:59:35.061Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-rxdr6r/typecheck.log`
-- **passed**: `npm run test` (2026-11-17T01:59:36.682Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-rxdr6r/test.log`
-- **passed**: `npm run build` (2026-11-17T01:59:42.384Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-rxdr6r/build.log`
+- **passed**: `npm run typecheck` (2026-11-17T02:02:11.877Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Wgoxdx/typecheck.log`
+- **passed**: `npm run test` (2026-11-17T02:02:13.344Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Wgoxdx/test.log`
+- **passed**: `npm run build` (2026-11-17T02:02:18.520Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Wgoxdx/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -76,7 +76,7 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **ownerPassword**: owner must set via Appwrite Console
 - **gitBranch**: codex/crm-workspace
 - **integratedUpstream**: origin/main through 0397d6d; TOEFL and service-location pages preserved
-- **githubCheckpoint**: Integrated reminder pilot checkpoint on codex/crm-workspace; previous tip 5b893f7.
+- **githubCheckpoint**: Staff email pilot preflight checkpoint on codex/crm-workspace; previous tip a93b2a9.
 - **mainMergePolicy**: Tested features may be merged after exact release candidate review and creation of a prior-main rollback reference. No integration was performed in REPORT-01.
 - **rollbackReference**: rollback/main-2026-10-29-407977c preserves the existing main baseline for release recovery
 - **scheduleIndex**: posts schedule(status,publishedAt) available; live due query passed read-only with zero due posts
@@ -120,7 +120,7 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **resendOutbox**: Private schema available. Provider fake-tested only. No credentials configured or worker activation performed.
 - **staffReminderEmail**: Source and optional outbox link ready. Both production flags remain disabled; no Resend delivery attempted.
 - **resendEvents**: Private ledger and indexes available; callback not registered or enabled. No sends attempted.
-- **staffEmailPreference**: Target staff collection confirmed private. Optional reminderEmail attribute absent. No production changes or sends.
-- **resendPilot**: End-to-end local acceptance with simulated transport and Appwrite responses. Live delivery, callback registration and VPS rollout pending.
+- **staffEmailPreference**: Optional reminderEmail attribute available on private target staff collection. No staff profile writes.
+- **resendPilot**: Appwrite metadata preflight passed. CRM certificate hostname mismatch confirmed. Local Resend pilot configuration absent. VPS activation, runtime key checks and live provider acceptance pending.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]
