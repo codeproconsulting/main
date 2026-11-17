@@ -95,9 +95,7 @@ For any other edge, create an HTTPS host for `crm.proconsulting.uk` with its own
 ## 6. Verify from outside the VPS
 
 ```sh
-curl -I http://crm.proconsulting.uk/admin/login
-curl -I https://crm.proconsulting.uk/admin/login
-curl -i https://crm.proconsulting.uk/admin/mobile/v1/workspace
+node scripts/check-crm-edge.mjs
 ```
 
 Expect HTTP 308 to HTTPS, HTTPS 200 for login, and JSON HTTP 401 with `Cache-Control: private, no-store` for the unauthenticated mobile API. Open [CRM login](https://crm.proconsulting.uk/admin/login), sign in, and try a synthetic lead and follow-up before real staff use. Then sign in with the same account on the Android app. Check the public website and Appwrite from outside the VPS as well.

@@ -251,3 +251,7 @@ app/admin/email-delivery.tsx renders operations; app/admin/email-delivery.server
 ## Staff email release preflight
 
 `scripts/check-email-pilot.mjs` checks six Appwrite collections using metadata reads and reports incompatible attributes or indexes.
+
+## CRM edge smoke check
+
+`scripts/check-crm-edge.mjs` checks the public redirect, HTTPS login and anonymous mobile endpoint without signing in.

@@ -1,6 +1,6 @@
 # File updates
 
-Generated snapshot of changes since the previous inventory; Nov 17, 2026, 7:02 a.m. (Asia/Karachi).
+Generated snapshot of changes since the previous inventory; Nov 17, 2026, 12:50 p.m. (Asia/Karachi).
 
 [[02 File Map]] · [[Source Inventory]] · [[05 Maintenance]]
 
@@ -8,8 +8,8 @@ Review these changes and update human-authored architecture/status notes where n
 
 ## Added
 
-- `scripts/check-email-pilot.mjs`
+- `scripts/check-crm-edge.mjs`
 
 ## Modified
 
-- `deploy/CRM-DEPLOYMENT.md`
+- `deploy/CRM-FIRST-INSTALL.md`

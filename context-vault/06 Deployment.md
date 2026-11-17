@@ -241,3 +241,7 @@ The deployment guide lists the pilot sequence, website callback dependency, evid
 ## Staff email release preflight
 
 Run the Appwrite preflight with setup metadata access before the live pilot. The target passed. VPS TLS, scoped runtime access and verified Resend delivery still need live acceptance.
+
+## CRM edge smoke check
+
+Run `node scripts/check-crm-edge.mjs` after installing the final Nginx configuration. Signed-in staff and provider checks remain separate.

@@ -3,34 +3,33 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-17-03]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-17-04]].
 
 ## Resume here
 
-**Session:** 2026-11-17-03
+**Session:** 2026-11-17-04
 
 **Active feature:** COMMS-01
 
 **State:** completed
 
-**Objective:** Verify the Appwrite prerequisites for the staff email pilot and identify live release blockers.
+**Objective:** Make the public CRM edge prerequisite for the live reminder pilot repeatable.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Read-only pilot preflight, additive staff consent schema and public CRM TLS smoke check
+- Read-only redirect, HTTPS login and anonymous mobile API smoke checks
 
 ## Out of scope
 
-- Starting production workers or sending live email
+- VPS changes, authenticated checks and live email
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| COMMS01-READY-A | Preflight detects incompatible target schema and passes after the additive setup | passed | First run detected the missing consent attribute. Only the optional staff attribute was added. Second run passed all six target metadata checks. |
-| COMMS01-READY-B | Record the results and remaining live dependencies | passed | Public HTTPS probe failed on a certificate hostname mismatch. Pilot Resend configuration was absent from the local checkout. Deployment guide includes the preflight command. |
+| COMMS01-EDGE-A | Checker detects an incorrect public edge and passes expected responses | passed | Simulated HTTP 308, HTTPS HTML 200 and private JSON 401 passed. Public check reported HTTP 301 and TLS hostname mismatch. |
 
 ## Exact next actions
 
@@ -58,9 +57,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-17T02:02:11.877Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Wgoxdx/typecheck.log`
-- **passed**: `npm run test` (2026-11-17T02:02:13.344Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Wgoxdx/test.log`
-- **passed**: `npm run build` (2026-11-17T02:02:18.520Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Wgoxdx/build.log`
+- **passed**: `npm run typecheck` (2026-11-17T07:50:44.635Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-g3qKcC/typecheck.log`
+- **passed**: `npm run test` (2026-11-17T07:50:46.081Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-g3qKcC/test.log`
+- **passed**: `npm run build` (2026-11-17T07:50:51.379Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-g3qKcC/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -76,7 +75,7 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **ownerPassword**: owner must set via Appwrite Console
 - **gitBranch**: codex/crm-workspace
 - **integratedUpstream**: origin/main through 0397d6d; TOEFL and service-location pages preserved
-- **githubCheckpoint**: Staff email pilot preflight checkpoint on codex/crm-workspace; previous tip a93b2a9.
+- **githubCheckpoint**: CRM edge smoke checkpoint on codex/crm-workspace.
 - **mainMergePolicy**: Tested features may be merged after exact release candidate review and creation of a prior-main rollback reference. No integration was performed in REPORT-01.
 - **rollbackReference**: rollback/main-2026-10-29-407977c preserves the existing main baseline for release recovery
 - **scheduleIndex**: posts schedule(status,publishedAt) available; live due query passed read-only with zero due posts
@@ -121,6 +120,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **staffReminderEmail**: Source and optional outbox link ready. Both production flags remain disabled; no Resend delivery attempted.
 - **resendEvents**: Private ledger and indexes available; callback not registered or enabled. No sends attempted.
 - **staffEmailPreference**: Optional reminderEmail attribute available on private target staff collection. No staff profile writes.
-- **resendPilot**: Appwrite metadata preflight passed. CRM certificate hostname mismatch confirmed. Local Resend pilot configuration absent. VPS activation, runtime key checks and live provider acceptance pending.
+- **resendPilot**: Appwrite metadata preflight passed. Public CRM edge fails the TLS hostname check and returns 301 in place of the template’s 308. Live pilot pending.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

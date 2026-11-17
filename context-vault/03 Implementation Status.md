@@ -293,3 +293,7 @@ Local end-to-end acceptance passed for task email delivery, appointment and case
 ## Staff email release preflight
 
 The optional preference attribute is provisioned on the target and all six Appwrite preflight checks passed. The public CRM HTTPS request failed certificate hostname validation, and the local checkout lacks the Resend pilot configuration.
+
+## CRM edge smoke check
+
+The edge checker passed against simulated expected responses. The public edge returned 301 instead of the template’s 308 and served a certificate that does not cover the CRM hostname.
