@@ -107,7 +107,8 @@
     "contactProfile": "Local synthetic profile acceptance passed. Browser and VPS acceptance pending.",
     "duplicateReview": "Synthetic acceptance passed. VPS and browser acceptance pending. No schema changes.",
     "duplicateMergePlan": "Synthetic acceptance passed for read-only planning. No runtime deployment or data migration.",
-    "offlineAndroidBuild": "Queued on EAS. Native project regenerated with SecureStore and updates enabled. No APK delivered yet."
+    "offlineAndroidBuild": "Queued on EAS. Native project regenerated with SecureStore and updates enabled. No APK delivered yet.",
+    "offlineSearch": "Mobile commit 0fdd6f9 implements saved lead/task search. Typecheck, lint, five tests and Android export passed. Not in queued APK and not OTA published. Mobile checkout still has no remote."
   },
   "checks": [
     {
@@ -132,6 +133,6 @@
       "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-XD6uBG/build.log"
     }
   ],
-  "updatedAt": "2026-11-17T17:59:22.737Z",
+  "updatedAt": "2026-11-17T18:02:52.783Z",
   "verifiedSourceFingerprint": "229b57ac93be71f1a0a7920c3068c6860ed7b180ec7ceddb96523893335165f5"
 }

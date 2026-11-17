@@ -125,5 +125,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **duplicateReview**: Synthetic acceptance passed. VPS and browser acceptance pending. No schema changes.
 - **duplicateMergePlan**: Synthetic acceptance passed for read-only planning. No runtime deployment or data migration.
 - **offlineAndroidBuild**: Queued on EAS. Native project regenerated with SecureStore and updates enabled. No APK delivered yet.
+- **offlineSearch**: Mobile commit 0fdd6f9 implements saved lead/task search. Typecheck, lint, five tests and Android export passed. Not in queued APK and not OTA published. Mobile checkout still has no remote.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]
