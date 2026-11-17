@@ -1,4 +1,4 @@
-import { Form, data, useLoaderData } from "react-router";
+import { Form, Link, data, useLoaderData } from "react-router";
 import type { LoaderFunctionArgs } from "react-router";
 import { requireStaff } from "./auth.server";
 import { previewDuplicate } from "./crm.server";
@@ -6,14 +6,14 @@ import { Back, PageHeading, Submit } from "./ui";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
   const staff = await requireStaff(request);
-  const retain = new URL(request.url).searchParams.get("retain") ?? "";
-  return data(await previewDuplicate(staff, params.id ?? "", retain), {
+  const search = new URL(request.url).searchParams;
+  return data(await previewDuplicate(staff, params.id ?? "", search.get("retain") ?? "", search.get("merge") === "1"), {
     headers: { "Cache-Control": "private, no-store" },
   });
 }
 
 export default function DuplicateReview() {
-  const { source, retained, checks } = useLoaderData<typeof loader>();
+  const { source, retained, checks, mergePlan } = useLoaderData<typeof loader>();
   const enquiryPath = `/admin/leads/${source.$id}`;
   const blocked = checks.some(check => check.blocked);
   return <>
@@ -44,6 +44,26 @@ export default function DuplicateReview() {
           <div><Submit>Archive this duplicate</Submit></div>
         </Form>
       </>}
+    </section>
+    <section className="crm-panel crm-padded">
+      <h2>Merge planning</h2>
+      {mergePlan ? <>
+        <p>Use this comparison to review linked work. Moving records between enquiries is a separate operation and is not available here.</p>
+        {(mergePlan.differentCounselors || mergePlan.differentTeams) && <p>
+          Confirm the retained assignment and access before moving work. {mergePlan.differentCounselors && "Counselor assignments differ. "}
+          {mergePlan.differentTeams && "Team assignments differ."}
+        </p>}
+        <div className="crm-table-wrap"><table className="crm-table">
+          <thead><tr><th scope="col">Linked work</th><th scope="col">Would archive</th><th scope="col">Would retain</th><th scope="col">Review</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Next follow-up date</th><td>{mergePlan.sourceFollowUp ? "Set" : "None"}</td>
+              <td>{mergePlan.retainedFollowUp ? "Set" : "None"}</td><td>Choose the next follow-up after reviewing open tasks.</td></tr>
+            {mergePlan.rows.map(row => <tr key={row.label}>
+              <th scope="row">{row.label}</th><td>{row.sourceCount}</td><td>{row.retainedCount}</td><td>{row.guidance}</td>
+            </tr>)}
+          </tbody>
+        </table></div>
+      </> : <Link className="crm-button secondary" to={`?retain=${encodeURIComponent(retained.$id)}&merge=1`}>Compare linked work</Link>}
     </section>
   </>;
 }

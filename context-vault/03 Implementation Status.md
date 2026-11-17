@@ -305,3 +305,7 @@ Linked contact profiles are implemented and checked with synthetic records. Cont
 ## Duplicate enquiry review
 
 Global managers, admins and owners can preview duplicate archive blockers. Synthetic tests cover all blocker categories, private field projection and a new dependency appearing before submit. Actual record merge remains planned.
+
+## Duplicate merge planning
+
+Implemented and verified a read-only duplicate merge planning view. It compares both enquiries and separates open work from historical tasks and activity. Merge execution remains planned.

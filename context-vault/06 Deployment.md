@@ -257,3 +257,7 @@ The operator reports that the repository is already pulled into a VPS folder nam
 ## Duplicate enquiry review
 
 The preview uses existing lead and linked-work collections and needs no schema change. On the VPS, verify a clear pair and a blocked pair with synthetic enquiries before staff use.
+
+## Duplicate merge planning
+
+The comparison depends on read access to the existing linked-work and activity collections. It requires no additional schema. Verify counts and scope on synthetic VPS records after rollout.

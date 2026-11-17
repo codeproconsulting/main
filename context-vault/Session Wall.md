@@ -3,38 +3,38 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-17-06]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-17-07]].
 
 ## Resume here
 
-**Session:** 2026-11-17-06
+**Session:** 2026-11-17-07
 
 **Active feature:** CRM-02
 
 **State:** completed
 
-**Objective:** Show managers what would block archiving a duplicate enquiry.
+**Objective:** Give managers a comparison of both enquiries before planning a duplicate merge.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Manager-only read-only review and shared archive checks
+- Read-only dependency counts, ownership and team differences, historical retention rules
 
 ## Out of scope
 
-- Moving linked records, production deployment and browser acceptance on the VPS
+- Moving linked records and VPS activation
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| CRM02-DUP-REVIEW | Preview matches archive rules without changing either enquiry | passed | Synthetic service test checks role denial, confirmed pair validation, all seven blocker categories, privacy, no preview writes and fresh dependency rejection. |
+| CRM02-MERGE-PLAN | Compare both sides with separate active and historical work and safe field projections | passed | Synthetic tests verify counts, assignment signals, restricted role denial, privacy, archive regression and preservation of original closed tasks and audit history. |
 
 ## Exact next actions
 
-1. Design and test duplicate merge dependency reconciliation for tasks, cases, appointments, documents, consultations and inbound duplicate references. Decide how closed task and audit history is retained before implementing writes.
-   Files: `app/admin/crm.server.ts`, `context-vault/04 Decisions.md`, `tests/manual-leads.test.mjs`
+1. Build a bounded merge execution design with dependency version checks and recovery. Start with open tasks only, blocking mixed dependencies and different team or counselor ownership until those migrations are explicitly supported.
+   Files: `app/admin/crm.server.ts`, `app/admin/duplicate-review.tsx`, `tests/manual-leads.test.mjs`, `context-vault/04 Decisions.md`
 
 ## Known risks and unfinished work
 
@@ -57,9 +57,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-17T17:10:37.760Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-HrJAM8/typecheck.log`
-- **passed**: `npm run test` (2026-11-17T17:10:39.529Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-HrJAM8/test.log`
-- **passed**: `npm run build` (2026-11-17T17:10:45.028Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-HrJAM8/build.log`
+- **passed**: `npm run typecheck` (2026-11-17T17:13:00.053Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-cQ51Sg/typecheck.log`
+- **passed**: `npm run test` (2026-11-17T17:13:01.536Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-cQ51Sg/test.log`
+- **passed**: `npm run build` (2026-11-17T17:13:06.674Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-cQ51Sg/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -75,7 +75,7 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **ownerPassword**: owner must set via Appwrite Console
 - **gitBranch**: codex/crm-workspace
 - **integratedUpstream**: origin/main through 0397d6d; TOEFL and service-location pages preserved
-- **githubCheckpoint**: Duplicate enquiry review on codex/crm-workspace.
+- **githubCheckpoint**: Duplicate merge planning checkpoint on codex/crm-workspace.
 - **mainMergePolicy**: Tested features may be merged after exact release candidate review and creation of a prior-main rollback reference. No integration was performed in REPORT-01.
 - **rollbackReference**: rollback/main-2026-10-29-407977c preserves the existing main baseline for release recovery
 - **scheduleIndex**: posts schedule(status,publishedAt) available; live due query passed read-only with zero due posts
@@ -123,5 +123,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **resendPilot**: Appwrite metadata preflight passed. Public CRM edge fails the TLS hostname check and returns 301 in place of the template’s 308. Live pilot pending.
 - **contactProfile**: Local synthetic profile acceptance passed. Browser and VPS acceptance pending.
 - **duplicateReview**: Synthetic acceptance passed. VPS and browser acceptance pending. No schema changes.
+- **duplicateMergePlan**: Synthetic acceptance passed for read-only planning. No runtime deployment or data migration.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

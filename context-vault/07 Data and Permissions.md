@@ -207,3 +207,7 @@ Only active owners, admins and global managers may open a linked profile. Relate
 ## Duplicate enquiry review
 
 Only active owners, admins and global managers can preview. The response contains projected enquiry summaries and blocker flags, with no linked document, note or task contents.
+
+## Duplicate merge planning
+
+The comparison returns counts and booleans for differences in team and counselor assignments. It does not return linked file metadata, task contents, audit details or staff/team IDs.

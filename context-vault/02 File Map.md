@@ -267,3 +267,7 @@ app/admin/email-delivery.tsx renders operations; app/admin/email-delivery.server
 ## Duplicate enquiry review
 
 `app/admin/duplicate-review.tsx` displays the source, retained enquiry and archive blockers. `app/admin/crm.server.ts` supplies the read-only preview and the shared archive gate.
+
+## Duplicate merge planning
+
+`app/admin/duplicate-review.tsx` exposes Compare linked work. `app/admin/crm.server.ts` gathers projected dependency counts for each side. `tests/manual-leads.test.mjs` verifies count separation and private-field boundaries.

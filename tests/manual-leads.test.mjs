@@ -677,3 +677,32 @@ test('linked contact profile scopes access and returns only confirmed enquiries 
  delete leads.get(anchor.$id).contactGroup;
  await assert.rejects(crm.linkedContactProfile(manager,anchor.$id,1),errorStatus(404));
 });
+
+test('duplicate merge planning compares both sides and keeps historical records distinct', async()=>{
+ const base={contactGroup:'synthetic-group',service:'Education',country:'Italy',version:1,stage:'New'};
+ leads.set('source', {...base,$id:'source',owner:counselor.$id,teamId:'team-one',nextFollowUp:'2030-01-01T12:00:00Z'});
+ leads.set('retained', {...base,$id:'retained',owner:manager.$id,teamId:'team-two'});
+ dependencies.tasks.set('open',{$id:'open',leadId:'source',status:'Open',title:'Hidden title'});
+ dependencies.tasks.set('closed',{$id:'closed',leadId:'source',status:'Completed'});
+ dependencies.tasks.set('retained-task',{$id:'retained-task',leadId:'retained',status:'Open'});
+ dependencies.documents.set('retained-doc',{$id:'retained-doc',leadId:'retained',fileId:'private-file'});
+ activities.set('original-audit',{$id:'original-audit',entityId:'source',details:'Hidden audit content'});
+ assert.equal((await crm.previewDuplicate(manager,'source','retained')).mergePlan,null);
+ await assert.rejects(()=>crm.previewDuplicate(counselor,'source','retained',true),errorStatus(403));
+ const {mergePlan}=await crm.previewDuplicate(manager,'source','retained',true);
+ const counts = label => {
+  const {sourceCount,retainedCount}=mergePlan.rows.find(row=>row.label===label);
+  return [sourceCount,retainedCount];
+ };
+ assert.deepEqual(counts('Open follow-up tasks'),[1,1]);
+ assert.deepEqual(counts('Closed follow-up tasks'),[1,0]);
+ assert.deepEqual(counts('Private documents'),[0,1]);
+ assert.deepEqual(counts('Activity and audit history'),[1,0]);
+ assert.equal(mergePlan.sourceFollowUp,true);
+ assert.equal(mergePlan.retainedFollowUp,false);
+ assert.equal(mergePlan.differentCounselors,true);
+ assert.equal(mergePlan.differentTeams,true);
+ assert.doesNotMatch(JSON.stringify(mergePlan),/Hidden|private-file|team-one|synthetic-counselor/);
+ assert.equal(dependencies.tasks.get('closed').leadId,'source');
+ assert.equal(activities.size,1);
+});

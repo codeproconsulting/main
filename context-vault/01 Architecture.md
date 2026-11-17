@@ -225,3 +225,7 @@ Confirmed contact profiles are read-only views anchored to a linked enquiry. Gro
 ## Duplicate enquiry review
 
 The duplicate review page uses the same dependency checks as the archive action. The action repeats those checks with both enquiries and staff access locked.
+
+## Duplicate merge planning
+
+The duplicate review can load an on-demand comparison of both enquiries. It reads aggregate dependency counts and assignment differences through the same global CRM role gate as archive review.

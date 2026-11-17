@@ -245,3 +245,9 @@ Show contact details from the anchor enquiry and keep each linked enquiry’s ow
 ## Duplicate enquiry review
 
 Archive keeps both enquiry histories. A future merge must explicitly reconcile follow-ups, case and appointment ownership, private document access, consultation attribution and inbound duplicate references. Closed task history and audit history need a retention decision before any records move.
+
+## Duplicate merge planning
+
+Keep closed tasks and all audit events on the originating enquiry. Preserve consultation attribution. Before implementing merge execution, resolve follow-up and ownership conflicts, review calendar bookings and document access, and repoint inbound duplicate references only after explicit review.
+
+A future merge write must re-read both enquiry versions and the dependency inventory under the existing lead and staff locks. Any calendar updates also need the calendar lock. Define retries and recovery for partial writes before allowing archive after a move. The comparison is a live read and cannot authorize a mutation.

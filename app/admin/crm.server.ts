@@ -238,28 +238,64 @@ function requireDuplicatePair(source: Lead, retained: Lead) {
 }
 
 const duplicateDependencies = [
-  { collection: "leads", field: "duplicateOf", label: "Existing duplicate references" },
-  { collection: "tasks", field: "leadId", label: "Open follow-up tasks" },
-  { collection: "cases", field: "leadId", label: "Applications and cases" },
-  { collection: "appointments", field: "leadId", label: "Appointments" },
-  { collection: "documents", field: "leadId", label: "Private documents" },
-  { collection: "consultations", field: "leadId", label: "Consultations" },
+  { collection: "leads", field: "duplicateOf", label: "Existing duplicate references",
+    guidance: "Review each reference before repointing it to the retained enquiry." },
+  { collection: "tasks", field: "leadId", status: "equal", label: "Open follow-up tasks",
+    guidance: "Review due dates with the retained counselor and preserve the task history." },
+  { collection: "cases", field: "leadId", label: "Applications and cases",
+    guidance: "Review overlapping applications and preserve each case's stage, deadline and history." },
+  { collection: "appointments", field: "leadId", label: "Appointments",
+    guidance: "Check the retained counselor's calendar before moving a booking. Keep past appointment outcomes." },
+  { collection: "documents", field: "leadId", label: "Private documents",
+    guidance: "Confirm the retained enquiry's access scope before relinking private documents." },
+  { collection: "consultations", field: "leadId", label: "Consultations",
+    guidance: "Keep the original counselor, destination and date for reporting." },
 ] as const;
 
+const historicalDependencies = [
+  { collection: "tasks", field: "leadId", status: "notEqual", label: "Closed follow-up tasks",
+    guidance: "Keep closed tasks with their original enquiry." },
+  { collection: "activities", field: "entityId", label: "Activity and audit history",
+    guidance: "Keep each enquiry's activity and audit history with its original record." },
+] as const;
+
+type DuplicateDependency = typeof duplicateDependencies[number] | typeof historicalDependencies[number];
+
+function duplicateDependencyQuery(dependency: DuplicateDependency, id: string) {
+  return listDocuments(dependency.collection, [
+    query("equal", dependency.field, [id]),
+    ...("status" in dependency ? [query(dependency.status, "status", ["Open"])] : []),
+    query("select", undefined, ["$id"]),
+    query("limit", undefined, [1]),
+  ]);
+}
+
 async function duplicateArchiveChecks(lead: Lead) {
-  const dependencies = await Promise.all(duplicateDependencies.map(async ({ collection, field, label }) => {
-    const { documents } = await listDocuments(collection, [
-      query("equal", field, [lead.$id]),
-      ...(collection === "tasks" ? [query("equal", "status", ["Open"])] : []),
-      query("select", undefined, ["$id"]),
-      query("limit", undefined, [1]),
-    ]);
-    return { label, blocked: documents.length > 0 };
-  }));
+  const dependencies = await Promise.all(duplicateDependencies.map(async dependency => ({
+    label: dependency.label,
+    blocked: (await duplicateDependencyQuery(dependency, lead.$id)).documents.length > 0,
+  })));
   return [{ label: "Next follow-up date", blocked: Boolean(lead.nextFollowUp) }, ...dependencies];
 }
 
-export async function previewDuplicate(staff: Staff, sourceId: string, retainedId: string) {
+async function duplicateMergePlan(source: Lead, retained: Lead) {
+  const rows = await Promise.all([...duplicateDependencies, ...historicalDependencies].map(async dependency => {
+    const [before, after] = await Promise.all([
+      duplicateDependencyQuery(dependency, source.$id),
+      duplicateDependencyQuery(dependency, retained.$id),
+    ]);
+    return { label: dependency.label, guidance: dependency.guidance, sourceCount: before.total, retainedCount: after.total };
+  }));
+  return {
+    rows,
+    sourceFollowUp: Boolean(source.nextFollowUp),
+    retainedFollowUp: Boolean(retained.nextFollowUp),
+    differentCounselors: (source.owner || "") !== (retained.owner || ""),
+    differentTeams: (source.teamId || "") !== (retained.teamId || ""),
+  };
+}
+
+export async function previewDuplicate(staff: Staff, sourceId: string, retainedId: string, includePlan = false) {
   allow(staff.active && canManage(staff));
   if (!enquiryIdPattern.test(sourceId) || !enquiryIdPattern.test(retainedId) || sourceId === retainedId) {
     throw new Response("Choose two different enquiries.", { status: 400 });
@@ -268,7 +304,11 @@ export async function previewDuplicate(staff: Staff, sourceId: string, retainedI
   requireDuplicatePair(source, retained);
   const summary = ({ $id, name, service, country, stage, version }: Lead) =>
     ({ $id, name, service, country, stage, version });
-  return { source: summary(source), retained: summary(retained), checks: await duplicateArchiveChecks(source) };
+  const [checks, mergePlan] = await Promise.all([
+    duplicateArchiveChecks(source),
+    includePlan ? duplicateMergePlan(source, retained) : null,
+  ]);
+  return { source: summary(source), retained: summary(retained), checks, mergePlan };
 }
 
 export async function resolveDuplicate(staff: Staff, id: string, form: FormData) {
