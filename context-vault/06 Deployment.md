@@ -249,3 +249,7 @@ Run `node scripts/check-crm-edge.mjs` after installing the final Nginx configura
 ## Linked contact profiles
 
 The contact profile uses the existing lead contact-group field and index. Verify the profile and scope with synthetic enquiries after deployment.
+
+## Existing VPS checkout
+
+The operator reports that the repository is already pulled into a VPS folder named `main` and is working through Nginx. Hermes should confirm the absolute path, deployed revision, processes, active upstreams and CRM hostname before changing routing. A working public site and an accepted CRM rollout are separate checks.

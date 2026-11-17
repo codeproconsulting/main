@@ -57,9 +57,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-17T14:50:01.675Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Sq15Ng/typecheck.log`
-- **passed**: `npm run test` (2026-11-17T14:50:03.159Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Sq15Ng/test.log`
-- **passed**: `npm run build` (2026-11-17T14:50:09.193Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Sq15Ng/build.log`
+- **passed**: `npm run typecheck` (2026-11-17T14:51:20.411Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-bqrLjv/typecheck.log`
+- **passed**: `npm run test` (2026-11-17T14:51:26.666Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-bqrLjv/test.log`
+- **passed**: `npm run build` (2026-11-17T14:51:32.587Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-bqrLjv/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -70,7 +70,7 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **ghostImportedPages**: 1
 - **postPublicationState**: draft
 - **blogProvider**: Ghost unchanged
-- **productionDeployment**: not performed
+- **productionDeployment**: Existing Nginx deployment reported by operator. Exact deployed CRM revision and acceptance unconfirmed.
 - **workerOnVPS**: not started
 - **ownerPassword**: owner must set via Appwrite Console
 - **gitBranch**: codex/crm-workspace
@@ -83,7 +83,7 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **browserTestData**: Synthetic phone-width CRM preview stopped after acceptance.
 - **mediaSchema**: Private media collection/attributes/index provisioned; published defaults false (live default check passed)
 - **mediaStorage**: Private bucket config and real disposable file/metadata round trip verified; synthetic resources removed
-- **nginx**: Bootstrap and HTTPS templates prepared; target-server validation not performed
+- **nginx**: Existing working Nginx routing reported by operator. Active CRM host, upstream and certificate await confirmation.
 - **reminderSchema**: Notification source/version/due fields, unread=false default and private worker_health collection provisioned
 - **reminderStorageCheck**: Private synthetic notification/health CRUD, indexed queries and anonymous denial passed; both records removed
 - **reminderWorker**: Due-task-only runner verified locally, including actual synthetic CLI and SIGTERM idle exit; never activated on VPS
@@ -104,7 +104,7 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **nativeMobile**: Native source and both bundles verified locally. CRM TLS hostname mismatch confirmed. VPS API rollout and OTA release pending.
 - **nativeLeadEditing**: Implemented in both source trees. No VPS or OTA release.
 - **auditRollout**: Appwrite leads schema provisioned. No VPS app deployment or OTA publication.
-- **vpsHandoff**: Operator chose self-install. First-install checklist prepared. Target CRM DNS/proxy and VPS release await operator setup.
+- **vpsHandoff**: Operator reports an existing VPS checkout named main and working Nginx routing. Hermes handoff starts with in-place verification. Deployed revision and CRM-specific acceptance await confirmation.
 - **contactGroupSchema**: Optional field and index provisioned and verified available on target Appwrite. Synthetic link/query/unlink passed and both rows were removed. VPS application rollout remains pending.
 - **duplicateSchema**: Duplicate fields and index provisioned. Target Appwrite storage smoke and cleanup verified. VPS app and runtime key acceptance pending.
 - **leadViewsSchema**: Private lead_views collection and leads priority index provisioned. Synthetic storage and query smoke passed. VPS runtime acceptance pending.

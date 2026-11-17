@@ -2,7 +2,7 @@
 
 Install the CRM beside the live public website and Appwrite. The first install uses a separate checkout, a separate PM2 process, and a new HTTPS hostname. Keep the existing website and Ghost services running during the trial.
 
-For the feature inventory, tested release baseline and operator handoff, start with the [Hamy CRM handoff](HAMY-CRM-HANDOFF.md).
+For the feature inventory, tested release baseline and operator handoff, start with the [Hermes CRM handoff](HAMY-CRM-HANDOFF.md).
 
 ## How the two hostnames share one application
 

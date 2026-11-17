@@ -1,6 +1,8 @@
-# ProConsulting CRM handoff for Hamy
+# ProConsulting CRM handoff for Hermes
 
-Use this file to install the CRM beside the existing ProConsulting site. The tested application baseline is commit `8af70cb65657eb125cf96800787540c5229eaaaf` on [codex/crm-workspace](https://github.com/codeproconsulting/main/tree/codex/crm-workspace). Typecheck, the full test suite and the production build passed for that application commit. GitHub `main` is a separate release line. The last public probe found a certificate hostname mismatch on `crm.proconsulting.uk`. Recheck the target before making changes.
+The VPS operator reports that the ProConsulting repository is already pulled into a folder named `main` and that the application is working through Nginx. Start with the existing checkout and active service. The absolute path, deployed commit, PM2 process layout and hostnames currently served still need to be confirmed on the VPS. The folder name `main` does not identify its Git branch.
+
+The tested CRM application baseline for this handoff is commit `8af70cb65657eb125cf96800787540c5229eaaaf` on [codex/crm-workspace](https://github.com/codeproconsulting/main/tree/codex/crm-workspace). Typecheck, tests and the production build passed for that commit. The deployed revision may differ. A previous external probe reported a CRM certificate mismatch. Check the current public edge before treating that result as a current failure.
 
 ## What has been built
 
@@ -18,11 +20,35 @@ Use this file to install the CRM beside the existing ProConsulting site. The tes
 
 See the [feature ledger](../context-vault/Feature%20Ledger.md) for detailed acceptance evidence and the [implementation plan](../docs/CRM-CMS-APPWRITE-IMPLEMENTATION-PLAN.md) for original scope.
 
-## Instructions to give Hamy
+## Instructions to give Hermes
 
-> Install only the ProConsulting CRM from the pinned application commit in this handoff. Start with discovery of the current edge, listeners, PM2 user, DNS and rollback files. Follow the first-install guide and the linked commands for the actual proxy topology. Preserve the existing website, Appwrite and Ghost services. Record the commit and test outcomes. If any check fails, stop promotion, preserve existing data and report the exact failing layer and rollback status. Keep credentials in the protected runtime configuration.
+> Start in the existing ProConsulting checkout named `main`. Confirm its absolute path, Git revision, the PM2 working directories and the active Nginx upstreams. Check the public site and the CRM hostname separately. Reuse the working configuration. If the correct CRM release is already running, verify it in place. If the checkout serves the live public website and the CRM still needs a different revision, leave that checkout in place and stage a separate CRM release. Report what is live, what passed and any remaining blocker. Keep credentials and applicant data out of the report.
 
-## Install and verify
+## Existing VPS discovery and verification
+
+Run the Git and PM2 commands as the deployment user. Replace the placeholder with the actual path found on the VPS.
+
+```sh
+cd /actual/path/to/main
+pwd -P
+git status --short --branch
+git rev-parse --show-toplevel
+git rev-parse HEAD
+git fetch origin
+git log -1 --oneline origin/codex/crm-workspace
+pm2 ls
+sudo ss -ltnp '( sport = :80 or sport = :443 or sport = :3000 or sport = :3001 )'
+sudo nginx -t
+```
+
+- Use `pm2 describe <process-name>` locally to match the running process to its working directory and entry point. Inspect the active Nginx host and upstream for each hostname. Report only routing facts and status rather than full config or process dumps.
+- Verify the public website, its Ghost blog and Appwrite independently. From a checkout containing the CRM smoke script, run `node scripts/check-crm-edge.mjs` externally for the redirect, TLS login and anonymous mobile endpoint. A healthy website alone does not establish that the CRM hostname is serving the expected release.
+- If the CRM is already running, compare its release and run the signed-in checks in step 6 below. Reissue a certificate or change a vhost only if the current checks show that layer needs repair.
+- If an update is needed, record the current working release and the affected vhost first. Use the [update and rollback runbook](CRM-DEPLOYMENT.md#9-updates-rollback-and-troubleshooting). Avoid switching branches or rebuilding the active `main` directory while it serves the public site unless that website update is part of the release.
+
+## First install or repair when required
+
+Use the steps below only for missing pieces of the CRM deployment. The separate checkout is an option when a different CRM revision needs to run beside the existing public release.
 
 1. **Inventory and backup.** Identify what owns ports 80 and 443, confirm loopback port 3001 is free, and identify the existing PM2 user and website process. Check DNS A and AAAA, any CDN or container proxy, and existing CRM vhosts. Save the active CRM edge config if present and confirm a recoverable Appwrite backup. Use the [first-install discovery commands](CRM-FIRST-INSTALL.md#1-identify-the-existing-proxy-and-set-dns).
 2. **Prepare the release.** Clone the feature branch into `/srv/proconsulting-crm` under the deployment user, detach at the pinned commit, run `npm ci`, and populate the ignored `.env` from [env.example](env.example). Use existing project and database settings and a fresh stable session secret. The [environment table](CRM-DEPLOYMENT.md#3-checkout-and-environment) explains build-time versus runtime values.

@@ -54,7 +54,7 @@
     "ghostImportedPages": 1,
     "postPublicationState": "draft",
     "blogProvider": "Ghost unchanged",
-    "productionDeployment": "not performed",
+    "productionDeployment": "Existing Nginx deployment reported by operator. Exact deployed CRM revision and acceptance unconfirmed.",
     "workerOnVPS": "not started",
     "ownerPassword": "owner must set via Appwrite Console",
     "gitBranch": "codex/crm-workspace",
@@ -67,7 +67,7 @@
     "browserTestData": "Synthetic phone-width CRM preview stopped after acceptance.",
     "mediaSchema": "Private media collection/attributes/index provisioned; published defaults false (live default check passed)",
     "mediaStorage": "Private bucket config and real disposable file/metadata round trip verified; synthetic resources removed",
-    "nginx": "Bootstrap and HTTPS templates prepared; target-server validation not performed",
+    "nginx": "Existing working Nginx routing reported by operator. Active CRM host, upstream and certificate await confirmation.",
     "reminderSchema": "Notification source/version/due fields, unread=false default and private worker_health collection provisioned",
     "reminderStorageCheck": "Private synthetic notification/health CRUD, indexed queries and anonymous denial passed; both records removed",
     "reminderWorker": "Due-task-only runner verified locally, including actual synthetic CLI and SIGTERM idle exit; never activated on VPS",
@@ -88,7 +88,7 @@
     "nativeMobile": "Native source and both bundles verified locally. CRM TLS hostname mismatch confirmed. VPS API rollout and OTA release pending.",
     "nativeLeadEditing": "Implemented in both source trees. No VPS or OTA release.",
     "auditRollout": "Appwrite leads schema provisioned. No VPS app deployment or OTA publication.",
-    "vpsHandoff": "Operator chose self-install. First-install checklist prepared. Target CRM DNS/proxy and VPS release await operator setup.",
+    "vpsHandoff": "Operator reports an existing VPS checkout named main and working Nginx routing. Hermes handoff starts with in-place verification. Deployed revision and CRM-specific acceptance await confirmation.",
     "contactGroupSchema": "Optional field and index provisioned and verified available on target Appwrite. Synthetic link/query/unlink passed and both rows were removed. VPS application rollout remains pending.",
     "duplicateSchema": "Duplicate fields and index provisioned. Target Appwrite storage smoke and cleanup verified. VPS app and runtime key acceptance pending.",
     "leadViewsSchema": "Private lead_views collection and leads priority index provisioned. Synthetic storage and query smoke passed. VPS runtime acceptance pending.",
@@ -112,24 +112,24 @@
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-17T14:50:01.675Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Sq15Ng/typecheck.log"
+      "checkedAt": "2026-11-17T14:51:20.411Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-bqrLjv/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-17T14:50:03.159Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Sq15Ng/test.log"
+      "checkedAt": "2026-11-17T14:51:26.666Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-bqrLjv/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-17T14:50:09.193Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Sq15Ng/build.log"
+      "checkedAt": "2026-11-17T14:51:32.587Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-bqrLjv/build.log"
     }
   ],
-  "updatedAt": "2026-11-17T14:50:14.273Z",
-  "verifiedSourceFingerprint": "07368015d666a28d9b4b364f4dc08df84652b539dbd89b5d95d3500278357a73"
+  "updatedAt": "2026-11-17T14:51:42.138Z",
+  "verifiedSourceFingerprint": "930b2d1f75798c6442227d2744462419b4991eb8965ae5f68204e4b727151b79"
 }
