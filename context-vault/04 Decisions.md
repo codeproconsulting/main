@@ -233,3 +233,7 @@ Use immutable event records to avoid delivery order overwriting bounce or compla
 ## Email delivery operations
 
 Show provider counts as event counts, distinct from the queue acceptance state. Keep the latest 25 entries for each table.
+
+## Staff email preferences
+
+Require explicit staff consent in addition to the operator allowlist. Missing or unrecognized values fail closed. Opt-out gates pending sends without altering in-app reminders or trying to recall accepted mail.

@@ -85,14 +85,16 @@ export async function teamFor(actor: Staff, search: URLSearchParams) {
     query("orderAsc", "$id"), query("limit", undefined, [pageSize + 1]),
     ...(cursor ? [query("cursorAfter", undefined, [cursor])] : []),
   ])]);
-  const team = page.documents.slice(0, pageSize);
+  const visibleProfile = ({ $id, $updatedAt, name, role, active, teamId, managerScope, revocationPending }: Staff & { $updatedAt: string }) =>
+    ({ $id, $updatedAt, name, role, active, teamId, managerScope, revocationPending });
+  const team = page.documents.slice(0, pageSize).map(visibleProfile);
   const selected = id ? await staffFor(id) : null;
   if (id && !selected) throw new Response("Staff profile not found.", { status: 404 });
   if (selected) allow(canEditStaff(actor, selected));
   return {
     team,
     directory: directoryResult?.documents ?? null,
-    selected,
+    selected: selected ? visibleProfile(selected) : null,
     editableIds: team.filter(target => canEditStaff(actor, target)).map(target => target.$id),
     next: page.documents.length > pageSize ? team.at(-1)!.$id : "",
     cursor,

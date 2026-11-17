@@ -32,6 +32,9 @@ test('staff reminder email is private, opted in, and revalidated under locks bef
   await worker.enqueue({...notice,$createdAt:'2029-01-01T12:00:00Z'},noticeId);
   assert.equal(outbox.size,0);
   await worker.enqueue(notice,noticeId);
+  assert.equal(outbox.size,0);
+  records.staff.reminderEmail='enabled';
+  await worker.enqueue(notice,noticeId);
   await worker.enqueue(notice,noticeId);
   assert.equal(outbox.size,1);
   const message=[...outbox.values()][0];
@@ -39,6 +42,9 @@ test('staff reminder email is private, opted in, and revalidated under locks bef
   let sent=0;
   const transport=async()=>{assert.equal(lock.size,2);sent++;return {id:'synthetic-message'};};
   assert.deepEqual(await worker.send(message,transport),{id:'synthetic-message'});
+  records.staff.reminderEmail='disabled';
+  assert.deepEqual(await worker.send(message,transport),{suppressed:true});
+  records.staff.reminderEmail='enabled';
   notice.read=true;
   assert.deepEqual(await worker.send(message,transport),{suppressed:true});
   notice.read=false;

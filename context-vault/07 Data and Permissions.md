@@ -195,3 +195,7 @@ The callback requires a raw signed request. Event records contain a recipient ha
 ## Email delivery operations
 
 The email operations response omits payloads, addresses, recipient hashes and source reminder IDs.
+
+## Staff email preferences
+
+`staff.reminderEmail` stores enabled/disabled; absent means off. The workspace action derives identity from the session and rechecks eligibility under lock. Team and assignment payloads omit the preference.

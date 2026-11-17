@@ -3,39 +3,39 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-16-22]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-17-01]].
 
 ## Resume here
 
-**Session:** 2026-11-16-22
+**Session:** 2026-11-17-01
 
 **Active feature:** COMMS-01
 
 **State:** completed
 
-**Objective:** Expose a private, read-only email delivery dashboard for owners and admins.
+**Objective:** Let eligible staff explicitly enable and disable their own email reminders.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Outbox and provider event totals and recent activity
+- Workspace setup preference and enqueue/send-time consent checks
 
 ## Out of scope
 
-- Live email and mutation of suppression decisions
+- Live sends, staff account changes, target schema writes and VPS activation
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| COMMS01-OPS-A | Owner/admin authorization and private projections | passed | Synthetic test verifies denial and excludes payload, address hashes and reminder references. |
-| COMMS01-OPS-B | Target query compatibility and build | passed | Read-only target queries accepted counts and projections for both collections. Typecheck, full test suite and production build passed. Browser and VPS runtime were not exercised. |
+| COMMS01-PREF-A | Eligible staff can save their own preference; missing state defaults off | passed | Synthetic route test covers load, enable/disable, same-origin checks, invalid values, posted staff ID ignored and pending-revocation denial. |
+| COMMS01-PREF-B | Queued notices respect current consent | passed | Synthetic worker test verifies no enqueue without explicit opt-in and no transport for an already queued reminder after opt-out. |
 
 ## Exact next actions
 
-1. Build staff email reminder preferences with explicit opt-in and immediate opt-out. Keep the operations allowlist as a rollout gate and revalidate preferences at send time.
-   Files: `app/admin/settings.tsx`, `scripts/staff-reminder-email.mjs`, `scripts/appwrite-schema.mjs`
+1. Verify the Resend reminder pilot end to end locally with synthetic storage and transport, from in-app reminder through delivery event and suppression. Keep live provider activation separate.
+   Files: `scripts/staff-reminder-email.mjs`, `scripts/email-worker.mjs`, `app/routes/api.resend-webhook.ts`, `deploy/CRM-DEPLOYMENT.md`
 
 ## Known risks and unfinished work
 
@@ -58,9 +58,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-16T18:38:56.508Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-sIwU4n/typecheck.log`
-- **passed**: `npm run test` (2026-11-16T18:38:57.833Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-sIwU4n/test.log`
-- **passed**: `npm run build` (2026-11-16T18:39:03.325Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-sIwU4n/build.log`
+- **passed**: `npm run typecheck` (2026-11-17T01:50:37.658Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-USXM0d/typecheck.log`
+- **passed**: `npm run test` (2026-11-17T01:50:38.964Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-USXM0d/test.log`
+- **passed**: `npm run build` (2026-11-17T01:50:43.898Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-USXM0d/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -76,7 +76,7 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **ownerPassword**: owner must set via Appwrite Console
 - **gitBranch**: codex/crm-workspace
 - **integratedUpstream**: origin/main through 0397d6d; TOEFL and service-location pages preserved
-- **githubCheckpoint**: MOB-01 CRM responsive sign-out and vault checkpoint on codex/crm-workspace.
+- **githubCheckpoint**: Staff email preference checkpoint on codex/crm-workspace; previous remote tip 5a4058b.
 - **mainMergePolicy**: Tested features may be merged after exact release candidate review and creation of a prior-main rollback reference. No integration was performed in REPORT-01.
 - **rollbackReference**: rollback/main-2026-10-29-407977c preserves the existing main baseline for release recovery
 - **scheduleIndex**: posts schedule(status,publishedAt) available; live due query passed read-only with zero due posts
@@ -120,5 +120,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **resendOutbox**: Private schema available. Provider fake-tested only. No credentials configured or worker activation performed.
 - **staffReminderEmail**: Source and optional outbox link ready. Both production flags remain disabled; no Resend delivery attempted.
 - **resendEvents**: Private ledger and indexes available; callback not registered or enabled. No sends attempted.
+- **staffEmailPreference**: Target staff collection confirmed private. Optional reminderEmail attribute absent. No production changes or sends.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

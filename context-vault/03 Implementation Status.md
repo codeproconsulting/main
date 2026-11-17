@@ -281,3 +281,7 @@ Signed event handling and suppression implemented. Live webhook and sender setup
 ## Email delivery operations
 
 Email delivery dashboard implemented for owner and admin accounts.
+
+## Staff email preferences
+
+Staff email preferences are implemented and verified with synthetic route and worker tests. A read-only target Appwrite check confirmed the staff collection is private and the new optional attribute is absent. No production release or live send.

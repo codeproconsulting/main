@@ -209,3 +209,7 @@ The website accepts signed Resend events and stores a private ledger. The email 
 ## Email delivery operations
 
 The CRM email delivery page reads private outbox and event storage through projected server queries.
+
+## Staff email preferences
+
+Workspace setup changes only the signed-in staff member’s preference under the shared staff access lock. The email worker checks it before queueing and again under that lock before transport.

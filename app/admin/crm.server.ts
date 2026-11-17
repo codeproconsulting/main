@@ -21,7 +21,7 @@ export function dateField(value: string) {
 export async function audit(staff: Staff, entityId: string, entityType: string, event: string, details: unknown) {
   return createDocument("activities", { actor: staff.$id, entityId, entityType, event, details: JSON.stringify(details) });
 }
-export async function listStaff() { return (await listDocuments<Staff>("staff", [query("equal", "active", [true]), query("limit", undefined, [100])])).documents; }
+export async function listStaff() { return (await listDocuments<Staff>("staff", [query("select", undefined, ["$id", "name", "role", "active", "teamId", "managerScope"]), query("equal", "active", [true]), query("limit", undefined, [100])])).documents; }
 const leadListFields = ["$id", "$createdAt", "name", "email", "service", "country", "stage", "priority", "owner", "nextFollowUp", "version"] as const;
 
 function leadScopeFilter(staff: Staff) {

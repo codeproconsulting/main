@@ -229,3 +229,7 @@ See deploy/CRM-DEPLOYMENT.md for event settings, private schema and webhook opt-
 ## Email delivery operations
 
 Workspace setup links to Email delivery for owners and admins. Runtime needs read access to email_outbox and email_events.
+
+## Staff email preferences
+
+Add the optional `staff.reminderEmail` string attribute before rollout (see deployment guide). The read-only target check found it absent; no schema writes were made. Keep delivery disabled until the pilot passes.

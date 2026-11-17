@@ -239,3 +239,7 @@ app/routes/api.resend-webhook.ts verifies and records provider events. scripts/s
 ## Email delivery operations
 
 app/admin/email-delivery.tsx renders operations; app/admin/email-delivery.server.ts gates and projects the data.
+
+## Staff email preferences
+
+`app/admin/settings.tsx`: self-service email preference loader and action. `tests/reminder-preferences.test.mjs` and `tests/staff-reminder-email.test.mjs`: synthetic route and worker acceptance.

@@ -1,18 +1,12 @@
 # File updates
 
-Generated snapshot of changes since the previous inventory; Nov 16, 2026, 11:38 p.m. (Asia/Karachi).
+Generated snapshot of changes since the previous inventory; Nov 17, 2026, 6:50 a.m. (Asia/Karachi).
 
 [[02 File Map]] · [[Source Inventory]] · [[05 Maintenance]]
 
 Review these changes and update human-authored architecture/status notes where needed. For cumulative history, read the dated notes in Changes/.
 
-## Added
-
-- `app/admin/email-delivery.server.ts`
-- `app/admin/email-delivery.tsx`
-- `tests/email-delivery.test.mjs`
-
 ## Modified
 
 - `app/admin/settings.tsx`
-- `app/routes.ts`
+- `app/admin/team.server.ts`

@@ -1,6 +1,6 @@
 // Repeatable setup: creates missing schema and applies explicitly documented safe defaults; never drops records.
 export const schema = {
- staff: { fields: {name:200,role:30,active:'boolean',teamId:36,managerScope:12,revocationPending:40,routingAvailability:12,routingCapacity:3}, indexes: {active:['active'],role_active:['role','active']} },
+ staff: { fields: {name:200,role:30,active:'boolean',teamId:36,managerScope:12,revocationPending:40,routingAvailability:12,routingCapacity:3,reminderEmail:12}, indexes: {active:['active'],role_active:['role','active']} },
  crm_teams: {fields:{name:200,branch:150,status:12},indexes:{}},
  leads: { fields: {name:200,email:254,phone:80,emailKey:254,phoneKey:15,contactGroup:36,teamId:36,duplicateOf:36,duplicatePriorStage:50,routedAt:40,routedCounselor:36,intakeRouting:12,service:100,source:500,country:150,stage:50,owner:36,priority:20,nextFollowUp:40,details:65536,version:'integer'}, indexes: {team:['teamId'],owner:['owner'],stage:['stage'],name_search:{type:'fulltext',attributes:['name']},email:['email'],email_key:['emailKey'],phone_key:['phoneKey'],contact_group:['contactGroup'],duplicate_of:['duplicateOf'],priority:['priority'],routed_at:['routedAt'],intake_routing:['intakeRouting']} },
  lead_views: {fields:{staffId:36,stage:50,priority:20},indexes:{staff:['staffId']}},

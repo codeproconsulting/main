@@ -24,7 +24,7 @@ export function staffReminderEmail({ api, database, config, clock = Date.now }) 
   async function recipient(id) {
     if (!idPattern.test(id) || !config.recipients.has(id)) return null;
     const staff = await optional(path('staff',id));
-    if (!staff?.active || staff.revocationPending ||
+    if (!staff?.active || staff.reminderEmail !== "enabled" || staff.revocationPending ||
         !['owner','admin','manager','counselor'].includes(staff.role) ||
         (staff.role === 'manager' && staff.managerScope && staff.managerScope !== 'global')) return null;
     const identity = await optional('/users/' + encodeURIComponent(id));
