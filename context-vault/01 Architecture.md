@@ -237,3 +237,7 @@ Duplicate review can move one open task under both enquiry locks and the staff a
 ## Office expenses
 
 Office expenses use a shared server service for the web route and mobile API. The private expenses collection stores an immutable record with a recorder ID. Both paths enforce active owner access.
+
+## Expense void corrections
+
+An owner can void an expense with one document update under expense and staff-access locks. Original amount and description remain in the register. Totals exclude voided entries.

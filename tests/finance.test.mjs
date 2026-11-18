@@ -23,6 +23,13 @@ test('office expenses enforce owner access, exact pence and idempotent writes',a
    if(lost){lost=false;throw Error('Synthetic lost acknowledgement');}
    return Response.json(rows.get(documentId));
   }
+  if(options.method==='PATCH'){
+   const {data}=JSON.parse(options.body);
+   if(!rows.has(id))return Response.json({}, {status:404});
+   rows.set(id,{...rows.get(id),...data});
+   if(lost){lost=false;throw Error('Synthetic lost acknowledgement');}
+   return Response.json(rows.get(id));
+  }
   if(url.search){
    const queries=url.searchParams.getAll('queries[]').map(JSON.parse);
    assert.ok(queries.find(q=>q.method==='select').values.every(v=>!['recordedBy'].includes(v)));
@@ -32,7 +39,7 @@ test('office expenses enforce owner access, exact pence and idempotent writes',a
   }
   return rows.has(id)?Response.json(rows.get(id)):Response.json({}, {status:404});
  };
- const {recordExpense,expenseMonth}=await vite.ssrLoadModule('/app/admin/finance.server.ts');
+ const {recordExpense,expenseMonth,voidExpense}=await vite.ssrLoadModule('/app/admin/finance.server.ts');
  const form=(extra={})=>{
   const f=new FormData();
   for(const [k,v]of Object.entries({submissionId:'12345678-1234-1234-1234-123456789012',description:'Synthetic rent',category:'Rent',spentOn:'2030-12-31',amount:'12.30',...extra}))f.set(k,v);
@@ -60,6 +67,20 @@ test('office expenses enforce owner access, exact pence and idempotent writes',a
  assert.equal(report.totals.find(r=>r.category==='Rent').amountMinor,1230);
  assert.ok(!Object.hasOwn(report.expenses[0],'recordedBy'));
  assert.equal((await expenseMonth(owner,'2031-01')).totalMinor,0);
+ for(const role of ['admin','manager','counselor'])await assert.rejects(voidExpense({...owner,role},id,'Correction'),e=>e.status===403);
+ await assert.rejects(voidExpense(owner,id,''),e=>e.status===400);
+ lost=true;
+ await assert.rejects(voidExpense(owner,id,'Incorrect entry'),e=>e.status===503);
+ assert.equal(rows.get(id).voidReason,'Incorrect entry');
+ await voidExpense(owner,id,'Incorrect entry');
+ await assert.rejects(voidExpense(owner,id,'Different reason'),e=>e.status===409);
+ const corrected=await expenseMonth(owner,'2030-12');
+ assert.equal(corrected.totalMinor,0);
+ assert.equal(corrected.expenses.length,1);
+ assert.equal(corrected.expenses[0].voidReason,'Incorrect entry');
+ assert.equal(rows.get(id).amountMinor,'1230');
+ assert.ok(!Object.hasOwn(corrected.expenses[0],'voidedBy'));
+
  }finally{
  globalThis.fetch=oldFetch;
  for(const k of Object.keys(process.env))if(!(k in oldEnv))delete process.env[k];

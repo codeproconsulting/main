@@ -279,3 +279,7 @@ The duplicate-review action calls moveDuplicateTask in crm.server.ts. Tests cove
 ## Office expenses
 
 `app/admin/finance.server.ts` validates and records expenses and computes bounded monthly totals. `app/admin/finance.tsx` renders the web workflow. `app/admin/mobile-api.ts` exposes finance reads/writes. The separate mobile checkout contains `src/Finance.tsx`.
+
+## Expense void corrections
+
+`voidExpense` in `app/admin/finance.server.ts` is shared by the web action and native finance API. The native screen collects a reason and preserves uncertain retries.

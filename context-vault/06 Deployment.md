@@ -269,3 +269,7 @@ No new schema is required. For an uncertain transfer, stop competing writers and
 ## Office expenses
 
 Deploy the finance-enabled server before the mobile update. Verify private expenses schema and date index with scoped setup. The runtime key needs expense document read/write. Native owners must sign in again to receive the role field used to show Finance. The mobile finance screen is online-only and excludes finance data from the offline workspace cache.
+
+## Expense void corrections
+
+Provision optional voidedAt, voidedBy and voidReason expense attributes before deploying corrections. Existing records default to active. Verify create/void/total in synthetic target acceptance before mobile delivery.

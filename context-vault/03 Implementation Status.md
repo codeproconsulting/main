@@ -317,3 +317,7 @@ Open follow-up transfer is implemented for a confirmed pair with the same counse
 ## Office expenses
 
 Owner-only expense entry and monthly category totals implemented on web and native mobile. Private Appwrite collection provisioned. Synthetic storage, month ordering and anonymous denial passed, with cleanup. Browser and physical-device acceptance and VPS application rollout remain pending.
+
+## Expense void corrections
+
+Expense void correction implemented on web and native mobile. Service tests verify role denial, required reason, lost-ack retry, conflicting retry and revised monthly totals. Three optional fields provisioned on private expenses.

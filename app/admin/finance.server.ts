@@ -1,10 +1,10 @@
 import { createHash } from "node:crypto";
-import { AppwriteError, createDocument, getDocument, listDocuments, query } from "~/lib/appwrite.server";
-import { allow, field, serialized, staffAccessLock } from "./crm.server";
+import { AppwriteError, createDocument, getDocument, listDocuments, query, updateDocument } from "~/lib/appwrite.server";
+import { allow, definitiveWriteRejection, field, serialized, staffAccessLock, UnconfirmedMutation } from "./crm.server";
 import type { Staff } from "./domain";
 
 export const expenseCategories = ["Rent", "Utilities", "Salaries", "Travel", "Supplies", "Marketing", "Other"];
-export type Expense = { $id: string; description: string; category: string; spentOn: string; amountMinor: string; currency: string; recordedBy: string };
+export type Expense = { $id: string; description: string; category: string; spentOn: string; amountMinor: string; currency: string; recordedBy: string; voidedAt?: string; voidedBy?: string; voidReason?: string };
 export const canUseFinance = (staff: Staff) => staff.active && staff.role === "owner" && !staff.revocationPending;
 
 export async function recordExpense(staff: Staff, form: FormData) {
@@ -38,6 +38,27 @@ export async function recordExpense(staff: Staff, form: FormData) {
   });
 }
 
+export async function voidExpense(staff: Staff, id: string, reason: string) {
+  allow(canUseFinance(staff));
+  if (!/^[a-f0-9]{32}$/.test(id) || !reason.trim() || reason.length > 500) {
+    throw new Response("Select an expense and enter a reason of up to 500 characters.", { status: 400 });
+  }
+  return serialized(`expense:${id}`, () => serialized(staffAccessLock, async () => {
+    allow(canUseFinance(await getDocument<Staff>("staff", staff.$id)));
+    const expense = await getDocument<Expense>("expenses", id);
+    if (expense.voidedAt) {
+      if (expense.voidedBy === staff.$id && expense.voidReason === reason.trim()) return;
+      throw new Response("This expense has already been voided. Refresh to review it.", { status: 409 });
+    }
+    try {
+      await updateDocument("expenses", id, { voidedAt: new Date().toISOString(), voidedBy: staff.$id, voidReason: reason.trim() });
+    } catch (error) {
+      if (definitiveWriteRejection(error)) throw error;
+      throw new UnconfirmedMutation("The void outcome is uncertain. Ask an administrator to verify the expense before releasing its locks.");
+    }
+  }));
+}
+
 export async function expenseMonth(staff: Staff, month: string) {
   allow(canUseFinance(staff));
   allow(canUseFinance(await getDocument<Staff>("staff", staff.$id)));
@@ -48,15 +69,15 @@ export async function expenseMonth(staff: Staff, month: string) {
   const { documents } = await listDocuments<Expense>("expenses", [
     query("greaterThanEqual", "spentOn", [start]), query("lessThan", "spentOn", [next]),
     query("orderDesc", "spentOn"), query("orderDesc", "$id"), query("limit", undefined, [1001]),
-    query("select", undefined, ["$id", "description", "category", "spentOn", "amountMinor", "currency"]),
+    query("select", undefined, ["$id", "description", "category", "spentOn", "amountMinor", "currency", "voidedAt", "voidReason"]),
   ]);
   if (documents.length > 1000) throw new Response("This month exceeds the 1,000 expense view limit.", { status: 400 });
   if (documents.some(row => row.currency !== "GBP" || !/^[1-9]\d{0,8}$/.test(row.amountMinor) || !expenseCategories.includes(row.category))) {
     throw new Response("An expense needs administrator review before totals can be shown.", { status: 409 });
   }
   const totals = expenseCategories.map(category => ({ category, amountMinor: documents
-    .filter(row => row.category === category).reduce((sum, row) => sum + Number(row.amountMinor), 0) }));
-  return { month, currency: "GBP", expenses: documents.map(({ $id, description, category, spentOn, amountMinor, currency }) =>
-    ({ id: $id, description, category, spentOn, amountMinor, currency })), totals,
+    .filter(row => !row.voidedAt && row.category === category).reduce((sum, row) => sum + Number(row.amountMinor), 0) }));
+  return { month, currency: "GBP", expenses: documents.map(({ $id, description, category, spentOn, amountMinor, currency, voidedAt, voidReason }) =>
+    ({ id: $id, description, category, spentOn, amountMinor, currency, voidedAt, voidReason })), totals,
     totalMinor: totals.reduce((sum, row) => sum + row.amountMinor, 0) };
 }

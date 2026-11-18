@@ -3,40 +3,39 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-18-01]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-18-02]].
 
 ## Resume here
 
-**Session:** 2026-11-18-01
+**Session:** 2026-11-18-02
 
 **Active feature:** FIN-01
 
 **State:** completed
 
-**Objective:** Owner office expense recording and monthly review on web and native mobile.
+**Objective:** Correct office expenses by voiding entries while preserving their history.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- GBP entry, category/date/description, exact pence, duplicate-safe retries, monthly totals and owner authorization
+- Owner-only void with reason, shared web/mobile API and revised totals
 
 ## Out of scope
 
-- Income, receipts, corrections, multiple currencies and offline finance persistence
+- Receipts, deletion, restoring voids and VPS deployment
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| FIN01-SERVICE | Owner-only entry, exact amounts and retry identity | passed | Synthetic service tests cover all non-owner roles, revocation of role before write, invalid dates/amounts, lost acknowledgement retry, changed retry rejection and monthly totals. |
-| FIN01-STORAGE | Private storage and month query compatibility | passed | Scoped schema provisioned. Synthetic expense/query/order and anonymous denial passed. Synthetic record removed. |
-| FIN01-CLIENT | Web and native build compatibility | passed | Built Chrome owner entry and rendered monthly totals passed with synthetic fixtures. Mobile typecheck, lint, eight tests and Android export passed. Physical-device acceptance and VPS rollout remain pending. |
+| FIN01-VOID | Voids preserve original values and revise totals with safe retries | passed | Synthetic service coverage passed for non-owner denial, empty reason, lost acknowledgement, identical retry and conflicting retry. Original record remains visible and totals exclude it. |
+| FIN01-UI | Web and native compatibility | passed | Built Chrome synthetic create, void, original row visibility and zero corrected monthly total passed. Main typecheck, full tests and build passed. Mobile checks passed; device acceptance pending. |
 
 ## Exact next actions
 
-1. Verify owner expense entry and retry in the built web browser, then deploy the finance server before publishing mobile finance OTA. Sign in again on mobile and verify owner-only access.
-   Files: `app/admin/finance.tsx`, `app/admin/finance.server.ts`, `app/admin/mobile-api.ts`, `/Users/fidaali/Proconsulting-App/src/Finance.tsx`
+1. Deploy the expense-enabled server after target owner/counselor checks. Then publish mobile Finance OTA and verify both entry and void on an Android device.
+   Files: `deploy/CRM-DEPLOYMENT.md`, `app/admin/finance.tsx`, `/Users/fidaali/Proconsulting-App/src/Finance.tsx`
 
 ## Known risks and unfinished work
 
@@ -59,9 +58,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-18T04:59:16.342Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ZnFn5O/typecheck.log`
-- **passed**: `npm run test` (2026-11-18T04:59:18.023Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ZnFn5O/test.log`
-- **passed**: `npm run build` (2026-11-18T04:59:23.367Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ZnFn5O/build.log`
+- **passed**: `npm run typecheck` (2026-11-18T05:08:04.309Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-TF6UDY/typecheck.log`
+- **passed**: `npm run test` (2026-11-18T05:08:06.014Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-TF6UDY/test.log`
+- **passed**: `npm run build` (2026-11-18T05:08:11.894Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-TF6UDY/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -136,5 +135,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **offlineOTA**: Android preview group 034fb32c-4bf8-4232-9aa5-1855d0dc6bbe published from mobile 82f27cb; update endpoint returned matching runtime 1.0.3 and update ID.
 - **officeExpenses**: Private schema provisioned and synthetic storage verified with cleanup. No real expense entries. VPS release pending.
 - **mobileFinance**: Native finance screen implemented locally. Server rollout required before mobile publication. Sign-in role field added; owners must sign in again.
+- **expenseVoids**: Optional schema verified private. Web browser acceptance passed locally. No real expense records modified and no VPS application deployment.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

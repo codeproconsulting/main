@@ -1,44 +1,37 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-18-01",
+  "sessionId": "2026-11-18-02",
   "sessionStatus": "completed",
   "activeFeature": "FIN-01",
-  "objective": "Owner office expense recording and monthly review on web and native mobile.",
+  "objective": "Correct office expenses by voiding entries while preserving their history.",
   "scope": [
-    "GBP entry, category/date/description, exact pence, duplicate-safe retries, monthly totals and owner authorization"
+    "Owner-only void with reason, shared web/mobile API and revised totals"
   ],
   "outOfScope": [
-    "Income, receipts, corrections, multiple currencies and offline finance persistence"
+    "Receipts, deletion, restoring voids and VPS deployment"
   ],
   "acceptance": [
     {
-      "id": "FIN01-SERVICE",
-      "description": "Owner-only entry, exact amounts and retry identity",
+      "id": "FIN01-VOID",
+      "description": "Voids preserve original values and revise totals with safe retries",
       "status": "passed",
-      "evidence": "Synthetic service tests cover all non-owner roles, revocation of role before write, invalid dates/amounts, lost acknowledgement retry, changed retry rejection and monthly totals."
+      "evidence": "Synthetic service coverage passed for non-owner denial, empty reason, lost acknowledgement, identical retry and conflicting retry. Original record remains visible and totals exclude it."
     },
     {
-      "id": "FIN01-STORAGE",
-      "description": "Private storage and month query compatibility",
+      "id": "FIN01-UI",
+      "description": "Web and native compatibility",
       "status": "passed",
-      "evidence": "Scoped schema provisioned. Synthetic expense/query/order and anonymous denial passed. Synthetic record removed."
-    },
-    {
-      "id": "FIN01-CLIENT",
-      "description": "Web and native build compatibility",
-      "status": "passed",
-      "evidence": "Built Chrome owner entry and rendered monthly totals passed with synthetic fixtures. Mobile typecheck, lint, eight tests and Android export passed. Physical-device acceptance and VPS rollout remain pending."
+      "evidence": "Built Chrome synthetic create, void, original row visibility and zero corrected monthly total passed. Main typecheck, full tests and build passed. Mobile checks passed; device acceptance pending."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Verify owner expense entry and retry in the built web browser, then deploy the finance server before publishing mobile finance OTA. Sign in again on mobile and verify owner-only access.",
+      "action": "Deploy the expense-enabled server after target owner/counselor checks. Then publish mobile Finance OTA and verify both entry and void on an Android device.",
       "files": [
+        "deploy/CRM-DEPLOYMENT.md",
         "app/admin/finance.tsx",
-        "app/admin/finance.server.ts",
-        "app/admin/mobile-api.ts",
         "/Users/fidaali/Proconsulting-App/src/Finance.tsx"
       ]
     }
@@ -130,31 +123,32 @@
     "mobileLeadTriage": "Local stage/priority filters, urgent-first sort and reset implemented. Typecheck, lint, eight tests and Android export passed. Queue unchanged; OTA/device checks pending.",
     "offlineOTA": "Android preview group 034fb32c-4bf8-4232-9aa5-1855d0dc6bbe published from mobile 82f27cb; update endpoint returned matching runtime 1.0.3 and update ID.",
     "officeExpenses": "Private schema provisioned and synthetic storage verified with cleanup. No real expense entries. VPS release pending.",
-    "mobileFinance": "Native finance screen implemented locally. Server rollout required before mobile publication. Sign-in role field added; owners must sign in again."
+    "mobileFinance": "Native finance screen implemented locally. Server rollout required before mobile publication. Sign-in role field added; owners must sign in again.",
+    "expenseVoids": "Optional schema verified private. Web browser acceptance passed locally. No real expense records modified and no VPS application deployment."
   },
   "checks": [
     {
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-18T04:59:16.342Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ZnFn5O/typecheck.log"
+      "checkedAt": "2026-11-18T05:08:04.309Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-TF6UDY/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-18T04:59:18.023Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ZnFn5O/test.log"
+      "checkedAt": "2026-11-18T05:08:06.014Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-TF6UDY/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-18T04:59:23.367Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ZnFn5O/build.log"
+      "checkedAt": "2026-11-18T05:08:11.894Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-TF6UDY/build.log"
     }
   ],
-  "updatedAt": "2026-11-18T04:59:43.673Z",
-  "verifiedSourceFingerprint": "a28b125b3983d4b8959c021ab606e6e7c86db62fe500ca3cd880bee066a3a41a"
+  "updatedAt": "2026-11-18T05:08:27.456Z",
+  "verifiedSourceFingerprint": "0a0e941aa888661f9afa3ac9a8ed1e7deba85493af1730599bc9d3d84172c4a6"
 }

@@ -259,3 +259,7 @@ Move one selected task at a time. Preserve its identity, due date and owner whil
 ## Office expenses
 
 Initial finance scope is an append-only office expense register in GBP. Amounts are stored as decimal strings of whole pence and validated before conversion. Retry identity is scoped to the actor and submission ID. The month view caps at 1,000 expenses and fails explicitly above the cap. Corrections, receipts, income, approvals and other currencies remain future work.
+
+## Expense void corrections
+
+A correction voids the original expense and records actor, time and reason on that record. Voids are irreversible through the app. Enter a replacement expense after verifying the correction. Unconfirmed writes retain expense and staff-access locks for reconciliation.

@@ -219,3 +219,7 @@ Active global CRM managers can transfer tasks between confirmed enquiries with m
 ## Office expenses
 
 Only an active owner without a pending revocation may use finance. Admin, global manager, counselor and content roles are denied. Expense creation rechecks the current staff profile under the shared staff access lock. No delete/update endpoint exists in this release.
+
+## Expense void corrections
+
+Only the current active owner may void. Actor ID stays server-side. Web/mobile lists show void time and reason and preserve the original expense. Changed retries receive a conflict.
