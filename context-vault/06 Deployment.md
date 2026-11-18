@@ -289,3 +289,5 @@ The operator confirmed that the CRM is live following the deployment guide. On 1
 ## Monthly office budget
 
 Provision `expense_budgets` using scoped schema setup before enabling budget saves. Runtime needs budget document read/write and activity writes. Deploy server before publishing the native budget UI. No real budgets were configured during implementation.
+
+The current Hermes handoff pins budget-inclusive release 870c3cd. The live anonymous Finance endpoint still returned JSON 404 Unknown resource. The operator should verify both expense and budget collections before updating the existing CRM process.

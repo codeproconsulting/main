@@ -35,7 +35,7 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Exact next actions
 
-1. Roll out finance and budget server endpoints using the existing VPS deployment guide, verify owner and non-owner access, then publish native Finance and perform device checks.
+1. Run the budget-inclusive Finance rollout in deploy/HAMY-CRM-HANDOFF.md on the existing VPS, then verify owner expense/budget controls and denial before mobile OTA.
    Files: `deploy/CRM-DEPLOYMENT.md`, `app/admin/finance.tsx`, `/Users/fidaali/Proconsulting-App/src/Finance.tsx`
 
 ## Known risks and unfinished work
@@ -59,9 +59,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-18T08:21:58.276Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-PTgzmB/typecheck.log`
-- **passed**: `npm run test` (2026-11-18T08:21:59.948Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-PTgzmB/test.log`
-- **passed**: `npm run build` (2026-11-18T08:22:05.288Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-PTgzmB/build.log`
+- **passed**: `npm run typecheck` (2026-11-18T12:47:06.209Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-iGdBDo/typecheck.log`
+- **passed**: `npm run test` (2026-11-18T12:47:07.881Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-iGdBDo/test.log`
+- **passed**: `npm run build` (2026-11-18T12:47:13.767Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-iGdBDo/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -138,7 +138,7 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **mobileFinance**: Native finance screen implemented locally. Server rollout required before mobile publication. Sign-in role field added; owners must sign in again.
 - **expenseVoids**: Optional schema verified private. Web browser acceptance passed locally. No real expense records modified and no VPS application deployment.
 - **expenseExport**: Implemented and verified locally. Initial full-suite mobile API process stalled, standalone test and repeated full suite passed. No VPS deployment.
-- **financeDeployment**: CRM is live. Mobile finance API still returned 404 Unknown resource on 18 November. Finance release rollout is separate from the working CRM deployment.
+- **financeDeployment**: Public Finance still returns 404 Unknown resource. Hermes handoff now pins tested budget-inclusive 870c3cd. No live changes performed.
 - **officeBudget**: Private expense_budgets schema provisioned. Synthetic storage verified and cleaned. No real budget changes and no VPS application release.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]
