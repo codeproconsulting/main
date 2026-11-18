@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { Form, data, useActionData, useLoaderData } from "react-router";
+import { Form, Link, data, useActionData, useLoaderData } from "react-router";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { requireStaff, sameOrigin } from "./auth.server";
 import { expenseCategories, expenseMonth, recordExpense, voidExpense } from "./finance.server";
@@ -38,7 +38,9 @@ export default function Finance() {
   const result = useActionData<typeof action>();
   const formId = result && !result.success && result.submissionId ? result.submissionId : submissionId;
   return <>
-    <PageHeading eyebrow="OFFICE FINANCE" title="Office expenses" description="Record office spending and review monthly totals in GBP."/>
+    <PageHeading eyebrow="OFFICE FINANCE" title="Office expenses" description="Record office spending and review monthly totals in GBP.">
+      <Link reloadDocument className="crm-button secondary" to={`/admin/finance.csv?month=${month}`}>Export month CSV</Link>
+    </PageHeading>
     <ActionError error={result?.error}/>
     {result?.success && <p className="crm-success" role="status">Expense saved.</p>}
     <Form method="get" className="crm-filters"><label>Month<input type="month" name="month" defaultValue={month} required/></label><button className="crm-button secondary">View month</button></Form>

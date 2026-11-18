@@ -321,3 +321,7 @@ Owner-only expense entry and monthly category totals implemented on web and nati
 ## Expense void corrections
 
 Expense void correction implemented on web and native mobile. Service tests verify role denial, required reason, lost-ack retry, conflicting retry and revised monthly totals. Three optional fields provisioned on private expenses.
+
+## Monthly expense export
+
+Monthly expense CSV export implemented with active/voided status, preserved amounts and void reasons. Synthetic tests verify formula escaping, refreshed authorization and audit failure handling.

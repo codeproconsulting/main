@@ -263,3 +263,7 @@ Initial finance scope is an append-only office expense register in GBP. Amounts 
 ## Expense void corrections
 
 A correction voids the original expense and records actor, time and reason on that record. Voids are irreversible through the app. Enter a replacement expense after verifying the correction. Unconfirmed writes retain expense and staff-access locks for reconciliation.
+
+## Monthly expense export
+
+CSV exports retain voided entries so bookkeeping review can reconcile corrections. The monthly screen’s total excludes voids. Exports inherit the same 1,000-entry cap and fail when audit recording fails.

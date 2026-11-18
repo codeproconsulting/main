@@ -7,7 +7,8 @@ test('office expenses enforce owner access, exact pence and idempotent writes',a
  const vite=await createServer({configFile:false,root,resolve:{alias:{'~':root+'app'}},server:{middlewareMode:true,hmr:false,ws:false},logLevel:'error'});
  const oldFetch=globalThis.fetch, oldEnv={...process.env};
  const rows=new Map(),owner={$id:'owner',role:'owner',active:true};
- let role='owner',lost=false,calls=0;
+ let role='owner',lost=false,calls=0,failAudit=false;
+ const audits=[];
  try{
  Object.assign(process.env,{NODE_ENV:'test',APPWRITE_ENDPOINT:'http://127.0.0.1/v1',APPWRITE_DATABASE_ID:'synthetic',APPWRITE_PROJECT_ID:'synthetic',APPWRITE_API_KEY:'synthetic'});
  globalThis.fetch=async(input,options)=>{
@@ -15,6 +16,12 @@ test('office expenses enforce owner access, exact pence and idempotent writes',a
   const url=new URL(input);
   if(url.pathname.endsWith('/staff/documents/owner'))return Response.json({...owner,role});
   const id=url.pathname.split('/').at(-1);
+  if(options.method==='POST' && url.pathname.endsWith('/activities/documents')){
+   if(failAudit)return Response.json({}, {status:503});
+   const body=JSON.parse(options.body);
+   audits.push(body.data);
+   return Response.json({$id:'synthetic-audit',...body.data});
+  }
   if(options.method==='POST'){
    const {documentId,data,permissions}=JSON.parse(options.body);
    assert.deepEqual(permissions,[]);
@@ -39,7 +46,7 @@ test('office expenses enforce owner access, exact pence and idempotent writes',a
   }
   return rows.has(id)?Response.json(rows.get(id)):Response.json({}, {status:404});
  };
- const {recordExpense,expenseMonth,voidExpense}=await vite.ssrLoadModule('/app/admin/finance.server.ts');
+ const {recordExpense,expenseMonth,voidExpense,exportExpenses}=await vite.ssrLoadModule('/app/admin/finance.server.ts');
  const form=(extra={})=>{
   const f=new FormData();
   for(const [k,v]of Object.entries({submissionId:'12345678-1234-1234-1234-123456789012',description:'Synthetic rent',category:'Rent',spentOn:'2030-12-31',amount:'12.30',...extra}))f.set(k,v);
@@ -80,6 +87,23 @@ test('office expenses enforce owner access, exact pence and idempotent writes',a
  assert.equal(corrected.expenses[0].voidReason,'Incorrect entry');
  assert.equal(rows.get(id).amountMinor,'1230');
  assert.ok(!Object.hasOwn(corrected.expenses[0],'voidedBy'));
+
+ rows.get(id).description='=SYNTHETIC("quoted")';
+ rows.get(id).voidReason='@fixture';
+ await assert.rejects(exportExpenses(owner,'2030-12',async()=>({...owner,role:'admin'})),e=>e.status===403);
+ failAudit=true;
+ await assert.rejects(exportExpenses(owner,'2030-12',async()=>owner));
+ failAudit=false;
+ const download=await exportExpenses(owner,'2030-12',async()=>owner);
+ assert.equal(download.headers.get('Cache-Control'),'private, no-store');
+ assert.match(download.headers.get('Content-Disposition'),/2030-12.csv/);
+ const csv=await download.text();
+ assert.match(csv,/"12.30","Voided"/);
+ assert.match(csv,/"'=SYNTHETIC\(""/);
+ assert.match(csv,/"'@fixture"/);
+ assert.doesNotMatch(csv,/recordedBy|voidedBy/);
+ assert.equal(audits.length,1);
+ assert.deepEqual(JSON.parse(audits[0].details),{month:'2030-12',count:1});
 
  }finally{
  globalThis.fetch=oldFetch;

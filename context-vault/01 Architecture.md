@@ -241,3 +241,7 @@ Office expenses use a shared server service for the web route and mobile API. Th
 ## Expense void corrections
 
 An owner can void an expense with one document update under expense and staff-access locks. Original amount and description remain in the register. Totals exclude voided entries.
+
+## Monthly expense export
+
+The monthly expense CSV uses the existing private month read and shared CSV escaping. A fresh owner check and an audit entry precede the download response.

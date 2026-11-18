@@ -223,3 +223,7 @@ Only an active owner without a pending revocation may use finance. Admin, global
 ## Expense void corrections
 
 Only the current active owner may void. Actor ID stays server-side. Web/mobile lists show void time and reason and preserve the original expense. Changed retries receive a conflict.
+
+## Monthly expense export
+
+The CSV excludes recorder and void actor IDs. The audit stores the owner, month and row count. Downloads carry private/no-store headers and spreadsheet formula protection.

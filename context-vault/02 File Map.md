@@ -283,3 +283,7 @@ The duplicate-review action calls moveDuplicateTask in crm.server.ts. Tests cove
 ## Expense void corrections
 
 `voidExpense` in `app/admin/finance.server.ts` is shared by the web action and native finance API. The native screen collects a reason and preserves uncertain retries.
+
+## Monthly expense export
+
+`app/admin/finance-export.ts` serves the owner-only month CSV. `exportExpenses` in `finance.server.ts` uses `csvCell` from the existing report service.

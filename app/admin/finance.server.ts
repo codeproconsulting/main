@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { AppwriteError, createDocument, getDocument, listDocuments, query, updateDocument } from "~/lib/appwrite.server";
-import { allow, definitiveWriteRejection, field, serialized, staffAccessLock, UnconfirmedMutation } from "./crm.server";
+import { csvCell } from "./reports.server";
+import { audit, allow, definitiveWriteRejection, field, serialized, staffAccessLock, UnconfirmedMutation } from "./crm.server";
 import type { Staff } from "./domain";
 
 export const expenseCategories = ["Rent", "Utilities", "Salaries", "Travel", "Supplies", "Marketing", "Other"];
@@ -80,4 +81,29 @@ export async function expenseMonth(staff: Staff, month: string) {
   return { month, currency: "GBP", expenses: documents.map(({ $id, description, category, spentOn, amountMinor, currency, voidedAt, voidReason }) =>
     ({ id: $id, description, category, spentOn, amountMinor, currency, voidedAt, voidReason })), totals,
     totalMinor: totals.reduce((sum, row) => sum + row.amountMinor, 0) };
+}
+
+
+export async function exportExpenses(staff: Staff, month: string, refreshStaff: () => Promise<Staff>) {
+  const report = await expenseMonth(staff, month);
+  const columns = ["Date", "Description", "Category", "Currency", "Amount", "Status", "Voided at", "Void reason"];
+  const rows = [columns.map(csvCell).join(","), ...report.expenses.map(expense => [
+    expense.spentOn, expense.description, expense.category, expense.currency,
+    (Number(expense.amountMinor) / 100).toFixed(2),
+    expense.voidedAt ? "Voided" : "Active", expense.voidedAt || "", expense.voidReason || "",
+  ].map(csvCell).join(","))];
+  const current = await refreshStaff();
+  allow(canUseFinance(current) && current.$id === staff.$id);
+  allow(canUseFinance(await getDocument<Staff>("staff", current.$id)));
+  await audit(current, current.$id, "export", "Expense export requested", {
+    month, count: report.expenses.length,
+  });
+  return new Response("\uFEFF" + rows.join("\r\n") + "\r\n", {
+    headers: {
+      "Content-Type": "text/csv; charset=utf-8",
+      "Content-Disposition": `attachment; filename="proconsulting-expenses-${month}.csv"`,
+      "Cache-Control": "private, no-store",
+      "X-Content-Type-Options": "nosniff",
+    },
+  });
 }

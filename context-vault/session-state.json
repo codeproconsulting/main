@@ -1,34 +1,28 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-18-02",
+  "sessionId": "2026-11-18-03",
   "sessionStatus": "completed",
   "activeFeature": "FIN-01",
-  "objective": "Correct office expenses by voiding entries while preserving their history.",
+  "objective": "Provide an audited owner-only monthly office expense CSV.",
   "scope": [
-    "Owner-only void with reason, shared web/mobile API and revised totals"
+    "Month export, active/voided rows, CSV safety and refreshed authorization"
   ],
   "outOfScope": [
-    "Receipts, deletion, restoring voids and VPS deployment"
+    "Receipts, VPS rollout and mobile native downloads"
   ],
   "acceptance": [
     {
-      "id": "FIN01-VOID",
-      "description": "Voids preserve original values and revise totals with safe retries",
+      "id": "FIN01-CSV",
+      "description": "Safe expense export with fresh owner access and audit before release",
       "status": "passed",
-      "evidence": "Synthetic service coverage passed for non-owner denial, empty reason, lost acknowledgement, identical retry and conflicting retry. Original record remains visible and totals exclude it."
-    },
-    {
-      "id": "FIN01-UI",
-      "description": "Web and native compatibility",
-      "status": "passed",
-      "evidence": "Built Chrome synthetic create, void, original row visibility and zero corrected monthly total passed. Main typecheck, full tests and build passed. Mobile checks passed; device acceptance pending."
+      "evidence": "Synthetic tests passed formula/quote escaping, fixed decimal amounts, void status, role-change denial, audit failure handling and private download headers. Built Chrome owner export also passed with the original voided amount and correction reason."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Deploy the expense-enabled server after target owner/counselor checks. Then publish mobile Finance OTA and verify both entry and void on an Android device.",
+      "action": "Deploy the finance server and verify owner create/void/export and counselor denial, then publish the native finance update and perform device acceptance.",
       "files": [
         "deploy/CRM-DEPLOYMENT.md",
         "app/admin/finance.tsx",
@@ -124,31 +118,32 @@
     "offlineOTA": "Android preview group 034fb32c-4bf8-4232-9aa5-1855d0dc6bbe published from mobile 82f27cb; update endpoint returned matching runtime 1.0.3 and update ID.",
     "officeExpenses": "Private schema provisioned and synthetic storage verified with cleanup. No real expense entries. VPS release pending.",
     "mobileFinance": "Native finance screen implemented locally. Server rollout required before mobile publication. Sign-in role field added; owners must sign in again.",
-    "expenseVoids": "Optional schema verified private. Web browser acceptance passed locally. No real expense records modified and no VPS application deployment."
+    "expenseVoids": "Optional schema verified private. Web browser acceptance passed locally. No real expense records modified and no VPS application deployment.",
+    "expenseExport": "Implemented and verified locally. Initial full-suite mobile API process stalled, standalone test and repeated full suite passed. No VPS deployment."
   },
   "checks": [
     {
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-18T05:08:04.309Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-TF6UDY/typecheck.log"
+      "checkedAt": "2026-11-18T05:12:02.564Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-lmV4j6/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-18T05:08:06.014Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-TF6UDY/test.log"
+      "checkedAt": "2026-11-18T05:12:04.095Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-lmV4j6/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-18T05:08:11.894Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-TF6UDY/build.log"
+      "checkedAt": "2026-11-18T05:12:09.640Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-lmV4j6/build.log"
     }
   ],
-  "updatedAt": "2026-11-18T05:08:27.456Z",
-  "verifiedSourceFingerprint": "0a0e941aa888661f9afa3ac9a8ed1e7deba85493af1730599bc9d3d84172c4a6"
+  "updatedAt": "2026-11-18T05:12:27.136Z",
+  "verifiedSourceFingerprint": "05171b4f801e51ff93bf00ee22a1400a99173939727d2e0ce0470e326c9618b1"
 }

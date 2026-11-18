@@ -273,3 +273,7 @@ Deploy the finance-enabled server before the mobile update. Verify private expen
 ## Expense void corrections
 
 Provision optional voidedAt, voidedBy and voidReason expense attributes before deploying corrections. Existing records default to active. Verify create/void/total in synthetic target acceptance before mobile delivery.
+
+## Monthly expense export
+
+The expense CSV route uses existing expenses and activities permissions. No schema changes. Verify an owner download and counselor denial after server rollout.
