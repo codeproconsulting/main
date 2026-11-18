@@ -66,6 +66,7 @@ test('office expenses enforce owner access, exact pence and idempotent writes',a
  await assert.rejects(recordExpense(owner,form()),e=>e.status===403);
  role='owner';lost=true;
  await assert.rejects(recordExpense(owner,form()));
+ for(const row of rows.values()){delete row.payee;delete row.paymentMethod;delete row.reference;}
  const id=await recordExpense(owner,form());
  assert.equal(rows.size,1);
  assert.equal(rows.get(id).amountMinor,'1230');
@@ -123,6 +124,21 @@ test('office expenses enforce owner access, exact pence and idempotent writes',a
  rows.get(id).voidedAt='';
  assert.equal((await expenseMonth(owner,'2030-12')).budget.remainingMinor,-230);
  assert.equal((await expenseMonth(owner,'2031-01')).budget,null);
+
+ const paymentForm=form({submissionId:'12345678-1234-1234-1234-123456789013',spentOn:'2032-01-01',
+  payee:'Synthetic supplier',paymentMethod:'Bank transfer',reference:'=SYNTHETIC-REF'});
+ await assert.rejects(recordExpense(owner,form({paymentMethod:'Unknown'})),e=>e.status===400);
+ const paidId=await recordExpense(owner,paymentForm);
+ assert.equal(rows.get(paidId).payee,'Synthetic supplier');
+ assert.equal(rows.get(paidId).paymentMethod,'Bank transfer');
+ assert.equal(await recordExpense(owner,paymentForm),paidId);
+ paymentForm.set('reference','Different reference');
+ await assert.rejects(recordExpense(owner,paymentForm),e=>e.status===409);
+ const paymentReport=await expenseMonth(owner,'2032-01');
+ assert.equal(paymentReport.expenses[0].reference,'=SYNTHETIC-REF');
+ const paymentCSV=await (await exportExpenses(owner,'2032-01',async()=>owner)).text();
+ assert.match(paymentCSV,/"Payee","Payment method","Reference"/);
+ assert.match(paymentCSV,/"'=SYNTHETIC-REF"/);
 
  }finally{
  globalThis.fetch=oldFetch;

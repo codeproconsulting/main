@@ -249,3 +249,7 @@ The monthly expense CSV uses the existing private month read and shared CSV esca
 ## Monthly office budget
 
 Monthly office budgets are private records keyed by month. Spending uses the existing expense report and excludes voided rows. The owner writes with an expected version under budget and staff locks.
+
+## Expense payment details
+
+Expenses optionally store payee, payment method and reference on the same immutable entry. Web, native and CSV use the shared validated service.

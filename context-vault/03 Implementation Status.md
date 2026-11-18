@@ -329,3 +329,7 @@ Monthly expense CSV export implemented with active/voided status, preserved amou
 ## Monthly office budget
 
 Monthly GBP budget entry and remaining/over-budget review implemented for web and native mobile. Synthetic service and built Chrome checks passed. Private schema provisioned and disposable storage/anonymous denial passed.
+
+## Expense payment details
+
+Optional expense payment details implemented for web/native entry, monthly review and CSV. Synthetic tests cover legacy missing fields, enum validation, retry identity and CSV formula safety.

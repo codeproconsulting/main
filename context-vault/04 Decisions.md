@@ -271,3 +271,7 @@ CSV exports retain voided entries so bookkeeping review can reconcile correction
 ## Monthly office budget
 
 One GBP office budget per calendar month. Positive budgets use whole pence, version checks and a recorded change intent. Repeating a saved change is idempotent. Uncertain writes retain locks. Budgets are tracking values and do not block expense recording.
+
+## Expense payment details
+
+Payee and reference are optional text. Payment method is a server-validated choice. Existing missing values are treated as empty. These fields describe recorded payments and do not execute transactions.

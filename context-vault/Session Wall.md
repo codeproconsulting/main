@@ -3,40 +3,40 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-18-04]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-18-05]].
 
 ## Resume here
 
-**Session:** 2026-11-18-04
+**Session:** 2026-11-18-05
 
-**Active feature:** FIN-02
+**Active feature:** FIN-01
 
-**State:** completed
+**State:** in_progress
 
-**Objective:** Track monthly office budget versus spending on web and native mobile.
+**Objective:** Record payee, payment method and reference for office expenses on web and native.
 
-This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
+A user saying **continue** means resume this feature's next unfinished acceptance check. Do not start unrelated modules or repeat completed infrastructure work. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Owner budget entry, versioned updates, remaining balance and over-budget status
+- Optional payment fields, validation, legacy compatibility and CSV
 
 ## Out of scope
 
-- Budget approval limits, multiple currencies and VPS/device acceptance
+- Executing payments, receipt uploads and VPS/mobile delivery
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| FIN02-SERVICE | Correct budget calculations with owner-only versioned changes | passed | Synthetic tests verify decimal pence, initial save, idempotent retry, stale changes, audit failure, void exclusions and over-budget balance. |
-| FIN02-CLIENT | Web flow and native compatibility | passed | Built Chrome budget entry and £87.70 balance after £12.30 spending passed. Mobile typecheck, lint, tests and Android export passed. |
-| FIN02-STORAGE | Private budget storage | passed | Schema verified; disposable record round trip and anonymous denial passed. Synthetic budget removed. |
+| FIN01-PAYMENT | Consistent validated payment details with safe retries and exports | passed | Synthetic tests passed for legacy fields, optional values, invalid method, identical retry, changed-reference conflict and formula-safe CSV. |
+| FIN01-PAYMENT-CLIENT | Client builds and target schema | passed | Built Chrome payment entry, monthly row and CSV passed. Mobile typecheck/lint/tests/Android export and main full checks passed. |
+| FIN01-PAYMENT-SCHEMA | Verify optional target payment fields | blocked | Scoped Appwrite setup timed out twice connecting to the configured host. Target field availability is unverified. |
 
 ## Exact next actions
 
-1. Run the budget-inclusive Finance rollout in deploy/HAMY-CRM-HANDOFF.md on the existing VPS, then verify owner expense/budget controls and denial before mobile OTA.
-   Files: `deploy/CRM-DEPLOYMENT.md`, `app/admin/finance.tsx`, `/Users/fidaali/Proconsulting-App/src/Finance.tsx`
+1. Retry node scripts/setup-appwrite.mjs --only=expenses --apply and node scripts/verify-appwrite.mjs --only=expenses when Appwrite connectivity recovers; verify optional payee/paymentMethod/reference fields before rollout.
+   Files: `scripts/appwrite-schema.mjs`, `deploy/CRM-DEPLOYMENT.md`
 
 ## Known risks and unfinished work
 
@@ -59,9 +59,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-18T12:47:06.209Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-iGdBDo/typecheck.log`
-- **passed**: `npm run test` (2026-11-18T12:47:07.881Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-iGdBDo/test.log`
-- **passed**: `npm run build` (2026-11-18T12:47:13.767Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-iGdBDo/build.log`
+- **passed**: `npm run typecheck` (2026-11-18T18:33:38.838Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-XTKGCl/typecheck.log`
+- **passed**: `npm run test` (2026-11-18T18:33:40.589Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-XTKGCl/test.log`
+- **passed**: `npm run build` (2026-11-18T18:33:45.702Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-XTKGCl/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -140,5 +140,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **expenseExport**: Implemented and verified locally. Initial full-suite mobile API process stalled, standalone test and repeated full suite passed. No VPS deployment.
 - **financeDeployment**: Public Finance still returns 404 Unknown resource. Hermes handoff now pins tested budget-inclusive 870c3cd. No live changes performed.
 - **officeBudget**: Private expense_budgets schema provisioned. Synthetic storage verified and cleaned. No real budget changes and no VPS application release.
+- **expensePaymentDetails**: Implementation and local browser acceptance passed. Two Appwrite connection timeouts prevented confirming target optional fields. No production expense data changed.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

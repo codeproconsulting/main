@@ -231,3 +231,7 @@ The CSV excludes recorder and void actor IDs. The audit stores the owner, month 
 ## Monthly office budget
 
 Budget access is limited to current active owner accounts. Responses expose amount/version/remaining but omit the updating actor. Month IDs isolate budgets and stale changes conflict.
+
+## Expense payment details
+
+The owner-only finance boundary applies to payee, method and reference. No bank account or card-number field is collected. CSV escaping applies to payee and reference text.

@@ -291,3 +291,7 @@ The duplicate-review action calls moveDuplicateTask in crm.server.ts. Tests cove
 ## Monthly office budget
 
 Budget read/write and remaining calculation live in `app/admin/finance.server.ts`. The web Finance form and native Finance screen use the same service through their existing actions.
+
+## Expense payment details
+
+Payment fields span finance.server.ts, finance.tsx, mobile-api.ts and the native Finance screen. No separate payee directory or payment provider is introduced.

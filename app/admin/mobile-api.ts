@@ -3,7 +3,7 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { appwrite, AppwriteError, configurationIssues } from "~/lib/appwrite.server";
 import { openStaffSession, staffForSession } from "./auth.server";
 import { boundedBody } from "~/lib/request-body.server";
-import { expenseCategories, expenseMonth, recordExpense, voidExpense, saveOfficeBudget } from "./finance.server";
+import { expensePaymentMethods, expenseCategories, expenseMonth, recordExpense, voidExpense, saveOfficeBudget } from "./finance.server";
 import { leadFor, leadsFor, queuePage, taskPage, updateLead } from "./crm.server";
 
 import { isRestrictedManager, closureStages, priorities, stages, type Lead } from "./domain";
@@ -103,7 +103,7 @@ export function loader({ request, params }: LoaderFunctionArgs) {
     if (params.resource === "finance") {
       const staff = await mobileStaff(request);
       const month = new URL(request.url).searchParams.get("month") || new Date().toISOString().slice(0, 7);
-      return reply({ ...await expenseMonth(staff, month), categories: expenseCategories, submissionId: randomUUID() });
+      return reply({ ...await expenseMonth(staff, month), categories: expenseCategories, paymentMethods: expensePaymentMethods, submissionId: randomUUID() });
     }
     if (params.resource === "lead") {
       const staff = await mobileStaff(request);
@@ -149,6 +149,10 @@ export function action({ request, params }: ActionFunctionArgs) {
       for (const key of ["submissionId", "description", "category", "spentOn", "amount"]) {
         if (typeof body[key] !== "string") return reply({ error: "Invalid expense fields." }, 400);
         form.set(key, body[key]);
+      }
+      for (const key of ["payee", "paymentMethod", "reference"]) {
+        if (body[key] !== undefined && typeof body[key] !== "string") return reply({ error: "Invalid payment details." }, 400);
+        form.set(key, body[key] ?? "");
       }
       return reply({ id: await recordExpense(staff, form) });
     }

@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import { Form, Link, data, useActionData, useLoaderData } from "react-router";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { requireStaff, sameOrigin } from "./auth.server";
-import { expenseCategories, expenseMonth, recordExpense, voidExpense, saveOfficeBudget } from "./finance.server";
+import { expenseCategories, expensePaymentMethods, expenseMonth, recordExpense, voidExpense, saveOfficeBudget } from "./finance.server";
 import { field } from "./crm.server";
 import { ActionError, PageHeading, Submit } from "./ui";
 
@@ -10,7 +10,7 @@ const formatExpense = (amount: number) => new Intl.NumberFormat("en-GB", {style:
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const month = new URL(request.url).searchParams.get("month") || new Date().toISOString().slice(0, 7);
-  return data({ ...await expenseMonth(await requireStaff(request), month), submissionId: randomUUID(), categories: expenseCategories }, {
+  return data({ ...await expenseMonth(await requireStaff(request), month), submissionId: randomUUID(), categories: expenseCategories, paymentMethods: expensePaymentMethods }, {
     headers: { "Cache-Control": "private, no-store" },
   });
 }
@@ -35,7 +35,7 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 }
 export default function Finance() {
-  const { month, budget, expenses, totals, totalMinor, submissionId, categories } = useLoaderData<typeof loader>();
+  const { month, budget, expenses, totals, totalMinor, submissionId, categories, paymentMethods } = useLoaderData<typeof loader>();
   const result = useActionData<typeof action>();
   const formId = result && !result.success && result.submissionId ? result.submissionId : submissionId;
   return <>
@@ -51,6 +51,9 @@ export default function Finance() {
           <input type="hidden" name="submissionId" value={formId}/>
           <label>What was it for?<input name="description" required maxLength={500}/></label>
           <label>Category<select name="category">{categories.map(category => <option key={category}>{category}</option>)}</select></label>
+          <label>Paid to (optional)<input name="payee" maxLength={200}/></label>
+          <label>Payment method<select name="paymentMethod"><option value="">Not recorded</option>{paymentMethods.map(method => <option key={method}>{method}</option>)}</select></label>
+          <label>Receipt or payment reference (optional)<input name="reference" maxLength={100}/></label>
           <label>Date<input name="spentOn" type="date" required/></label>
           <label>Amount in GBP<input name="amount" inputMode="decimal" required placeholder="0.00" maxLength={20}/></label>
           <div><Submit>Record expense</Submit></div>
@@ -73,8 +76,8 @@ export default function Finance() {
     </section>
     <section className="crm-panel crm-padded"><h2>Expenses for {month}</h2>
       {expenses.length ? <div className="crm-table-wrap"><table className="crm-table">
-        <thead><tr><th>Date</th><th>Description</th><th>Category</th><th>Amount</th><th>Status</th></tr></thead>
-        <tbody>{expenses.map(expense => <tr key={expense.id}><td>{expense.spentOn}</td><td>{expense.description}</td><td>{expense.category}</td><td>{formatExpense(Number(expense.amountMinor))}</td><td>{expense.voidedAt ? <>
+        <thead><tr><th>Date</th><th>Description</th><th>Category</th><th>Payment</th><th>Amount</th><th>Status</th></tr></thead>
+        <tbody>{expenses.map(expense => <tr key={expense.id}><td>{expense.spentOn}</td><td>{expense.description}</td><td>{expense.category}</td><td>{expense.payee || "Not recorded"}<small>{expense.paymentMethod}</small><small>{expense.reference}</small></td><td>{formatExpense(Number(expense.amountMinor))}</td><td>{expense.voidedAt ? <>
             <strong>Voided</strong><p>{expense.voidReason}</p>
           </> : <details><summary>Void expense</summary><Form method="post" className="crm-form">
             <input type="hidden" name="intent" value="void"/>

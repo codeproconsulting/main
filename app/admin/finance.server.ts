@@ -5,7 +5,8 @@ import { audit, allow, definitiveWriteRejection, field, serialized, staffAccessL
 import type { Staff } from "./domain";
 
 export const expenseCategories = ["Rent", "Utilities", "Salaries", "Travel", "Supplies", "Marketing", "Other"];
-export type Expense = { $id: string; description: string; category: string; spentOn: string; amountMinor: string; currency: string; recordedBy: string; voidedAt?: string; voidedBy?: string; voidReason?: string };
+export const expensePaymentMethods = ["Bank transfer", "Cash", "Card", "Other"];
+export type Expense = { $id: string; description: string; category: string; spentOn: string; amountMinor: string; currency: string; recordedBy: string; payee?: string; paymentMethod?: string; reference?: string; voidedAt?: string; voidedBy?: string; voidReason?: string };
 export const canUseFinance = (staff: Staff) => staff.active && staff.role === "owner" && !staff.revocationPending;
 
 type OfficeBudget = { month: string; amountMinor: string; version: number; updatedBy: string };
@@ -54,6 +55,10 @@ export async function recordExpense(staff: Staff, form: FormData) {
   const category = field(form, "category", 40);
   const spentOn = field(form, "spentOn", 10);
   const amount = field(form, "amount", 20);
+  const payee = field(form, "payee", 200);
+  const paymentMethod = field(form, "paymentMethod", 30);
+  const reference = field(form, "reference", 100);
+  if (paymentMethod && !expensePaymentMethods.includes(paymentMethod)) throw new Response("Choose a valid payment method.", { status: 400 });
   if (!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/.test(submissionId) || !description || !expenseCategories.includes(category) ||
       !/^\d{4}-\d{2}-\d{2}$/.test(spentOn) || (!Number.isFinite(Date.parse(spentOn)) || new Date(spentOn).toISOString().slice(0, 10) !== spentOn) ||
       !/^(?:0|[1-9]\d{0,6})(?:\.\d{1,2})?$/.test(amount)) {
@@ -61,14 +66,14 @@ export async function recordExpense(staff: Staff, form: FormData) {
   }
   const amountMinor = amountInPence(amount);
   const id = createHash("sha256").update(staff.$id + ":" + submissionId).digest("hex").slice(0, 32);
-  const values = { description, category, spentOn, amountMinor, currency: "GBP", recordedBy: staff.$id };
+  const values = { description, category, spentOn, payee, paymentMethod, reference, amountMinor, currency: "GBP", recordedBy: staff.$id };
   return serialized(staffAccessLock, async () => {
     allow(canUseFinance(await getDocument<Staff>("staff", staff.$id)));
     try { await createDocument("expenses", values, id); }
     catch (error) {
       if (!(error instanceof AppwriteError && error.status === 409)) throw error;
       const saved = await getDocument<Expense>("expenses", id);
-      if (Object.entries(values).some(([key, value]) => saved[key as keyof Expense] !== value)) {
+      if (Object.entries(values).some(([key, value]) => (saved[key as keyof Expense] ?? "") !== value)) {
         throw new Response("This submission was already saved with different values. Refresh before entering another expense.", { status: 409 });
       }
     }
@@ -107,7 +112,7 @@ export async function expenseMonth(staff: Staff, month: string) {
   const { documents } = await listDocuments<Expense>("expenses", [
     query("greaterThanEqual", "spentOn", [start]), query("lessThan", "spentOn", [next]),
     query("orderDesc", "spentOn"), query("orderDesc", "$id"), query("limit", undefined, [1001]),
-    query("select", undefined, ["$id", "description", "category", "spentOn", "amountMinor", "currency", "voidedAt", "voidReason"]),
+    query("select", undefined, ["$id", "description", "category", "spentOn", "amountMinor", "currency", "voidedAt", "voidReason", "payee", "paymentMethod", "reference"]),
   ]);
   if (documents.length > 1000) throw new Response("This month exceeds the 1,000 expense view limit.", { status: 400 });
   if (documents.some(row => row.currency !== "GBP" || !/^[1-9]\d{0,8}$/.test(row.amountMinor) || !expenseCategories.includes(row.category))) {
@@ -119,19 +124,19 @@ export async function expenseMonth(staff: Staff, month: string) {
   const totalMinor = totals.reduce((sum, row) => sum + row.amountMinor, 0);
   return { month, currency: "GBP", budget: budget ? {
     amountMinor: budget.amountMinor, version: budget.version, remainingMinor: Number(budget.amountMinor) - totalMinor,
-  } : null, expenses: documents.map(({ $id, description, category, spentOn, amountMinor, currency, voidedAt, voidReason }) =>
-    ({ id: $id, description, category, spentOn, amountMinor, currency, voidedAt, voidReason })), totals,
+  } : null, expenses: documents.map(({ $id, description, category, spentOn, amountMinor, currency, voidedAt, voidReason, payee, paymentMethod, reference }) =>
+    ({ id: $id, description, category, spentOn, amountMinor, currency, voidedAt, voidReason, payee: payee || "", paymentMethod: paymentMethod || "", reference: reference || "" })), totals,
     totalMinor };
 }
 
 
 export async function exportExpenses(staff: Staff, month: string, refreshStaff: () => Promise<Staff>) {
   const report = await expenseMonth(staff, month);
-  const columns = ["Date", "Description", "Category", "Currency", "Amount", "Status", "Voided at", "Void reason"];
+  const columns = ["Date", "Description", "Category", "Currency", "Amount", "Status", "Voided at", "Void reason", "Payee", "Payment method", "Reference"];
   const rows = [columns.map(csvCell).join(","), ...report.expenses.map(expense => [
     expense.spentOn, expense.description, expense.category, expense.currency,
     (Number(expense.amountMinor) / 100).toFixed(2),
-    expense.voidedAt ? "Voided" : "Active", expense.voidedAt || "", expense.voidReason || "",
+    expense.voidedAt ? "Voided" : "Active", expense.voidedAt || "", expense.voidReason || "", expense.payee, expense.paymentMethod, expense.reference,
   ].map(csvCell).join(","))];
   const current = await refreshStaff();
   allow(canUseFinance(current) && current.$id === staff.$id);

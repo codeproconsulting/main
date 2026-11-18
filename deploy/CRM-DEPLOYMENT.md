@@ -351,3 +351,5 @@ The owner can download the selected month using **Export month CSV** in Finance.
 ### Monthly office budgets
 
 Run scoped `expense_budgets` setup and verification before enabling owner budget entry. Confirm private collection permissions. Runtime needs document read/write on that collection and activities write for budget change intents. Each month has one GBP budget. The displayed balance subtracts active expense totals and shows over-budget spending as a positive overage. Budget changes never prevent recording expenses. Verify stale-version rejection and a repeated save before release. An uncertain write retains budget/staff locks for operator reconciliation.
+
+Optional expense payment details require payee (200), paymentMethod (30) and reference (100) string attributes. Run scoped expenses setup before release. Verify an older record and an entry with a supplier/payment reference in the web list and CSV.

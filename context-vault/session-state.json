@@ -1,44 +1,43 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-18-04",
-  "sessionStatus": "completed",
-  "activeFeature": "FIN-02",
-  "objective": "Track monthly office budget versus spending on web and native mobile.",
+  "sessionId": "2026-11-18-05",
+  "sessionStatus": "in_progress",
+  "activeFeature": "FIN-01",
+  "objective": "Record payee, payment method and reference for office expenses on web and native.",
   "scope": [
-    "Owner budget entry, versioned updates, remaining balance and over-budget status"
+    "Optional payment fields, validation, legacy compatibility and CSV"
   ],
   "outOfScope": [
-    "Budget approval limits, multiple currencies and VPS/device acceptance"
+    "Executing payments, receipt uploads and VPS/mobile delivery"
   ],
   "acceptance": [
     {
-      "id": "FIN02-SERVICE",
-      "description": "Correct budget calculations with owner-only versioned changes",
+      "id": "FIN01-PAYMENT",
+      "description": "Consistent validated payment details with safe retries and exports",
       "status": "passed",
-      "evidence": "Synthetic tests verify decimal pence, initial save, idempotent retry, stale changes, audit failure, void exclusions and over-budget balance."
+      "evidence": "Synthetic tests passed for legacy fields, optional values, invalid method, identical retry, changed-reference conflict and formula-safe CSV."
     },
     {
-      "id": "FIN02-CLIENT",
-      "description": "Web flow and native compatibility",
+      "id": "FIN01-PAYMENT-CLIENT",
+      "description": "Client builds and target schema",
       "status": "passed",
-      "evidence": "Built Chrome budget entry and £87.70 balance after £12.30 spending passed. Mobile typecheck, lint, tests and Android export passed."
+      "evidence": "Built Chrome payment entry, monthly row and CSV passed. Mobile typecheck/lint/tests/Android export and main full checks passed."
     },
     {
-      "id": "FIN02-STORAGE",
-      "description": "Private budget storage",
-      "status": "passed",
-      "evidence": "Schema verified; disposable record round trip and anonymous denial passed. Synthetic budget removed."
+      "id": "FIN01-PAYMENT-SCHEMA",
+      "description": "Verify optional target payment fields",
+      "status": "blocked",
+      "evidence": "Scoped Appwrite setup timed out twice connecting to the configured host. Target field availability is unverified."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Run the budget-inclusive Finance rollout in deploy/HAMY-CRM-HANDOFF.md on the existing VPS, then verify owner expense/budget controls and denial before mobile OTA.",
+      "action": "Retry node scripts/setup-appwrite.mjs --only=expenses --apply and node scripts/verify-appwrite.mjs --only=expenses when Appwrite connectivity recovers; verify optional payee/paymentMethod/reference fields before rollout.",
       "files": [
-        "deploy/CRM-DEPLOYMENT.md",
-        "app/admin/finance.tsx",
-        "/Users/fidaali/Proconsulting-App/src/Finance.tsx"
+        "scripts/appwrite-schema.mjs",
+        "deploy/CRM-DEPLOYMENT.md"
       ]
     }
   ],
@@ -133,31 +132,32 @@
     "expenseVoids": "Optional schema verified private. Web browser acceptance passed locally. No real expense records modified and no VPS application deployment.",
     "expenseExport": "Implemented and verified locally. Initial full-suite mobile API process stalled, standalone test and repeated full suite passed. No VPS deployment.",
     "financeDeployment": "Public Finance still returns 404 Unknown resource. Hermes handoff now pins tested budget-inclusive 870c3cd. No live changes performed.",
-    "officeBudget": "Private expense_budgets schema provisioned. Synthetic storage verified and cleaned. No real budget changes and no VPS application release."
+    "officeBudget": "Private expense_budgets schema provisioned. Synthetic storage verified and cleaned. No real budget changes and no VPS application release.",
+    "expensePaymentDetails": "Implementation and local browser acceptance passed. Two Appwrite connection timeouts prevented confirming target optional fields. No production expense data changed."
   },
   "checks": [
     {
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-18T12:47:06.209Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-iGdBDo/typecheck.log"
+      "checkedAt": "2026-11-18T18:33:38.838Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-XTKGCl/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-18T12:47:07.881Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-iGdBDo/test.log"
+      "checkedAt": "2026-11-18T18:33:40.589Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-XTKGCl/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-18T12:47:13.767Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-iGdBDo/build.log"
+      "checkedAt": "2026-11-18T18:33:45.702Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-XTKGCl/build.log"
     }
   ],
-  "updatedAt": "2026-11-18T12:47:13.768Z",
-  "verifiedSourceFingerprint": "390a4ea8a8189666ef0c2d71d4ae35e62059a7d018795698d3b9772bee5ad442"
+  "updatedAt": "2026-11-18T18:49:37.944Z",
+  "verifiedSourceFingerprint": "dcf23983c97d628fb6255b073e9de8f8eaa8c95acf2a3f774c1c1ed64ca6eecf"
 }
