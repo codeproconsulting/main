@@ -281,3 +281,7 @@ The expense CSV route uses existing expenses and activities permissions. No sche
 ## Finance release handoff update
 
 On 18 November the public CRM HTTPS probe passed TLS validation. The unauthenticated mobile finance path returned JSON 404 Unknown resource, which indicates the served API does not include Finance. The Hermes and first-install handoffs now pin the tested finance release 4633bf5 and include an existing-install update sequence. Runtime directory and exact deployed commit remain unconfirmed.
+
+## CRM live confirmation
+
+The operator confirmed that the CRM is live following the deployment guide. On 18 November, the public login returned HTTPS 200 with certificate validation enabled. The separate mobile finance endpoint still returned 404 Unknown resource. Treat the CRM as deployed, with the finance API rollout tracked separately. The exact running revision and authenticated workflows were not checked.

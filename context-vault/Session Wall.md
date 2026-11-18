@@ -33,7 +33,7 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Exact next actions
 
-1. Have the VPS Hermes agent follow the updated existing-install Finance rollout in deploy/HAMY-CRM-HANDOFF.md. Verify anonymous finance API changes from 404 Unknown resource to 401, then owner create/void/export and counselor denial before native Finance publication.
+1. Confirm the live CRM revision and roll out the later finance release if absent. The CRM itself is live. Verify owner create/void/export and counselor denial before publishing native Finance.
    Files: `deploy/CRM-DEPLOYMENT.md`, `app/admin/finance.tsx`, `/Users/fidaali/Proconsulting-App/src/Finance.tsx`
 
 ## Known risks and unfinished work
@@ -70,7 +70,7 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **ghostImportedPages**: 1
 - **postPublicationState**: draft
 - **blogProvider**: Ghost unchanged
-- **productionDeployment**: Existing Nginx deployment reported by operator. Exact deployed CRM revision and acceptance unconfirmed.
+- **productionDeployment**: Operator confirmed CRM is live following the guide. Public HTTPS login returned 200 on 18 November. Exact deployed revision and authenticated acceptance unverified.
 - **workerOnVPS**: not started
 - **ownerPassword**: owner must set via Appwrite Console
 - **gitBranch**: codex/crm-workspace
@@ -136,6 +136,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **mobileFinance**: Native finance screen implemented locally. Server rollout required before mobile publication. Sign-in role field added; owners must sign in again.
 - **expenseVoids**: Optional schema verified private. Web browser acceptance passed locally. No real expense records modified and no VPS application deployment.
 - **expenseExport**: Implemented and verified locally. Initial full-suite mobile API process stalled, standalone test and repeated full suite passed. No VPS deployment.
-- **financeDeployment**: 18 November public HTTPS probe passed TLS. Mobile finance endpoint returned JSON 404 Unknown resource. Updated Hermes release pin to tested 4633bf5; VPS application update required.
+- **financeDeployment**: CRM is live. Mobile finance API still returned 404 Unknown resource on 18 November. Finance release rollout is separate from the working CRM deployment.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

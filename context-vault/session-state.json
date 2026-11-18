@@ -22,7 +22,7 @@
   "nextActions": [
     {
       "order": 1,
-      "action": "Have the VPS Hermes agent follow the updated existing-install Finance rollout in deploy/HAMY-CRM-HANDOFF.md. Verify anonymous finance API changes from 404 Unknown resource to 401, then owner create/void/export and counselor denial before native Finance publication.",
+      "action": "Confirm the live CRM revision and roll out the later finance release if absent. The CRM itself is live. Verify owner create/void/export and counselor denial before publishing native Finance.",
       "files": [
         "deploy/CRM-DEPLOYMENT.md",
         "app/admin/finance.tsx",
@@ -54,7 +54,7 @@
     "ghostImportedPages": 1,
     "postPublicationState": "draft",
     "blogProvider": "Ghost unchanged",
-    "productionDeployment": "Existing Nginx deployment reported by operator. Exact deployed CRM revision and acceptance unconfirmed.",
+    "productionDeployment": "Operator confirmed CRM is live following the guide. Public HTTPS login returned 200 on 18 November. Exact deployed revision and authenticated acceptance unverified.",
     "workerOnVPS": "not started",
     "ownerPassword": "owner must set via Appwrite Console",
     "gitBranch": "codex/crm-workspace",
@@ -120,7 +120,7 @@
     "mobileFinance": "Native finance screen implemented locally. Server rollout required before mobile publication. Sign-in role field added; owners must sign in again.",
     "expenseVoids": "Optional schema verified private. Web browser acceptance passed locally. No real expense records modified and no VPS application deployment.",
     "expenseExport": "Implemented and verified locally. Initial full-suite mobile API process stalled, standalone test and repeated full suite passed. No VPS deployment.",
-    "financeDeployment": "18 November public HTTPS probe passed TLS. Mobile finance endpoint returned JSON 404 Unknown resource. Updated Hermes release pin to tested 4633bf5; VPS application update required."
+    "financeDeployment": "CRM is live. Mobile finance API still returned 404 Unknown resource on 18 November. Finance release rollout is separate from the working CRM deployment."
   },
   "checks": [
     {
@@ -145,6 +145,6 @@
       "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Mhelnd/build.log"
     }
   ],
-  "updatedAt": "2026-11-18T08:14:51.184Z",
+  "updatedAt": "2026-11-18T08:17:51.437Z",
   "verifiedSourceFingerprint": "7ea61de6efdfb478a931fc946181b634b425e9bd2de9d8d3011738f4c7329303"
 }
