@@ -265,3 +265,7 @@ The comparison depends on read access to the existing linked-work and activity c
 ## Duplicate follow-up transfer
 
 No new schema is required. For an uncertain transfer, stop competing writers and inspect the pending activity, task parent and version before using the existing retained-lock recovery procedure.
+
+## Office expenses
+
+Deploy the finance-enabled server before the mobile update. Verify private expenses schema and date index with scoped setup. The runtime key needs expense document read/write. Native owners must sign in again to receive the role field used to show Finance. The mobile finance screen is online-only and excludes finance data from the offline workspace cache.

@@ -215,3 +215,7 @@ The comparison returns counts and booleans for differences in team and counselor
 ## Duplicate follow-up transfer
 
 Active global CRM managers can transfer tasks between confirmed enquiries with matching service, destination, counselor and team. Pending revocation and unsupported linked dependencies block the move.
+
+## Office expenses
+
+Only an active owner without a pending revocation may use finance. Admin, global manager, counselor and content roles are denied. Expense creation rechecks the current staff profile under the shared staff access lock. No delete/update endpoint exists in this release.

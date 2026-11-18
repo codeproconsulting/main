@@ -1,7 +1,9 @@
-import { createCipheriv, createDecipheriv, randomBytes, scryptSync } from "node:crypto";
+import { createCipheriv, createDecipheriv, randomBytes, randomUUID, scryptSync } from "node:crypto";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { appwrite, AppwriteError, configurationIssues } from "~/lib/appwrite.server";
 import { openStaffSession, staffForSession } from "./auth.server";
+import { boundedBody } from "~/lib/request-body.server";
+import { expenseCategories, expenseMonth, recordExpense } from "./finance.server";
 import { leadFor, leadsFor, queuePage, taskPage, updateLead } from "./crm.server";
 
 import { isRestrictedManager, closureStages, priorities, stages, type Lead } from "./domain";
@@ -98,6 +100,11 @@ function mobileLeads({ documents, total }: Awaited<ReturnType<typeof leadsFor>>)
 
 export function loader({ request, params }: LoaderFunctionArgs) {
   return mobileRequest(request, async () => {
+    if (params.resource === "finance") {
+      const staff = await mobileStaff(request);
+      const month = new URL(request.url).searchParams.get("month") || new Date().toISOString().slice(0, 7);
+      return reply({ ...await expenseMonth(staff, month), categories: expenseCategories, submissionId: randomUUID() });
+    }
     if (params.resource === "lead") {
       const staff = await mobileStaff(request);
       return reply(editableLead(await leadFor(staff, leadId(request))));
@@ -123,6 +130,18 @@ export function loader({ request, params }: LoaderFunctionArgs) {
 
 export function action({ request, params }: ActionFunctionArgs) {
   return mobileRequest(request, async () => {
+    if (params.resource === "finance") {
+      if (request.method !== "POST" || !isJson(request)) return reply({ error: "Use a JSON POST." }, 405);
+      const staff = await mobileStaff(request);
+      const body = await (await boundedBody(request, 8192, "Expense")).text().then(JSON.parse).catch(() => null);
+      if (!body || typeof body !== "object" || Array.isArray(body)) return reply({ error: "Invalid expense." }, 400);
+      const form = new FormData();
+      for (const key of ["submissionId", "description", "category", "spentOn", "amount"]) {
+        if (typeof body[key] !== "string") return reply({ error: "Invalid expense fields." }, 400);
+        form.set(key, body[key]);
+      }
+      return reply({ id: await recordExpense(staff, form) });
+    }
     if (params.resource === "leads") {
       if (request.method !== "POST") return reply({ error: "Method not allowed." }, 405);
       const staff = await mobileStaff(request);
@@ -172,6 +191,6 @@ export function action({ request, params }: ActionFunctionArgs) {
       await appwrite("/account/sessions/current", { method: "DELETE", session: secret });
       return reply({ error: "Could not establish a staff session." }, 503);
     }
-    return reply({ token: issueToken(secret, expiresAt), expiresAt, name: staff.name });
+    return reply({ token: issueToken(secret, expiresAt), expiresAt, name: staff.name, role: staff.role });
   });
 }

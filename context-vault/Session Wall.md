@@ -3,38 +3,40 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-17-09]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-18-01]].
 
 ## Resume here
 
-**Session:** 2026-11-17-09
+**Session:** 2026-11-18-01
 
-**Active feature:** MOB-02
+**Active feature:** FIN-01
 
-**State:** in_progress
+**State:** completed
 
-**Objective:** Encrypted offline workspace on the native app.
+**Objective:** Owner office expense recording and monthly review on web and native mobile.
 
-A user saying **continue** means resume this feature's next unfinished acceptance check. Do not start unrelated modules or repeat completed infrastructure work. Verify current files and drift before trusting the checkpoint.
+This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Cold-start read-only snapshot and expiry
+- GBP entry, category/date/description, exact pence, duplicate-safe retries, monthly totals and owner authorization
 
 ## Out of scope
 
-- Offline edit replay
+- Income, receipts, corrections, multiple currencies and offline finance persistence
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| MOB-OFFLINE | Native device cold-start acceptance | pending | EAS APK finished, downloaded and ZIP-verified. Package/version/code, updates preview channel and native SecureStore found in artifact. Android OTA runtime 1.0.3 verified via update endpoint. Device acceptance remains pending. |
+| FIN01-SERVICE | Owner-only entry, exact amounts and retry identity | passed | Synthetic service tests cover all non-owner roles, revocation of role before write, invalid dates/amounts, lost acknowledgement retry, changed retry rejection and monthly totals. |
+| FIN01-STORAGE | Private storage and month query compatibility | passed | Scoped schema provisioned. Synthetic expense/query/order and anonymous denial passed. Synthetic record removed. |
+| FIN01-CLIENT | Web and native build compatibility | passed | Built Chrome owner entry and rendered monthly totals passed with synthetic fixtures. Mobile typecheck, lint, eight tests and Android export passed. Physical-device acceptance and VPS rollout remain pending. |
 
 ## Exact next actions
 
-1. Install ProConsulting-Staff-1.0.3.apk and verify preview OTA, airplane-mode cold start, expiry and sign-out on a physical Android device.
-   Files: `/Users/fidaali/Proconsulting-App/src/offline-cache.ts`, `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`
+1. Verify owner expense entry and retry in the built web browser, then deploy the finance server before publishing mobile finance OTA. Sign in again on mobile and verify owner-only access.
+   Files: `app/admin/finance.tsx`, `app/admin/finance.server.ts`, `app/admin/mobile-api.ts`, `/Users/fidaali/Proconsulting-App/src/Finance.tsx`
 
 ## Known risks and unfinished work
 
@@ -57,9 +59,9 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-17T17:38:03.463Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-XD6uBG/typecheck.log`
-- **passed**: `npm run test` (2026-11-17T17:38:04.865Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-XD6uBG/test.log`
-- **passed**: `npm run build` (2026-11-17T17:38:10.375Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-XD6uBG/build.log`
+- **passed**: `npm run typecheck` (2026-11-18T04:59:16.342Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ZnFn5O/typecheck.log`
+- **passed**: `npm run test` (2026-11-18T04:59:18.023Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ZnFn5O/test.log`
+- **passed**: `npm run build` (2026-11-18T04:59:23.367Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ZnFn5O/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -75,7 +77,7 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **ownerPassword**: owner must set via Appwrite Console
 - **gitBranch**: codex/crm-workspace
 - **integratedUpstream**: origin/main through 0397d6d; TOEFL and service-location pages preserved
-- **githubCheckpoint**: Duplicate merge planning checkpoint on codex/crm-workspace.
+- **githubCheckpoint**: Owner office expense web/API checkpoint on codex/crm-workspace.
 - **mainMergePolicy**: Tested features may be merged after exact release candidate review and creation of a prior-main rollback reference. No integration was performed in REPORT-01.
 - **rollbackReference**: rollback/main-2026-10-29-407977c preserves the existing main baseline for release recovery
 - **scheduleIndex**: posts schedule(status,publishedAt) available; live due query passed read-only with zero due posts
@@ -132,5 +134,7 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **mobileFollowUpTriage**: All/overdue/next-24-hours filters and due sorting work locally on loaded or cached tasks. Mobile typecheck, lint, seven tests and Android export passed. Native build queued and OTA/device checks pending.
 - **mobileLeadTriage**: Local stage/priority filters, urgent-first sort and reset implemented. Typecheck, lint, eight tests and Android export passed. Queue unchanged; OTA/device checks pending.
 - **offlineOTA**: Android preview group 034fb32c-4bf8-4232-9aa5-1855d0dc6bbe published from mobile 82f27cb; update endpoint returned matching runtime 1.0.3 and update ID.
+- **officeExpenses**: Private schema provisioned and synthetic storage verified with cleanup. No real expense entries. VPS release pending.
+- **mobileFinance**: Native finance screen implemented locally. Server rollout required before mobile publication. Sign-in role field added; owners must sign in again.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

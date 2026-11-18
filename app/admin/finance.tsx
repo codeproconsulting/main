@@ -1,0 +1,63 @@
+import { randomUUID } from "node:crypto";
+import { Form, data, useActionData, useLoaderData } from "react-router";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
+import { requireStaff, sameOrigin } from "./auth.server";
+import { expenseCategories, expenseMonth, recordExpense } from "./finance.server";
+import { ActionError, PageHeading, Submit } from "./ui";
+
+const formatExpense = (amount: number) => new Intl.NumberFormat("en-GB", {style:"currency", currency:"GBP"}).format(amount / 100);
+
+export async function loader({ request }: LoaderFunctionArgs) {
+  const month = new URL(request.url).searchParams.get("month") || new Date().toISOString().slice(0, 7);
+  return data({ ...await expenseMonth(await requireStaff(request), month), submissionId: randomUUID(), categories: expenseCategories }, {
+    headers: { "Cache-Control": "private, no-store" },
+  });
+}
+export async function action({ request }: ActionFunctionArgs) {
+  sameOrigin(request);
+  const staff = await requireStaff(request);
+  const form = await request.formData();
+  const submissionId = String(form.get("submissionId") ?? "");
+  try {
+    await recordExpense(staff, form);
+    return { error: "", success: true, submissionId: "" };
+  } catch (error) {
+    if (error instanceof Response && [400, 409].includes(error.status)) {
+      return data({ error: await error.text(), success: false, submissionId }, { status: error.status });
+    }
+    if (error instanceof Response) throw error;
+    return data({ error: "The save could not be confirmed. Retry the same form to avoid a duplicate.", success: false, submissionId }, { status: 503 });
+  }
+}
+export default function Finance() {
+  const { month, expenses, totals, totalMinor, submissionId, categories } = useLoaderData<typeof loader>();
+  const result = useActionData<typeof action>();
+  const formId = result && !result.success ? result.submissionId : submissionId;
+  return <>
+    <PageHeading eyebrow="OFFICE FINANCE" title="Office expenses" description="Record office spending and review monthly totals in GBP."/>
+    <ActionError error={result?.error}/>
+    {result?.success && <p className="crm-success" role="status">Expense recorded.</p>}
+    <Form method="get" className="crm-filters"><label>Month<input type="month" name="month" defaultValue={month} required/></label><button className="crm-button secondary">View month</button></Form>
+    <div className="crm-two-col">
+      <section className="crm-panel crm-padded"><h2>Record an expense</h2>
+        <Form method="post" className="crm-form" key={formId}>
+          <input type="hidden" name="submissionId" value={formId}/>
+          <label>What was it for?<input name="description" required maxLength={500}/></label>
+          <label>Category<select name="category">{categories.map(category => <option key={category}>{category}</option>)}</select></label>
+          <label>Date<input name="spentOn" type="date" required/></label>
+          <label>Amount in GBP<input name="amount" inputMode="decimal" required placeholder="0.00" maxLength={20}/></label>
+          <div><Submit>Record expense</Submit></div>
+        </Form>
+      </section>
+      <section className="crm-panel crm-padded"><h2>{month} spending</h2><p className="crm-stat">{formatExpense(totalMinor)}</p>
+        <dl className="crm-details">{totals.filter(row => row.amountMinor).map(row => <div key={row.category}><dt>{row.category}</dt><dd>{formatExpense(row.amountMinor)}</dd></div>)}</dl>
+      </section>
+    </div>
+    <section className="crm-panel crm-padded"><h2>Expenses for {month}</h2>
+      {expenses.length ? <div className="crm-table-wrap"><table className="crm-table">
+        <thead><tr><th>Date</th><th>Description</th><th>Category</th><th>Amount</th></tr></thead>
+        <tbody>{expenses.map(expense => <tr key={expense.id}><td>{expense.spentOn}</td><td>{expense.description}</td><td>{expense.category}</td><td>{formatExpense(Number(expense.amountMinor))}</td></tr>)}</tbody>
+      </table></div> : <p>No expenses recorded for this month.</p>}
+    </section>
+  </>;
+}

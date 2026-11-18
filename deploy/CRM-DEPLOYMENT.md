@@ -333,3 +333,15 @@ Run `node --test tests/reminder-email-pilot.test.mjs` from the release checkout.
 3. Start only the intended workers from the ecosystem. The reminder producer is `proconsulting-worker` and the sender is `proconsulting-email`. Enable email delivery only after both agree on the sender, HTTPS CRM URL and pilot allowlist. Leave appointment and case reminder flags off for the initial task pilot.
 4. Create a due follow-up on a synthetic enquiry assigned to the pilot account. Verify one in-app reminder, one email with a working inbox link, an accepted outbox item and a delivered event in Workspace setup → Email delivery. Verify a second worker cycle does not send the same reminder again. Turn the pilot account preference off and verify a fresh in-app reminder produces no email. Repeat with synthetic appointment and case records before enabling those producers more broadly.
 5. If acceptance fails, stop `proconsulting-email` first, remove the email flags from the saved worker configuration and restart the reminder producer with email disabled. Leave the outbox and event ledger available for reconciliation. Check accepted or review items against Resend before restarting, especially if a send timed out. Keep the webhook active while reconciling in-flight events, or disable it when abandoning the pilot.
+
+### Office expense register
+
+Owner access only. Apply and verify the private collection before deploying the server.
+
+```sh
+node scripts/setup-appwrite.mjs --only=expenses
+node scripts/setup-appwrite.mjs --only=expenses --apply
+node scripts/verify-appwrite.mjs --only=expenses
+```
+
+Runtime access must allow expense document read/write. Test an owner recording a synthetic GBP expense, retry the same submission, verify monthly totals and deny an ordinary admin/counselor. Verify both website and mobile access after the server rollout. The native owner must sign in again for the updated role claim used to display Finance. Server authorization always reads current staff access. Finance data is online-only on mobile. The register has no correction or delete workflow yet. Preserve the same form after an uncertain save to avoid duplicate entry.

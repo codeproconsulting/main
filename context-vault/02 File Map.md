@@ -275,3 +275,7 @@ app/admin/email-delivery.tsx renders operations; app/admin/email-delivery.server
 ## Duplicate follow-up transfer
 
 The duplicate-review action calls moveDuplicateTask in crm.server.ts. Tests cover transfer, stale forms, blockers and uncertain audit completion.
+
+## Office expenses
+
+`app/admin/finance.server.ts` validates and records expenses and computes bounded monthly totals. `app/admin/finance.tsx` renders the web workflow. `app/admin/mobile-api.ts` exposes finance reads/writes. The separate mobile checkout contains `src/Finance.tsx`.

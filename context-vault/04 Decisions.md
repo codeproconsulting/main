@@ -255,3 +255,7 @@ A future merge write must re-read both enquiry versions and the dependency inven
 ## Duplicate follow-up transfer
 
 Move one selected task at a time. Preserve its identity, due date and owner while incrementing its version. Closed tasks and existing audit history stay on the source. An uncertain task write or audit acknowledgement retains locks for operator reconciliation.
+
+## Office expenses
+
+Initial finance scope is an append-only office expense register in GBP. Amounts are stored as decimal strings of whole pence and validated before conversion. Retry identity is scoped to the actor and submission ID. The month view caps at 1,000 expenses and fails explicitly above the cap. Corrections, receipts, income, approvals and other currencies remain future work.

@@ -233,3 +233,7 @@ The duplicate review can load an on-demand comparison of both enquiries. It read
 ## Duplicate follow-up transfer
 
 Duplicate review can move one open task under both enquiry locks and the staff access lock. Both enquiry versions and the task version are checked again before the write.
+
+## Office expenses
+
+Office expenses use a shared server service for the web route and mobile API. The private expenses collection stores an immutable record with a recorder ID. Both paths enforce active owner access.

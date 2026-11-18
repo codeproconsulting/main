@@ -313,3 +313,7 @@ Implemented and verified a read-only duplicate merge planning view. It compares 
 ## Duplicate follow-up transfer
 
 Open follow-up transfer is implemented for a confirmed pair with the same counselor and team. Archive remains a separate reviewed action. Browser and VPS acceptance pending.
+
+## Office expenses
+
+Owner-only expense entry and monthly category totals implemented on web and native mobile. Private Appwrite collection provisioned. Synthetic storage, month ordering and anonymous denial passed, with cleanup. Browser and physical-device acceptance and VPS application rollout remain pending.
