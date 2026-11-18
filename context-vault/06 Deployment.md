@@ -277,3 +277,7 @@ Provision optional voidedAt, voidedBy and voidReason expense attributes before d
 ## Monthly expense export
 
 The expense CSV route uses existing expenses and activities permissions. No schema changes. Verify an owner download and counselor denial after server rollout.
+
+## Finance release handoff update
+
+On 18 November the public CRM HTTPS probe passed TLS validation. The unauthenticated mobile finance path returned JSON 404 Unknown resource, which indicates the served API does not include Finance. The Hermes and first-install handoffs now pin the tested finance release 4633bf5 and include an existing-install update sequence. Runtime directory and exact deployed commit remain unconfirmed.

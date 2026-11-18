@@ -33,7 +33,7 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Exact next actions
 
-1. Deploy the finance server and verify owner create/void/export and counselor denial, then publish the native finance update and perform device acceptance.
+1. Have the VPS Hermes agent follow the updated existing-install Finance rollout in deploy/HAMY-CRM-HANDOFF.md. Verify anonymous finance API changes from 404 Unknown resource to 401, then owner create/void/export and counselor denial before native Finance publication.
    Files: `deploy/CRM-DEPLOYMENT.md`, `app/admin/finance.tsx`, `/Users/fidaali/Proconsulting-App/src/Finance.tsx`
 
 ## Known risks and unfinished work
@@ -57,9 +57,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-18T05:12:02.564Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-lmV4j6/typecheck.log`
-- **passed**: `npm run test` (2026-11-18T05:12:04.095Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-lmV4j6/test.log`
-- **passed**: `npm run build` (2026-11-18T05:12:09.640Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-lmV4j6/build.log`
+- **passed**: `npm run typecheck` (2026-11-18T08:14:44.328Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Mhelnd/typecheck.log`
+- **passed**: `npm run test` (2026-11-18T08:14:45.892Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Mhelnd/test.log`
+- **passed**: `npm run build` (2026-11-18T08:14:51.183Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Mhelnd/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -136,5 +136,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **mobileFinance**: Native finance screen implemented locally. Server rollout required before mobile publication. Sign-in role field added; owners must sign in again.
 - **expenseVoids**: Optional schema verified private. Web browser acceptance passed locally. No real expense records modified and no VPS application deployment.
 - **expenseExport**: Implemented and verified locally. Initial full-suite mobile API process stalled, standalone test and repeated full suite passed. No VPS deployment.
+- **financeDeployment**: 18 November public HTTPS probe passed TLS. Mobile finance endpoint returned JSON 404 Unknown resource. Updated Hermes release pin to tested 4633bf5; VPS application update required.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

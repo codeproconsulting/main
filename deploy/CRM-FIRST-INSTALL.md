@@ -43,7 +43,7 @@ Use an SSH-enabled GitHub deploy key or the deployment user's existing GitHub ac
 sudo install -d -o "$USER" -g "$(id -gn)" /srv/proconsulting-crm
 git clone --branch codex/crm-workspace git@github.com:codeproconsulting/main.git /srv/proconsulting-crm
 cd /srv/proconsulting-crm
-git checkout --detach 8af70cb65657eb125cf96800787540c5229eaaaf
+git checkout --detach 4633bf55ad545bddd59de5b126506841b86ae851
 npm ci
 cp -n deploy/env.example .env
 chmod 600 .env

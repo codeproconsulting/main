@@ -2,7 +2,7 @@
 
 The VPS operator reports that the ProConsulting repository is already pulled into a folder named `main` and that the application is working through Nginx. Start with the existing checkout and active service. The absolute path, deployed commit, PM2 process layout and hostnames currently served still need to be confirmed on the VPS. The folder name `main` does not identify its Git branch.
 
-The tested CRM application baseline for this handoff is commit `8af70cb65657eb125cf96800787540c5229eaaaf` on [codex/crm-workspace](https://github.com/codeproconsulting/main/tree/codex/crm-workspace). Typecheck, tests and the production build passed for that commit. The deployed revision may differ. A previous external probe reported a CRM certificate mismatch. Check the current public edge before treating that result as a current failure.
+The tested CRM application baseline for this handoff is commit `4633bf55ad545bddd59de5b126506841b86ae851` on [codex/crm-workspace](https://github.com/codeproconsulting/main/tree/codex/crm-workspace). Typecheck, tests and the production build passed for that commit. The deployed revision may differ. The 18 November HTTPS probe passed certificate validation. The mobile finance endpoint returned HTTP 404 with Unknown resource, confirming that this endpoint is absent from the currently served API. Confirm the actual deployed commit before updating.
 
 ## What has been built
 
@@ -16,6 +16,7 @@ The tested CRM application baseline for this handoff is commit `8af70cb65657eb12
 | Reporting | Operational counts, scoped reports, audited CSV export, and consultation filters by counselor and destination | Tested locally. Check role boundaries on the deployed instance |
 | Reminders | In-app task, appointment and case reminders. Optional staff email consent, Resend outbox, signed callbacks, bounce suppression and admin delivery status | Local email pilot passed with simulated delivery. Appwrite preflight passed on the development target. Live sender, callback and workers remain pending |
 | Blog CMS | Draft authoring, visual editor, revisions, scheduled publishing, private editorial media and Ghost draft import | Implemented and tested locally. Keep public blogs on Ghost until the migration acceptance and rollback checks pass |
+| Finance | Owner expense entry, monthly category totals, void corrections and audited CSV. Native entry and void screens implemented | Web/browser and storage checks passed. Server rollout required before native Finance delivery |
 | Mobile | Native Android staff client and iOS simulator preview, workspace API, scoped lead search and selected edits | Requires valid CRM HTTPS and physical-device acceptance. Feature parity and durable offline support remain open |
 
 See the [feature ledger](../context-vault/Feature%20Ledger.md) for detailed acceptance evidence and the [implementation plan](../docs/CRM-CMS-APPWRITE-IMPLEMENTATION-PLAN.md) for original scope.
@@ -56,6 +57,20 @@ Use the steps below only for missing pieces of the CRM deployment. The separate 
 4. **Build and start.** Run `npm run typecheck`, `npm test` and `npm run build`. Start `pm2 startOrReload deploy/ecosystem.config.cjs --only proconsulting-crm --update-env` from the dedicated checkout. Confirm a login response on loopback with the forwarded CRM host and HTTPS scheme. [Exact process and curl commands](CRM-DEPLOYMENT.md#5-build-and-start-only-the-crm).
 5. **Configure the edge.** Point `crm.proconsulting.uk` at the chosen edge. For host Nginx, install the proxy snippet and certificate-only bootstrap vhost, verify the public ACME challenge and issue the certificate. Install the final HTTPS vhost only once the certificate exists. Run `nginx -t` before each reload. For a container or managed edge, configure the equivalent at the actual TLS terminator and use an upstream reachable from that proxy. Preserve `/admin`, the original host and HTTPS scheme. [Bootstrap commands](CRM-DEPLOYMENT.md#6-tls-bootstrap-http-serves-only-certificate-challenges) and [HTTPS and renewal commands](CRM-DEPLOYMENT.md#7-enable-final-https-routing-and-renewals).
 6. **Accept the release.** Run `node scripts/check-crm-edge.mjs` externally. Then check owner sign-in/out, counselor isolation, a synthetic enquiry assignment and follow-up, and the CRM API on Android. Check that the public site, Ghost blog routes and Appwrite still work. Record the release commit, proxy ownership, hostname validation, PM2 status and checks without including credentials or applicant data. Verify certificate renewal and PM2 startup persistence after the first checks pass. [First-day acceptance and persistence](CRM-DEPLOYMENT.md#8-reboot-persistence-and-first-day-acceptance).
+
+## Update the existing CRM for Finance
+
+Use the discovered CRM working directory and deployment user. The server already serves HTTPS, so start with the application release and schema checks.
+
+1. Record the running CRM's working directory, entry point and current Git SHA. Confirm whether this checkout also serves the public website. If it does, stage the CRM release separately or schedule the shared application update with public regression checks.
+2. Fetch the repository and select the pinned `4633bf55ad545bddd59de5b126506841b86ae851` release in a clean release checkout. Preserve any local modifications and the recorded rollback SHA.
+3. Use setup credentials privately to run the scoped expense schema setup and verification from [Office expense register](CRM-DEPLOYMENT.md#office-expense-register). Confirm description, amount, date, category and all three void fields. Replace elevated setup credentials with the runtime key before startup.
+4. Run `npm ci`, `npm run typecheck`, `npm test` and `npm run build`. Restart the existing CRM process from the intended release directory, or start `proconsulting-crm` only when no CRM listener already occupies its configured port. Verify the live process uses the new build.
+5. Probe `https://crm.proconsulting.uk/admin/mobile/v1/finance` without credentials. The new endpoint should return JSON HTTP 401. HTTP 404 with Unknown resource means the old API is still serving that request. This probe establishes endpoint presence only.
+6. Sign in as the owner. Record a clearly synthetic expense, verify the monthly total, void it with a test reason, confirm the total decreases and export the month. Keep the voided test row as test evidence rather than deleting history. Verify counselor and ordinary admin denial using test accounts.
+7. Confirm the public website, blog and Appwrite still work. Record the deployment SHA and test outcomes. Only after the server passes should the native Finance JavaScript update be published. Owners must sign in again on mobile so the new session includes their role.
+
+If the finance checks fail, return the CRM to its recorded working release using the existing rollback procedure. Preserve the additive schema and expense history. Do not point mobile Finance at an older server.
 
 ## Enable additional services in stages
 

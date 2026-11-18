@@ -22,7 +22,7 @@
   "nextActions": [
     {
       "order": 1,
-      "action": "Deploy the finance server and verify owner create/void/export and counselor denial, then publish the native finance update and perform device acceptance.",
+      "action": "Have the VPS Hermes agent follow the updated existing-install Finance rollout in deploy/HAMY-CRM-HANDOFF.md. Verify anonymous finance API changes from 404 Unknown resource to 401, then owner create/void/export and counselor denial before native Finance publication.",
       "files": [
         "deploy/CRM-DEPLOYMENT.md",
         "app/admin/finance.tsx",
@@ -119,31 +119,32 @@
     "officeExpenses": "Private schema provisioned and synthetic storage verified with cleanup. No real expense entries. VPS release pending.",
     "mobileFinance": "Native finance screen implemented locally. Server rollout required before mobile publication. Sign-in role field added; owners must sign in again.",
     "expenseVoids": "Optional schema verified private. Web browser acceptance passed locally. No real expense records modified and no VPS application deployment.",
-    "expenseExport": "Implemented and verified locally. Initial full-suite mobile API process stalled, standalone test and repeated full suite passed. No VPS deployment."
+    "expenseExport": "Implemented and verified locally. Initial full-suite mobile API process stalled, standalone test and repeated full suite passed. No VPS deployment.",
+    "financeDeployment": "18 November public HTTPS probe passed TLS. Mobile finance endpoint returned JSON 404 Unknown resource. Updated Hermes release pin to tested 4633bf5; VPS application update required."
   },
   "checks": [
     {
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-18T05:12:02.564Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-lmV4j6/typecheck.log"
+      "checkedAt": "2026-11-18T08:14:44.328Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Mhelnd/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-18T05:12:04.095Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-lmV4j6/test.log"
+      "checkedAt": "2026-11-18T08:14:45.892Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Mhelnd/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-18T05:12:09.640Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-lmV4j6/build.log"
+      "checkedAt": "2026-11-18T08:14:51.183Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Mhelnd/build.log"
     }
   ],
-  "updatedAt": "2026-11-18T05:12:27.136Z",
-  "verifiedSourceFingerprint": "05171b4f801e51ff93bf00ee22a1400a99173939727d2e0ce0470e326c9618b1"
+  "updatedAt": "2026-11-18T08:14:51.184Z",
+  "verifiedSourceFingerprint": "7ea61de6efdfb478a931fc946181b634b425e9bd2de9d8d3011738f4c7329303"
 }
