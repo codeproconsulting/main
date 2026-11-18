@@ -29,11 +29,11 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| MOB-OFFLINE | Native device cold-start acceptance | pending | Android prebuild, module backup exclusions and OTA runtime 1.0.3 verified. Mobile typecheck, lint and four tests passed. EAS Android build f3605d77-c7c0-4ae6-8a5d-507d256f6d11 is queued. Device acceptance pending. |
+| MOB-OFFLINE | Native device cold-start acceptance | pending | EAS APK finished, downloaded and ZIP-verified. Package/version/code, updates preview channel and native SecureStore found in artifact. Android OTA runtime 1.0.3 verified via update endpoint. Device acceptance remains pending. |
 
 ## Exact next actions
 
-1. Monitor EAS build f3605d77-c7c0-4ae6-8a5d-507d256f6d11, download the APK after success and verify airplane-mode cold start, expiry and sign-out. Runtime 1.0.3 requires a new installed binary.
+1. Install ProConsulting-Staff-1.0.3.apk and verify preview OTA, airplane-mode cold start, expiry and sign-out on a physical Android device.
    Files: `/Users/fidaali/Proconsulting-App/src/offline-cache.ts`, `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`
 
 ## Known risks and unfinished work
@@ -124,12 +124,13 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **contactProfile**: Local synthetic profile acceptance passed. Browser and VPS acceptance pending.
 - **duplicateReview**: Synthetic acceptance passed. VPS and browser acceptance pending. No schema changes.
 - **duplicateMergePlan**: Synthetic acceptance passed for read-only planning. No runtime deployment or data migration.
-- **offlineAndroidBuild**: Queued on EAS. Native project regenerated with SecureStore and updates enabled. No APK delivered yet.
+- **offlineAndroidBuild**: Finished f3605d77-c7c0-4ae6-8a5d-507d256f6d11. APK downloaded and package/native integration verified.
 - **offlineSearch**: Mobile commit 0fdd6f9 implements saved lead/task search. Typecheck, lint, five tests and Android export passed. Not in queued APK and not OTA published. Mobile checkout still has no remote.
 - **offlineCacheControls**: Native cache clear control and account-switch cleanup implemented. Missing/invalid session expiry rejected. Mobile typecheck, lint, five tests and Android export passed. Local mobile commit pending OTA and device acceptance.
 - **offlineRecovery**: Foreground retry and expiry label implemented in native source. Typecheck, lint, six tests and Android export passed. APK still queued, OTA and device checks pending.
 - **offlineIntegrity**: Unicode chunk integrity, failed-write cleanup, concurrent cache clear and post-edit cache invalidation verified synthetically. Mobile typecheck, lint, six tests and Android export passed. APK queued and device acceptance pending.
 - **mobileFollowUpTriage**: All/overdue/next-24-hours filters and due sorting work locally on loaded or cached tasks. Mobile typecheck, lint, seven tests and Android export passed. Native build queued and OTA/device checks pending.
 - **mobileLeadTriage**: Local stage/priority filters, urgent-first sort and reset implemented. Typecheck, lint, eight tests and Android export passed. Queue unchanged; OTA/device checks pending.
+- **offlineOTA**: Android preview group 034fb32c-4bf8-4232-9aa5-1855d0dc6bbe published from mobile 82f27cb; update endpoint returned matching runtime 1.0.3 and update ID.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]
