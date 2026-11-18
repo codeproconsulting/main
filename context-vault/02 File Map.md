@@ -287,3 +287,7 @@ The duplicate-review action calls moveDuplicateTask in crm.server.ts. Tests cove
 ## Monthly expense export
 
 `app/admin/finance-export.ts` serves the owner-only month CSV. `exportExpenses` in `finance.server.ts` uses `csvCell` from the existing report service.
+
+## Monthly office budget
+
+Budget read/write and remaining calculation live in `app/admin/finance.server.ts`. The web Finance form and native Finance screen use the same service through their existing actions.

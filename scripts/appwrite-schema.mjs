@@ -1,5 +1,6 @@
 // Repeatable setup: creates missing schema and applies explicitly documented safe defaults; never drops records.
 export const schema = {
+ expense_budgets: {fields:{month:7,amountMinor:16,version:"integer",updatedBy:36},indexes:{}},
  expenses: {fields:{description:500,category:40,spentOn:10,amountMinor:16,currency:3,recordedBy:36,voidedAt:40,voidedBy:36,voidReason:500},indexes:{spent:['spentOn']}},
  staff: { fields: {name:200,role:30,active:'boolean',teamId:36,managerScope:12,revocationPending:40,routingAvailability:12,routingCapacity:3,reminderEmail:12}, indexes: {active:['active'],role_active:['role','active']} },
  crm_teams: {fields:{name:200,branch:150,status:12},indexes:{}},

@@ -285,3 +285,7 @@ On 18 November the public CRM HTTPS probe passed TLS validation. The unauthentic
 ## CRM live confirmation
 
 The operator confirmed that the CRM is live following the deployment guide. On 18 November, the public login returned HTTPS 200 with certificate validation enabled. The separate mobile finance endpoint still returned 404 Unknown resource. Treat the CRM as deployed, with the finance API rollout tracked separately. The exact running revision and authenticated workflows were not checked.
+
+## Monthly office budget
+
+Provision `expense_budgets` using scoped schema setup before enabling budget saves. Runtime needs budget document read/write and activity writes. Deploy server before publishing the native budget UI. No real budgets were configured during implementation.

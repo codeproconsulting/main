@@ -227,3 +227,7 @@ Only the current active owner may void. Actor ID stays server-side. Web/mobile l
 ## Monthly expense export
 
 The CSV excludes recorder and void actor IDs. The audit stores the owner, month and row count. Downloads carry private/no-store headers and spreadsheet formula protection.
+
+## Monthly office budget
+
+Budget access is limited to current active owner accounts. Responses expose amount/version/remaining but omit the updating actor. Month IDs isolate budgets and stale changes conflict.

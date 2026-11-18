@@ -30,6 +30,7 @@ Only **one feature** is the active session focus. “Code staged” means implem
 | OPS-01 | Production operations | Planned | Deployment access, existing edge, DNS/TLS, backup/restore, monitoring, narrow runtime key, stale-lock recovery |
 | COMMS-01 | Email/WhatsApp/SMS delivery | Resend outbox and opt-in staff reminders and signed delivery events and suppression verified synthetically and against target query shapes; owner/admin email delivery dashboard and self-service staff consent implemented; local end-to-end pilot passed; consent attribute provisioned and Appwrite preflight passed; live pilot pending CRM TLS and Resend setup | Resend selected for email; verify sender/domain, server API/webhook adapter, durable outbox, retries, suppression and delivery tests. WhatsApp/SMS undecided; no provider activated |
 | FIN-01 | Owner office expense register | Implemented on web and native mobile; Appwrite schema and synthetic storage verified | Browser/device acceptance and VPS rollout pending. GBP, monthly cap 1,000. Void corrections implemented; receipts remain open |
+| FIN-02 | Monthly office budgets | Implemented on web and native mobile; schema and synthetic storage verified | GBP budget versus active spend, versioned owner saves. VPS and device acceptance pending |
 | EXT-01 | Calendar sync, payments, client portal | Planned | Separate requirements and provider setup after core acceptance |
 
 ## Completion rule

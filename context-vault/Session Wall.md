@@ -3,37 +3,39 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-18-03]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-18-04]].
 
 ## Resume here
 
-**Session:** 2026-11-18-03
+**Session:** 2026-11-18-04
 
-**Active feature:** FIN-01
+**Active feature:** FIN-02
 
 **State:** completed
 
-**Objective:** Provide an audited owner-only monthly office expense CSV.
+**Objective:** Track monthly office budget versus spending on web and native mobile.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Month export, active/voided rows, CSV safety and refreshed authorization
+- Owner budget entry, versioned updates, remaining balance and over-budget status
 
 ## Out of scope
 
-- Receipts, VPS rollout and mobile native downloads
+- Budget approval limits, multiple currencies and VPS/device acceptance
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| FIN01-CSV | Safe expense export with fresh owner access and audit before release | passed | Synthetic tests passed formula/quote escaping, fixed decimal amounts, void status, role-change denial, audit failure handling and private download headers. Built Chrome owner export also passed with the original voided amount and correction reason. |
+| FIN02-SERVICE | Correct budget calculations with owner-only versioned changes | passed | Synthetic tests verify decimal pence, initial save, idempotent retry, stale changes, audit failure, void exclusions and over-budget balance. |
+| FIN02-CLIENT | Web flow and native compatibility | passed | Built Chrome budget entry and £87.70 balance after £12.30 spending passed. Mobile typecheck, lint, tests and Android export passed. |
+| FIN02-STORAGE | Private budget storage | passed | Schema verified; disposable record round trip and anonymous denial passed. Synthetic budget removed. |
 
 ## Exact next actions
 
-1. Confirm the live CRM revision and roll out the later finance release if absent. The CRM itself is live. Verify owner create/void/export and counselor denial before publishing native Finance.
+1. Roll out finance and budget server endpoints using the existing VPS deployment guide, verify owner and non-owner access, then publish native Finance and perform device checks.
    Files: `deploy/CRM-DEPLOYMENT.md`, `app/admin/finance.tsx`, `/Users/fidaali/Proconsulting-App/src/Finance.tsx`
 
 ## Known risks and unfinished work
@@ -57,9 +59,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-18T08:14:44.328Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Mhelnd/typecheck.log`
-- **passed**: `npm run test` (2026-11-18T08:14:45.892Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Mhelnd/test.log`
-- **passed**: `npm run build` (2026-11-18T08:14:51.183Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Mhelnd/build.log`
+- **passed**: `npm run typecheck` (2026-11-18T08:21:58.276Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-PTgzmB/typecheck.log`
+- **passed**: `npm run test` (2026-11-18T08:21:59.948Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-PTgzmB/test.log`
+- **passed**: `npm run build` (2026-11-18T08:22:05.288Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-PTgzmB/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -137,5 +139,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **expenseVoids**: Optional schema verified private. Web browser acceptance passed locally. No real expense records modified and no VPS application deployment.
 - **expenseExport**: Implemented and verified locally. Initial full-suite mobile API process stalled, standalone test and repeated full suite passed. No VPS deployment.
 - **financeDeployment**: CRM is live. Mobile finance API still returned 404 Unknown resource on 18 November. Finance release rollout is separate from the working CRM deployment.
+- **officeBudget**: Private expense_budgets schema provisioned. Synthetic storage verified and cleaned. No real budget changes and no VPS application release.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

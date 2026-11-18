@@ -3,7 +3,7 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { appwrite, AppwriteError, configurationIssues } from "~/lib/appwrite.server";
 import { openStaffSession, staffForSession } from "./auth.server";
 import { boundedBody } from "~/lib/request-body.server";
-import { expenseCategories, expenseMonth, recordExpense, voidExpense } from "./finance.server";
+import { expenseCategories, expenseMonth, recordExpense, voidExpense, saveOfficeBudget } from "./finance.server";
 import { leadFor, leadsFor, queuePage, taskPage, updateLead } from "./crm.server";
 
 import { isRestrictedManager, closureStages, priorities, stages, type Lead } from "./domain";
@@ -135,6 +135,11 @@ export function action({ request, params }: ActionFunctionArgs) {
       const staff = await mobileStaff(request);
       const body = await (await boundedBody(request, 8192, "Expense")).text().then(JSON.parse).catch(() => null);
       if (!body || typeof body !== "object" || Array.isArray(body)) return reply({ error: "Invalid expense." }, 400);
+      if (body.intent === "budget") {
+        if (typeof body.month !== "string" || typeof body.amount !== "string" || typeof body.version !== "string") return reply({ error: "Invalid budget." }, 400);
+        await saveOfficeBudget(staff, body.month, body.amount, body.version);
+        return reply({ saved: true });
+      }
       if (body.intent === "void") {
         if (typeof body.id !== "string" || typeof body.reason !== "string") return reply({ error: "Select an expense and reason." }, 400);
         await voidExpense(staff, body.id, body.reason);

@@ -245,3 +245,7 @@ An owner can void an expense with one document update under expense and staff-ac
 ## Monthly expense export
 
 The monthly expense CSV uses the existing private month read and shared CSV escaping. A fresh owner check and an audit entry precede the download response.
+
+## Monthly office budget
+
+Monthly office budgets are private records keyed by month. Spending uses the existing expense report and excludes voided rows. The owner writes with an expected version under budget and staff locks.

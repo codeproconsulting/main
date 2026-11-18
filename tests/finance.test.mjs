@@ -6,6 +6,7 @@ test('office expenses enforce owner access, exact pence and idempotent writes',a
  const root=fileURLToPath(new URL('../',import.meta.url));
  const vite=await createServer({configFile:false,root,resolve:{alias:{'~':root+'app'}},server:{middlewareMode:true,hmr:false,ws:false},logLevel:'error'});
  const oldFetch=globalThis.fetch, oldEnv={...process.env};
+ const budgets=new Map();
  const rows=new Map(),owner={$id:'owner',role:'owner',active:true};
  let role='owner',lost=false,calls=0,failAudit=false;
  const audits=[];
@@ -15,6 +16,7 @@ test('office expenses enforce owner access, exact pence and idempotent writes',a
   calls++;
   const url=new URL(input);
   if(url.pathname.endsWith('/staff/documents/owner'))return Response.json({...owner,role});
+  const store=url.pathname.includes("/expense_budgets/")?budgets:rows;
   const id=url.pathname.split('/').at(-1);
   if(options.method==='POST' && url.pathname.endsWith('/activities/documents')){
    if(failAudit)return Response.json({}, {status:503});
@@ -25,28 +27,28 @@ test('office expenses enforce owner access, exact pence and idempotent writes',a
   if(options.method==='POST'){
    const {documentId,data,permissions}=JSON.parse(options.body);
    assert.deepEqual(permissions,[]);
-   if(rows.has(documentId))return Response.json({}, {status:409});
-   rows.set(documentId,{$id:documentId,...data});
+   if(store.has(documentId))return Response.json({}, {status:409});
+   store.set(documentId,{$id:documentId,...data});
    if(lost){lost=false;throw Error('Synthetic lost acknowledgement');}
-   return Response.json(rows.get(documentId));
+   return Response.json(store.get(documentId));
   }
   if(options.method==='PATCH'){
    const {data}=JSON.parse(options.body);
-   if(!rows.has(id))return Response.json({}, {status:404});
-   rows.set(id,{...rows.get(id),...data});
+   if(!store.has(id))return Response.json({}, {status:404});
+   store.set(id,{...store.get(id),...data});
    if(lost){lost=false;throw Error('Synthetic lost acknowledgement');}
-   return Response.json(rows.get(id));
+   return Response.json(store.get(id));
   }
   if(url.search){
    const queries=url.searchParams.getAll('queries[]').map(JSON.parse);
    assert.ok(queries.find(q=>q.method==='select').values.every(v=>!['recordedBy'].includes(v)));
    const start=queries.find(q=>q.method==='greaterThanEqual').values[0];
    const end=queries.find(q=>q.method==='lessThan').values[0];
-   return Response.json({documents:[...rows.values()].filter(r=>r.spentOn>=start&&r.spentOn<end),total:rows.size});
+   return Response.json({documents:[...store.values()].filter(r=>r.spentOn>=start&&r.spentOn<end),total:store.size});
   }
-  return rows.has(id)?Response.json(rows.get(id)):Response.json({}, {status:404});
+  return store.has(id)?Response.json(store.get(id)):Response.json({}, {status:404});
  };
- const {recordExpense,expenseMonth,voidExpense,exportExpenses}=await vite.ssrLoadModule('/app/admin/finance.server.ts');
+ const {recordExpense,expenseMonth,voidExpense,exportExpenses,saveOfficeBudget}=await vite.ssrLoadModule('/app/admin/finance.server.ts');
  const form=(extra={})=>{
   const f=new FormData();
   for(const [k,v]of Object.entries({submissionId:'12345678-1234-1234-1234-123456789012',description:'Synthetic rent',category:'Rent',spentOn:'2030-12-31',amount:'12.30',...extra}))f.set(k,v);
@@ -104,6 +106,23 @@ test('office expenses enforce owner access, exact pence and idempotent writes',a
  assert.doesNotMatch(csv,/recordedBy|voidedBy/);
  assert.equal(audits.length,1);
  assert.deepEqual(JSON.parse(audits[0].details),{month:'2030-12',count:1});
+
+ await assert.rejects(saveOfficeBudget({...owner,role:'admin'},'2030-12','100','0'),e=>e.status===403);
+ await saveOfficeBudget(owner,'2030-12','100.10','0');
+ assert.equal(budgets.get('2030-12').amountMinor,'10010');
+ const planned=await expenseMonth(owner,'2030-12');
+ assert.equal(planned.budget.remainingMinor,10010);
+ await saveOfficeBudget(owner,'2030-12','100.10','0');
+ assert.equal(budgets.get('2030-12').version,1);
+ await assert.rejects(saveOfficeBudget(owner,'2030-12','101','0'),e=>e.status===409);
+ failAudit=true;
+ await assert.rejects(saveOfficeBudget(owner,'2030-12','10','1'));
+ assert.equal(budgets.get('2030-12').version,1);
+ failAudit=false;
+ await saveOfficeBudget(owner,'2030-12','10','1');
+ rows.get(id).voidedAt='';
+ assert.equal((await expenseMonth(owner,'2030-12')).budget.remainingMinor,-230);
+ assert.equal((await expenseMonth(owner,'2031-01')).budget,null);
 
  }finally{
  globalThis.fetch=oldFetch;

@@ -267,3 +267,7 @@ A correction voids the original expense and records actor, time and reason on th
 ## Monthly expense export
 
 CSV exports retain voided entries so bookkeeping review can reconcile corrections. The monthly screen’s total excludes voids. Exports inherit the same 1,000-entry cap and fail when audit recording fails.
+
+## Monthly office budget
+
+One GBP office budget per calendar month. Positive budgets use whole pence, version checks and a recorded change intent. Repeating a saved change is idempotent. Uncertain writes retain locks. Budgets are tracking values and do not block expense recording.

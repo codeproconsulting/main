@@ -8,6 +8,45 @@ export const expenseCategories = ["Rent", "Utilities", "Salaries", "Travel", "Su
 export type Expense = { $id: string; description: string; category: string; spentOn: string; amountMinor: string; currency: string; recordedBy: string; voidedAt?: string; voidedBy?: string; voidReason?: string };
 export const canUseFinance = (staff: Staff) => staff.active && staff.role === "owner" && !staff.revocationPending;
 
+type OfficeBudget = { month: string; amountMinor: string; version: number; updatedBy: string };
+function amountInPence(amount: string) {
+  if (!/^(?:0|[1-9]\d{0,6})(?:\.\d{1,2})?$/.test(amount)) throw new Response("Enter an amount with up to two decimal places.", { status: 400 });
+  const [whole, fraction = ""] = amount.split(".");
+  const value = Number(whole) * 100 + Number(fraction.padEnd(2, "0"));
+  if (value <= 0) throw new Response("The amount must be greater than zero.", { status: 400 });
+  return String(value);
+}
+async function readBudget(month: string) {
+  try { return await getDocument<OfficeBudget>("expense_budgets", month); }
+  catch (error) { if (error instanceof AppwriteError && error.status === 404) return null; throw error; }
+}
+export async function saveOfficeBudget(staff: Staff, month: string, amount: string, expectedVersion: string) {
+  allow(canUseFinance(staff));
+  if (!/^\d{4}-(?:0[1-9]|1[0-2])$/.test(month) || !/^(?:0|[1-9]\d*)$/.test(expectedVersion)) {
+    throw new Response("Choose a valid month and reload its current budget.", { status: 400 });
+  }
+  const amountMinor = amountInPence(amount);
+  return serialized(`budget:${month}`, () => serialized(staffAccessLock, async () => {
+    const actor = await getDocument<Staff>("staff", staff.$id);
+    allow(canUseFinance(actor));
+    const current = await readBudget(month);
+    const version = current?.version ?? 0;
+    if (version !== Number(expectedVersion)) {
+      if (version === Number(expectedVersion) + 1 && current?.amountMinor === amountMinor && current.updatedBy === staff.$id) return;
+      throw new Response("The budget changed. Reload the month before saving.", { status: 409 });
+    }
+    const values = { month, amountMinor, version: version + 1, updatedBy: staff.$id };
+    await audit(actor, month, "budget", "Office budget change requested", { before: current?.amountMinor ?? "", after: amountMinor, version: values.version });
+    try {
+      if (current) await updateDocument("expense_budgets", month, values);
+      else await createDocument("expense_budgets", values, month);
+    } catch (error) {
+      if (definitiveWriteRejection(error)) throw error;
+      throw new UnconfirmedMutation("The budget save could not be confirmed. Ask an administrator to reconcile its record and locks.");
+    }
+  }));
+}
+
 export async function recordExpense(staff: Staff, form: FormData) {
   allow(canUseFinance(staff));
   const submissionId = field(form, "submissionId", 36);
@@ -20,9 +59,7 @@ export async function recordExpense(staff: Staff, form: FormData) {
       !/^(?:0|[1-9]\d{0,6})(?:\.\d{1,2})?$/.test(amount)) {
     throw new Response("Enter a description, category, valid date and amount with up to two decimal places.", { status: 400 });
   }
-  const [whole, fraction = ""] = amount.split(".");
-  const amountMinor = String(Number(whole) * 100 + Number(fraction.padEnd(2, "0")));
-  if (Number(amountMinor) <= 0) throw new Response("The amount must be greater than zero.", { status: 400 });
+  const amountMinor = amountInPence(amount);
   const id = createHash("sha256").update(staff.$id + ":" + submissionId).digest("hex").slice(0, 32);
   const values = { description, category, spentOn, amountMinor, currency: "GBP", recordedBy: staff.$id };
   return serialized(staffAccessLock, async () => {
@@ -78,9 +115,13 @@ export async function expenseMonth(staff: Staff, month: string) {
   }
   const totals = expenseCategories.map(category => ({ category, amountMinor: documents
     .filter(row => !row.voidedAt && row.category === category).reduce((sum, row) => sum + Number(row.amountMinor), 0) }));
-  return { month, currency: "GBP", expenses: documents.map(({ $id, description, category, spentOn, amountMinor, currency, voidedAt, voidReason }) =>
+  const budget = await readBudget(month);
+  const totalMinor = totals.reduce((sum, row) => sum + row.amountMinor, 0);
+  return { month, currency: "GBP", budget: budget ? {
+    amountMinor: budget.amountMinor, version: budget.version, remainingMinor: Number(budget.amountMinor) - totalMinor,
+  } : null, expenses: documents.map(({ $id, description, category, spentOn, amountMinor, currency, voidedAt, voidReason }) =>
     ({ id: $id, description, category, spentOn, amountMinor, currency, voidedAt, voidReason })), totals,
-    totalMinor: totals.reduce((sum, row) => sum + row.amountMinor, 0) };
+    totalMinor };
 }
 
 

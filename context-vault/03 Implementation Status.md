@@ -325,3 +325,7 @@ Expense void correction implemented on web and native mobile. Service tests veri
 ## Monthly expense export
 
 Monthly expense CSV export implemented with active/voided status, preserved amounts and void reasons. Synthetic tests verify formula escaping, refreshed authorization and audit failure handling.
+
+## Monthly office budget
+
+Monthly GBP budget entry and remaining/over-budget review implemented for web and native mobile. Synthetic service and built Chrome checks passed. Private schema provisioned and disposable storage/anonymous denial passed.
