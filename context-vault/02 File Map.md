@@ -295,3 +295,7 @@ Budget read/write and remaining calculation live in `app/admin/finance.server.ts
 ## Expense payment details
 
 Payment fields span finance.server.ts, finance.tsx, mobile-api.ts and the native Finance screen. No separate payee directory or payment provider is introduced.
+
+## Expense search and filtering
+
+`app/lib/expense-search.ts` contains the pure expense filter. Its matching native copy is `src/expense-search.ts` in Proconsulting-App. Keep the two copies synchronized when changing filter semantics.

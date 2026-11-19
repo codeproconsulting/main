@@ -253,3 +253,7 @@ Monthly office budgets are private records keyed by month. Spending uses the exi
 ## Expense payment details
 
 Expenses optionally store payee, payment method and reference on the same immutable entry. Web, native and CSV use the shared validated service.
+
+## Expense search and filtering
+
+Web and native Finance filter the already owner-authorized monthly response locally. Search combines description, payee and reference with category, method and active/voided filters. Filtered active subtotals exclude voids.

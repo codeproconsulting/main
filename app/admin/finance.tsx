@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { filterExpenses, type ExpenseFilters } from "~/lib/expense-search";
 import { randomUUID } from "node:crypto";
 import { Form, Link, data, useActionData, useLoaderData } from "react-router";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
@@ -37,6 +39,8 @@ export async function action({ request }: ActionFunctionArgs) {
 export default function Finance() {
   const { month, budget, expenses, totals, totalMinor, submissionId, categories, paymentMethods } = useLoaderData<typeof loader>();
   const result = useActionData<typeof action>();
+  const [filters, setFilters] = useState<ExpenseFilters>({ search: "", category: "", paymentMethod: "", status: "all" });
+  const filtered = filterExpenses(expenses, filters);
   const formId = result && !result.success && result.submissionId ? result.submissionId : submissionId;
   return <>
     <PageHeading eyebrow="OFFICE FINANCE" title="Office expenses" description="Record office spending and review monthly totals in GBP.">
@@ -75,9 +79,21 @@ export default function Finance() {
       </Form>
     </section>
     <section className="crm-panel crm-padded"><h2>Expenses for {month}</h2>
-      {expenses.length ? <div className="crm-table-wrap"><table className="crm-table">
+      <div className="crm-filters">
+        <label>Search expenses<input value={filters.search} maxLength={200} placeholder="Description, payee or reference"
+          onChange={event => setFilters({...filters, search:event.target.value})}/></label>
+        <label>Expense category<select value={filters.category} onChange={event=>setFilters({...filters,category:event.target.value})}>
+          <option value="">All categories</option>{categories.map(value=><option key={value}>{value}</option>)}</select></label>
+        <label>Payment filter<select value={filters.paymentMethod} onChange={event=>setFilters({...filters,paymentMethod:event.target.value})}>
+          <option value="">All methods</option>{paymentMethods.map(value=><option key={value}>{value}</option>)}</select></label>
+        <label>Status<select value={filters.status} onChange={event=>setFilters({...filters,status:event.target.value as ExpenseFilters["status"]})}>
+          <option value="all">All entries</option><option value="active">Active</option><option value="voided">Voided</option></select></label>
+        <button className="crm-button secondary" onClick={()=>setFilters({search:"",category:"",paymentMethod:"",status:"all"})}>Reset filters</button>
+      </div>
+      <p>{filtered.rows.length} of {expenses.length} entries · Active spending in this view: {formatExpense(filtered.activeTotalMinor)}. CSV exports the full month.</p>
+      {filtered.rows.length ? <div className="crm-table-wrap"><table className="crm-table">
         <thead><tr><th>Date</th><th>Description</th><th>Category</th><th>Payment</th><th>Amount</th><th>Status</th></tr></thead>
-        <tbody>{expenses.map(expense => <tr key={expense.id}><td>{expense.spentOn}</td><td>{expense.description}</td><td>{expense.category}</td><td>{expense.payee || "Not recorded"}<small>{expense.paymentMethod}</small><small>{expense.reference}</small></td><td>{formatExpense(Number(expense.amountMinor))}</td><td>{expense.voidedAt ? <>
+        <tbody>{filtered.rows.map(expense => <tr key={expense.id}><td>{expense.spentOn}</td><td>{expense.description}</td><td>{expense.category}</td><td>{expense.payee || "Not recorded"}<small>{expense.paymentMethod}</small><small>{expense.reference}</small></td><td>{formatExpense(Number(expense.amountMinor))}</td><td>{expense.voidedAt ? <>
             <strong>Voided</strong><p>{expense.voidReason}</p>
           </> : <details><summary>Void expense</summary><Form method="post" className="crm-form">
             <input type="hidden" name="intent" value="void"/>
@@ -85,7 +101,7 @@ export default function Finance() {
             <label>Reason<textarea name="reason" maxLength={500} required/></label>
             <Submit>Confirm void</Submit>
           </Form></details>}</td></tr>)}</tbody>
-      </table></div> : <p>No expenses recorded for this month.</p>}
+      </table></div> : <p>No expenses match this view.</p>}
     </section>
   </>;
 }

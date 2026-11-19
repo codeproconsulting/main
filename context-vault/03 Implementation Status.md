@@ -333,3 +333,7 @@ Monthly GBP budget entry and remaining/over-budget review implemented for web an
 ## Expense payment details
 
 Optional expense payment details implemented for web/native entry, monthly review and CSV. Synthetic tests cover legacy missing fields, enum validation, retry identity and CSV formula safety.
+
+## Expense search and filtering
+
+Finance payment fields are now provisioned and verified on Appwrite after connectivity recovered. Search and multi-field filters are implemented on web and native with filtered active totals. Full-month totals and CSV retain their original scope.

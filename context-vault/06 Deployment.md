@@ -295,3 +295,7 @@ The current Hermes handoff pins budget-inclusive release 870c3cd. The live anony
 ## Expense payment details
 
 Apply scoped expenses setup for optional payee, paymentMethod and reference fields before deploying. Older clients can keep recording expenses without these fields. Deploy the updated API before native Finance delivery.
+
+## Expense search and filtering
+
+On 19 November scoped expenses setup and verification passed, including payment fields. This verifies storage readiness and does not establish that the live application has been updated.

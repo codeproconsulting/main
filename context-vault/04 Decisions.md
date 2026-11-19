@@ -275,3 +275,7 @@ One GBP office budget per calendar month. Positive budgets use whole pence, vers
 ## Expense payment details
 
 Payee and reference are optional text. Payment method is a server-validated choice. Existing missing values are treated as empty. These fields describe recorded payments and do not execute transactions.
+
+## Expense search and filtering
+
+Expense search filters only the selected monthly response. The view labels its filtered active subtotal explicitly. CSV remains a full-month bookkeeping export.

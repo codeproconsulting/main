@@ -1,16 +1,16 @@
 # File updates
 
-Generated snapshot of changes since the previous inventory; Nov 18, 2026, 11:33 p.m. (Asia/Karachi).
+Generated snapshot of changes since the previous inventory; Nov 19, 2026, 12:28 p.m. (Asia/Karachi).
 
 [[02 File Map]] · [[Source Inventory]] · [[05 Maintenance]]
 
 Review these changes and update human-authored architecture/status notes where needed. For cumulative history, read the dated notes in Changes/.
 
+## Added
+
+- `app/lib/expense-search.ts`
+- `tests/expense-search.test.mjs`
+
 ## Modified
 
-- `app/admin/finance.server.ts`
 - `app/admin/finance.tsx`
-- `app/admin/mobile-api.ts`
-- `deploy/CRM-DEPLOYMENT.md`
-- `scripts/appwrite-schema.mjs`
-- `tests/finance.test.mjs`
