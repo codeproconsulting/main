@@ -261,3 +261,7 @@ Web and native Finance filter the already owner-authorized monthly response loca
 ## Expense receipts
 
 Expense receipt attachments reuse private document storage and the existing ClamAV scan service. Receipt metadata lives on the expense. File upload and metadata writes share expense/staff locks with void operations.
+
+## Repeated office expenses
+
+Copy as new expense creates a client-side draft from an already owner-authorized monthly row. Saving uses the existing validated idempotent expense creation path.

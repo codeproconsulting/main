@@ -345,3 +345,7 @@ One receipt per expense implemented with PDF/PNG/JPEG validation and a 5 MB cap.
 ## Finance readiness command
 
 Finance readiness command passed against the configured Appwrite project. Tests verify failure on missing receipt fields, unsafe bucket antivirus settings and scanner errors. Real VPS scanner and authenticated rollout acceptance remain pending.
+
+## Repeated office expenses
+
+Manual repeated-expense entry implemented on web and native. The owner chooses the new payment date, reviews the amount and saves an independent expense. Reference, receipt, source identity and void state are not copied.

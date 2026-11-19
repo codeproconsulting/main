@@ -307,3 +307,7 @@ Scoped expenses setup adds receiptFileId, receiptName, receiptMime, receiptCheck
 ## Finance readiness command
 
 Run `node scripts/check-finance.mjs` with setup metadata access, then `node scripts/check-finance.mjs --scanner` on the VPS with the configured scanner socket. This checks readiness without creating expense records or storing receipts. The clean-file probe does not prove infected-file rejection.
+
+## Repeated office expenses
+
+Expense copying uses the existing Finance API and schema. Verify an original and copied entry remain separate after saving. Native source requires compatible OTA delivery after server acceptance.

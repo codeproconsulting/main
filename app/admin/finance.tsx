@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { filterExpenses, type ExpenseFilters } from "~/lib/expense-search";
+import { copyExpenseDraft, filterExpenses, type ExpenseFilters } from "~/lib/expense-search";
 import { randomUUID } from "node:crypto";
 import { Form, Link, data, useActionData, useLoaderData } from "react-router";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
@@ -40,6 +40,7 @@ export default function Finance() {
   const { month, budget, expenses, totals, totalMinor, submissionId, categories, paymentMethods } = useLoaderData<typeof loader>();
   const result = useActionData<typeof action>();
   const [filters, setFilters] = useState<ExpenseFilters>({ search: "", category: "", paymentMethod: "", status: "all" });
+  const [draft, setDraft] = useState<{ sourceId: string; fields: ReturnType<typeof copyExpenseDraft> }>();
   const filtered = filterExpenses(expenses, filters);
   const formId = result && !result.success && result.submissionId ? result.submissionId : submissionId;
   return <>
@@ -50,16 +51,18 @@ export default function Finance() {
     {result?.success && <p className="crm-success" role="status">Finance saved.</p>}
     <Form method="get" className="crm-filters"><label>Month<input type="month" name="month" defaultValue={month} required/></label><button className="crm-button secondary">View month</button></Form>
     <div className="crm-two-col">
-      <section className="crm-panel crm-padded"><h2>Record an expense</h2>
-        <Form method="post" className="crm-form" key={formId}>
+      <section id="expense-entry" className="crm-panel crm-padded"><h2>Record an expense</h2>
+        {draft && <p>New draft copied. Choose the payment date and review the amount. Reference and receipt must be supplied for the new payment.</p>}
+        {draft && <button className="crm-button secondary" type="button" onClick={()=>setDraft(undefined)}>Clear copied draft</button>}
+        <Form method="post" className="crm-form" key={`${formId}:${draft?.sourceId ?? ""}`}>
           <input type="hidden" name="submissionId" value={formId}/>
-          <label>What was it for?<input name="description" required maxLength={500}/></label>
-          <label>Category<select name="category">{categories.map(category => <option key={category}>{category}</option>)}</select></label>
-          <label>Paid to (optional)<input name="payee" maxLength={200}/></label>
-          <label>Payment method<select name="paymentMethod"><option value="">Not recorded</option>{paymentMethods.map(method => <option key={method}>{method}</option>)}</select></label>
+          <label>What was it for?<input name="description" required maxLength={500} defaultValue={draft?.fields.description ?? ""}/></label>
+          <label>Category<select name="category" defaultValue={draft?.fields.category}>{categories.map(category => <option key={category}>{category}</option>)}</select></label>
+          <label>Paid to (optional)<input name="payee" maxLength={200} defaultValue={draft?.fields.payee ?? ""}/></label>
+          <label>Payment method<select name="paymentMethod" defaultValue={draft?.fields.paymentMethod ?? ""}><option value="">Not recorded</option>{paymentMethods.map(method => <option key={method}>{method}</option>)}</select></label>
           <label>Receipt or payment reference (optional)<input name="reference" maxLength={100}/></label>
           <label>Date<input name="spentOn" type="date" required/></label>
-          <label>Amount in GBP<input name="amount" inputMode="decimal" required placeholder="0.00" maxLength={20}/></label>
+          <label>Amount in GBP<input name="amount" inputMode="decimal" required defaultValue={draft?.fields.amount ?? ""} placeholder="0.00" maxLength={20}/></label>
           <div><Submit>Record expense</Submit></div>
         </Form>
       </section>
@@ -93,7 +96,7 @@ export default function Finance() {
       <p>{filtered.rows.length} of {expenses.length} entries · Active spending in this view: {formatExpense(filtered.activeTotalMinor)}. CSV exports the full month.</p>
       {filtered.rows.length ? <div className="crm-table-wrap"><table className="crm-table">
         <thead><tr><th>Date</th><th>Description</th><th>Category</th><th>Payment</th><th>Amount</th><th>Status</th></tr></thead>
-        <tbody>{filtered.rows.map(expense => <tr key={expense.id}><td>{expense.spentOn}</td><td>{expense.description}</td><td>{expense.category}</td><td>{expense.payee || "Not recorded"}<small>{expense.paymentMethod}</small><small>{expense.reference}</small></td><td>{formatExpense(Number(expense.amountMinor))}</td><td><Link to={`/admin/finance/${expense.id}/receipt`}>Receipt</Link>{expense.voidedAt ? <>
+        <tbody>{filtered.rows.map(expense => <tr key={expense.id}><td>{expense.spentOn}</td><td>{expense.description}</td><td>{expense.category}</td><td>{expense.payee || "Not recorded"}<small>{expense.paymentMethod}</small><small>{expense.reference}</small></td><td>{formatExpense(Number(expense.amountMinor))}</td><td><a href="#expense-entry" onClick={() => setDraft({sourceId:expense.id,fields:copyExpenseDraft(expense)})}>Copy as new expense</a><br/><Link to={`/admin/finance/${expense.id}/receipt`}>Receipt</Link>{expense.voidedAt ? <>
             <strong>Voided</strong><p>{expense.voidReason}</p>
           </> : <details><summary>Void expense</summary><Form method="post" className="crm-form">
             <input type="hidden" name="intent" value="void"/>

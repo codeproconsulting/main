@@ -14,3 +14,12 @@ test('expense filters combine criteria and never count voided entries as spend',
  assert.deepEqual(filterExpenses(rows,{...all,paymentMethod:'Cash'}).rows,[]);
  assert.equal(rows.length,3);
 });
+
+test('copying an expense preserves payment setup and clears evidence tied to the original payment',async()=>{
+ const {copyExpenseDraft}=await import('../app/lib/expense-search.ts');
+ const source={id:'original',description:'Synthetic rent',category:'Rent',payee:'Synthetic landlord',paymentMethod:'Bank transfer',
+  amountMinor:'12345',spentOn:'2030-01-01',reference:'OLD-PAYMENT',receiptFileId:'original-file',voidedAt:'2030-01-02'};
+ assert.deepEqual(copyExpenseDraft(source),{description:'Synthetic rent',category:'Rent',payee:'Synthetic landlord',
+  paymentMethod:'Bank transfer',amount:'123.45',spentOn:'',reference:''});
+ assert.equal(source.reference,'OLD-PAYMENT');
+});

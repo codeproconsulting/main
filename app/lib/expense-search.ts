@@ -15,3 +15,15 @@ export function filterExpenses<T extends ExpenseRow>(expenses: T[], filters: Exp
   });
   return { rows, activeTotalMinor: rows.filter(row => !row.voidedAt).reduce((sum, row) => sum + Number(row.amountMinor), 0) };
 }
+
+export function copyExpenseDraft(expense: Pick<ExpenseRow, "description" | "category" | "payee" | "paymentMethod" | "amountMinor">) {
+  return {
+    description: expense.description,
+    category: expense.category,
+    payee: expense.payee || "",
+    paymentMethod: expense.paymentMethod || "",
+    amount: (Number(expense.amountMinor) / 100).toFixed(2),
+    spentOn: "",
+    reference: "",
+  };
+}

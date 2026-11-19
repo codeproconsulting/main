@@ -1,31 +1,37 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-19-02",
+  "sessionId": "2026-11-19-03",
   "sessionStatus": "completed",
   "activeFeature": "FIN-01",
-  "objective": "Provide a repeatable finance schema, storage and scanner readiness check.",
+  "objective": "Reuse office expense details for a new reviewed payment.",
   "scope": [
-    "Read-only metadata validation and optional synthetic scanner probe"
+    "Copy-as-new drafts on web and native with safe field selection"
   ],
   "outOfScope": [
-    "VPS deployment, real scanner acceptance and production data changes"
+    "Automatic schedules, receipt reuse and VPS/mobile delivery"
   ],
   "acceptance": [
     {
-      "id": "FIN01-READY",
-      "description": "Readiness detects unsafe or incomplete deployment prerequisites",
+      "id": "FIN01-COPY",
+      "description": "Draft preserves reusable fields and clears original payment evidence",
       "status": "passed",
-      "evidence": "Synthetic missing-attribute, antivirus-disabled and scanner-error checks passed. Configured Appwrite metadata check passed for all four collections and receipt bucket. Real VPS scanner remains pending."
+      "evidence": "Pure helper test verifies amount conversion, field whitelist and original immutability. Mobile typecheck/lint/tests/Android export passed."
+    },
+    {
+      "id": "FIN01-COPY-BROWSER",
+      "description": "Built web flow saves independent entry",
+      "status": "passed",
+      "evidence": "Built Chrome copy preserved payee/amount, cleared date/reference, saved a separate expense and kept the original. Final main checks passed. Native device acceptance pending."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Roll out the receipt-enabled finance server and verify its real scanner with synthetic files. Confirm owner and non-owner receipt access before publishing native Finance. Native receipt access requires browser sign-in.",
+      "action": "Roll out the latest Finance server and verify owner create/copy/void/receipt/budget/export plus non-owner denial. Then publish native Finance and perform device acceptance.",
       "files": [
         "deploy/CRM-DEPLOYMENT.md",
-        "app/admin/expense-receipts.server.ts",
+        "app/admin/finance.tsx",
         "/Users/fidaali/Proconsulting-App/src/Finance.tsx"
       ]
     }
@@ -131,24 +137,24 @@
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-19T14:53:01.418Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-zGIB2y/typecheck.log"
+      "checkedAt": "2026-11-19T18:20:01.455Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-bCUl80/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-19T14:53:08.545Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-zGIB2y/test.log"
+      "checkedAt": "2026-11-19T18:20:08.215Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-bCUl80/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-19T14:53:14.013Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-zGIB2y/build.log"
+      "checkedAt": "2026-11-19T18:20:25.807Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-bCUl80/build.log"
     }
   ],
-  "updatedAt": "2026-11-19T14:53:30.753Z",
-  "verifiedSourceFingerprint": "f392414a0d9e295064063a3d204a54797ff7e09645d0aa893b64e55c9986482f"
+  "updatedAt": "2026-11-19T18:27:19.492Z",
+  "verifiedSourceFingerprint": "bfc62654ad26fc892c0d962dd9998a086390592f333b3e6ca1d4d41445fed518"
 }

@@ -3,38 +3,39 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-19-02]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-19-03]].
 
 ## Resume here
 
-**Session:** 2026-11-19-02
+**Session:** 2026-11-19-03
 
 **Active feature:** FIN-01
 
 **State:** completed
 
-**Objective:** Provide a repeatable finance schema, storage and scanner readiness check.
+**Objective:** Reuse office expense details for a new reviewed payment.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Read-only metadata validation and optional synthetic scanner probe
+- Copy-as-new drafts on web and native with safe field selection
 
 ## Out of scope
 
-- VPS deployment, real scanner acceptance and production data changes
+- Automatic schedules, receipt reuse and VPS/mobile delivery
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| FIN01-READY | Readiness detects unsafe or incomplete deployment prerequisites | passed | Synthetic missing-attribute, antivirus-disabled and scanner-error checks passed. Configured Appwrite metadata check passed for all four collections and receipt bucket. Real VPS scanner remains pending. |
+| FIN01-COPY | Draft preserves reusable fields and clears original payment evidence | passed | Pure helper test verifies amount conversion, field whitelist and original immutability. Mobile typecheck/lint/tests/Android export passed. |
+| FIN01-COPY-BROWSER | Built web flow saves independent entry | passed | Built Chrome copy preserved payee/amount, cleared date/reference, saved a separate expense and kept the original. Final main checks passed. Native device acceptance pending. |
 
 ## Exact next actions
 
-1. Roll out the receipt-enabled finance server and verify its real scanner with synthetic files. Confirm owner and non-owner receipt access before publishing native Finance. Native receipt access requires browser sign-in.
-   Files: `deploy/CRM-DEPLOYMENT.md`, `app/admin/expense-receipts.server.ts`, `/Users/fidaali/Proconsulting-App/src/Finance.tsx`
+1. Roll out the latest Finance server and verify owner create/copy/void/receipt/budget/export plus non-owner denial. Then publish native Finance and perform device acceptance.
+   Files: `deploy/CRM-DEPLOYMENT.md`, `app/admin/finance.tsx`, `/Users/fidaali/Proconsulting-App/src/Finance.tsx`
 
 ## Known risks and unfinished work
 
@@ -57,9 +58,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-19T14:53:01.418Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-zGIB2y/typecheck.log`
-- **passed**: `npm run test` (2026-11-19T14:53:08.545Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-zGIB2y/test.log`
-- **passed**: `npm run build` (2026-11-19T14:53:14.013Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-zGIB2y/build.log`
+- **passed**: `npm run typecheck` (2026-11-19T18:20:01.455Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-bCUl80/typecheck.log`
+- **passed**: `npm run test` (2026-11-19T18:20:08.215Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-bCUl80/test.log`
+- **passed**: `npm run build` (2026-11-19T18:20:25.807Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-bCUl80/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 

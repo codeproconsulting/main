@@ -283,3 +283,7 @@ Expense search filters only the selected monthly response. The view labels its f
 ## Expense receipts
 
 Receipt uploads are append-only and support one attachment per expense, including voided expenses. No replacement or deletion UI. Upload intent records the file ID before storage. Unconfirmed storage/metadata/audit outcomes retain locks for operator reconciliation.
+
+## Repeated office expenses
+
+Reuse description, category, payee, method and amount only. Require a new date and clear the old reference so the owner may enter a reference for the new payment. Existing saved entries remain immutable. Each copy follows the standard submission identity and retry rules.

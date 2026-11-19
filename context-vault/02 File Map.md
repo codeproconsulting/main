@@ -309,3 +309,7 @@ Receipt attachment downloads use the dedicated resource route `app/admin/expense
 ## Finance readiness command
 
 `scripts/check-finance.mjs` reads finance schema and receipt bucket metadata. Optional `--scanner` sends a synthetic clean PDF to the configured scanner without saving a file.
+
+## Repeated office expenses
+
+`copyExpenseDraft` in `app/lib/expense-search.ts` and its matching native copy whitelist reusable fields. Web/native Finance show the draft in the standard entry form.
