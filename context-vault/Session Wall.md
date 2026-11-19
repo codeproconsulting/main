@@ -3,39 +3,39 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-19-03]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-19-04]].
 
 ## Resume here
 
-**Session:** 2026-11-19-03
+**Session:** 2026-11-19-04
 
-**Active feature:** FIN-01
+**Active feature:** FIN-02
 
 **State:** completed
 
-**Objective:** Reuse office expense details for a new reviewed payment.
+**Objective:** Compare yearly office spending and monthly budgets on web and mobile.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Copy-as-new drafts on web and native with safe field selection
+- Owner annual aggregates, monthly drill-down and audited annual CSV
 
 ## Out of scope
 
-- Automatic schedules, receipt reuse and VPS/mobile delivery
+- Tax reporting, multiple currencies, production rollout and native file downloads
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| FIN01-COPY | Draft preserves reusable fields and clears original payment evidence | passed | Pure helper test verifies amount conversion, field whitelist and original immutability. Mobile typecheck/lint/tests/Android export passed. |
-| FIN01-COPY-BROWSER | Built web flow saves independent entry | passed | Built Chrome copy preserved payee/amount, cleared date/reference, saved a separate expense and kept the original. Final main checks passed. Native device acceptance pending. |
+| FIN02-YEAR-SERVICE | Correct bounded annual aggregation and export protections | passed | Synthetic tests verify twelve months, category totals, voided entry exclusions, budget coverage, over-budget balances, invalid years, role denial and export audit failure. |
+| FIN02-YEAR-CLIENT | Built web and native compatibility | passed | Built Chrome annual total, monthly budget balance and CSV passed with synthetic records. Main typecheck, full tests and build passed. Mobile checks passed; actual device acceptance pending. |
 
 ## Exact next actions
 
-1. Roll out the latest Finance server and verify owner create/copy/void/receipt/budget/export plus non-owner denial. Then publish native Finance and perform device acceptance.
-   Files: `deploy/CRM-DEPLOYMENT.md`, `app/admin/finance.tsx`, `/Users/fidaali/Proconsulting-App/src/Finance.tsx`
+1. Roll out latest Finance server routes and verify owner create/budget/void/receipt/yearly/export and non-owner denial. Then publish native Finance and verify on device.
+   Files: `deploy/CRM-DEPLOYMENT.md`, `app/admin/finance-year.tsx`, `/Users/fidaali/Proconsulting-App/src/Finance.tsx`
 
 ## Known risks and unfinished work
 
@@ -58,9 +58,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-19T18:20:01.455Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-bCUl80/typecheck.log`
-- **passed**: `npm run test` (2026-11-19T18:20:08.215Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-bCUl80/test.log`
-- **passed**: `npm run build` (2026-11-19T18:20:25.807Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-bCUl80/build.log`
+- **passed**: `npm run typecheck` (2026-11-19T18:40:22.870Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-GEoFR3/typecheck.log`
+- **passed**: `npm run test` (2026-11-19T18:40:29.942Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-GEoFR3/test.log`
+- **passed**: `npm run build` (2026-11-19T18:40:35.516Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-GEoFR3/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 

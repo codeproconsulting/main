@@ -3,7 +3,7 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { appwrite, AppwriteError, configurationIssues } from "~/lib/appwrite.server";
 import { openStaffSession, staffForSession } from "./auth.server";
 import { boundedBody } from "~/lib/request-body.server";
-import { expensePaymentMethods, expenseCategories, expenseMonth, recordExpense, voidExpense, saveOfficeBudget } from "./finance.server";
+import { expenseYear, expensePaymentMethods, expenseCategories, expenseMonth, recordExpense, voidExpense, saveOfficeBudget } from "./finance.server";
 import { leadFor, leadsFor, queuePage, taskPage, updateLead } from "./crm.server";
 
 import { isRestrictedManager, closureStages, priorities, stages, type Lead } from "./domain";
@@ -100,6 +100,10 @@ function mobileLeads({ documents, total }: Awaited<ReturnType<typeof leadsFor>>)
 
 export function loader({ request, params }: LoaderFunctionArgs) {
   return mobileRequest(request, async () => {
+    if (params.resource === "finance-year") {
+      const year = new URL(request.url).searchParams.get("year") || String(new Date().getUTCFullYear());
+      return reply(await expenseYear(await mobileStaff(request),year));
+    }
     if (params.resource === "finance") {
       const staff = await mobileStaff(request);
       const month = new URL(request.url).searchParams.get("month") || new Date().toISOString().slice(0, 7);

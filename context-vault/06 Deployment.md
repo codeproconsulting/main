@@ -311,3 +311,7 @@ Run `node scripts/check-finance.mjs` with setup metadata access, then `node scri
 ## Repeated office expenses
 
 Expense copying uses the existing Finance API and schema. Verify an original and copied entry remain separate after saving. Native source requires compatible OTA delivery after server acceptance.
+
+## Yearly office spending
+
+Annual Finance needs existing expense, budget, staff and audit permissions. No new schema. Deploy annual report and CSV routes before publishing the native annual screen. Native annual CSV opens the authenticated browser workflow.

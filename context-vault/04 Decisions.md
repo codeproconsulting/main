@@ -287,3 +287,7 @@ Receipt uploads are append-only and support one attachment per expense, includin
 ## Repeated office expenses
 
 Reuse description, category, payee, method and amount only. Require a new date and clear the old reference so the owner may enter a reference for the new payment. Existing saved entries remain immutable. Each copy follows the standard submission identity and retry rules.
+
+## Yearly office spending
+
+Annual totals reuse the monthly definition of active spending. Budget totals are labeled with the number of months configured, and unbudgeted months show Not set. A monthly scan above 1,000 records fails the report explicitly. Reads are live, rather than a transactional year-end snapshot.

@@ -153,3 +153,57 @@ export async function exportExpenses(staff: Staff, month: string, refreshStaff: 
     },
   });
 }
+
+export async function expenseYear(staff: Staff, year: string) {
+  allow(canUseFinance(staff));
+  if (!/^[1-9]\d{3}$/.test(year) || year === "9999") throw new Response("Enter a year from 1000 to 9998.", { status:400 });
+  const months: { month: string; spentMinor: number; budgetMinor: number | null; remainingMinor: number | null; activeCount: number; voidedCount: number }[] = [];
+  const categoryTotals = expenseCategories.map(category => ({ category, amountMinor:0 }));
+  for (let start = 1; start <= 12; start += 3) {
+    const batch = await Promise.all([start, start + 1, start + 2].map(month =>
+      expenseMonth(staff, year + "-" + String(month).padStart(2,"0"))));
+    for (const report of batch) {
+      months.push({
+        month:report.month, spentMinor:report.totalMinor,
+        budgetMinor:report.budget ? Number(report.budget.amountMinor) : null,
+        remainingMinor:report.budget?.remainingMinor ?? null,
+        activeCount:report.expenses.filter(expense => !expense.voidedAt).length,
+        voidedCount:report.expenses.filter(expense => Boolean(expense.voidedAt)).length,
+      });
+      for (const category of categoryTotals) {
+        category.amountMinor += report.totals.find(row => row.category === category.category)?.amountMinor ?? 0;
+      }
+    }
+  }
+  allow(canUseFinance(await getDocument<Staff>("staff", staff.$id)));
+  return {
+    year, currency:"GBP", months, categoryTotals,
+    totalMinor:months.reduce((sum, month) => sum + month.spentMinor, 0),
+    budgetMinor:months.reduce((sum, month) => sum + (month.budgetMinor ?? 0), 0),
+    monthsBudgeted:months.filter(month => month.budgetMinor !== null).length,
+  };
+}
+
+export async function exportExpenseYear(staff: Staff, year: string, refreshStaff: () => Promise<Staff>) {
+  const report = await expenseYear(staff,year);
+  const rows = [
+    ["Month","Currency","Active spending","Budget","Remaining budget","Active entries","Voided entries"].map(csvCell).join(","),
+    ...report.months.map(month => [
+      month.month, report.currency, (month.spentMinor / 100).toFixed(2),
+      month.budgetMinor === null ? "" : (month.budgetMinor / 100).toFixed(2),
+      month.remainingMinor === null ? "" : (month.remainingMinor / 100).toFixed(2),
+      month.activeCount, month.voidedCount,
+    ].map(csvCell).join(",")),
+  ];
+  const current = await refreshStaff();
+  allow(current.$id === staff.$id && canUseFinance(current));
+  allow(canUseFinance(await getDocument<Staff>("staff",current.$id)));
+  await audit(current,current.$id,"export","Annual expense export requested",{year,months:12});
+  return new Response("\uFEFF" + rows.join("\r\n") + "\r\n", {
+    headers:{
+      "Content-Type":"text/csv; charset=utf-8",
+      "Content-Disposition":`attachment; filename="proconsulting-expense-summary-${year}.csv"`,
+      "Cache-Control":"private, no-store", "X-Content-Type-Options":"nosniff",
+    },
+  });
+}

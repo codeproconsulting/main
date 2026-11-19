@@ -365,3 +365,7 @@ The native Finance Receipt button opens the owner web receipt page in the system
 ### Finance readiness command
 
 From a release checkout containing the new checker, run `node scripts/check-finance.mjs` with temporary metadata read access. It checks expenses, budgets, activities, locks and private receipt bucket settings. On the VPS, add `--scanner` to send a synthetic clean PDF through the configured ClamAV socket. It creates no database records and saves no receipt files. Use the runtime key for authenticated application checks separately. A passing clean scan verifies scanner reachability and its clean verdict, while infected-file rejection still needs the documented scanner acceptance. The command exits nonzero for failed checks.
+
+### Yearly expense review
+
+The owner can open Yearly overview from Finance and compare all twelve months, active spending, monthly budget balances and category totals. Annual CSV contains monthly aggregates and entry counts, including void counts. It uses the existing private collections and the monthly 1,000-entry cap. Verify a budgeted month, an unbudgeted month and a voided expense before release. Native annual CSV opens the system browser and requires web owner sign-in. Reports reflect live reads.

@@ -45,6 +45,7 @@ export default function Finance() {
   const formId = result && !result.success && result.submissionId ? result.submissionId : submissionId;
   return <>
     <PageHeading eyebrow="OFFICE FINANCE" title="Office expenses" description="Record office spending and review monthly totals in GBP.">
+      <Link className="crm-button secondary" to={`/admin/finance-year?year=${month.slice(0,4)}`}>Yearly overview</Link>
       <Link reloadDocument className="crm-button secondary" to={`/admin/finance.csv?month=${month}`}>Export month CSV</Link>
     </PageHeading>
     <ActionError error={result?.error}/>

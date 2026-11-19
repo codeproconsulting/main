@@ -313,3 +313,7 @@ Receipt attachment downloads use the dedicated resource route `app/admin/expense
 ## Repeated office expenses
 
 `copyExpenseDraft` in `app/lib/expense-search.ts` and its matching native copy whitelist reusable fields. Web/native Finance show the draft in the standard entry form.
+
+## Yearly office spending
+
+`expenseYear` and `exportExpenseYear` in finance.server.ts supply `finance-year.tsx`, the `finance-year-export.ts` resource and native finance-year API. Native Finance renders the same aggregate response.

@@ -48,7 +48,7 @@ test('office expenses enforce owner access, exact pence and idempotent writes',a
   }
   return store.has(id)?Response.json(store.get(id)):Response.json({}, {status:404});
  };
- const {recordExpense,expenseMonth,voidExpense,exportExpenses,saveOfficeBudget}=await vite.ssrLoadModule('/app/admin/finance.server.ts');
+ const {recordExpense,expenseMonth,voidExpense,exportExpenses,saveOfficeBudget,expenseYear,exportExpenseYear}=await vite.ssrLoadModule('/app/admin/finance.server.ts');
  const form=(extra={})=>{
   const f=new FormData();
   for(const [k,v]of Object.entries({submissionId:'12345678-1234-1234-1234-123456789012',description:'Synthetic rent',category:'Rent',spentOn:'2030-12-31',amount:'12.30',...extra}))f.set(k,v);
@@ -139,6 +139,32 @@ test('office expenses enforce owner access, exact pence and idempotent writes',a
  const paymentCSV=await (await exportExpenses(owner,'2032-01',async()=>owner)).text();
  assert.match(paymentCSV,/"Payee","Payment method","Reference"/);
  assert.match(paymentCSV,/"'=SYNTHETIC-REF"/);
+
+ await assert.rejects(expenseYear({...owner,role:'admin'},'2030'),e=>e.status===403);
+ await assert.rejects(expenseYear(owner,'invalid'),e=>e.status===400);
+ const annual=await expenseYear(owner,'2030');
+ assert.equal(annual.months.length,12);
+ assert.equal(annual.totalMinor,1230);
+ assert.equal(annual.budgetMinor,1000);
+ assert.equal(annual.monthsBudgeted,1);
+ assert.equal(annual.months[11].remainingMinor,-230);
+ assert.equal(annual.months[0].budgetMinor,null);
+ assert.equal(annual.categoryTotals.find(row=>row.category==='Rent').amountMinor,1230);
+ assert.doesNotMatch(JSON.stringify(annual),/SYNTHETIC-REF|Synthetic supplier|recordedBy|voidReason/);
+ rows.get(id).voidedAt='2030-12-31T12:00:00Z';
+ const afterVoid=await expenseYear(owner,'2030');
+ assert.equal(afterVoid.totalMinor,0);
+ assert.equal(afterVoid.months[11].voidedCount,1);
+ assert.equal(afterVoid.months[11].remainingMinor,1000);
+ await assert.rejects(exportExpenseYear(owner,'2030',async()=>({...owner,role:'admin'})),e=>e.status===403);
+ failAudit=true;
+ await assert.rejects(exportExpenseYear(owner,'2030',async()=>owner));
+ failAudit=false;
+ const annualCSV=await exportExpenseYear(owner,'2030',async()=>owner);
+ assert.equal(annualCSV.headers.get('Cache-Control'),'private, no-store');
+ const annualText=await annualCSV.text();
+ assert.equal(annualText.trim().split('\r\n').length,13);
+ assert.match(annualText,/"2030-12","GBP","0.00","10.00","10.00","0","1"/);
 
  }finally{
  globalThis.fetch=oldFetch;

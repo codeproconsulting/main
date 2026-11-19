@@ -265,3 +265,7 @@ Expense receipt attachments reuse private document storage and the existing Clam
 ## Repeated office expenses
 
 Copy as new expense creates a client-side draft from an already owner-authorized monthly row. Saving uses the existing validated idempotent expense creation path.
+
+## Yearly office spending
+
+Yearly Finance reads twelve bounded monthly reports in batches of three and returns aggregate spending, budget balances, entry counts and category totals. Current owner access is rechecked before response and export.

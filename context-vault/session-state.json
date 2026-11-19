@@ -1,37 +1,37 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-19-03",
+  "sessionId": "2026-11-19-04",
   "sessionStatus": "completed",
-  "activeFeature": "FIN-01",
-  "objective": "Reuse office expense details for a new reviewed payment.",
+  "activeFeature": "FIN-02",
+  "objective": "Compare yearly office spending and monthly budgets on web and mobile.",
   "scope": [
-    "Copy-as-new drafts on web and native with safe field selection"
+    "Owner annual aggregates, monthly drill-down and audited annual CSV"
   ],
   "outOfScope": [
-    "Automatic schedules, receipt reuse and VPS/mobile delivery"
+    "Tax reporting, multiple currencies, production rollout and native file downloads"
   ],
   "acceptance": [
     {
-      "id": "FIN01-COPY",
-      "description": "Draft preserves reusable fields and clears original payment evidence",
+      "id": "FIN02-YEAR-SERVICE",
+      "description": "Correct bounded annual aggregation and export protections",
       "status": "passed",
-      "evidence": "Pure helper test verifies amount conversion, field whitelist and original immutability. Mobile typecheck/lint/tests/Android export passed."
+      "evidence": "Synthetic tests verify twelve months, category totals, voided entry exclusions, budget coverage, over-budget balances, invalid years, role denial and export audit failure."
     },
     {
-      "id": "FIN01-COPY-BROWSER",
-      "description": "Built web flow saves independent entry",
+      "id": "FIN02-YEAR-CLIENT",
+      "description": "Built web and native compatibility",
       "status": "passed",
-      "evidence": "Built Chrome copy preserved payee/amount, cleared date/reference, saved a separate expense and kept the original. Final main checks passed. Native device acceptance pending."
+      "evidence": "Built Chrome annual total, monthly budget balance and CSV passed with synthetic records. Main typecheck, full tests and build passed. Mobile checks passed; actual device acceptance pending."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Roll out the latest Finance server and verify owner create/copy/void/receipt/budget/export plus non-owner denial. Then publish native Finance and perform device acceptance.",
+      "action": "Roll out latest Finance server routes and verify owner create/budget/void/receipt/yearly/export and non-owner denial. Then publish native Finance and verify on device.",
       "files": [
         "deploy/CRM-DEPLOYMENT.md",
-        "app/admin/finance.tsx",
+        "app/admin/finance-year.tsx",
         "/Users/fidaali/Proconsulting-App/src/Finance.tsx"
       ]
     }
@@ -137,24 +137,24 @@
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-19T18:20:01.455Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-bCUl80/typecheck.log"
+      "checkedAt": "2026-11-19T18:40:22.870Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-GEoFR3/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-19T18:20:08.215Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-bCUl80/test.log"
+      "checkedAt": "2026-11-19T18:40:29.942Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-GEoFR3/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-19T18:20:25.807Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-bCUl80/build.log"
+      "checkedAt": "2026-11-19T18:40:35.516Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-GEoFR3/build.log"
     }
   ],
-  "updatedAt": "2026-11-19T18:27:19.492Z",
-  "verifiedSourceFingerprint": "bfc62654ad26fc892c0d962dd9998a086390592f333b3e6ca1d4d41445fed518"
+  "updatedAt": "2026-11-19T18:40:57.020Z",
+  "verifiedSourceFingerprint": "eed74ecb6d6d6dc80f833768f9ec4f345a4c548de58e70c861b317abe6ff7ac0"
 }

@@ -349,3 +349,7 @@ Finance readiness command passed against the configured Appwrite project. Tests 
 ## Repeated office expenses
 
 Manual repeated-expense entry implemented on web and native. The owner chooses the new payment date, reviews the amount and saves an independent expense. Reference, receipt, source identity and void state are not copied.
+
+## Yearly office spending
+
+Yearly spending and monthly budget comparison implemented on web and native, with audited annual summary CSV. Service tests cover totals, void exclusions, unset budgets, over-budget balances and export denial/failure.

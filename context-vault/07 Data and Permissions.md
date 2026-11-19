@@ -239,3 +239,7 @@ The owner-only finance boundary applies to payee, method and reference. No bank 
 ## Expense receipts
 
 Only a current active owner can read, attach or download receipts. Receipt files are separate from client-document metadata, and sharing the private bucket does not grant counselor access. Downloads are attachments with private/no-store headers and are audited.
+
+## Yearly office spending
+
+Yearly API responses contain aggregates only. Payees, references, receipt identifiers and expense descriptions are excluded. Access is owner-only and exports require refreshed authorization plus an audit record.
