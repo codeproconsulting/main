@@ -341,3 +341,7 @@ Finance payment fields are now provisioned and verified on Appwrite after connec
 ## Expense receipts
 
 One receipt per expense implemented with PDF/PNG/JPEG validation and a 5 MB cap. Synthetic owner, scanner, interrupted upload and download tests passed. Optional schema verified. Actual production scanner and device acceptance remain pending.
+
+## Finance readiness command
+
+Finance readiness command passed against the configured Appwrite project. Tests verify failure on missing receipt fields, unsafe bucket antivirus settings and scanner errors. Real VPS scanner and authenticated rollout acceptance remain pending.

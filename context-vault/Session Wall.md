@@ -3,34 +3,33 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-19-01]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-19-02]].
 
 ## Resume here
 
-**Session:** 2026-11-19-01
+**Session:** 2026-11-19-02
 
 **Active feature:** FIN-01
 
 **State:** completed
 
-**Objective:** Attach and download private scanned office expense receipts.
+**Objective:** Provide a repeatable finance schema, storage and scanner readiness check.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Owner-only one-file receipt workflow, private download and mobile browser access
+- Read-only metadata validation and optional synthetic scanner probe
 
 ## Out of scope
 
-- Receipt replacement/deletion, native file picker and production scanner activation
+- VPS deployment, real scanner acceptance and production data changes
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| FIN01-RECEIPT-SERVICE | Owner, scanning, privacy and failure boundaries | passed | Synthetic service tests cover non-owner denial, invalid signature, infected verdict, role change, interrupted storage, duplicate attach, metadata projection and audited private download. |
-| FIN01-RECEIPT-UI | Built web and native compatibility | passed | Built Chrome owner upload and byte-identical private download passed after moving downloads to a dedicated resource route. Final main checks and mobile checks passed. Real daemon/device acceptance pending. |
+| FIN01-READY | Readiness detects unsafe or incomplete deployment prerequisites | passed | Synthetic missing-attribute, antivirus-disabled and scanner-error checks passed. Configured Appwrite metadata check passed for all four collections and receipt bucket. Real VPS scanner remains pending. |
 
 ## Exact next actions
 
@@ -58,9 +57,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-19T07:47:33.848Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-0dsXqy/typecheck.log`
-- **passed**: `npm run test` (2026-11-19T07:47:35.378Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-0dsXqy/test.log`
-- **passed**: `npm run build` (2026-11-19T07:47:40.480Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-0dsXqy/build.log`
+- **passed**: `npm run typecheck` (2026-11-19T14:53:01.418Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-zGIB2y/typecheck.log`
+- **passed**: `npm run test` (2026-11-19T14:53:08.545Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-zGIB2y/test.log`
+- **passed**: `npm run build` (2026-11-19T14:53:14.013Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-zGIB2y/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -141,5 +140,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **officeBudget**: Private expense_budgets schema provisioned. Synthetic storage verified and cleaned. No real budget changes and no VPS application release.
 - **expensePaymentDetails**: Target payment attributes provisioned and verified on 19 November. No production expense entries changed.
 - **expenseReceipts**: Optional receipt metadata provisioned and schema verified. Actual scanner and VPS app rollout pending. No production receipt uploads attempted.
+- **financeReadiness**: Read-only target preflight passed for expenses, budgets, activities, locks and receipt bucket. No expense rows read or written. Actual VPS scanner untested.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

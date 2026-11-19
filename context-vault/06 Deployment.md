@@ -303,3 +303,7 @@ On 19 November scoped expenses setup and verification passed, including payment 
 ## Expense receipts
 
 Scoped expenses setup adds receiptFileId, receiptName, receiptMime, receiptChecksum and receiptScannedAt. Reuse the private document bucket and runtime file permissions. A real configured ClamAV socket is required for upload. Native receipt access opens the web page and requires a browser staff session.
+
+## Finance readiness command
+
+Run `node scripts/check-finance.mjs` with setup metadata access, then `node scripts/check-finance.mjs --scanner` on the VPS with the configured scanner socket. This checks readiness without creating expense records or storing receipts. The clean-file probe does not prove infected-file rejection.

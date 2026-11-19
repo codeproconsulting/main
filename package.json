@@ -10,7 +10,7 @@
     "appwrite:plan": "node scripts/setup-appwrite.mjs",
     "appwrite:setup": "node scripts/setup-appwrite.mjs --apply",
     "context:sync": "node scripts/sync-context-vault.mjs",
-    "test": "node --test tests/*.test.mjs",
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs",
     "session:status": "node scripts/session-wall.mjs",
     "session:verify": "node scripts/session-wall.mjs --verify"
   },

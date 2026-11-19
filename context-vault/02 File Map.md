@@ -305,3 +305,7 @@ Payment fields span finance.server.ts, finance.tsx, mobile-api.ts and the native
 `app/admin/expense-receipts.server.ts` validates, scans, uploads and downloads owner-only receipts. `app/admin/expense-receipt.tsx` serves the private browser workflow. The native Finance screen opens that page in the system browser.
 
 Receipt attachment downloads use the dedicated resource route `app/admin/expense-receipt-download.ts`, separate from the rendered receipt page.
+
+## Finance readiness command
+
+`scripts/check-finance.mjs` reads finance schema and receipt bucket metadata. Optional `--scanner` sends a synthetic clean PDF to the configured scanner without saving a file.

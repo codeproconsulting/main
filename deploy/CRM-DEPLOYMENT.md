@@ -361,3 +361,7 @@ Apply scoped expenses schema setup and verify receiptFileId, receiptName, receip
 For an uncertain attachment, stop competing writers and inspect its pending Receipt attachment requested activity, file ID and expense receipt fields. Verify whether the private file and metadata match before completing or cleaning up the operation and recovering retained expense/staff locks. Do not blindly retry or remove a stored receipt.
 
 The native Finance Receipt button opens the owner web receipt page in the system browser. Sign in there separately. A receipt is never downloaded into the offline workspace cache.
+
+### Finance readiness command
+
+From a release checkout containing the new checker, run `node scripts/check-finance.mjs` with temporary metadata read access. It checks expenses, budgets, activities, locks and private receipt bucket settings. On the VPS, add `--scanner` to send a synthetic clean PDF through the configured ClamAV socket. It creates no database records and saves no receipt files. Use the runtime key for authenticated application checks separately. A passing clean scan verifies scanner reachability and its clean verdict, while infected-file rejection still needs the documented scanner acceptance. The command exits nonzero for failed checks.
