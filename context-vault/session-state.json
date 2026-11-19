@@ -1,50 +1,37 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-18-05",
+  "sessionId": "2026-11-19-01",
   "sessionStatus": "completed",
   "activeFeature": "FIN-01",
-  "objective": "Record and find office expenses by payee, payment method and reference on web and native.",
+  "objective": "Attach and download private scanned office expense receipts.",
   "scope": [
-    "Optional payment fields, validation, legacy compatibility and CSV",
-    "Monthly search and category/payment/status filters"
+    "Owner-only one-file receipt workflow, private download and mobile browser access"
   ],
   "outOfScope": [
-    "Executing payments, receipt uploads and VPS/mobile delivery"
+    "Receipt replacement/deletion, native file picker and production scanner activation"
   ],
   "acceptance": [
     {
-      "id": "FIN01-PAYMENT",
-      "description": "Consistent validated payment details with safe retries and exports",
+      "id": "FIN01-RECEIPT-SERVICE",
+      "description": "Owner, scanning, privacy and failure boundaries",
       "status": "passed",
-      "evidence": "Synthetic tests passed for legacy fields, optional values, invalid method, identical retry, changed-reference conflict and formula-safe CSV."
+      "evidence": "Synthetic service tests cover non-owner denial, invalid signature, infected verdict, role change, interrupted storage, duplicate attach, metadata projection and audited private download."
     },
     {
-      "id": "FIN01-PAYMENT-CLIENT",
-      "description": "Client builds and target schema",
+      "id": "FIN01-RECEIPT-UI",
+      "description": "Built web and native compatibility",
       "status": "passed",
-      "evidence": "Built Chrome payment entry, monthly row and CSV passed. Mobile typecheck/lint/tests/Android export and main full checks passed."
-    },
-    {
-      "id": "FIN01-PAYMENT-SCHEMA",
-      "description": "Verify optional target payment fields",
-      "status": "passed",
-      "evidence": "19 November scoped Appwrite setup and schema verification passed after connectivity recovered."
-    },
-    {
-      "id": "FIN01-SEARCH",
-      "description": "Combine expense filters with correct active subtotal",
-      "status": "passed",
-      "evidence": "Pure filter test covers case-insensitive multi-term matching, combined criteria, legacy fields, no results, immutability and void exclusion. Matching helper sources verified. Built Chrome search/empty-state/reset and unfiltered CSV acceptance passed."
+      "evidence": "Built Chrome owner upload and byte-identical private download passed after moving downloads to a dedicated resource route. Final main checks and mobile checks passed. Real daemon/device acceptance pending."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Roll out the finance server including budget and optional payment schemas. Verify owner create/void/budget/search/export and non-owner denial before native Finance publication.",
+      "action": "Roll out the receipt-enabled finance server and verify its real scanner with synthetic files. Confirm owner and non-owner receipt access before publishing native Finance. Native receipt access requires browser sign-in.",
       "files": [
         "deploy/CRM-DEPLOYMENT.md",
-        "app/admin/finance.tsx",
+        "app/admin/expense-receipts.server.ts",
         "/Users/fidaali/Proconsulting-App/src/Finance.tsx"
       ]
     }
@@ -141,31 +128,32 @@
     "expenseExport": "Implemented and verified locally. Initial full-suite mobile API process stalled, standalone test and repeated full suite passed. No VPS deployment.",
     "financeDeployment": "Public Finance still returns 404 Unknown resource. Hermes handoff now pins tested budget-inclusive 870c3cd. No live changes performed.",
     "officeBudget": "Private expense_budgets schema provisioned. Synthetic storage verified and cleaned. No real budget changes and no VPS application release.",
-    "expensePaymentDetails": "Target payment attributes provisioned and verified on 19 November. No production expense entries changed."
+    "expensePaymentDetails": "Target payment attributes provisioned and verified on 19 November. No production expense entries changed.",
+    "expenseReceipts": "Optional receipt metadata provisioned and schema verified. Actual scanner and VPS app rollout pending. No production receipt uploads attempted."
   },
   "checks": [
     {
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-19T07:29:06.785Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-7MtBF7/typecheck.log"
+      "checkedAt": "2026-11-19T07:47:33.848Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-0dsXqy/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-19T07:29:08.510Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-7MtBF7/test.log"
+      "checkedAt": "2026-11-19T07:47:35.378Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-0dsXqy/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-19T07:29:13.949Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-7MtBF7/build.log"
+      "checkedAt": "2026-11-19T07:47:40.480Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-0dsXqy/build.log"
     }
   ],
-  "updatedAt": "2026-11-19T07:30:02.183Z",
-  "verifiedSourceFingerprint": "d497ef61b3d8ec228aa9b4c1d752cacc9c2dccee9a3d8437ffb629c7fe407090"
+  "updatedAt": "2026-11-19T07:48:55.274Z",
+  "verifiedSourceFingerprint": "4e1afb35264589ad50a85914597a05ae2ac916c7fd0586059cc6c529cbc67ead"
 }

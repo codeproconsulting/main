@@ -3,42 +3,39 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-18-05]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-19-01]].
 
 ## Resume here
 
-**Session:** 2026-11-18-05
+**Session:** 2026-11-19-01
 
 **Active feature:** FIN-01
 
 **State:** completed
 
-**Objective:** Record and find office expenses by payee, payment method and reference on web and native.
+**Objective:** Attach and download private scanned office expense receipts.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Optional payment fields, validation, legacy compatibility and CSV
-- Monthly search and category/payment/status filters
+- Owner-only one-file receipt workflow, private download and mobile browser access
 
 ## Out of scope
 
-- Executing payments, receipt uploads and VPS/mobile delivery
+- Receipt replacement/deletion, native file picker and production scanner activation
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| FIN01-PAYMENT | Consistent validated payment details with safe retries and exports | passed | Synthetic tests passed for legacy fields, optional values, invalid method, identical retry, changed-reference conflict and formula-safe CSV. |
-| FIN01-PAYMENT-CLIENT | Client builds and target schema | passed | Built Chrome payment entry, monthly row and CSV passed. Mobile typecheck/lint/tests/Android export and main full checks passed. |
-| FIN01-PAYMENT-SCHEMA | Verify optional target payment fields | passed | 19 November scoped Appwrite setup and schema verification passed after connectivity recovered. |
-| FIN01-SEARCH | Combine expense filters with correct active subtotal | passed | Pure filter test covers case-insensitive multi-term matching, combined criteria, legacy fields, no results, immutability and void exclusion. Matching helper sources verified. Built Chrome search/empty-state/reset and unfiltered CSV acceptance passed. |
+| FIN01-RECEIPT-SERVICE | Owner, scanning, privacy and failure boundaries | passed | Synthetic service tests cover non-owner denial, invalid signature, infected verdict, role change, interrupted storage, duplicate attach, metadata projection and audited private download. |
+| FIN01-RECEIPT-UI | Built web and native compatibility | passed | Built Chrome owner upload and byte-identical private download passed after moving downloads to a dedicated resource route. Final main checks and mobile checks passed. Real daemon/device acceptance pending. |
 
 ## Exact next actions
 
-1. Roll out the finance server including budget and optional payment schemas. Verify owner create/void/budget/search/export and non-owner denial before native Finance publication.
-   Files: `deploy/CRM-DEPLOYMENT.md`, `app/admin/finance.tsx`, `/Users/fidaali/Proconsulting-App/src/Finance.tsx`
+1. Roll out the receipt-enabled finance server and verify its real scanner with synthetic files. Confirm owner and non-owner receipt access before publishing native Finance. Native receipt access requires browser sign-in.
+   Files: `deploy/CRM-DEPLOYMENT.md`, `app/admin/expense-receipts.server.ts`, `/Users/fidaali/Proconsulting-App/src/Finance.tsx`
 
 ## Known risks and unfinished work
 
@@ -61,9 +58,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-19T07:29:06.785Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-7MtBF7/typecheck.log`
-- **passed**: `npm run test` (2026-11-19T07:29:08.510Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-7MtBF7/test.log`
-- **passed**: `npm run build` (2026-11-19T07:29:13.949Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-7MtBF7/build.log`
+- **passed**: `npm run typecheck` (2026-11-19T07:47:33.848Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-0dsXqy/typecheck.log`
+- **passed**: `npm run test` (2026-11-19T07:47:35.378Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-0dsXqy/test.log`
+- **passed**: `npm run build` (2026-11-19T07:47:40.480Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-0dsXqy/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -143,5 +140,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **financeDeployment**: Public Finance still returns 404 Unknown resource. Hermes handoff now pins tested budget-inclusive 870c3cd. No live changes performed.
 - **officeBudget**: Private expense_budgets schema provisioned. Synthetic storage verified and cleaned. No real budget changes and no VPS application release.
 - **expensePaymentDetails**: Target payment attributes provisioned and verified on 19 November. No production expense entries changed.
+- **expenseReceipts**: Optional receipt metadata provisioned and schema verified. Actual scanner and VPS app rollout pending. No production receipt uploads attempted.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

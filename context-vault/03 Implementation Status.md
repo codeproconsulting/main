@@ -337,3 +337,7 @@ Optional expense payment details implemented for web/native entry, monthly revie
 ## Expense search and filtering
 
 Finance payment fields are now provisioned and verified on Appwrite after connectivity recovered. Search and multi-field filters are implemented on web and native with filtered active totals. Full-month totals and CSV retain their original scope.
+
+## Expense receipts
+
+One receipt per expense implemented with PDF/PNG/JPEG validation and a 5 MB cap. Synthetic owner, scanner, interrupted upload and download tests passed. Optional schema verified. Actual production scanner and device acceptance remain pending.

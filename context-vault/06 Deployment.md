@@ -299,3 +299,7 @@ Apply scoped expenses setup for optional payee, paymentMethod and reference fiel
 ## Expense search and filtering
 
 On 19 November scoped expenses setup and verification passed, including payment fields. This verifies storage readiness and does not establish that the live application has been updated.
+
+## Expense receipts
+
+Scoped expenses setup adds receiptFileId, receiptName, receiptMime, receiptChecksum and receiptScannedAt. Reuse the private document bucket and runtime file permissions. A real configured ClamAV socket is required for upload. Native receipt access opens the web page and requires a browser staff session.

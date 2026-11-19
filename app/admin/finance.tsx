@@ -93,7 +93,7 @@ export default function Finance() {
       <p>{filtered.rows.length} of {expenses.length} entries · Active spending in this view: {formatExpense(filtered.activeTotalMinor)}. CSV exports the full month.</p>
       {filtered.rows.length ? <div className="crm-table-wrap"><table className="crm-table">
         <thead><tr><th>Date</th><th>Description</th><th>Category</th><th>Payment</th><th>Amount</th><th>Status</th></tr></thead>
-        <tbody>{filtered.rows.map(expense => <tr key={expense.id}><td>{expense.spentOn}</td><td>{expense.description}</td><td>{expense.category}</td><td>{expense.payee || "Not recorded"}<small>{expense.paymentMethod}</small><small>{expense.reference}</small></td><td>{formatExpense(Number(expense.amountMinor))}</td><td>{expense.voidedAt ? <>
+        <tbody>{filtered.rows.map(expense => <tr key={expense.id}><td>{expense.spentOn}</td><td>{expense.description}</td><td>{expense.category}</td><td>{expense.payee || "Not recorded"}<small>{expense.paymentMethod}</small><small>{expense.reference}</small></td><td>{formatExpense(Number(expense.amountMinor))}</td><td><Link to={`/admin/finance/${expense.id}/receipt`}>Receipt</Link>{expense.voidedAt ? <>
             <strong>Voided</strong><p>{expense.voidReason}</p>
           </> : <details><summary>Void expense</summary><Form method="post" className="crm-form">
             <input type="hidden" name="intent" value="void"/>

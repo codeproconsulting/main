@@ -1,6 +1,6 @@
 # File updates
 
-Generated snapshot of changes since the previous inventory; Nov 19, 2026, 12:28 p.m. (Asia/Karachi).
+Generated snapshot of changes since the previous inventory; Nov 19, 2026, 12:47 p.m. (Asia/Karachi).
 
 [[02 File Map]] · [[Source Inventory]] · [[05 Maintenance]]
 
@@ -8,9 +8,9 @@ Review these changes and update human-authored architecture/status notes where n
 
 ## Added
 
-- `app/lib/expense-search.ts`
-- `tests/expense-search.test.mjs`
+- `app/admin/expense-receipt-download.ts`
 
 ## Modified
 
-- `app/admin/finance.tsx`
+- `app/admin/expense-receipt.tsx`
+- `app/routes.ts`

@@ -353,3 +353,11 @@ The owner can download the selected month using **Export month CSV** in Finance.
 Run scoped `expense_budgets` setup and verification before enabling owner budget entry. Confirm private collection permissions. Runtime needs document read/write on that collection and activities write for budget change intents. Each month has one GBP budget. The displayed balance subtracts active expense totals and shows over-budget spending as a positive overage. Budget changes never prevent recording expenses. Verify stale-version rejection and a repeated save before release. An uncertain write retains budget/staff locks for operator reconciliation.
 
 Optional expense payment details require payee (200), paymentMethod (30) and reference (100) string attributes. Run scoped expenses setup before release. Verify an older record and an entry with a supplier/payment reference in the web list and CSV.
+
+### Office expense receipts
+
+Apply scoped expenses schema setup and verify receiptFileId, receiptName, receiptMime, receiptChecksum and receiptScannedAt. Reuse the private crm-documents bucket and existing file read/write scope. Configure and verify the real ClamAV socket using the private-document runbook. Receipt upload accepts one PDF, PNG or JPEG up to 5 MB per expense. No replacement/deletion operation is exposed.
+
+For an uncertain attachment, stop competing writers and inspect its pending Receipt attachment requested activity, file ID and expense receipt fields. Verify whether the private file and metadata match before completing or cleaning up the operation and recovering retained expense/staff locks. Do not blindly retry or remove a stored receipt.
+
+The native Finance Receipt button opens the owner web receipt page in the system browser. Sign in there separately. A receipt is never downloaded into the offline workspace cache.

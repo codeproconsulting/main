@@ -59,6 +59,8 @@ export default [
     route("appointments/:id", "admin/work.tsx", {id:"appointment-detail"}),
     route("team", "admin/team.tsx"),
     route("finance.csv", "admin/finance-export.ts"),
+    route("finance/:id/receipt/download", "admin/expense-receipt-download.ts"),
+    route("finance/:id/receipt", "admin/expense-receipt.tsx"),
     route("finance", "admin/finance.tsx"),
     route("settings", "admin/settings.tsx"),
     route("settings/email-delivery", "admin/email-delivery.tsx"),

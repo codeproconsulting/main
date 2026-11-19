@@ -1,7 +1,7 @@
 // Repeatable setup: creates missing schema and applies explicitly documented safe defaults; never drops records.
 export const schema = {
  expense_budgets: {fields:{month:7,amountMinor:16,version:"integer",updatedBy:36},indexes:{}},
- expenses: {fields:{description:500,category:40,spentOn:10,amountMinor:16,currency:3,recordedBy:36,voidedAt:40,voidedBy:36,voidReason:500,payee:200,paymentMethod:30,reference:100},indexes:{spent:['spentOn']}},
+ expenses: {fields:{description:500,category:40,spentOn:10,amountMinor:16,currency:3,recordedBy:36,voidedAt:40,voidedBy:36,voidReason:500,payee:200,paymentMethod:30,reference:100,receiptFileId:36,receiptName:200,receiptMime:100,receiptChecksum:64,receiptScannedAt:40},indexes:{spent:['spentOn']}},
  staff: { fields: {name:200,role:30,active:'boolean',teamId:36,managerScope:12,revocationPending:40,routingAvailability:12,routingCapacity:3,reminderEmail:12}, indexes: {active:['active'],role_active:['role','active']} },
  crm_teams: {fields:{name:200,branch:150,status:12},indexes:{}},
  leads: { fields: {name:200,email:254,phone:80,emailKey:254,phoneKey:15,contactGroup:36,teamId:36,duplicateOf:36,duplicatePriorStage:50,routedAt:40,routedCounselor:36,intakeRouting:12,service:100,source:500,country:150,stage:50,owner:36,priority:20,nextFollowUp:40,details:65536,version:'integer'}, indexes: {team:['teamId'],owner:['owner'],stage:['stage'],name_search:{type:'fulltext',attributes:['name']},email:['email'],email_key:['emailKey'],phone_key:['phoneKey'],contact_group:['contactGroup'],duplicate_of:['duplicateOf'],priority:['priority'],routed_at:['routedAt'],intake_routing:['intakeRouting']} },

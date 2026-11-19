@@ -257,3 +257,7 @@ Expenses optionally store payee, payment method and reference on the same immuta
 ## Expense search and filtering
 
 Web and native Finance filter the already owner-authorized monthly response locally. Search combines description, payee and reference with category, method and active/voided filters. Filtered active subtotals exclude voids.
+
+## Expense receipts
+
+Expense receipt attachments reuse private document storage and the existing ClamAV scan service. Receipt metadata lives on the expense. File upload and metadata writes share expense/staff locks with void operations.

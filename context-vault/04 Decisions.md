@@ -279,3 +279,7 @@ Payee and reference are optional text. Payment method is a server-validated choi
 ## Expense search and filtering
 
 Expense search filters only the selected monthly response. The view labels its filtered active subtotal explicitly. CSV remains a full-month bookkeeping export.
+
+## Expense receipts
+
+Receipt uploads are append-only and support one attachment per expense, including voided expenses. No replacement or deletion UI. Upload intent records the file ID before storage. Unconfirmed storage/metadata/audit outcomes retain locks for operator reconciliation.

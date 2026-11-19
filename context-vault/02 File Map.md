@@ -299,3 +299,9 @@ Payment fields span finance.server.ts, finance.tsx, mobile-api.ts and the native
 ## Expense search and filtering
 
 `app/lib/expense-search.ts` contains the pure expense filter. Its matching native copy is `src/expense-search.ts` in Proconsulting-App. Keep the two copies synchronized when changing filter semantics.
+
+## Expense receipts
+
+`app/admin/expense-receipts.server.ts` validates, scans, uploads and downloads owner-only receipts. `app/admin/expense-receipt.tsx` serves the private browser workflow. The native Finance screen opens that page in the system browser.
+
+Receipt attachment downloads use the dedicated resource route `app/admin/expense-receipt-download.ts`, separate from the rendered receipt page.

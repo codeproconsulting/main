@@ -235,3 +235,7 @@ Budget access is limited to current active owner accounts. Responses expose amou
 ## Expense payment details
 
 The owner-only finance boundary applies to payee, method and reference. No bank account or card-number field is collected. CSV escaping applies to payee and reference text.
+
+## Expense receipts
+
+Only a current active owner can read, attach or download receipts. Receipt files are separate from client-document metadata, and sharing the private bucket does not grant counselor access. Downloads are attachments with private/no-store headers and are audited.
