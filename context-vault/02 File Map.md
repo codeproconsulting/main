@@ -317,3 +317,7 @@ Receipt attachment downloads use the dedicated resource route `app/admin/expense
 ## Yearly office spending
 
 `expenseYear` and `exportExpenseYear` in finance.server.ts supply `finance-year.tsx`, the `finance-year-export.ts` resource and native finance-year API. Native Finance renders the same aggregate response.
+
+## Finance release preflight
+
+`scripts/check-crm-edge.mjs --finance` checks anonymous monthly/yearly API denial and private caching; `tests/crm-edge.test.mjs` covers missing/exposed routes, content type, caching and connection failure.

@@ -353,3 +353,7 @@ Manual repeated-expense entry implemented on web and native. The owner chooses t
 ## Yearly office spending
 
 Yearly spending and monthly budget comparison implemented on web and native, with audited annual summary CSV. Service tests cover totals, void exclusions, unset budgets, over-budget balances and export denial/failure.
+
+## Finance rollout evidence — 20 November
+
+The public base edge passes. Both monthly and yearly Finance API probes return 404, so Finance rollout is still pending. The release checker now has an optional Finance gate and synthetic failure tests. Authenticated production acceptance and native Finance OTA remain unperformed. See [[Sessions/2026-11-20-01]].

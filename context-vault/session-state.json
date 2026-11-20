@@ -1,38 +1,39 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-19-04",
-  "sessionStatus": "completed",
+  "sessionId": "2026-11-20-01",
+  "sessionStatus": "in_progress",
   "activeFeature": "FIN-02",
-  "objective": "Compare yearly office spending and monthly budgets on web and mobile.",
+  "objective": "Prepare and verify the Finance rollout gate without changing the live VPS.",
   "scope": [
-    "Owner annual aggregates, monthly drill-down and audited annual CSV"
+    "Anonymous Finance endpoint release checks, tested release pin and Hermes acceptance instructions"
   ],
   "outOfScope": [
-    "Tax reporting, multiple currencies, production rollout and native file downloads"
+    "VPS changes without an available deployment connection",
+    "Authenticated production writes and mobile OTA before server acceptance"
   ],
   "acceptance": [
     {
-      "id": "FIN02-YEAR-SERVICE",
-      "description": "Correct bounded annual aggregation and export protections",
+      "id": "FIN02-EDGE",
+      "description": "Finance release preflight detects missing, exposed or incorrectly cached endpoints",
       "status": "passed",
-      "evidence": "Synthetic tests verify twelve months, category totals, voided entry exclusions, budget coverage, over-budget balances, invalid years, role denial and export audit failure."
+      "evidence": "Synthetic checker tests pass for missing routes, unexpected success, HTML, unsafe caching and network failure. Live base edge passes; both Finance routes return 404 on 20 November."
     },
     {
-      "id": "FIN02-YEAR-CLIENT",
-      "description": "Built web and native compatibility",
-      "status": "passed",
-      "evidence": "Built Chrome annual total, monthly budget balance and CSV passed with synthetic records. Main typecheck, full tests and build passed. Mobile checks passed; actual device acceptance pending."
+      "id": "FIN02-LIVE",
+      "description": "VPS owner/non-owner Finance acceptance before mobile delivery",
+      "status": "blocked",
+      "evidence": "Both public Finance API routes still return 404. No configured VPS deployment connection or operator rollout evidence is available in this session. Authenticated checks and mobile delivery remain pending."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Roll out latest Finance server routes and verify owner create/budget/void/receipt/yearly/export and non-owner denial. Then publish native Finance and verify on device.",
+      "action": "Hermes: deploy tested e424fee using the updated handoff, run check-crm-edge.mjs --finance and check-finance.mjs --scanner on the VPS, then complete owner/non-owner synthetic acceptance. Record deployed SHA and scanner results before native Finance OTA.",
       "files": [
+        "deploy/HAMY-CRM-HANDOFF.md",
         "deploy/CRM-DEPLOYMENT.md",
-        "app/admin/finance-year.tsx",
-        "/Users/fidaali/Proconsulting-App/src/Finance.tsx"
+        "scripts/check-crm-edge.mjs"
       ]
     }
   ],
@@ -51,8 +52,8 @@
     "REPORT-01 counts describe a bounded live scan rather than a database snapshot. Export above 10,000 records requires a future bounded export workflow.",
     "CRM-02 manual entry and contact search require additive lead fields and indexes before rollout. Older phone values that cannot be normalized remain searchable by name or email.",
     "Consultation release requires the private Appwrite collection and index smoke checks.",
-    "Live mobile sign-in is blocked by a certificate hostname mismatch at the CRM origin. iOS physical-device distribution also needs Apple signing.",
-    "Native snapshots expire after 15 minutes and stay in memory. Cold-start offline data and edits require an approved encrypted persistence and reconciliation design."
+    "Finance application rollout remains pending despite the live base CRM. Mobile Finance is not in the published OTA.",
+    "Encrypted cold-start read-only mobile cache and compatible offline OTA are implemented; physical-device acceptance and offline edits remain pending."
   ],
   "externalState": {
     "database": "proconsulting",
@@ -60,7 +61,7 @@
     "ghostImportedPages": 1,
     "postPublicationState": "draft",
     "blogProvider": "Ghost unchanged",
-    "productionDeployment": "Operator confirmed CRM is live following the guide. Public HTTPS login returned 200 on 18 November. Exact deployed revision and authenticated acceptance unverified.",
+    "productionDeployment": "Operator confirmed base CRM is live. On 20 November public HTTPS login, redirect and anonymous workspace checks passed. Finance routes returned 404; exact deployed revision and authenticated acceptance remain unverified.",
     "workerOnVPS": "not started",
     "ownerPassword": "owner must set via Appwrite Console",
     "gitBranch": "codex/crm-workspace",
@@ -126,7 +127,7 @@
     "mobileFinance": "Native finance screen implemented locally. Server rollout required before mobile publication. Sign-in role field added; owners must sign in again.",
     "expenseVoids": "Optional schema verified private. Web browser acceptance passed locally. No real expense records modified and no VPS application deployment.",
     "expenseExport": "Implemented and verified locally. Initial full-suite mobile API process stalled, standalone test and repeated full suite passed. No VPS deployment.",
-    "financeDeployment": "Public Finance still returns 404 Unknown resource. Hermes handoff now pins tested budget-inclusive 870c3cd. No live changes performed.",
+    "financeDeployment": "20 November: base edge checks pass; finance and finance-year anonymous probes return 404 rather than expected 401. No live changes performed. Handoff pins yearly-inclusive e424fee.",
     "officeBudget": "Private expense_budgets schema provisioned. Synthetic storage verified and cleaned. No real budget changes and no VPS application release.",
     "expensePaymentDetails": "Target payment attributes provisioned and verified on 19 November. No production expense entries changed.",
     "expenseReceipts": "Optional receipt metadata provisioned and schema verified. Actual scanner and VPS app rollout pending. No production receipt uploads attempted.",
@@ -137,24 +138,24 @@
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-19T18:40:22.870Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-GEoFR3/typecheck.log"
+      "checkedAt": "2026-11-20T05:33:54.176Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Q1KGNA/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-19T18:40:29.942Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-GEoFR3/test.log"
+      "checkedAt": "2026-11-20T05:34:07.648Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Q1KGNA/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-19T18:40:35.516Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-GEoFR3/build.log"
+      "checkedAt": "2026-11-20T05:35:23.535Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Q1KGNA/build.log"
     }
   ],
-  "updatedAt": "2026-11-19T18:40:57.020Z",
-  "verifiedSourceFingerprint": "eed74ecb6d6d6dc80f833768f9ec4f345a4c548de58e70c861b317abe6ff7ac0"
+  "updatedAt": "2026-11-20T05:36:25.370Z",
+  "verifiedSourceFingerprint": "ef9bbd7e30c2bbe47d0b7a6e0bfd37a6e8ca95467b612388f6646f1ba747fe7c"
 }

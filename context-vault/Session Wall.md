@@ -3,39 +3,40 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-19-04]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-20-01]].
 
 ## Resume here
 
-**Session:** 2026-11-19-04
+**Session:** 2026-11-20-01
 
 **Active feature:** FIN-02
 
-**State:** completed
+**State:** in_progress
 
-**Objective:** Compare yearly office spending and monthly budgets on web and mobile.
+**Objective:** Prepare and verify the Finance rollout gate without changing the live VPS.
 
-This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
+A user saying **continue** means resume this feature's next unfinished acceptance check. Do not start unrelated modules or repeat completed infrastructure work. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Owner annual aggregates, monthly drill-down and audited annual CSV
+- Anonymous Finance endpoint release checks, tested release pin and Hermes acceptance instructions
 
 ## Out of scope
 
-- Tax reporting, multiple currencies, production rollout and native file downloads
+- VPS changes without an available deployment connection
+- Authenticated production writes and mobile OTA before server acceptance
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| FIN02-YEAR-SERVICE | Correct bounded annual aggregation and export protections | passed | Synthetic tests verify twelve months, category totals, voided entry exclusions, budget coverage, over-budget balances, invalid years, role denial and export audit failure. |
-| FIN02-YEAR-CLIENT | Built web and native compatibility | passed | Built Chrome annual total, monthly budget balance and CSV passed with synthetic records. Main typecheck, full tests and build passed. Mobile checks passed; actual device acceptance pending. |
+| FIN02-EDGE | Finance release preflight detects missing, exposed or incorrectly cached endpoints | passed | Synthetic checker tests pass for missing routes, unexpected success, HTML, unsafe caching and network failure. Live base edge passes; both Finance routes return 404 on 20 November. |
+| FIN02-LIVE | VPS owner/non-owner Finance acceptance before mobile delivery | blocked | Both public Finance API routes still return 404. No configured VPS deployment connection or operator rollout evidence is available in this session. Authenticated checks and mobile delivery remain pending. |
 
 ## Exact next actions
 
-1. Roll out latest Finance server routes and verify owner create/budget/void/receipt/yearly/export and non-owner denial. Then publish native Finance and verify on device.
-   Files: `deploy/CRM-DEPLOYMENT.md`, `app/admin/finance-year.tsx`, `/Users/fidaali/Proconsulting-App/src/Finance.tsx`
+1. Hermes: deploy tested e424fee using the updated handoff, run check-crm-edge.mjs --finance and check-finance.mjs --scanner on the VPS, then complete owner/non-owner synthetic acceptance. Record deployed SHA and scanner results before native Finance OTA.
+   Files: `deploy/HAMY-CRM-HANDOFF.md`, `deploy/CRM-DEPLOYMENT.md`, `scripts/check-crm-edge.mjs`
 
 ## Known risks and unfinished work
 
@@ -53,14 +54,14 @@ This feature is complete. On **continue**, start the next bounded session named 
 - REPORT-01 counts describe a bounded live scan rather than a database snapshot. Export above 10,000 records requires a future bounded export workflow.
 - CRM-02 manual entry and contact search require additive lead fields and indexes before rollout. Older phone values that cannot be normalized remain searchable by name or email.
 - Consultation release requires the private Appwrite collection and index smoke checks.
-- Live mobile sign-in is blocked by a certificate hostname mismatch at the CRM origin. iOS physical-device distribution also needs Apple signing.
-- Native snapshots expire after 15 minutes and stay in memory. Cold-start offline data and edits require an approved encrypted persistence and reconciliation design.
+- Finance application rollout remains pending despite the live base CRM. Mobile Finance is not in the published OTA.
+- Encrypted cold-start read-only mobile cache and compatible offline OTA are implemented; physical-device acceptance and offline edits remain pending.
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-19T18:40:22.870Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-GEoFR3/typecheck.log`
-- **passed**: `npm run test` (2026-11-19T18:40:29.942Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-GEoFR3/test.log`
-- **passed**: `npm run build` (2026-11-19T18:40:35.516Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-GEoFR3/build.log`
+- **passed**: `npm run typecheck` (2026-11-20T05:33:54.176Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Q1KGNA/typecheck.log`
+- **passed**: `npm run test` (2026-11-20T05:34:07.648Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Q1KGNA/test.log`
+- **passed**: `npm run build` (2026-11-20T05:35:23.535Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Q1KGNA/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -71,7 +72,7 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **ghostImportedPages**: 1
 - **postPublicationState**: draft
 - **blogProvider**: Ghost unchanged
-- **productionDeployment**: Operator confirmed CRM is live following the guide. Public HTTPS login returned 200 on 18 November. Exact deployed revision and authenticated acceptance unverified.
+- **productionDeployment**: Operator confirmed base CRM is live. On 20 November public HTTPS login, redirect and anonymous workspace checks passed. Finance routes returned 404; exact deployed revision and authenticated acceptance remain unverified.
 - **workerOnVPS**: not started
 - **ownerPassword**: owner must set via Appwrite Console
 - **gitBranch**: codex/crm-workspace
@@ -137,7 +138,7 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **mobileFinance**: Native finance screen implemented locally. Server rollout required before mobile publication. Sign-in role field added; owners must sign in again.
 - **expenseVoids**: Optional schema verified private. Web browser acceptance passed locally. No real expense records modified and no VPS application deployment.
 - **expenseExport**: Implemented and verified locally. Initial full-suite mobile API process stalled, standalone test and repeated full suite passed. No VPS deployment.
-- **financeDeployment**: Public Finance still returns 404 Unknown resource. Hermes handoff now pins tested budget-inclusive 870c3cd. No live changes performed.
+- **financeDeployment**: 20 November: base edge checks pass; finance and finance-year anonymous probes return 404 rather than expected 401. No live changes performed. Handoff pins yearly-inclusive e424fee.
 - **officeBudget**: Private expense_budgets schema provisioned. Synthetic storage verified and cleaned. No real budget changes and no VPS application release.
 - **expensePaymentDetails**: Target payment attributes provisioned and verified on 19 November. No production expense entries changed.
 - **expenseReceipts**: Optional receipt metadata provisioned and schema verified. Actual scanner and VPS app rollout pending. No production receipt uploads attempted.

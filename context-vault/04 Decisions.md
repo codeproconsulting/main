@@ -291,3 +291,7 @@ Reuse description, category, payee, method and amount only. Require a new date a
 ## Yearly office spending
 
 Annual totals reuse the monthly definition of active spending. Budget totals are labeled with the number of months configured, and unbudgeted months show Not set. A monthly scan above 1,000 records fails the report explicitly. Reads are live, rather than a transactional year-end snapshot.
+
+## Finance promotion gate — 20 November
+
+Keep the base edge check usable for older CRM deployments; opt into monthly/yearly Finance checks with `--finance`. Anonymous HTTP 401 JSON with private/no-store caching is required but does not prove owner access, schema readiness or scanner acceptance. Native Finance publication follows authenticated server acceptance.

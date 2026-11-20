@@ -22,7 +22,7 @@ The CRM root redirects to `/admin`. Staff login is `/admin/login`. Static build 
 
 DNS → existing edge inspection → TLS → schema readiness → runtime key → owner account/password setup → typecheck/tests/build → PM2 deployment → anonymous/authenticated checks → form persistence → monitoring/backup verification.
 
-No production deployment is currently evidenced. See [[03 Implementation Status]].
+The operator reports the base CRM is live; public edge checks pass as of 20 November. Exact deployed revision and authenticated feature acceptance remain unverified. See [[03 Implementation Status]].
 
 ## First-day runbook revision
 
@@ -315,3 +315,7 @@ Expense copying uses the existing Finance API and schema. Verify an original and
 ## Yearly office spending
 
 Annual Finance needs existing expense, budget, staff and audit permissions. No new schema. Deploy annual report and CSV routes before publishing the native annual screen. Native annual CSV opens the authenticated browser workflow.
+
+## Finance rollout check — 20 November
+
+`node scripts/check-crm-edge.mjs --finance` adds anonymous monthly/yearly Finance checks to the existing edge probe. Base edge passed; both Finance endpoints returned 404 on 20 November. Hermes handoff pins tested yearly-inclusive `e424fee`. Target scanner, authenticated owner/non-owner checks and mobile delivery remain pending. No VPS changes performed.
