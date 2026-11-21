@@ -243,3 +243,7 @@ Only a current active owner can read, attach or download receipts. Receipt files
 ## Yearly office spending
 
 Yearly API responses contain aggregates only. Payees, references, receipt identifiers and expense descriptions are excluded. Access is owner-only and exports require refreshed authorization plus an audit record.
+
+## Native consultations — 21 November
+
+Mobile consultation responses project history to ID, destination, counselor name and date; recordedBy and internal destination keys are excluded. Counselors can only use their current leads and cannot forge another counselor’s credit. Owners/unrestricted managers select an active CRM staff member through the shared service. Restricted managers continue on web. Session/role denial clears the native panel; consultation data is not saved in the offline workspace.

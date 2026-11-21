@@ -319,3 +319,7 @@ Annual Finance needs existing expense, budget, staff and audit permissions. No n
 ## Finance rollout check — 20 November
 
 `node scripts/check-crm-edge.mjs --finance` adds anonymous monthly/yearly Finance checks to the existing edge probe. Base edge passed; both Finance endpoints returned 404 on 20 November. Hermes handoff pins tested yearly-inclusive `e424fee`. Target scanner, authenticated owner/non-owner checks and mobile delivery remain pending. No VPS changes performed.
+
+## Native consultations — 21 November
+
+MOB-05 requires the consultations GET/POST mobile resource and existing private consultations schema/runtime document access. No schema changes were applied. Accept anonymous 401, counselor current-lead isolation, owner counselor credit selection, web/native history parity, future-date rejection and retry deduplication before mobile publication. Finance deployment remains deferred; no VPS or OTA change was performed.

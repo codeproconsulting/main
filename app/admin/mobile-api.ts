@@ -6,6 +6,8 @@ import { boundedBody } from "~/lib/request-body.server";
 import { expenseYear, expensePaymentMethods, expenseCategories, expenseMonth, recordExpense, voidExpense, saveOfficeBudget } from "./finance.server";
 import { leadFor, leadsFor, queuePage, taskPage, updateLead } from "./crm.server";
 
+import { consultationPage, consultationPageSize, leadConsultations, recordConsultation } from "./consultations.server";
+
 import { isRestrictedManager, closureStages, priorities, stages, type Lead } from "./domain";
 
 const headers = { "Cache-Control": "private, no-store", "X-Robots-Tag": "noindex, nofollow" };
@@ -61,7 +63,7 @@ async function mobileRequest(request: Request, operation: () => Promise<Response
     if (status === 404 && error instanceof Response) return reply({ error: "Lead not found." }, 404);
     if ([401, 404].includes(status)) return reply({ error: "Please sign in again." }, 401);
     if (status === 403) return reply({ error: "Your account does not have access." }, 403);
-    if (error instanceof Response && [400, 409].includes(status)) return reply({ error: await error.text() }, status);
+    if (error instanceof Response && [400, 409, 413].includes(status)) return reply({ error: await error.text() }, status);
     if (status === 429) return reply({ error: "Too many attempts. Try again shortly." }, 429);
     return reply({ error: "CRM service unavailable. Try again shortly." }, 503);
   }
@@ -100,6 +102,18 @@ function mobileLeads({ documents, total }: Awaited<ReturnType<typeof leadsFor>>)
 
 export function loader({ request, params }: LoaderFunctionArgs) {
   return mobileRequest(request, async () => {
+    if (params.resource === "consultations") {
+      const staff = await mobileStaff(request);
+      const page = consultationPage(new URL(request.url).searchParams);
+      const result = await leadConsultations(staff, leadId(request), page);
+      return reply({
+        lead: result.lead, people: result.people, manager: result.manager,
+        history: result.history.documents.map(({ $id, destination, counselorName, heldOn }) => ({ id: $id, destination, counselorName, heldOn })),
+        page, hasMore: page < 10_000 && page * consultationPageSize < result.history.total,
+        total: result.history.total, submissionId: randomUUID(),
+        today: new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString().slice(0, 10),
+      });
+    }
     if (params.resource === "finance-year") {
       const year = new URL(request.url).searchParams.get("year") || String(new Date().getUTCFullYear());
       return reply(await expenseYear(await mobileStaff(request),year));
@@ -134,6 +148,24 @@ export function loader({ request, params }: LoaderFunctionArgs) {
 
 export function action({ request, params }: ActionFunctionArgs) {
   return mobileRequest(request, async () => {
+    if (params.resource === "consultations") {
+      if (request.method !== "POST") return reply({ error: "Method not allowed." }, 405);
+      const staff = await mobileStaff(request);
+      const id = leadId(request);
+      if (!isJson(request)) return reply({ error: "Expected JSON." }, 415);
+      const text = await (await boundedBody(request, 4096, "Consultation")).text();
+      const body = (() => { try { return JSON.parse(text); } catch { return null; } })();
+      if (!body || typeof body !== "object" || Array.isArray(body)) return reply({ error: "Invalid consultation." }, 400);
+      const form = new FormData();
+      for (const key of ["submissionId", "destination", "heldOn"]) {
+        if (typeof body[key] !== "string") return reply({ error: "Invalid consultation fields." }, 400);
+        form.set(key, body[key]);
+      }
+      if (body.counselor !== undefined && typeof body.counselor !== "string") return reply({ error: "Invalid counselor." }, 400);
+      form.set("counselor", body.counselor ?? "");
+      const saved = await recordConsultation(staff, id, form);
+      return reply({ id: saved.$id });
+    }
     if (params.resource === "finance") {
       if (request.method !== "POST" || !isJson(request)) return reply({ error: "Use a JSON POST." }, 405);
       const staff = await mobileStaff(request);

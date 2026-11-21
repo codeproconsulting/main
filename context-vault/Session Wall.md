@@ -3,40 +3,40 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-20-01]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-21-01]].
 
 ## Resume here
 
-**Session:** 2026-11-20-01
+**Session:** 2026-11-21-01
 
-**Active feature:** FIN-02
+**Active feature:** MOB-05
 
-**State:** in_progress
+**State:** completed
 
-**Objective:** Prepare and verify the Finance rollout gate without changing the live VPS.
+**Objective:** Native per-lead consultation history and retry-safe recording through the shared web service.
 
-A user saying **continue** means resume this feature's next unfinished acceptance check. Do not start unrelated modules or repeat completed infrastructure work. Verify current files and drift before trusting the checkpoint.
+This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Anonymous Finance endpoint release checks, tested release pin and Hermes acceptance instructions
+- Scoped mobile consultation API, native lead-screen consultation panel, service/client tests
 
 ## Out of scope
 
-- VPS changes without an available deployment connection
-- Authenticated production writes and mobile OTA before server acceptance
+- Finance deployment (explicitly deferred by user)
+- Mobile OTA, physical-device acceptance and offline consultation storage
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| FIN02-EDGE | Finance release preflight detects missing, exposed or incorrectly cached endpoints | passed | Synthetic checker tests pass for missing routes, unexpected success, HTML, unsafe caching and network failure. Live base edge passes; both Finance routes return 404 on 20 November. |
-| FIN02-LIVE | VPS owner/non-owner Finance acceptance before mobile delivery | blocked | Both public Finance API routes still return 404. No configured VPS deployment connection or operator rollout evidence is available in this session. Authenticated checks and mobile delivery remain pending. |
+| MOB05-API | Authenticated bounded reads/writes reuse scoped consultation service and safe projections | passed | Synthetic mobile API tests verify anonymous/foreign-lead denial, current-owner handoff denial, safe history fields, 25-row paging, JSON/date/type/size validation, counselor credit protection and deduplication after lost acknowledgement. Main typecheck, full tests and production build passed. |
+| MOB05-NATIVE | Native history, paging, counselor selection and stable retry form; mobile checks | passed | Native typecheck/lint/nine tests/Android bundle passed. Chrome component interaction with DOM shims passed paging, owner selection, uncertain locked draft, identical retry and denial cleanup. Native device rendering/background behavior remain unverified. |
 
 ## Exact next actions
 
-1. Hermes: deploy tested e424fee using the updated handoff, run check-crm-edge.mjs --finance and check-finance.mjs --scanner on the VPS, then complete owner/non-owner synthetic acceptance. Record deployed SHA and scanner results before native Finance OTA.
-   Files: `deploy/HAMY-CRM-HANDOFF.md`, `deploy/CRM-DEPLOYMENT.md`, `scripts/check-crm-edge.mjs`
+1. Build native consultation reporting with counselor/destination/date filters using existing consultationReport service; preserve deferred Finance rollout and separate production acceptance.
+   Files: `app/admin/consultations.server.ts`, `app/admin/mobile-api.ts`, `app/admin/consultation-report.tsx`, `/Users/fidaali/Proconsulting-App/src/Consultations.tsx`
 
 ## Known risks and unfinished work
 
@@ -59,9 +59,9 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-20T05:33:54.176Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Q1KGNA/typecheck.log`
-- **passed**: `npm run test` (2026-11-20T05:34:07.648Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Q1KGNA/test.log`
-- **passed**: `npm run build` (2026-11-20T05:35:23.535Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Q1KGNA/build.log`
+- **passed**: `npm run typecheck` (2026-11-21T05:37:57.329Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-F7eiDh/typecheck.log`
+- **passed**: `npm run test` (2026-11-21T05:38:04.166Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-F7eiDh/test.log`
+- **passed**: `npm run build` (2026-11-21T05:38:09.586Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-F7eiDh/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -138,10 +138,11 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **mobileFinance**: Native finance screen implemented locally. Server rollout required before mobile publication. Sign-in role field added; owners must sign in again.
 - **expenseVoids**: Optional schema verified private. Web browser acceptance passed locally. No real expense records modified and no VPS application deployment.
 - **expenseExport**: Implemented and verified locally. Initial full-suite mobile API process stalled, standalone test and repeated full suite passed. No VPS deployment.
-- **financeDeployment**: 20 November: base edge checks pass; finance and finance-year anonymous probes return 404 rather than expected 401. No live changes performed. Handoff pins yearly-inclusive e424fee.
+- **financeDeployment**: Explicitly deferred by user on 21 November. Last probe: base edge passes, finance and finance-year return 404. No live changes performed.
 - **officeBudget**: Private expense_budgets schema provisioned. Synthetic storage verified and cleaned. No real budget changes and no VPS application release.
 - **expensePaymentDetails**: Target payment attributes provisioned and verified on 19 November. No production expense entries changed.
 - **expenseReceipts**: Optional receipt metadata provisioned and schema verified. Actual scanner and VPS app rollout pending. No production receipt uploads attempted.
 - **financeReadiness**: Read-only target preflight passed for expenses, budgets, activities, locks and receipt bucket. No expense rows read or written. Actual VPS scanner untested.
+- **nativeConsultations**: Implemented and verified locally; mobile commits include cb1ad78 plus background draft retention checkpoint. Mobile checkout has no remote. No VPS deployment or OTA publication.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

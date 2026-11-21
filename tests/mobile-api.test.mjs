@@ -18,6 +18,8 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
   let revoked = false;
   let active = true;
   const events = [];
+  const consultations = [];
+  let lostConsultationAck = false;
   const leads = [
     { $id: "owned", owner: "staff", name: "Synthetic lead", email: "fixture@example.invalid", stage: "New", priority: "Normal", nextFollowUp: "2027-01-01T10:00:00.000Z", version: 1 },
     { $id: "foreign", owner: "other", name: "Other lead" },
@@ -41,12 +43,30 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
       return Response.json({ $id: "staff" }, { status: revoked ? 401 : 200 });
     }
     if (url.pathname.endsWith("/staff/documents/staff")) {
-      return Response.json({ role: "counselor", name: "Synthetic counselor", active });
+      return Response.json({ $id: "staff", role: "counselor", name: "Synthetic counselor", active });
     }
     if (url.pathname.includes("/activities/documents")) {
       const { data } = JSON.parse(options.body);
       if (options.method === "POST") events.push(data);
       return Response.json({ $id: "audit" });
+    }
+    if (url.pathname.includes("/consultations/documents")) {
+      const id = url.pathname.split("/documents/")[1];
+      if (options.method === "POST") {
+        const { data, documentId, permissions } = JSON.parse(options.body);
+        assert.deepEqual(permissions, []);
+        if (consultations.some(row => row.$id === documentId)) return Response.json({}, { status: 409 });
+        const row = { ...data, $id: documentId };
+        consultations.unshift(row);
+        if (lostConsultationAck) throw Error("synthetic lost acknowledgment");
+        return Response.json(row);
+      }
+      if (id) return consultations.find(row => row.$id === id) ? Response.json(consultations.find(row => row.$id === id)) : Response.json({}, {status:404});
+      const filters = url.searchParams.getAll("queries[]").map(JSON.parse);
+      const rows = consultations.filter(row => filters.every(q => q.method !== "equal" || q.values.includes(row[q.attribute])));
+      const offset = filters.find(q => q.method === "offset")?.values[0] ?? 0;
+      const limit = filters.find(q => q.method === "limit")?.values[0] ?? 100;
+      return Response.json({ documents: rows.slice(offset, offset + limit), total: rows.length });
     }
     const match = url.pathname.match(/\/(leads|tasks)\/documents(?:\/([^/]+))?$/);
     assert.ok(match);
@@ -155,7 +175,45 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
     assert.equal((await current.json()).stage, "Qualified");
     assert.equal((await edit("owned", { version: 2, stage: "Contacted", priority: "Urgent" })).status, 409);
     assert.equal(events.length, 2);
+    assert.equal((await send("consultations?id=owned")).status, 401);
+    assert.equal((await send("consultations?id=foreign", auth)).status, 403);
+    assert.equal((await send("consultations?id=bad/id", auth)).status, 400);
+    const consultationPage = await send("consultations?id=owned", auth);
+    assert.equal(consultationPage.status, 200);
+    assert.match(consultationPage.headers.get("Cache-Control"), /private, no-store/);
+    const consultationForm = await consultationPage.json();
+    assert.equal(consultationForm.total, 0);
+    assert.deepEqual(consultationForm.people, [{id:"staff",name:"Synthetic counselor"}]);
+    const input = {submissionId:consultationForm.submissionId,destination:"Germany",heldOn:"2026-01-01",counselor:"other"};
+    const record = (body, id = "owned", headers = {}) => send(`consultations?id=${id}`, {method:"POST",headers:{...auth.headers,"Content-Type":"application/json",...headers},body:JSON.stringify(body)});
+    assert.equal((await record(input,"foreign")).status, 403);
+    assert.equal((await record({...input,destination:42})).status, 400);
+    assert.equal((await record({...input,heldOn:"2099-01-01"})).status, 400);
+    assert.equal((await record({...input,destination:"x".repeat(5000)})).status, 413);
+    assert.equal((await record(input,"owned",{"Content-Type":"text/plain"})).status, 415);
+    assert.equal((await send("consultations?id=owned",{...auth,method:"PATCH"})).status, 405);
+    lostConsultationAck = true;
+    const logged = await record(input);
+    assert.equal(logged.status, 200);
+    assert.equal(consultations.length, 1);
+    assert.equal(consultations[0].counselor, "staff"); // counselors cannot forge credit
+    assert.equal((await record(input)).status, 200);
+    assert.equal(consultations.length, 1);
+    assert.equal((await record({...input,destination:"Italy"})).status, 409);
+    const history = await (await send("consultations?id=owned",auth)).json();
+    assert.deepEqual(Object.keys(history.history[0]).sort(), ["counselorName","destination","heldOn","id"]);
+    assert.equal(history.history[0].destination,"Germany");
+    for (let i=0;i<25;i++) consultations.push({...consultations[0],$id:`consult-${i}`});
+    assert.equal((await (await send("consultations?id=owned",auth)).json()).hasMore, true);
+    const nextHistory = await (await send("consultations?id=owned&page=2",auth)).json();
+    assert.equal(nextHistory.history.length,1);
+    assert.equal(nextHistory.hasMore,false);
+    leads[0].owner = "other";
+    assert.equal((await send("consultations?id=owned",auth)).status,403);
+    assert.equal((await record(input)).status,403);
+    leads[0].owner = "staff";
     active = false;
+    assert.equal((await send("consultations?id=owned",auth)).status,403);
     assert.equal((await send("workspace", auth)).status, 403);
     assert.equal((await send("session", { ...auth, method: "DELETE" })).status, 204);
     assert.equal((await send("workspace", auth)).status, 401);

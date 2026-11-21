@@ -295,3 +295,7 @@ Annual totals reuse the monthly definition of active spending. Budget totals are
 ## Finance promotion gate — 20 November
 
 Keep the base edge check usable for older CRM deployments; opt into monthly/yearly Finance checks with `--finance`. Anonymous HTTP 401 JSON with private/no-store caching is required but does not prove owner access, schema readiness or scanner acceptance. Native Finance publication follows authenticated server acceptance.
+
+## Native consultations — 21 November
+
+Use the existing consultation service on web and native rather than a second recording workflow. Keep history and drafts out of offline snapshots. After an uncertain save, lock the same form for retry; restarting/signing out requires inspecting web history before another entry. User explicitly deferred Finance deployment to resume feature work.

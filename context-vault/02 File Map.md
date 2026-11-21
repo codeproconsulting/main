@@ -321,3 +321,7 @@ Receipt attachment downloads use the dedicated resource route `app/admin/expense
 ## Finance release preflight
 
 `scripts/check-crm-edge.mjs --finance` checks anonymous monthly/yearly API denial and private caching; `tests/crm-edge.test.mjs` covers missing/exposed routes, content type, caching and connection failure.
+
+## Native consultations — 21 November
+
+`app/admin/mobile-api.ts` exposes consultation history and recording; `tests/mobile-api.test.mjs` verifies the adapter with synthetic storage. Separate mobile checkout: `src/Consultations.tsx` is the native lead panel, `src/mobile-api.ts` contains typed calls, and `tests/consultations-api.test.mjs` verifies request encoding/retries.

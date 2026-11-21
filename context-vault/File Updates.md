@@ -1,16 +1,13 @@
 # File updates
 
-Generated snapshot of changes since the previous inventory; Nov 20, 2026, 10:33 a.m. (Asia/Karachi).
+Generated snapshot of changes since the previous inventory; Nov 21, 2026, 10:37 a.m. (Asia/Karachi).
 
 [[02 File Map]] · [[Source Inventory]] · [[05 Maintenance]]
 
 Review these changes and update human-authored architecture/status notes where needed. For cumulative history, read the dated notes in Changes/.
 
-## Added
-
-- `tests/crm-edge.test.mjs`
-
 ## Modified
 
-- `deploy/HAMY-CRM-HANDOFF.md`
-- `scripts/check-crm-edge.mjs`
+- `app/admin/mobile-api.ts`
+- `deploy/CRM-DEPLOYMENT.md`
+- `tests/mobile-api.test.mjs`

@@ -269,3 +269,7 @@ Copy as new expense creates a client-side draft from an already owner-authorized
 ## Yearly office spending
 
 Yearly Finance reads twelve bounded monthly reports in batches of three and returns aggregate spending, budget balances, entry counts and category totals. Current owner access is rechecked before response and export.
+
+## Native consultations — 21 November
+
+The native lead editor now includes an online consultation panel. GET/POST `/admin/mobile/v1/consultations` adapts bounded JSON to the existing `leadConsultations`/`recordConsultation` service, preserving shared web/native scope, validation and idempotency. No additional storage or native module.

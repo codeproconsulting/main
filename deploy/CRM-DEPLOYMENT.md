@@ -369,3 +369,9 @@ From a release checkout containing the new checker, run `node scripts/check-fina
 ### Yearly expense review
 
 The owner can open Yearly overview from Finance and compare all twelve months, active spending, monthly budget balances and category totals. Annual CSV contains monthly aggregates and entry counts, including void counts. It uses the existing private collections and the monthly 1,000-entry cap. Verify a budgeted month, an unbudgeted month and a voided expense before release. Native annual CSV opens the system browser and requires web owner sign-in. Reports reflect live reads.
+
+### Native consultation acceptance
+
+The native lead editor uses GET/POST `/admin/mobile/v1/consultations?id=<lead-id>`. History pages contain 25 entries. Deploy the API before publishing the native update; use the existing private consultations schema and runtime access. No new attributes or native modules are needed. Verify anonymous HTTP 401, counselor denial for another counselor’s lead, date validation, owner/unrestricted-manager counselor selection and web/native history parity. Restricted managers continue using web team workflows.
+
+Retry the identical submission ID after a simulated lost acknowledgement and confirm only one record exists. The native panel locks uncertain drafts; if the app restarts or signs out, inspect web history before entering the same consultation again. History and drafts are online-only and excluded from offline snapshots. Physical-device, VPS and OTA acceptance are separate from local checks.

@@ -357,3 +357,7 @@ Yearly spending and monthly budget comparison implemented on web and native, wit
 ## Finance rollout evidence — 20 November
 
 The public base edge passes. Both monthly and yearly Finance API probes return 404, so Finance rollout is still pending. The release checker now has an optional Finance gate and synthetic failure tests. Authenticated production acceptance and native Finance OTA remain unperformed. See [[Sessions/2026-11-20-01]].
+
+## Native consultations — 21 November
+
+MOB-05 consultation history and recording implemented locally. API scope, pagination, input limits, credit spoofing and lost-ack retry passed synthetically. Native component browser checks use DOM shims, not a real phone. Mobile typecheck/lint/nine tests/Android export passed. Server rollout and mobile OTA/device acceptance remain pending. Finance deployment explicitly deferred by user.
