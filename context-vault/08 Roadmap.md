@@ -30,3 +30,7 @@ MOB-01 mobile builds are available for Android and iOS simulator testing. Live m
 ## Native follow-up lifecycle — 21 November
 
 MOB-05 consultations, MOB-06 consultation reporting and MOB-07 follow-up actions are now implemented and accepted locally. Production/server/OTA/device gates remain separate. Finance rollout was explicitly deferred. Resume the exact next bounded build recorded in [[Session Wall]] rather than the historical next-feature notes above.
+
+## Retry-safe follow-up creation — 21 November
+
+MOB-08 adds follow-up creation on native and makes the shared web path retry-safe. Existing lifecycle editing and consultation reporting remain locally accepted. Production and device delivery remain deferred; continue from the exact next build in [[Session Wall]].

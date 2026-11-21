@@ -333,3 +333,7 @@ Receipt attachment downloads use the dedicated resource route `app/admin/expense
 ## Native follow-up lifecycle — 21 November
 
 `app/admin/crm.server.ts` exports `followUpFor` for scoped detail reads; `app/admin/mobile-api.ts` adds detail and PATCH routes without changing older snapshot payloads. `tests/mobile-api.test.mjs` verifies shared web/mobile behavior. In the separate mobile checkout, `src/FollowUpEditor.tsx`, `src/NativeWorkspace.tsx`, typed API calls and `tests/follow-ups-api.test.mjs` implement the native workflow.
+
+## Retry-safe follow-up creation — 21 November
+
+`app/admin/crm.server.ts` implements retry-safe creation; `app/admin/lead.tsx` emits and preserves submission IDs/drafts; `app/admin/mobile-api.ts` adds POST follow-ups and lead form context. `tests/task-creation.test.mjs` covers interrupted writes and original-request identity; mobile API tests cover web-to-native recovery. Separate mobile checkout adds `src/FollowUpCreate.tsx` and typed creation calls.

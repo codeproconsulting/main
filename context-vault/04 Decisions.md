@@ -307,3 +307,7 @@ Reuse web report authorization and query semantics. Report pages reflect applied
 ## Native follow-up lifecycle — 21 November
 
 Use the existing web task mutation instead of native-specific lifecycle logic. Clear persistent offline workspace before submitting a task write; if cache removal fails, do not send the write. A conflict, transport failure or server failure after submission requires a detail reload, not automatic retry. Updated task status/outcome can reconcile a lost response; pending audit intents may still need operator review.
+
+## Retry-safe follow-up creation — 21 November
+
+Require a UUID submission ID for all new web/native follow-up forms; old already-open forms must reload. Stable task/audit IDs prevent duplicate retries without changing schema. A genuinely unconfirmed task write retains locks for operator reconciliation; a known task with an unfinished audit can retry completion safely. Original request fields are kept even if the task later changes. Native creation clears offline persistence before sending and locks uncertain drafts for identical retry.

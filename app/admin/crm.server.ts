@@ -562,17 +562,57 @@ export async function addNote(staff: Staff, id: string, note: string) {
   return audit(staff, id, "lead", "Note added", { note });
 }
 export async function createTask(staff: Staff, id: string, form: FormData) {
-  return serialized(`lead:${id}`,async()=>{
-    const lead = await writableEnquiry(staff, id);
-    const title = field(form, "title", 300),dueAt = dateField(field(form, "dueAt"));
+  return serialized(`lead:${id}`, () => serialized(staffAccessLock, async () => {
+    const actor = await getDocument<Staff>("staff", staff.$id);
+    allow(actor.active && canUseCRM(actor) && !actor.revocationPending);
+    if (isRestrictedManager(actor)) await requireActiveTeam(actor);
+    const lead = await writableEnquiry(actor, id);
+    const title = field(form, "title", 300), dueAt = dateField(field(form, "dueAt", 40));
+    const token = field(form, "submissionId", 36);
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(token)) {
+      throw new Response("Reload the lead to open a fresh follow-up form.", { status: 400 });
+    }
     if (!title || !dueAt || !lead.owner) throw new Response("Assign this lead and enter a task title and due date.", { status: 400 });
-    const assignee=await getDocument<Staff>("staff",lead.owner);allow(assignee.active&&canUseCRM(assignee));
-    const taskId=randomUUID();
-    const event=await audit(staff,id,"lead","Follow-up creation requested",{state:"pending",taskId,title,dueAt});
-    const task=await createDocument("tasks",{leadId:id,title,dueAt,owner:lead.owner,status:"Open",outcome:"",version:1},taskId);
-    await updateDocument("activities",event.$id,{event:"Follow-up created",details:JSON.stringify({state:"completed",taskId,title,dueAt})});
+    const assignee = await getDocument<Staff>("staff", lead.owner);
+    allow(assignee.active && canUseCRM(assignee) && !assignee.revocationPending);
+    const taskId = createHash("sha256").update(`follow-up:${actor.$id}:${id}:${token.toLowerCase()}`).digest("hex").slice(0, 36);
+    let event: Activity;
+    try {
+      event = await createDocument("activities", { actor: actor.$id, entityId: id, entityType: "lead",
+        event: "Follow-up creation requested", details: JSON.stringify({ state: "pending", taskId, title, dueAt, owner: lead.owner }),
+      }, taskId);
+    } catch (error) {
+      event = await getDocument<Activity>("activities", taskId).catch(() => { throw error; });
+    }
+    let original: { title: string; dueAt: string; owner: string; taskId: string };
+    try { original = JSON.parse(event.details); } catch { throw new Response("Follow-up creation needs administrator reconciliation.", { status: 409 }); }
+    if (event.actor !== actor.$id || event.entityId !== id || event.entityType !== "lead" ||
+        original?.taskId !== taskId || original.title !== title || original.dueAt !== dueAt || typeof original.owner !== "string") {
+      throw new Response("This form already requested a different follow-up. Check its history before opening another form.", { status: 409 });
+    }
+    const readTask = () => getDocument<Task>("tasks", taskId).catch(error => {
+      if (error instanceof AppwriteError && error.status === 404) return null;
+      throw error;
+    });
+    let task = await readTask();
+    if (!task) {
+      if (original.owner !== lead.owner) throw new Response("The assignment changed before creation completed. Ask an administrator to reconcile the request.", { status: 409 });
+      try {
+        task = await createDocument("tasks", { leadId: id, title, dueAt, owner: lead.owner, status: "Open", outcome: "", version: 1 }, taskId);
+      } catch (error) {
+        task = await readTask().catch(() => null);
+        if (!task) {
+          if (definitiveWriteRejection(error)) throw error;
+          throw new UnconfirmedMutation("Follow-up creation is uncertain. An administrator must reconcile this request before its locks are released.");
+        }
+      }
+    }
+    if (task.leadId !== id) throw new UnconfirmedMutation("Follow-up creation needs administrator reconciliation.");
+    await updateDocument("activities", event.$id, {
+      event: "Follow-up created", details: JSON.stringify({ state: "completed", taskId, title, dueAt, owner: original.owner }),
+    });
     return task;
-  });
+  }));
 }
 export async function changeTask(staff: Staff, id: string, intent: string, expectedVersion: string, outcome: string, dueAt = "") {
   allow(staff.active && canUseCRM(staff));

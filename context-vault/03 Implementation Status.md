@@ -369,3 +369,7 @@ MOB-06 implements native consultation reporting with combined filters, applied-f
 ## Native follow-up lifecycle — 21 November
 
 MOB-07 implements native Complete, Cancel and Reschedule with required outcome/reason, current-version validation and reload after conflict or uncertain save. API tests, native request tests, and full workspace Chrome interaction with DOM shims passed. Mobile typecheck/lint/ten tests/Android bundle passed. Physical device, VPS and OTA acceptance remain unperformed; Finance deployment is deferred.
+
+## Retry-safe follow-up creation — 21 November
+
+MOB-08 shared creation and native panel implemented locally. Service tests passed repeated/lost replies, pending audit completion, later task changes, changed payloads, current permissions and interrupted assignment. Web action errors preserve draft identity; cross-platform recovery passed. Native typecheck/lint/ten tests/Android export and component Chrome check with DOM shims passed. Built web browser acceptance and final main checks are recorded in the session journal; device/VPS/OTA remain separate.

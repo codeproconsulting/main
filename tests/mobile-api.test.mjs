@@ -20,6 +20,8 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
   let role = "counselor";
   let managerScope = "";
   const events = [];
+  const activities = new Map();
+  let failCreationFinish = false;
   const consultations = [];
   let lostConsultationAck = false;
   let lostTaskAck = false;
@@ -54,9 +56,18 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
       {$id:"other",role:"counselor",name:"Former counselor",active:false},
     ]});
     if (url.pathname.includes("/activities/documents")) {
-      const { data } = JSON.parse(options.body);
-      if (options.method === "POST") events.push(data);
-      return Response.json({ $id: "audit" });
+      const id=url.pathname.split("/documents/")[1];
+      if (options.method === "POST") {
+        const {data,documentId}=JSON.parse(options.body);
+        if(activities.has(documentId))return Response.json({}, {status:409});
+        events.push(data);const row={...data,$id:documentId};activities.set(documentId,row);return Response.json(row);
+      }
+      if(options.method === "PATCH") {
+        const {data}=JSON.parse(options.body);
+        if(failCreationFinish&&data.event==='Follow-up created')return Response.json({}, {status:503});
+        Object.assign(activities.get(id),data);return Response.json(activities.get(id));
+      }
+      return activities.has(id)?Response.json(activities.get(id)):Response.json({}, {status:404});
     }
     if (url.pathname.includes("/consultations/documents")) {
       const id = url.pathname.split("/documents/")[1];
@@ -84,6 +95,11 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
     const match = url.pathname.match(/\/(leads|tasks)\/documents(?:\/([^/]+))?$/);
     assert.ok(match);
     const rows = match[1] === "leads" ? leads : tasks;
+    if (options.method === "POST") {
+      const {data,documentId,permissions}=JSON.parse(options.body);assert.deepEqual(permissions,[]);
+      if(rows.some(row=>row.$id===documentId))return Response.json({}, {status:409});
+      const row={...data,$id:documentId};rows.push(row);return Response.json(row);
+    }
     if (match[2]) {
       const row = rows.find(row => row.$id === match[2]);
       if (!row) return Response.json({}, { status: 404 });
@@ -238,6 +254,29 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
     assert.equal((await send("follow-up?id=task",auth)).status,403);
     assert.equal((await changeTask({...taskChanges,version:3})).status,403);
     leads[0].owner="staff";
+    const newTaskContext = await (await send("lead?id=owned",auth)).json();
+    assert.equal(newTaskContext.canSchedule,true);
+    const createInput = {submissionId:newTaskContext.taskSubmissionId,title:"Synthetic newly scheduled task",dueAt:"2026-12-01T10:00:00+05:00"};
+    const createFollowUp = (body,id="owned",headers=auth.headers)=>send(`follow-ups?id=${id}`,{method:"POST",headers:{...headers,"Content-Type":"application/json"},body:JSON.stringify(body)});
+    assert.equal((await createFollowUp(createInput,"owned",{})).status,401);
+    assert.equal((await createFollowUp(createInput,"foreign")).status,403);
+    assert.equal((await createFollowUp({...createInput,submissionId:""})).status,400);
+    assert.equal((await createFollowUp({...createInput,title:42})).status,400);
+    assert.equal((await createFollowUp({...createInput,title:"x".repeat(5000)})).status,413);
+    const createForm = new FormData();for(const [key,value] of Object.entries({intent:"task",...createInput}))createForm.set(key,value);
+    failCreationFinish=true;
+    const failedWebCreation = await webAction({request:new Request("https://crm.example.invalid/admin/leads/owned",{method:"POST",headers:{...browserHeaders,Cookie:cookie},body:createForm}),params:{id:"owned"}});
+    assert.equal(failedWebCreation.init.status,503);
+    assert.equal(failedWebCreation.data.taskSubmissionId,createInput.submissionId);
+    assert.equal(failedWebCreation.data.taskTitle,createInput.title);
+    assert.equal(failedWebCreation.data.taskDueAt,createInput.dueAt);
+    failCreationFinish=false;
+    const taskCount=tasks.length;
+    const recoveredCreation = await createFollowUp({...createInput,owner:"other"});
+    assert.equal(recoveredCreation.status,200);
+    const createdTask=await recoveredCreation.json();assert.equal(createdTask.status,"Open");assert.equal(tasks.find(row=>row.$id===createdTask.id).owner,"staff");
+    assert.equal((await createFollowUp(createInput)).status,200);assert.equal(tasks.length,taskCount);
+    assert.equal((await createFollowUp({...createInput,title:"Different follow-up"})).status,409);
     assert.equal((await send("consultations?id=owned")).status, 401);
     assert.equal((await send("consultations?id=foreign", auth)).status, 403);
     assert.equal((await send("consultations?id=bad/id", auth)).status, 400);

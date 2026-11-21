@@ -16,7 +16,7 @@ Inbox pages scan 25 stored rows with an older-page cursor, so a page containing 
 
 My follow-ups supports Complete, Cancel and Reschedule. All require an outcome/change reason, current version and current scope, and serialize under the lead lock. Rescheduling accepts an ISO timestamp with a timezone, stores UTC and increments version; the list displays Asia/Karachi time. A stale form receives 409. An audit intent is stored before mutation and completed afterward. Lost acknowledgments can leave pending audit intents; refresh before retrying and reconcile through Appwrite Console.
 
-New follow-ups inherit the current active CRM lead owner under the same lock. Creation's durable intent records the chosen task ID. Task creation is not a fully transactional/idempotent multi-record operation: if its response is lost, inspect the task ID and pending intent before creating another follow-up. Existing lead `nextFollowUp` metadata does not independently create notifications; create a task for an actionable reminder.
+New follow-ups inherit the current active CRM lead owner under lead/staff-access locks. Web and native forms require a UUID submission ID. Stable task and audit IDs make identical retries return the existing task without resetting later changes; changed payloads on that form are rejected. The audit intent preserves the original title/date/owner. Creation is still multi-record: an unfinished audit may require retry, while a genuinely unconfirmed task write retains locks for targeted operator reconciliation. Check the task ID and pending intent before opening a different form. Existing lead `nextFollowUp` metadata does not independently create notifications; create a task for an actionable reminder.
 
 ## Schema and verification
 

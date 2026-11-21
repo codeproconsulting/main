@@ -255,3 +255,7 @@ The report adapter returns only row ID, enquiry ID/name, counselor display name,
 ## Native follow-up lifecycle — 21 November
 
 The native detail projection contains only ID, title, lead ID, due date, status, outcome and version. Counselors need both current task and lead ownership; owner/admin/global managers use existing CRM access. Team-restricted managers stay on their scoped web workflow. Task detail/outcome is not cached offline. Mutation requests whitelist version/action/outcome/due date and cannot reassign tasks.
+
+## Retry-safe follow-up creation — 21 November
+
+Creation refreshes actor and active assignee under staff-access/lead locks and applies current writable lead scope. Clients cannot choose task owner or record ID. Deterministic IDs include actor, lead and form UUID; activities retain original title/date/owner to validate retries after later task updates. Internal request metadata is not added to native task projections. Native drafts and write queues are not stored offline.

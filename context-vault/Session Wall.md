@@ -3,42 +3,42 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-21-03]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-21-04]].
 
 ## Resume here
 
-**Session:** 2026-11-21-03
+**Session:** 2026-11-21-04
 
-**Active feature:** MOB-07
+**Active feature:** MOB-08
 
 **State:** completed
 
-**Objective:** Native follow-up completion, cancellation and rescheduling with outcomes and current-version checks.
+**Objective:** Retry-safe follow-up creation on web and native lead screens.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Scoped task detail/mobile mutation adapter
-- Native follow-up editor, uncertainty reload and offline invalidation
-- API/client/component acceptance
+- Stable submission/task/audit IDs in shared creation service
+- Web form retry preservation and native creation panel
+- Lost-response, validation and access acceptance
 
 ## Out of scope
 
-- Offline task writes or a durable sync queue
-- Finance deployment, VPS rollout, OTA and physical-device acceptance
+- Offline creation or durable draft queue
+- Production deployment, Finance rollout and OTA
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| MOB07-API | Current task/lead scope, validation, version conflicts and shared web mutations | passed | Synthetic API tests pass current task/lead-owner checks, safe projection, malformed/oversize input rejection, timezone normalization, web/mobile version conflicts, cancellation and committed-write/lost-ack reconciliation. Main typecheck, full tests and production build passed. |
-| MOB07-NATIVE | Native actions, required outcomes, reload after uncertainty and cache invalidation | passed | Mobile typecheck/lint/ten tests/Android export passed. Full workspace Chrome check with native DOM shims passed required outcome, clear-before-write, uncertain reload, background retention, current completed outcome, reschedule/cancel and denial cleanup. Actual device behavior is unverified. |
+| MOB08-SERVICE | Repeated and interrupted submissions cannot create duplicate tasks or overwrite later changes | passed | Five synthetic creation service tests passed concurrent/repeated submissions, changed payload rejection, lost acknowledgements, pending audit recovery, later task changes, assignment interruption and current permissions. Shared API acceptance recovered a failed web audit through native with one task. Main typecheck/full tests/build passed. |
+| MOB08-CLIENTS | Web/native forms retain request identity and enforce current access | passed | Built Chrome web check passed draft/token retention after validation, fresh identity after success and one task/audit after replay. Native component Chrome check with DOM shims passed required fields, cache failure preventing writes and locked identical retries. Mobile typecheck/lint/ten tests/Android export passed. Device acceptance remains unverified. |
 
 ## Exact next actions
 
-1. Build native follow-up creation from a lead. First make the shared creation path retry-safe with explicit submission IDs while preserving existing web callers, then implement native form and lost-ack tests. Keep Finance and production delivery deferred.
-   Files: `app/admin/crm.server.ts`, `app/admin/lead.tsx`, `app/admin/mobile-api.ts`, `tests/mobile-api.test.mjs`, `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`, `/Users/fidaali/Proconsulting-App/src/mobile-api.ts`
+1. Build native application/case tracking: scoped list/detail and version-checked stage/deadline updates using existing operations service. Keep creation, broad offline edits and production delivery separate.
+   Files: `app/admin/operations.server.ts`, `app/admin/domain.ts`, `app/admin/mobile-api.ts`, `tests/mobile-api.test.mjs`, `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`, `/Users/fidaali/Proconsulting-App/src/mobile-api.ts`
 
 ## Known risks and unfinished work
 
@@ -62,9 +62,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-21T12:16:44.808Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-m35JPl/typecheck.log`
-- **passed**: `npm run test` (2026-11-21T12:16:51.888Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-m35JPl/test.log`
-- **passed**: `npm run build` (2026-11-21T12:16:57.095Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-m35JPl/build.log`
+- **passed**: `npm run typecheck` (2026-11-21T12:51:08.691Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-BaqObf/typecheck.log`
+- **passed**: `npm run test` (2026-11-21T12:51:16.017Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-BaqObf/test.log`
+- **passed**: `npm run build` (2026-11-21T12:51:21.332Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-BaqObf/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -149,5 +149,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **nativeConsultations**: Implemented and verified locally; mobile commits include cb1ad78 plus background draft retention checkpoint. Mobile checkout has no remote. No VPS deployment or OTA publication.
 - **nativeConsultationReports**: Implemented locally and committed in mobile 345623b; no mobile Git remote, VPS rollout, OTA publication or physical-device acceptance.
 - **nativeFollowUpActions**: Implemented and locally committed in mobile 0090df8; no mobile remote, production API rollout, OTA or device acceptance. Existing tasks schema reused.
+- **nativeFollowUpCreation**: Shared web/native creation verified locally; mobile commit b57a0c8 has no remote. No provisioning, VPS rollout, OTA or physical-device acceptance. Synthetic built web preview stopped.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

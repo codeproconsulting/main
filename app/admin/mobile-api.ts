@@ -4,7 +4,7 @@ import { appwrite, AppwriteError, configurationIssues } from "~/lib/appwrite.ser
 import { openStaffSession, staffForSession } from "./auth.server";
 import { boundedBody } from "~/lib/request-body.server";
 import { expenseYear, expensePaymentMethods, expenseCategories, expenseMonth, recordExpense, voidExpense, saveOfficeBudget } from "./finance.server";
-import { changeTask, followUpFor, leadFor, leadsFor, queuePage, taskPage, updateLead } from "./crm.server";
+import { createTask, changeTask, followUpFor, leadFor, leadsFor, queuePage, taskPage, updateLead } from "./crm.server";
 
 import { consultationReport, consultationPage, consultationPageSize, leadConsultations, recordConsultation } from "./consultations.server";
 
@@ -77,7 +77,7 @@ function recordId(request: Request, label = "lead") {
 
 function editableLead(lead: Lead) {
   const { $id: id, name, stage, priority, version } = lead;
-  return { id, name, stage, priority, version, stages, priorities, closureStages };
+  return { id, name, stage, priority, version, stages, priorities, closureStages, taskSubmissionId: randomUUID(), canSchedule: Boolean(lead.owner) && !lead.duplicateOf };
 }
 
 function editableFollowUp(task: Task) {
@@ -166,6 +166,21 @@ export function loader({ request, params }: LoaderFunctionArgs) {
 
 export function action({ request, params }: ActionFunctionArgs) {
   return mobileRequest(request, async () => {
+    if (params.resource === "follow-ups") {
+      if (request.method !== "POST") return reply({ error: "Method not allowed." }, 405);
+      const staff = await mobileStaff(request);
+      const id = recordId(request);
+      if (!isJson(request)) return reply({ error: "Expected JSON." }, 415);
+      const text = await (await boundedBody(request, 4096, "Follow-up")).text();
+      const body = (() => { try { return JSON.parse(text); } catch { return null; } })();
+      if (!body || typeof body !== "object" || Array.isArray(body)) return reply({ error: "Invalid follow-up." }, 400);
+      const form = new FormData();
+      for (const key of ["submissionId", "title", "dueAt"]) {
+        if (typeof body[key] !== "string") return reply({ error: "Invalid follow-up fields." }, 400);
+        form.set(key, body[key]);
+      }
+      return reply(editableFollowUp(await createTask(staff, id, form)));
+    }
     if (params.resource === "follow-up") {
       if (request.method !== "PATCH") return reply({ error: "Method not allowed." }, 405);
       const staff = await mobileStaff(request);

@@ -61,7 +61,7 @@ test('simultaneous task actions serialize and reject the second stale change',as
  reset();const results=await Promise.allSettled([crm.changeTask(staff('counselor'),'task-one','cancel','1','First'),crm.changeTask(staff('counselor'),'task-one','reschedule','1','Second','2030-01-02T10:00:00Z')]);assert.equal(results[0].status,'fulfilled');assert.equal(results[1].status,'rejected');assert.equal(results[1].reason.status,409);assert.equal(stores.activities.size,1);
 });
 test('task creation uses the current active lead assignee and writes a recoverable audit',async()=>{
- reset();const form=new FormData();form.set('title','Synthetic task');form.set('dueAt','2030-01-02T10:00:00+05:00');const task=await crm.createTask(staff('manager'),'lead-one',form);assert.equal(task.owner,'counselor-one');assert.equal(task.dueAt,'2030-01-02T05:00:00.000Z');assert.equal([...stores.activities.values()][0].event,'Follow-up created');
+ reset();const form=new FormData();form.set('submissionId','d21265d0-363f-4a4c-b777-0e67b36930da');form.set('title','Synthetic task');form.set('dueAt','2030-01-02T10:00:00+05:00');const task=await crm.createTask(staff('manager'),'lead-one',form);assert.equal(task.owner,'counselor-one');assert.equal(task.dueAt,'2030-01-02T05:00:00.000Z');assert.equal([...stores.activities.values()][0].event,'Follow-up created');
  stores.staff.get('counselor-one').active=false;await assert.rejects(()=>crm.createTask(staff('manager'),'lead-one',form),rejects(403));
 });
 test('health distinguishes never-started, healthy, stale, failed and restricted roles',async()=>{

@@ -331,3 +331,7 @@ Native consultation reports require the matching `consultation-report` API resou
 ## Native follow-up lifecycle — 21 November
 
 MOB-07 requires the new follow-up detail/PATCH API and existing private tasks/activities/locks access. No schema changes or provisioning performed. Accept counselor current-lead/task-owner checks, manager access, stale versions, complete/cancel/reschedule parity and pending audit reconciliation before native delivery. Old mobile snapshot responses are unchanged. No VPS or OTA release performed.
+
+## Retry-safe follow-up creation — 21 November
+
+MOB-08 needs updated web lead forms, lead API form context and POST follow-ups. Existing tasks/activities/locks read/write access is used; no provisioning performed. Existing open web forms must reload for a submission ID. Accept web/native repeated-save deduplication and audit recovery before mobile publication. An unconfirmed remote task write retains lead/staff locks; stop owning processes and reconcile task/audit/request before targeted lock removal. No blind expiry takeover.
