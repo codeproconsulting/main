@@ -329,3 +329,7 @@ Receipt attachment downloads use the dedicated resource route `app/admin/expense
 ## Native consultation reports — 21 November
 
 `app/admin/mobile-api.ts` projects consultation reports for the native client. `tests/mobile-api.test.mjs` exercises combined filters, dates, role denial, paging and projection. In the separate mobile checkout, `src/ConsultationReport.tsx` is the report tab and `src/mobile-api.ts` holds typed filter/page calls; the consultation API test also checks query encoding.
+
+## Native follow-up lifecycle — 21 November
+
+`app/admin/crm.server.ts` exports `followUpFor` for scoped detail reads; `app/admin/mobile-api.ts` adds detail and PATCH routes without changing older snapshot payloads. `tests/mobile-api.test.mjs` verifies shared web/mobile behavior. In the separate mobile checkout, `src/FollowUpEditor.tsx`, `src/NativeWorkspace.tsx`, typed API calls and `tests/follow-ups-api.test.mjs` implement the native workflow.

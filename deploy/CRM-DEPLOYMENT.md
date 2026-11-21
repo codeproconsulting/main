@@ -379,3 +379,9 @@ Retry the identical submission ID after a simulated lost acknowledgement and con
 ### Native consultation report acceptance
 
 GET `/admin/mobile/v1/consultation-report` uses the existing web reporting service and indexes. Verify anonymous denial, owner/admin/unrestricted-manager access, and counselor/editor/team-restricted-manager denial. Compare combined destination/counselor/from/through results to web reports, including inclusive dates, empty matches and a second 25-record page. Mobile paging must retain applied filters until Apply resets to page one. Confirm enquiry drill-down reads the current authorized lead. No new schema or native module is required. The report is online-only and not stored in offline snapshots. Accept server/device behavior before publishing its OTA.
+
+### Native follow-up lifecycle acceptance
+
+GET/PATCH `/admin/mobile/v1/follow-up?id=<task-id>` uses existing private tasks, activities and locks. No new schema or native module. Verify counselor access requires both current task and lead ownership; deny transferred leads, unknown tasks, editorial roles and team-restricted managers. Test global manager access and parity with web Complete/Cancel/Reschedule, required outcome/reason, timezone validation and stale-version rejection. Snapshot API payloads remain compatible.
+
+On the native preview, open a follow-up online, apply each action and verify current detail/version. Simulate a response lost after the task write: require Reload latest follow-up, inspect status/outcome and pending audit intent, and do not blindly submit another change. Offline persistence is cleared before sending the mutation; cache-removal failure prevents submission. Refresh after confirmed changes to save a current offline workspace. Verify background hiding, session expiry, sign-out and denial cleanup on a real device before OTA. These device and VPS checks remain pending.

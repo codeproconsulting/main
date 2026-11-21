@@ -277,3 +277,7 @@ The native lead editor now includes an online consultation panel. GET/POST `/adm
 ## Native consultation reports — 21 November
 
 The native workspace report tab reads GET `/admin/mobile/v1/consultation-report` through the existing `consultationReport` service. Destination, counselor and inclusive date-range filters match web reporting; pages remain bounded at 25 records. There is no separate native report database or aggregate scan.
+
+## Native follow-up lifecycle — 21 November
+
+GET/PATCH `/admin/mobile/v1/follow-up?id=...` supplies current task details and adapts bounded JSON to the existing `changeTask` mutation used by web. Reads verify current task and lead ownership. Native task details remain separate from encrypted read-only workspace snapshots.

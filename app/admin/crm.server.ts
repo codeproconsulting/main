@@ -107,6 +107,17 @@ export function taskPage(staff: Staff, page: number, size = 25) {
   return scopedQueue<Task>(staff, "tasks", [query("equal", "status", ["Open"]), query("orderAsc", "dueAt")], page, size);
 }
 
+export async function followUpFor(staff: Staff, id: string) {
+  allow(staff.active && canUseCRM(staff) && !isRestrictedManager(staff));
+  const task = await getDocument<Task>("tasks", id).catch(error => {
+    if (error instanceof AppwriteError && error.status === 404) throw new Response("Follow-up not found", { status: 404 });
+    throw error;
+  });
+  const lead = await leadFor(staff, task.leadId);
+  allow(canManage(staff) || (task.owner === staff.$id && lead.owner === staff.$id));
+  return task;
+}
+
 export async function tasksFor(staff: Staff) {
   return (await taskPage(staff, 1, 100)).records;
 }

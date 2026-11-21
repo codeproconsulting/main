@@ -22,13 +22,14 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
   const events = [];
   const consultations = [];
   let lostConsultationAck = false;
+  let lostTaskAck = false;
   const leads = [
     { $id: "owned", owner: "staff", name: "Synthetic lead", email: "fixture@example.invalid", stage: "New", priority: "Normal", nextFollowUp: "2027-01-01T10:00:00.000Z", version: 1 },
     { $id: "foreign", owner: "other", name: "Other lead" },
   ];
   const tasks = [
-    { $id: "task", owner: "staff", leadId: "owned", title: "Follow up", status: "Open" },
-    { $id: "transferred", owner: "staff", leadId: "foreign", title: "Private task", status: "Open" },
+    { $id: "task", owner: "staff", leadId: "owned", title: "Follow up", status: "Open", dueAt: "2026-12-01T10:00:00Z", outcome: "", version: 1 },
+    { $id: "transferred", owner: "staff", leadId: "foreign", title: "Private task", status: "Open", dueAt: "2026-12-01T10:00:00Z", outcome: "", version: 1 },
   ];
   globalThis.fetch = async (input, options) => {
     const url = new URL(input);
@@ -86,7 +87,10 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
     if (match[2]) {
       const row = rows.find(row => row.$id === match[2]);
       if (!row) return Response.json({}, { status: 404 });
-      if (options.method === "PATCH") Object.assign(row, JSON.parse(options.body).data);
+      if (options.method === "PATCH") {
+        Object.assign(row, JSON.parse(options.body).data);
+        if (match[1] === "tasks" && lostTaskAck) throw Error("synthetic lost task acknowledgement");
+      }
       return Response.json(row);
     }
     const filters = url.searchParams.getAll("queries[]").map(JSON.parse);
@@ -187,6 +191,53 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
     assert.equal((await current.json()).stage, "Qualified");
     assert.equal((await edit("owned", { version: 2, stage: "Contacted", priority: "Urgent" })).status, 409);
     assert.equal(events.length, 2);
+    assert.equal((await send("follow-up?id=task")).status,401);
+    assert.equal((await send("follow-up?id=bad/id",auth)).status,400);
+    assert.equal((await send("follow-up?id=missing",auth)).status,404);
+    assert.equal((await send("follow-up?id=transferred",auth)).status,403);
+    const taskDetail = await send("follow-up?id=task",auth);
+    assert.equal(taskDetail.status,200);
+    assert.match(taskDetail.headers.get("Cache-Control"),/private, no-store/);
+    assert.deepEqual(Object.keys(await taskDetail.json()).sort(),["dueAt","id","leadId","outcome","status","title","version"]);
+    const changeTask = (changes,id="task",headers={})=>send(`follow-up?id=${id}`,{method:"PATCH",headers:{...auth.headers,"Content-Type":"application/json",...headers},body:JSON.stringify(changes)});
+    const taskChanges = {version:1,intent:"complete",outcome:"Synthetic call completed"};
+    assert.equal((await changeTask(taskChanges,"transferred")).status,403);
+    assert.equal((await changeTask(taskChanges,"task",{"Content-Type":"text/plain"})).status,415);
+    assert.equal((await send("follow-up?id=task",{...auth,method:"POST"})).status,405);
+    for (const invalid of [{...taskChanges,version:"1"},{...taskChanges,intent:"delete"},{...taskChanges,outcome:""},{...taskChanges,outcome:"x".repeat(2001)},{...taskChanges,intent:"reschedule",dueAt:"2026-12-02T10:00:00"}]) {
+      assert.equal((await changeTask(invalid)).status,400);
+    }
+    assert.equal((await changeTask({...taskChanges,outcome:"x".repeat(17000)})).status,413);
+    assert.equal(tasks[0].version,1);
+    const movedTask = await changeTask({...taskChanges,intent:"reschedule",dueAt:"2026-12-02T10:00:00+05:00",owner:"other"});
+    assert.equal(movedTask.status,200);
+    assert.equal((await movedTask.json()).dueAt,"2026-12-02T05:00:00.000Z");
+    assert.equal(tasks[0].owner,"staff");
+    assert.equal((await changeTask(taskChanges)).status,409);
+    const {action: webTaskAction} = await vite.ssrLoadModule("/app/admin/tasks.tsx");
+    const taskForm = new FormData();
+    for (const [key,value] of Object.entries({id:"task",version:"2",intent:"complete",outcome:"Synthetic completion from web"})) taskForm.set(key,value);
+    assert.equal((await webTaskAction({request:new Request("https://crm.example.invalid/admin/tasks",{method:"POST",headers:{...browserHeaders,Cookie:cookie},body:taskForm})})).success,true);
+    const completedTask = await (await send("follow-up?id=task",auth)).json();
+    assert.equal(completedTask.status,"Completed");
+    assert.equal(completedTask.version,3);
+    assert.equal((await changeTask({...taskChanges,version:2})).status,409);
+    tasks.push({$id:"cancel-task",owner:"staff",leadId:"owned",title:"Synthetic cancel",dueAt:"2026-12-01T10:00:00Z",status:"Open",outcome:"",version:1});
+    assert.equal((await changeTask({...taskChanges,intent:"cancel"},"cancel-task")).status,200);
+    assert.equal((await (await send("follow-up?id=cancel-task",auth)).json()).status,"Cancelled");
+    tasks.push({$id:"uncertain-task",owner:"staff",leadId:"owned",title:"Synthetic interrupted task",dueAt:"2026-12-01T10:00:00Z",status:"Open",outcome:"",version:1});
+    lostTaskAck = true;
+    assert.equal((await changeTask(taskChanges,"uncertain-task")).status,503);
+    lostTaskAck = false;
+    assert.equal((await changeTask(taskChanges,"uncertain-task")).status,409);
+    const uncertain = await (await send("follow-up?id=uncertain-task",auth)).json();
+    assert.equal(uncertain.status,"Completed");
+    assert.equal(uncertain.version,2);
+    assert.equal(uncertain.outcome,taskChanges.outcome);
+    leads[0].owner="other";
+    assert.equal((await send("follow-up?id=task",auth)).status,403);
+    assert.equal((await changeTask({...taskChanges,version:3})).status,403);
+    leads[0].owner="staff";
     assert.equal((await send("consultations?id=owned")).status, 401);
     assert.equal((await send("consultations?id=foreign", auth)).status, 403);
     assert.equal((await send("consultations?id=bad/id", auth)).status, 400);
@@ -257,6 +308,7 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
     role = "counselor";
     assert.equal((await send("consultation-report",auth)).status,403);
     active = false;
+    assert.equal((await send("follow-up?id=task",auth)).status,403);
     assert.equal((await send("consultations?id=owned",auth)).status,403);
     assert.equal((await send("workspace", auth)).status, 403);
     assert.equal((await send("session", { ...auth, method: "DELETE" })).status, 204);

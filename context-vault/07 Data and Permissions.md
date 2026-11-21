@@ -251,3 +251,7 @@ Mobile consultation responses project history to ID, destination, counselor name
 ## Native consultation reports — 21 November
 
 The report adapter returns only row ID, enquiry ID/name, counselor display name, destination and date, plus filter/pagination metadata and staff ID/name choices. Internal destination keys and recordedBy are excluded. Counselors, editorial staff and team-restricted managers are denied this native global report; team managers retain their scoped web reporting. Report data is excluded from offline snapshots.
+
+## Native follow-up lifecycle — 21 November
+
+The native detail projection contains only ID, title, lead ID, due date, status, outcome and version. Counselors need both current task and lead ownership; owner/admin/global managers use existing CRM access. Team-restricted managers stay on their scoped web workflow. Task detail/outcome is not cached offline. Mutation requests whitelist version/action/outcome/due date and cannot reassign tasks.

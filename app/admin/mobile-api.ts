@@ -4,11 +4,11 @@ import { appwrite, AppwriteError, configurationIssues } from "~/lib/appwrite.ser
 import { openStaffSession, staffForSession } from "./auth.server";
 import { boundedBody } from "~/lib/request-body.server";
 import { expenseYear, expensePaymentMethods, expenseCategories, expenseMonth, recordExpense, voidExpense, saveOfficeBudget } from "./finance.server";
-import { leadFor, leadsFor, queuePage, taskPage, updateLead } from "./crm.server";
+import { changeTask, followUpFor, leadFor, leadsFor, queuePage, taskPage, updateLead } from "./crm.server";
 
 import { consultationReport, consultationPage, consultationPageSize, leadConsultations, recordConsultation } from "./consultations.server";
 
-import { isRestrictedManager, closureStages, priorities, stages, type Lead } from "./domain";
+import { isRestrictedManager, closureStages, priorities, stages, type Lead, type Task } from "./domain";
 
 const headers = { "Cache-Control": "private, no-store", "X-Robots-Tag": "noindex, nofollow" };
 const reply = (body: unknown, status = 200) => Response.json(body, { headers, status });
@@ -60,7 +60,7 @@ async function mobileRequest(request: Request, operation: () => Promise<Response
     return await operation();
   } catch (error) {
     const status = error instanceof Response || error instanceof AppwriteError ? error.status : 503;
-    if (status === 404 && error instanceof Response) return reply({ error: "Lead not found." }, 404);
+    if (status === 404 && error instanceof Response) return reply({ error: "Record not found." }, 404);
     if ([401, 404].includes(status)) return reply({ error: "Please sign in again." }, 401);
     if (status === 403) return reply({ error: "Your account does not have access." }, 403);
     if (error instanceof Response && [400, 409, 413].includes(status)) return reply({ error: await error.text() }, status);
@@ -69,15 +69,20 @@ async function mobileRequest(request: Request, operation: () => Promise<Response
   }
 }
 
-function leadId(request: Request) {
+function recordId(request: Request, label = "lead") {
   const id = new URL(request.url).searchParams.get("id");
-  if (!id || !/^[A-Za-z0-9][A-Za-z0-9._-]{0,35}$/.test(id)) throw new Response("Invalid lead ID.", { status: 400 });
+  if (!id || !/^[A-Za-z0-9][A-Za-z0-9._-]{0,35}$/.test(id)) throw new Response(`Invalid ${label} ID.`, { status: 400 });
   return id;
 }
 
 function editableLead(lead: Lead) {
   const { $id: id, name, stage, priority, version } = lead;
   return { id, name, stage, priority, version, stages, priorities, closureStages };
+}
+
+function editableFollowUp(task: Task) {
+  const { $id: id, title, leadId, dueAt, status, outcome, version } = task;
+  return { id, title, leadId, dueAt, status, outcome, version };
 }
 
 function isJson(request: Request) {
@@ -102,6 +107,9 @@ function mobileLeads({ documents, total }: Awaited<ReturnType<typeof leadsFor>>)
 
 export function loader({ request, params }: LoaderFunctionArgs) {
   return mobileRequest(request, async () => {
+    if (params.resource === "follow-up") {
+      return reply(editableFollowUp(await followUpFor(await mobileStaff(request), recordId(request, "follow-up"))));
+    }
     if (params.resource === "consultation-report") {
       const result = await consultationReport(await mobileStaff(request), new URL(request.url).searchParams);
       return reply({
@@ -115,7 +123,7 @@ export function loader({ request, params }: LoaderFunctionArgs) {
     if (params.resource === "consultations") {
       const staff = await mobileStaff(request);
       const page = consultationPage(new URL(request.url).searchParams);
-      const result = await leadConsultations(staff, leadId(request), page);
+      const result = await leadConsultations(staff, recordId(request), page);
       return reply({
         lead: result.lead, people: result.people, manager: result.manager,
         history: result.history.documents.map(({ $id, destination, counselorName, heldOn }) => ({ id: $id, destination, counselorName, heldOn })),
@@ -135,7 +143,7 @@ export function loader({ request, params }: LoaderFunctionArgs) {
     }
     if (params.resource === "lead") {
       const staff = await mobileStaff(request);
-      return reply(editableLead(await leadFor(staff, leadId(request))));
+      return reply(editableLead(await leadFor(staff, recordId(request))));
     }
     if (params.resource === "follow-ups") {
       const staff = await mobileStaff(request);
@@ -158,10 +166,25 @@ export function loader({ request, params }: LoaderFunctionArgs) {
 
 export function action({ request, params }: ActionFunctionArgs) {
   return mobileRequest(request, async () => {
+    if (params.resource === "follow-up") {
+      if (request.method !== "PATCH") return reply({ error: "Method not allowed." }, 405);
+      const staff = await mobileStaff(request);
+      const id = recordId(request, "follow-up");
+      if (!isJson(request)) return reply({ error: "Expected JSON." }, 415);
+      const text = await (await boundedBody(request, 16384, "Follow-up")).text();
+      const body = (() => { try { return JSON.parse(text); } catch { return null; } })();
+      if (!body || typeof body !== "object" || Array.isArray(body) ||
+          !Number.isSafeInteger(body.version) || body.version < 0 ||
+          !["complete", "cancel", "reschedule"].includes(body.intent) || typeof body.outcome !== "string" ||
+          (body.dueAt !== undefined && (typeof body.dueAt !== "string" || body.dueAt.length > 40))) {
+        return reply({ error: "Invalid follow-up update." }, 400);
+      }
+      return reply(editableFollowUp(await changeTask(staff, id, body.intent, String(body.version), body.outcome, body.dueAt ?? "")));
+    }
     if (params.resource === "consultations") {
       if (request.method !== "POST") return reply({ error: "Method not allowed." }, 405);
       const staff = await mobileStaff(request);
-      const id = leadId(request);
+      const id = recordId(request);
       if (!isJson(request)) return reply({ error: "Expected JSON." }, 415);
       const text = await (await boundedBody(request, 4096, "Consultation")).text();
       const body = (() => { try { return JSON.parse(text); } catch { return null; } })();
@@ -219,7 +242,7 @@ export function action({ request, params }: ActionFunctionArgs) {
     if (params.resource === "lead") {
       if (request.method !== "PATCH") return reply({ error: "Method not allowed." }, 405);
       const staff = await mobileStaff(request);
-      const id = leadId(request);
+      const id = recordId(request);
       if (!isJson(request)) return reply({ error: "Expected JSON." }, 415);
       const { version, stage, priority, reason = "" } = await request.json().catch(() => null) ?? {};
       if (!Number.isSafeInteger(version) || version < 0 || typeof stage !== "string" ||

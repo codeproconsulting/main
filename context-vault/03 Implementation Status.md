@@ -365,3 +365,7 @@ MOB-05 consultation history and recording implemented locally. API scope, pagina
 ## Native consultation reports — 21 November
 
 MOB-06 implements native consultation reporting with combined filters, applied-filter paging, reset, empty/error states and enquiry drill-down. Shared API checks and native component Chrome checks with DOM shims passed. Mobile typecheck/lint/nine tests/Android bundle passed. Actual device, VPS and OTA checks remain separate and unperformed. Finance rollout stays explicitly deferred.
+
+## Native follow-up lifecycle — 21 November
+
+MOB-07 implements native Complete, Cancel and Reschedule with required outcome/reason, current-version validation and reload after conflict or uncertain save. API tests, native request tests, and full workspace Chrome interaction with DOM shims passed. Mobile typecheck/lint/ten tests/Android bundle passed. Physical device, VPS and OTA acceptance remain unperformed; Finance deployment is deferred.

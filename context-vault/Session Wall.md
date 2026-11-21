@@ -3,40 +3,42 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-21-02]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-21-03]].
 
 ## Resume here
 
-**Session:** 2026-11-21-02
+**Session:** 2026-11-21-03
 
-**Active feature:** MOB-06
+**Active feature:** MOB-07
 
 **State:** completed
 
-**Objective:** Native consultation reporting with shared counselor, destination and date filtering.
+**Objective:** Native follow-up completion, cancellation and rescheduling with outcomes and current-version checks.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Manager-only report API, native workspace report tab, safe history projection and pagination
+- Scoped task detail/mobile mutation adapter
+- Native follow-up editor, uncertainty reload and offline invalidation
+- API/client/component acceptance
 
 ## Out of scope
 
-- Finance deployment, all production rollout and mobile OTA
-- Offline report storage or global report aggregation
+- Offline task writes or a durable sync queue
+- Finance deployment, VPS rollout, OTA and physical-device acceptance
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| MOB06-API | Shared filters, role denial, safe report projection and paging | passed | Synthetic API tests passed for owner/admin/global-manager access; anonymous/counselor/editor/active-team-manager denial; combined destination/counselor/inclusive-date filters and exclusions; invalid ranges; 25-row pagination and safe projection. Main typecheck, full tests and build passed. |
-| MOB06-NATIVE | Native apply/reset, paging, denial cleanup and checks | passed | Mobile typecheck/lint/nine tests/Android export passed. Component Chrome interaction with DOM shims passed combined filters, applied-filter paging, enquiry drill-down, reset/empty/error states and denial cleanup. Device rendering remains unverified. |
+| MOB07-API | Current task/lead scope, validation, version conflicts and shared web mutations | passed | Synthetic API tests pass current task/lead-owner checks, safe projection, malformed/oversize input rejection, timezone normalization, web/mobile version conflicts, cancellation and committed-write/lost-ack reconciliation. Main typecheck, full tests and production build passed. |
+| MOB07-NATIVE | Native actions, required outcomes, reload after uncertainty and cache invalidation | passed | Mobile typecheck/lint/ten tests/Android export passed. Full workspace Chrome check with native DOM shims passed required outcome, clear-before-write, uncertain reload, background retention, current completed outcome, reschedule/cancel and denial cleanup. Actual device behavior is unverified. |
 
 ## Exact next actions
 
-1. Build native follow-up completion and outcomes using shared changeTask/completeTask service with current-lead scope and optimistic version checks. Keep Finance and production release acceptance deferred.
-   Files: `app/admin/crm.server.ts`, `app/admin/mobile-api.ts`, `tests/mobile-api.test.mjs`, `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`, `/Users/fidaali/Proconsulting-App/src/mobile-api.ts`
+1. Build native follow-up creation from a lead. First make the shared creation path retry-safe with explicit submission IDs while preserving existing web callers, then implement native form and lost-ack tests. Keep Finance and production delivery deferred.
+   Files: `app/admin/crm.server.ts`, `app/admin/lead.tsx`, `app/admin/mobile-api.ts`, `tests/mobile-api.test.mjs`, `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`, `/Users/fidaali/Proconsulting-App/src/mobile-api.ts`
 
 ## Known risks and unfinished work
 
@@ -56,12 +58,13 @@ This feature is complete. On **continue**, start the next bounded session named 
 - Consultation release requires the private Appwrite collection and index smoke checks.
 - Finance application rollout remains pending despite the live base CRM. Mobile Finance is not in the published OTA.
 - Encrypted cold-start read-only mobile cache and compatible offline OTA are implemented; physical-device acceptance and offline edits remain pending.
+- Native follow-up writes clear saved offline workspace before submitting. A cache-clear failure prevents the write; uncertain results require detail reload and potentially audit reconciliation.
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-21T05:52:42.224Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-sWm7or/typecheck.log`
-- **passed**: `npm run test` (2026-11-21T05:52:49.239Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-sWm7or/test.log`
-- **passed**: `npm run build` (2026-11-21T05:52:54.627Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-sWm7or/build.log`
+- **passed**: `npm run typecheck` (2026-11-21T12:16:44.808Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-m35JPl/typecheck.log`
+- **passed**: `npm run test` (2026-11-21T12:16:51.888Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-m35JPl/test.log`
+- **passed**: `npm run build` (2026-11-21T12:16:57.095Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-m35JPl/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -145,5 +148,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **financeReadiness**: Read-only target preflight passed for expenses, budgets, activities, locks and receipt bucket. No expense rows read or written. Actual VPS scanner untested.
 - **nativeConsultations**: Implemented and verified locally; mobile commits include cb1ad78 plus background draft retention checkpoint. Mobile checkout has no remote. No VPS deployment or OTA publication.
 - **nativeConsultationReports**: Implemented locally and committed in mobile 345623b; no mobile Git remote, VPS rollout, OTA publication or physical-device acceptance.
+- **nativeFollowUpActions**: Implemented and locally committed in mobile 0090df8; no mobile remote, production API rollout, OTA or device acceptance. Existing tasks schema reused.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

@@ -1,37 +1,40 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-21-02",
+  "sessionId": "2026-11-21-03",
   "sessionStatus": "completed",
-  "activeFeature": "MOB-06",
-  "objective": "Native consultation reporting with shared counselor, destination and date filtering.",
+  "activeFeature": "MOB-07",
+  "objective": "Native follow-up completion, cancellation and rescheduling with outcomes and current-version checks.",
   "scope": [
-    "Manager-only report API, native workspace report tab, safe history projection and pagination"
+    "Scoped task detail/mobile mutation adapter",
+    "Native follow-up editor, uncertainty reload and offline invalidation",
+    "API/client/component acceptance"
   ],
   "outOfScope": [
-    "Finance deployment, all production rollout and mobile OTA",
-    "Offline report storage or global report aggregation"
+    "Offline task writes or a durable sync queue",
+    "Finance deployment, VPS rollout, OTA and physical-device acceptance"
   ],
   "acceptance": [
     {
-      "id": "MOB06-API",
-      "description": "Shared filters, role denial, safe report projection and paging",
+      "id": "MOB07-API",
+      "description": "Current task/lead scope, validation, version conflicts and shared web mutations",
       "status": "passed",
-      "evidence": "Synthetic API tests passed for owner/admin/global-manager access; anonymous/counselor/editor/active-team-manager denial; combined destination/counselor/inclusive-date filters and exclusions; invalid ranges; 25-row pagination and safe projection. Main typecheck, full tests and build passed."
+      "evidence": "Synthetic API tests pass current task/lead-owner checks, safe projection, malformed/oversize input rejection, timezone normalization, web/mobile version conflicts, cancellation and committed-write/lost-ack reconciliation. Main typecheck, full tests and production build passed."
     },
     {
-      "id": "MOB06-NATIVE",
-      "description": "Native apply/reset, paging, denial cleanup and checks",
+      "id": "MOB07-NATIVE",
+      "description": "Native actions, required outcomes, reload after uncertainty and cache invalidation",
       "status": "passed",
-      "evidence": "Mobile typecheck/lint/nine tests/Android export passed. Component Chrome interaction with DOM shims passed combined filters, applied-filter paging, enquiry drill-down, reset/empty/error states and denial cleanup. Device rendering remains unverified."
+      "evidence": "Mobile typecheck/lint/ten tests/Android export passed. Full workspace Chrome check with native DOM shims passed required outcome, clear-before-write, uncertain reload, background retention, current completed outcome, reschedule/cancel and denial cleanup. Actual device behavior is unverified."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Build native follow-up completion and outcomes using shared changeTask/completeTask service with current-lead scope and optimistic version checks. Keep Finance and production release acceptance deferred.",
+      "action": "Build native follow-up creation from a lead. First make the shared creation path retry-safe with explicit submission IDs while preserving existing web callers, then implement native form and lost-ack tests. Keep Finance and production delivery deferred.",
       "files": [
         "app/admin/crm.server.ts",
+        "app/admin/lead.tsx",
         "app/admin/mobile-api.ts",
         "tests/mobile-api.test.mjs",
         "/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx",
@@ -55,7 +58,8 @@
     "CRM-02 manual entry and contact search require additive lead fields and indexes before rollout. Older phone values that cannot be normalized remain searchable by name or email.",
     "Consultation release requires the private Appwrite collection and index smoke checks.",
     "Finance application rollout remains pending despite the live base CRM. Mobile Finance is not in the published OTA.",
-    "Encrypted cold-start read-only mobile cache and compatible offline OTA are implemented; physical-device acceptance and offline edits remain pending."
+    "Encrypted cold-start read-only mobile cache and compatible offline OTA are implemented; physical-device acceptance and offline edits remain pending.",
+    "Native follow-up writes clear saved offline workspace before submitting. A cache-clear failure prevents the write; uncertain results require detail reload and potentially audit reconciliation."
   ],
   "externalState": {
     "database": "proconsulting",
@@ -135,31 +139,32 @@
     "expenseReceipts": "Optional receipt metadata provisioned and schema verified. Actual scanner and VPS app rollout pending. No production receipt uploads attempted.",
     "financeReadiness": "Read-only target preflight passed for expenses, budgets, activities, locks and receipt bucket. No expense rows read or written. Actual VPS scanner untested.",
     "nativeConsultations": "Implemented and verified locally; mobile commits include cb1ad78 plus background draft retention checkpoint. Mobile checkout has no remote. No VPS deployment or OTA publication.",
-    "nativeConsultationReports": "Implemented locally and committed in mobile 345623b; no mobile Git remote, VPS rollout, OTA publication or physical-device acceptance."
+    "nativeConsultationReports": "Implemented locally and committed in mobile 345623b; no mobile Git remote, VPS rollout, OTA publication or physical-device acceptance.",
+    "nativeFollowUpActions": "Implemented and locally committed in mobile 0090df8; no mobile remote, production API rollout, OTA or device acceptance. Existing tasks schema reused."
   },
   "checks": [
     {
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-21T05:52:42.224Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-sWm7or/typecheck.log"
+      "checkedAt": "2026-11-21T12:16:44.808Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-m35JPl/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-21T05:52:49.239Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-sWm7or/test.log"
+      "checkedAt": "2026-11-21T12:16:51.888Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-m35JPl/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-21T05:52:54.627Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-sWm7or/build.log"
+      "checkedAt": "2026-11-21T12:16:57.095Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-m35JPl/build.log"
     }
   ],
-  "updatedAt": "2026-11-21T05:53:18.978Z",
-  "verifiedSourceFingerprint": "070556737a9b39a61ce7021171f89d1326bb2fdf1144f7e7650cda20036a7b58"
+  "updatedAt": "2026-11-21T12:17:18.907Z",
+  "verifiedSourceFingerprint": "378033db0b7178810f7230abf1a39f4f82bae4f8a9e2b450e7909b5c3eef03ce"
 }

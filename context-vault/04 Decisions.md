@@ -303,3 +303,7 @@ Use the existing consultation service on web and native rather than a second rec
 ## Native consultation reports — 21 November
 
 Reuse web report authorization and query semantics. Report pages reflect applied filters even while form inputs are being changed; Apply resets to page one. Reports remain online-only and are cleared on failed loads or access denial. Use existing staff roles for UI visibility, with fresh server authorization deciding access.
+
+## Native follow-up lifecycle — 21 November
+
+Use the existing web task mutation instead of native-specific lifecycle logic. Clear persistent offline workspace before submitting a task write; if cache removal fails, do not send the write. A conflict, transport failure or server failure after submission requires a detail reload, not automatic retry. Updated task status/outcome can reconcile a lost response; pending audit intents may still need operator review.

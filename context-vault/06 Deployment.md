@@ -327,3 +327,7 @@ MOB-05 requires the consultations GET/POST mobile resource and existing private 
 ## Native consultation reports — 21 November
 
 Native consultation reports require the matching `consultation-report` API resource and existing consultation indexes/private document read access. No schema changes or provisioning performed. Verify owner/admin/unrestricted-manager reports, counselor/editor/restricted-manager denial, combined filter parity with web and enquiry drill-down before OTA. No rollout attempted.
+
+## Native follow-up lifecycle — 21 November
+
+MOB-07 requires the new follow-up detail/PATCH API and existing private tasks/activities/locks access. No schema changes or provisioning performed. Accept counselor current-lead/task-owner checks, manager access, stale versions, complete/cancel/reschedule parity and pending audit reconciliation before native delivery. Old mobile snapshot responses are unchanged. No VPS or OTA release performed.

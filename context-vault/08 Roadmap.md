@@ -26,3 +26,7 @@ CRM-02 manual entry and normalized search passed local acceptance. The next CRM-
 CONSULT-01 consultation tracking passed local acceptance. Resume CRM-02 with contact/enquiry separation and duplicate review.
 
 MOB-01 mobile builds are available for Android and iOS simulator testing. Live mobile sign-in requires the CRM HTTPS certificate and release. Resume CRM-02 as recorded in [[Session Wall]].
+
+## Native follow-up lifecycle — 21 November
+
+MOB-05 consultations, MOB-06 consultation reporting and MOB-07 follow-up actions are now implemented and accepted locally. Production/server/OTA/device gates remain separate. Finance rollout was explicitly deferred. Resume the exact next bounded build recorded in [[Session Wall]] rather than the historical next-feature notes above.
