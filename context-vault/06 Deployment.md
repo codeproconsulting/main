@@ -323,3 +323,7 @@ Annual Finance needs existing expense, budget, staff and audit permissions. No n
 ## Native consultations — 21 November
 
 MOB-05 requires the consultations GET/POST mobile resource and existing private consultations schema/runtime document access. No schema changes were applied. Accept anonymous 401, counselor current-lead isolation, owner counselor credit selection, web/native history parity, future-date rejection and retry deduplication before mobile publication. Finance deployment remains deferred; no VPS or OTA change was performed.
+
+## Native consultation reports — 21 November
+
+Native consultation reports require the matching `consultation-report` API resource and existing consultation indexes/private document read access. No schema changes or provisioning performed. Verify owner/admin/unrestricted-manager reports, counselor/editor/restricted-manager denial, combined filter parity with web and enquiry drill-down before OTA. No rollout attempted.

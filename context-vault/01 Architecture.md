@@ -273,3 +273,7 @@ Yearly Finance reads twelve bounded monthly reports in batches of three and retu
 ## Native consultations — 21 November
 
 The native lead editor now includes an online consultation panel. GET/POST `/admin/mobile/v1/consultations` adapts bounded JSON to the existing `leadConsultations`/`recordConsultation` service, preserving shared web/native scope, validation and idempotency. No additional storage or native module.
+
+## Native consultation reports — 21 November
+
+The native workspace report tab reads GET `/admin/mobile/v1/consultation-report` through the existing `consultationReport` service. Destination, counselor and inclusive date-range filters match web reporting; pages remain bounded at 25 records. There is no separate native report database or aggregate scan.

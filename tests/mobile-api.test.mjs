@@ -17,6 +17,8 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
   });
   let revoked = false;
   let active = true;
+  let role = "counselor";
+  let managerScope = "";
   const events = [];
   const consultations = [];
   let lostConsultationAck = false;
@@ -42,9 +44,14 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
       assert.equal(options.headers["X-Appwrite-Session"], "synthetic-appwrite-session");
       return Response.json({ $id: "staff" }, { status: revoked ? 401 : 200 });
     }
+    if (url.pathname.endsWith("/crm_teams/documents/synthetic-team")) return Response.json({$id:"synthetic-team",name:"Synthetic team",status:"active"});
     if (url.pathname.endsWith("/staff/documents/staff")) {
-      return Response.json({ $id: "staff", role: "counselor", name: "Synthetic counselor", active });
+      return Response.json({ $id: "staff", role, managerScope, teamId: "synthetic-team", name: "Synthetic counselor", active });
     }
+    if (url.pathname.endsWith("/staff/documents")) return Response.json({documents:[
+      {$id:"staff",role,name:"Synthetic counselor",active},
+      {$id:"other",role:"counselor",name:"Former counselor",active:false},
+    ]});
     if (url.pathname.includes("/activities/documents")) {
       const { data } = JSON.parse(options.body);
       if (options.method === "POST") events.push(data);
@@ -63,7 +70,12 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
       }
       if (id) return consultations.find(row => row.$id === id) ? Response.json(consultations.find(row => row.$id === id)) : Response.json({}, {status:404});
       const filters = url.searchParams.getAll("queries[]").map(JSON.parse);
-      const rows = consultations.filter(row => filters.every(q => q.method !== "equal" || q.values.includes(row[q.attribute])));
+      const rows = consultations.filter(row => filters.every(q => {
+        if (q.method === "equal") return q.values.includes(row[q.attribute]);
+        if (q.method === "greaterThanEqual") return row[q.attribute] >= q.values[0];
+        if (q.method === "lessThanEqual") return row[q.attribute] <= q.values[0];
+        return true;
+      }));
       const offset = filters.find(q => q.method === "offset")?.values[0] ?? 0;
       const limit = filters.find(q => q.method === "limit")?.values[0] ?? 100;
       return Response.json({ documents: rows.slice(offset, offset + limit), total: rows.length });
@@ -78,7 +90,7 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
       return Response.json(row);
     }
     const filters = url.searchParams.getAll("queries[]").map(JSON.parse);
-    assert.ok(filters.some(filter => filter.attribute === "owner" && filter.values[0] === "staff"));
+    if (role === "counselor") assert.ok(filters.some(filter => filter.attribute === "owner" && filter.values[0] === "staff"));
     const documents = rows.filter(row => filters.every(filter => {
       if (filter.method === "equal") return filter.values.includes(row[filter.attribute]);
       if (filter.method === "search") return row[filter.attribute].includes(filter.values[0]);
@@ -212,6 +224,38 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
     assert.equal((await send("consultations?id=owned",auth)).status,403);
     assert.equal((await record(input)).status,403);
     leads[0].owner = "staff";
+    assert.equal((await send("consultation-report")).status,401);
+    assert.equal((await send("consultation-report",auth)).status,403);
+    role = "owner";
+    consultations.push({...consultations[0],$id:"italy",leadId:"foreign",counselor:"other",counselorName:"Former counselor",destination:"Italy",destinationKey:"italy",heldOn:"2026-02-01"});
+    const filtered = await send("consultation-report?destination=%20ITALY%20&counselor=other&from=2026-02-01&through=2026-02-01",auth);
+    assert.equal(filtered.status,200);
+    assert.match(filtered.headers.get("Cache-Control"),/private, no-store/);
+    const report = await filtered.json();
+    assert.equal(report.total,1);
+    assert.equal(report.history[0].leadName,"Other lead");
+    assert.equal(report.history[0].destination,"Italy");
+    assert.deepEqual(Object.keys(report.history[0]).sort(),["counselorName","destination","heldOn","id","leadId","leadName"]);
+    assert.equal(report.people.length,2);
+    for (const excludes of ["destination=Italy&counselor=staff", "destination=Italy&from=2026-02-02", "destination=Germany&through=2025-12-31"]) {
+      assert.equal((await (await send("consultation-report?"+excludes,auth)).json()).total,0);
+    }
+    const reportPage = await (await send("consultation-report?destination=Germany&page=2",auth)).json();
+    assert.equal(reportPage.total,26);
+    assert.equal(reportPage.history.length,1);
+    assert.equal(reportPage.hasMore,false);
+    assert.equal((await (await send("consultation-report?destination=Unknown",auth)).json()).total,0);
+    for (const invalid of ["from=2026-02-30", "from=2026-02-02&through=2026-02-01", "counselor=bad%2Fid"]) {
+      assert.equal((await send("consultation-report?"+invalid,auth)).status,400);
+    }
+    for (role of ["admin","manager"]) assert.equal((await send("consultation-report",auth)).status,200);
+    managerScope = "team";
+    assert.equal((await send("consultation-report",auth)).status,403);
+    managerScope = "";
+    role = "editor";
+    assert.equal((await send("consultation-report",auth)).status,403);
+    role = "counselor";
+    assert.equal((await send("consultation-report",auth)).status,403);
     active = false;
     assert.equal((await send("consultations?id=owned",auth)).status,403);
     assert.equal((await send("workspace", auth)).status, 403);

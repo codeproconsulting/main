@@ -3,40 +3,40 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-21-01]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-21-02]].
 
 ## Resume here
 
-**Session:** 2026-11-21-01
+**Session:** 2026-11-21-02
 
-**Active feature:** MOB-05
+**Active feature:** MOB-06
 
 **State:** completed
 
-**Objective:** Native per-lead consultation history and retry-safe recording through the shared web service.
+**Objective:** Native consultation reporting with shared counselor, destination and date filtering.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Scoped mobile consultation API, native lead-screen consultation panel, service/client tests
+- Manager-only report API, native workspace report tab, safe history projection and pagination
 
 ## Out of scope
 
-- Finance deployment (explicitly deferred by user)
-- Mobile OTA, physical-device acceptance and offline consultation storage
+- Finance deployment, all production rollout and mobile OTA
+- Offline report storage or global report aggregation
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| MOB05-API | Authenticated bounded reads/writes reuse scoped consultation service and safe projections | passed | Synthetic mobile API tests verify anonymous/foreign-lead denial, current-owner handoff denial, safe history fields, 25-row paging, JSON/date/type/size validation, counselor credit protection and deduplication after lost acknowledgement. Main typecheck, full tests and production build passed. |
-| MOB05-NATIVE | Native history, paging, counselor selection and stable retry form; mobile checks | passed | Native typecheck/lint/nine tests/Android bundle passed. Chrome component interaction with DOM shims passed paging, owner selection, uncertain locked draft, identical retry and denial cleanup. Native device rendering/background behavior remain unverified. |
+| MOB06-API | Shared filters, role denial, safe report projection and paging | passed | Synthetic API tests passed for owner/admin/global-manager access; anonymous/counselor/editor/active-team-manager denial; combined destination/counselor/inclusive-date filters and exclusions; invalid ranges; 25-row pagination and safe projection. Main typecheck, full tests and build passed. |
+| MOB06-NATIVE | Native apply/reset, paging, denial cleanup and checks | passed | Mobile typecheck/lint/nine tests/Android export passed. Component Chrome interaction with DOM shims passed combined filters, applied-filter paging, enquiry drill-down, reset/empty/error states and denial cleanup. Device rendering remains unverified. |
 
 ## Exact next actions
 
-1. Build native consultation reporting with counselor/destination/date filters using existing consultationReport service; preserve deferred Finance rollout and separate production acceptance.
-   Files: `app/admin/consultations.server.ts`, `app/admin/mobile-api.ts`, `app/admin/consultation-report.tsx`, `/Users/fidaali/Proconsulting-App/src/Consultations.tsx`
+1. Build native follow-up completion and outcomes using shared changeTask/completeTask service with current-lead scope and optimistic version checks. Keep Finance and production release acceptance deferred.
+   Files: `app/admin/crm.server.ts`, `app/admin/mobile-api.ts`, `tests/mobile-api.test.mjs`, `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`, `/Users/fidaali/Proconsulting-App/src/mobile-api.ts`
 
 ## Known risks and unfinished work
 
@@ -59,9 +59,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-21T05:37:57.329Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-F7eiDh/typecheck.log`
-- **passed**: `npm run test` (2026-11-21T05:38:04.166Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-F7eiDh/test.log`
-- **passed**: `npm run build` (2026-11-21T05:38:09.586Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-F7eiDh/build.log`
+- **passed**: `npm run typecheck` (2026-11-21T05:52:42.224Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-sWm7or/typecheck.log`
+- **passed**: `npm run test` (2026-11-21T05:52:49.239Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-sWm7or/test.log`
+- **passed**: `npm run build` (2026-11-21T05:52:54.627Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-sWm7or/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -144,5 +144,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **expenseReceipts**: Optional receipt metadata provisioned and schema verified. Actual scanner and VPS app rollout pending. No production receipt uploads attempted.
 - **financeReadiness**: Read-only target preflight passed for expenses, budgets, activities, locks and receipt bucket. No expense rows read or written. Actual VPS scanner untested.
 - **nativeConsultations**: Implemented and verified locally; mobile commits include cb1ad78 plus background draft retention checkpoint. Mobile checkout has no remote. No VPS deployment or OTA publication.
+- **nativeConsultationReports**: Implemented locally and committed in mobile 345623b; no mobile Git remote, VPS rollout, OTA publication or physical-device acceptance.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

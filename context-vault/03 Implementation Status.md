@@ -361,3 +361,7 @@ The public base edge passes. Both monthly and yearly Finance API probes return 4
 ## Native consultations — 21 November
 
 MOB-05 consultation history and recording implemented locally. API scope, pagination, input limits, credit spoofing and lost-ack retry passed synthetically. Native component browser checks use DOM shims, not a real phone. Mobile typecheck/lint/nine tests/Android export passed. Server rollout and mobile OTA/device acceptance remain pending. Finance deployment explicitly deferred by user.
+
+## Native consultation reports — 21 November
+
+MOB-06 implements native consultation reporting with combined filters, applied-filter paging, reset, empty/error states and enquiry drill-down. Shared API checks and native component Chrome checks with DOM shims passed. Mobile typecheck/lint/nine tests/Android bundle passed. Actual device, VPS and OTA checks remain separate and unperformed. Finance rollout stays explicitly deferred.

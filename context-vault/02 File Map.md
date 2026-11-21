@@ -325,3 +325,7 @@ Receipt attachment downloads use the dedicated resource route `app/admin/expense
 ## Native consultations — 21 November
 
 `app/admin/mobile-api.ts` exposes consultation history and recording; `tests/mobile-api.test.mjs` verifies the adapter with synthetic storage. Separate mobile checkout: `src/Consultations.tsx` is the native lead panel, `src/mobile-api.ts` contains typed calls, and `tests/consultations-api.test.mjs` verifies request encoding/retries.
+
+## Native consultation reports — 21 November
+
+`app/admin/mobile-api.ts` projects consultation reports for the native client. `tests/mobile-api.test.mjs` exercises combined filters, dates, role denial, paging and projection. In the separate mobile checkout, `src/ConsultationReport.tsx` is the report tab and `src/mobile-api.ts` holds typed filter/page calls; the consultation API test also checks query encoding.

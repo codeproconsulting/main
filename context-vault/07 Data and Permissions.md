@@ -247,3 +247,7 @@ Yearly API responses contain aggregates only. Payees, references, receipt identi
 ## Native consultations — 21 November
 
 Mobile consultation responses project history to ID, destination, counselor name and date; recordedBy and internal destination keys are excluded. Counselors can only use their current leads and cannot forge another counselor’s credit. Owners/unrestricted managers select an active CRM staff member through the shared service. Restricted managers continue on web. Session/role denial clears the native panel; consultation data is not saved in the offline workspace.
+
+## Native consultation reports — 21 November
+
+The report adapter returns only row ID, enquiry ID/name, counselor display name, destination and date, plus filter/pagination metadata and staff ID/name choices. Internal destination keys and recordedBy are excluded. Counselors, editorial staff and team-restricted managers are denied this native global report; team managers retain their scoped web reporting. Report data is excluded from offline snapshots.

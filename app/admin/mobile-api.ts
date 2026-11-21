@@ -6,7 +6,7 @@ import { boundedBody } from "~/lib/request-body.server";
 import { expenseYear, expensePaymentMethods, expenseCategories, expenseMonth, recordExpense, voidExpense, saveOfficeBudget } from "./finance.server";
 import { leadFor, leadsFor, queuePage, taskPage, updateLead } from "./crm.server";
 
-import { consultationPage, consultationPageSize, leadConsultations, recordConsultation } from "./consultations.server";
+import { consultationReport, consultationPage, consultationPageSize, leadConsultations, recordConsultation } from "./consultations.server";
 
 import { isRestrictedManager, closureStages, priorities, stages, type Lead } from "./domain";
 
@@ -102,6 +102,16 @@ function mobileLeads({ documents, total }: Awaited<ReturnType<typeof leadsFor>>)
 
 export function loader({ request, params }: LoaderFunctionArgs) {
   return mobileRequest(request, async () => {
+    if (params.resource === "consultation-report") {
+      const result = await consultationReport(await mobileStaff(request), new URL(request.url).searchParams);
+      return reply({
+        history: result.history.map(({ $id, leadId, leadName, destination, counselorName, heldOn }) =>
+          ({ id: $id, leadId, leadName, destination, counselorName, heldOn })),
+        people: result.people, total: result.total, page: result.page,
+        hasMore: result.page < 10_000 && result.page * consultationPageSize < result.total,
+        filters: { destination: result.destination, counselor: result.counselor, from: result.from, through: result.through },
+      });
+    }
     if (params.resource === "consultations") {
       const staff = await mobileStaff(request);
       const page = consultationPage(new URL(request.url).searchParams);

@@ -299,3 +299,7 @@ Keep the base edge check usable for older CRM deployments; opt into monthly/year
 ## Native consultations — 21 November
 
 Use the existing consultation service on web and native rather than a second recording workflow. Keep history and drafts out of offline snapshots. After an uncertain save, lock the same form for retry; restarting/signing out requires inspecting web history before another entry. User explicitly deferred Finance deployment to resume feature work.
+
+## Native consultation reports — 21 November
+
+Reuse web report authorization and query semantics. Report pages reflect applied filters even while form inputs are being changed; Apply resets to page one. Reports remain online-only and are cleared on failed loads or access denial. Use existing staff roles for UI visibility, with fresh server authorization deciding access.
