@@ -3,42 +3,39 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-21-04]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-22-01]].
 
 ## Resume here
 
-**Session:** 2026-11-21-04
+**Session:** 2026-11-22-01
 
-**Active feature:** MOB-08
+**Active feature:** MOB-09
 
-**State:** completed
+**State:** in_progress
 
-**Objective:** Retry-safe follow-up creation on web and native lead screens.
+**Objective:** Native application list/detail and scoped stage/deadline editing.
 
-This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
+A user saying **continue** means resume this feature's next unfinished acceptance check. Do not start unrelated modules or repeat completed infrastructure work. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Stable submission/task/audit IDs in shared creation service
-- Web form retry preservation and native creation panel
-- Lost-response, validation and access acceptance
+- Shared application progress API and native panel
 
 ## Out of scope
 
-- Offline creation or durable draft queue
-- Production deployment, Finance rollout and OTA
+- Application creation, offline edits and production rollout
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| MOB08-SERVICE | Repeated and interrupted submissions cannot create duplicate tasks or overwrite later changes | passed | Five synthetic creation service tests passed concurrent/repeated submissions, changed payload rejection, lost acknowledgements, pending audit recovery, later task changes, assignment interruption and current permissions. Shared API acceptance recovered a failed web audit through native with one task. Main typecheck/full tests/build passed. |
-| MOB08-CLIENTS | Web/native forms retain request identity and enforce current access | passed | Built Chrome web check passed draft/token retention after validation, fresh identity after success and one task/audit after replay. Native component Chrome check with DOM shims passed required fields, cache failure preventing writes and locked identical retries. Mobile typecheck/lint/ten tests/Android export passed. Device acceptance remains unverified. |
+| MOB09-API | Scoped reads and versioned progress preserve other details | passed | Synthetic API tests pass anonymous/current-lead denial, safe projection, invalid stage, timezone normalization, stale version and preservation of notes. |
+| MOB09-UI | Native device/component interaction acceptance | pending | Native panel implemented; automated interaction and physical-device acceptance not yet performed. |
 
 ## Exact next actions
 
-1. Build native application/case tracking: scoped list/detail and version-checked stage/deadline updates using existing operations service. Keep creation, broad offline edits and production delivery separate.
-   Files: `app/admin/operations.server.ts`, `app/admin/domain.ts`, `app/admin/mobile-api.ts`, `tests/mobile-api.test.mjs`, `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`, `/Users/fidaali/Proconsulting-App/src/mobile-api.ts`
+1. Verify native application panel interactions, stale/uncertain reload, background draft retention and account-switch cleanup before closing MOB-09.
+   Files: `/Users/fidaali/Proconsulting-App/src/Applications.tsx`, `app/admin/operations.server.ts`, `tests/mobile-api.test.mjs`
 
 ## Known risks and unfinished work
 
@@ -62,9 +59,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-21T12:51:08.691Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-BaqObf/typecheck.log`
-- **passed**: `npm run test` (2026-11-21T12:51:16.017Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-BaqObf/test.log`
-- **passed**: `npm run build` (2026-11-21T12:51:21.332Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-BaqObf/build.log`
+- **passed**: `npm run typecheck` (2026-11-22T04:51:13.278Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-JKUpvF/typecheck.log`
+- **passed**: `npm run test` (2026-11-22T04:51:20.754Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-JKUpvF/test.log`
+- **passed**: `npm run build` (2026-11-22T04:51:26.803Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-JKUpvF/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 

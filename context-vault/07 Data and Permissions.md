@@ -259,3 +259,7 @@ The native detail projection contains only ID, title, lead ID, due date, status,
 ## Retry-safe follow-up creation — 21 November
 
 Creation refreshes actor and active assignee under staff-access/lead locks and applies current writable lead scope. Clients cannot choose task owner or record ID. Deterministic IDs include actor, lead and form UUID; activities retain original title/date/owner to validate retries after later task updates. Internal request metadata is not added to native task projections. Native drafts and write queues are not stored offline.
+
+## Native applications — 22 November
+
+Native case projections omit notes and owner metadata. Counselors require both task-record and current lead ownership. Progress updates reject ownership mismatch and stale versions.

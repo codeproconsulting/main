@@ -1,3 +1,4 @@
+import { caseFor, updateCaseProgress, scopedRecords, type CaseRecord } from "./operations.server";
 import { createCipheriv, createDecipheriv, randomBytes, randomUUID, scryptSync } from "node:crypto";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { appwrite, AppwriteError, configurationIssues } from "~/lib/appwrite.server";
@@ -8,7 +9,7 @@ import { createTask, changeTask, followUpFor, leadFor, leadsFor, queuePage, task
 
 import { consultationReport, consultationPage, consultationPageSize, leadConsultations, recordConsultation } from "./consultations.server";
 
-import { isRestrictedManager, closureStages, priorities, stages, type Lead, type Task } from "./domain";
+import { caseStagesFor, isRestrictedManager, closureStages, priorities, stages, type Lead, type Task } from "./domain";
 
 const headers = { "Cache-Control": "private, no-store", "X-Robots-Tag": "noindex, nofollow" };
 const reply = (body: unknown, status = 200) => Response.json(body, { headers, status });
@@ -105,8 +106,19 @@ function mobileLeads({ documents, total }: Awaited<ReturnType<typeof leadsFor>>)
   };
 }
 
+function mobileCase(record: CaseRecord) {
+ const {$id:id,leadId,kind,institution,course,country,intake,stage,deadline,version}=record;
+ return {id,leadId,kind,institution,course,country,intake,stage,deadline,version,stages:caseStagesFor(kind)};
+}
+
 export function loader({ request, params }: LoaderFunctionArgs) {
   return mobileRequest(request, async () => {
+    if (params.resource === "applications") {
+      const page=queuePage(new URL(request.url).searchParams.get("page"));
+      const {records,hasMore}=await scopedRecords<CaseRecord>(await mobileStaff(request),"cases",page);
+      return reply({page,hasMore,applications:records.map(mobileCase)});
+    }
+    if (params.resource === "application") return reply(mobileCase(await caseFor(await mobileStaff(request),recordId(request,"application"))));
     if (params.resource === "follow-up") {
       return reply(editableFollowUp(await followUpFor(await mobileStaff(request), recordId(request, "follow-up"))));
     }
@@ -166,6 +178,16 @@ export function loader({ request, params }: LoaderFunctionArgs) {
 
 export function action({ request, params }: ActionFunctionArgs) {
   return mobileRequest(request, async () => {
+    if (params.resource === "application") {
+      if(request.method!=="PATCH")return reply({error:"Method not allowed."},405);
+      const staff=await mobileStaff(request),id=recordId(request,"application");
+      if(!isJson(request))return reply({error:"Expected JSON."},415);
+      const text=await(await boundedBody(request,4096,"Application")).text();
+      const body=(()=>{try{return JSON.parse(text);}catch{return null;}})();
+      if(!body||!Number.isSafeInteger(body.version)||body.version<0||typeof body.stage!=="string"||typeof body.deadline!=="string")return reply({error:"Invalid application update."},400);
+      const form=new FormData();form.set("version",String(body.version));form.set("stage",body.stage);form.set("deadline",body.deadline);
+      return reply(mobileCase(await updateCaseProgress(staff,id,form)));
+    }
     if (params.resource === "follow-ups") {
       if (request.method !== "POST") return reply({ error: "Method not allowed." }, 405);
       const staff = await mobileStaff(request);

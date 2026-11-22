@@ -29,6 +29,7 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
     { $id: "owned", owner: "staff", name: "Synthetic lead", email: "fixture@example.invalid", stage: "New", priority: "Normal", nextFollowUp: "2027-01-01T10:00:00.000Z", version: 1 },
     { $id: "foreign", owner: "other", name: "Other lead" },
   ];
+  const cases=[{$id:"case",leadId:"owned",owner:"staff",kind:"Education",institution:"Synthetic university",course:"Synthetic course",country:"Germany",intake:"2027",stage:"Shortlisted",deadline:"",notes:"private",version:1}];
   const tasks = [
     { $id: "task", owner: "staff", leadId: "owned", title: "Follow up", status: "Open", dueAt: "2026-12-01T10:00:00Z", outcome: "", version: 1 },
     { $id: "transferred", owner: "staff", leadId: "foreign", title: "Private task", status: "Open", dueAt: "2026-12-01T10:00:00Z", outcome: "", version: 1 },
@@ -92,9 +93,9 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
       const limit = filters.find(q => q.method === "limit")?.values[0] ?? 100;
       return Response.json({ documents: rows.slice(offset, offset + limit), total: rows.length });
     }
-    const match = url.pathname.match(/\/(leads|tasks)\/documents(?:\/([^/]+))?$/);
+    const match = url.pathname.match(/\/(leads|tasks|cases)\/documents(?:\/([^/]+))?$/);
     assert.ok(match);
-    const rows = match[1] === "leads" ? leads : tasks;
+    const rows = match[1] === "leads" ? leads : match[1] === "cases" ? cases : tasks;
     if (options.method === "POST") {
       const {data,documentId,permissions}=JSON.parse(options.body);assert.deepEqual(permissions,[]);
       if(rows.some(row=>row.$id===documentId))return Response.json({}, {status:409});
@@ -346,6 +347,15 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
     assert.equal((await send("consultation-report",auth)).status,403);
     role = "counselor";
     assert.equal((await send("consultation-report",auth)).status,403);
+    assert.equal((await send("applications")).status,401);
+    const appList=await(await send("applications",auth)).json();assert.equal(appList.applications.length,1);assert.equal(appList.applications[0].notes,undefined);
+    const detail=await(await send("application?id=case",auth)).json();
+    const patchCase=body=>send("application?id=case",{method:"PATCH",headers:{...auth.headers,"Content-Type":"application/json"},body:JSON.stringify(body)});
+    assert.equal((await patchCase({version:1,stage:"invalid",deadline:""})).status,400);
+    assert.equal((await patchCase({version:1,stage:detail.stages[1],deadline:"2026-12-01T10:00:00+05:00",notes:"overwrite"})).status,200);
+    assert.equal(cases[0].notes,"private");assert.equal(cases[0].deadline,"2026-12-01T05:00:00.000Z");
+    assert.equal((await patchCase({version:1,stage:detail.stages[0],deadline:""})).status,409);
+    leads[0].owner="other";assert.equal((await send("application?id=case",auth)).status,403);leads[0].owner="staff";
     active = false;
     assert.equal((await send("follow-up?id=task",auth)).status,403);
     assert.equal((await send("consultations?id=owned",auth)).status,403);

@@ -1,13 +1,38 @@
 import {randomUUID} from "node:crypto";
 import {AppwriteError,createDocument,getDocument,listDocuments,query,updateDocument} from "~/lib/appwrite.server";
 import {caseStagesFor,canManage,canUseCRM,isRestrictedManager,type Staff} from "./domain";
-import {allow,audit,dateField,definitiveWriteRejection,field,writableEnquiry,scopedQueue,serialized,UnconfirmedMutation,withCurrentTeamManager} from "./crm.server";
+import {allow,audit,dateField,definitiveWriteRejection,field,leadFor,writableEnquiry,scopedQueue,serialized,UnconfirmedMutation,withCurrentTeamManager} from "./crm.server";
 export type CaseRecord={$id:string;leadId:string;owner:string;kind:string;institution:string;course:string;country:string;intake:string;stage:string;deadline:string;notes:string;version:number};
 import {appointmentCalendarLock,appointmentTime,assertCalendarAvailable,type Appointment} from "./calendar.server";
 export type {Appointment} from "./calendar.server";
 
 export function scopedRecords<T extends {leadId:string}>(staff: Staff, collection: "cases" | "appointments", page = 1) {
   return scopedQueue<T>(staff, collection, [query("orderDesc", "$createdAt")], page);
+}
+export async function caseFor(staff: Staff, id: string) {
+ allow(staff.active && canUseCRM(staff) && !isRestrictedManager(staff));
+ const record = await getDocument<CaseRecord>("cases",id).catch(error=>{
+  if(error instanceof AppwriteError && error.status===404)throw new Response("Application not found",{status:404});
+  throw error;
+ });
+ const lead=await leadFor(staff,record.leadId);
+ allow(canManage(staff)||(record.owner===staff.$id&&lead.owner===staff.$id));
+ return record;
+}
+export async function updateCaseProgress(staff: Staff,id: string,form: FormData){
+ const initial=await caseFor(staff,id);
+ return serialized(`lead:${initial.leadId}`,async()=>{
+  const current=await caseFor(staff,id);
+  const lead=await writableEnquiry(staff,current.leadId);
+  if(current.leadId!==initial.leadId||current.owner!==lead.owner||Number(field(form,"version"))!==current.version)throw new Response("Application changed or assignment needs reconciliation. Reload before saving.",{status:409});
+  const stage=field(form,"stage",80),deadline=dateField(field(form,"deadline",40));
+  if(!caseStagesFor(current.kind).includes(stage))throw new Response("Invalid application stage",{status:400});
+  const changes={stage,deadline,version:current.version+1};
+  const event=await audit(staff,current.leadId,"lead","Application save requested",{state:"pending",caseId:id,before:{stage:current.stage,deadline:current.deadline,version:current.version},after:changes});
+  const updated=await updateDocument<CaseRecord>("cases",id,changes);
+  await updateDocument("activities",event.$id,{event:"Application updated",details:JSON.stringify({state:"completed",caseId:id,...changes})});
+  return updated;
+ });
 }
 export async function saveCase(staff:Staff,form:FormData){const id=field(form,"id",36),leadId=field(form,"leadId",36);return serialized(`lead:${leadId}`,async()=>{
  const lead=await writableEnquiry(staff,leadId);

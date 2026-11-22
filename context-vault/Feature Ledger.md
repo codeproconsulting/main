@@ -42,3 +42,5 @@ Only **one feature** is the active session focus. “Code staged” means implem
 A feature closes only after its explicit acceptance checks pass, failures and permission boundaries are tested, deployment/configuration dependencies are documented, and the session wall records the evidence. Deployment is tracked separately. A blocked feature keeps its remaining work and can be deferred explicitly; it must not be silently marked complete.
 
 See [[Sessions/2026-10-29-02]], [[03 Implementation Status]], and the full plan at `docs/CRM-CMS-APPWRITE-IMPLEMENTATION-PLAN.md`.
+
+MOB-09 native applications: API tested; native panel implemented, interaction/device acceptance pending. Resume [[Session Wall]].

@@ -337,3 +337,7 @@ Receipt attachment downloads use the dedicated resource route `app/admin/expense
 ## Retry-safe follow-up creation — 21 November
 
 `app/admin/crm.server.ts` implements retry-safe creation; `app/admin/lead.tsx` emits and preserves submission IDs/drafts; `app/admin/mobile-api.ts` adds POST follow-ups and lead form context. `tests/task-creation.test.mjs` covers interrupted writes and original-request identity; mobile API tests cover web-to-native recovery. Separate mobile checkout adds `src/FollowUpCreate.tsx` and typed creation calls.
+
+## Native applications — 22 November
+
+operations.server.ts adds caseFor/updateCaseProgress; mobile-api.ts exposes applications/application. Separate mobile checkout adds src/Applications.tsx.

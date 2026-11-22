@@ -1,44 +1,38 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-21-04",
-  "sessionStatus": "completed",
-  "activeFeature": "MOB-08",
-  "objective": "Retry-safe follow-up creation on web and native lead screens.",
+  "sessionId": "2026-11-22-01",
+  "sessionStatus": "in_progress",
+  "activeFeature": "MOB-09",
+  "objective": "Native application list/detail and scoped stage/deadline editing.",
   "scope": [
-    "Stable submission/task/audit IDs in shared creation service",
-    "Web form retry preservation and native creation panel",
-    "Lost-response, validation and access acceptance"
+    "Shared application progress API and native panel"
   ],
   "outOfScope": [
-    "Offline creation or durable draft queue",
-    "Production deployment, Finance rollout and OTA"
+    "Application creation, offline edits and production rollout"
   ],
   "acceptance": [
     {
-      "id": "MOB08-SERVICE",
-      "description": "Repeated and interrupted submissions cannot create duplicate tasks or overwrite later changes",
+      "id": "MOB09-API",
+      "description": "Scoped reads and versioned progress preserve other details",
       "status": "passed",
-      "evidence": "Five synthetic creation service tests passed concurrent/repeated submissions, changed payload rejection, lost acknowledgements, pending audit recovery, later task changes, assignment interruption and current permissions. Shared API acceptance recovered a failed web audit through native with one task. Main typecheck/full tests/build passed."
+      "evidence": "Synthetic API tests pass anonymous/current-lead denial, safe projection, invalid stage, timezone normalization, stale version and preservation of notes."
     },
     {
-      "id": "MOB08-CLIENTS",
-      "description": "Web/native forms retain request identity and enforce current access",
-      "status": "passed",
-      "evidence": "Built Chrome web check passed draft/token retention after validation, fresh identity after success and one task/audit after replay. Native component Chrome check with DOM shims passed required fields, cache failure preventing writes and locked identical retries. Mobile typecheck/lint/ten tests/Android export passed. Device acceptance remains unverified."
+      "id": "MOB09-UI",
+      "description": "Native device/component interaction acceptance",
+      "status": "pending",
+      "evidence": "Native panel implemented; automated interaction and physical-device acceptance not yet performed."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Build native application/case tracking: scoped list/detail and version-checked stage/deadline updates using existing operations service. Keep creation, broad offline edits and production delivery separate.",
+      "action": "Verify native application panel interactions, stale/uncertain reload, background draft retention and account-switch cleanup before closing MOB-09.",
       "files": [
+        "/Users/fidaali/Proconsulting-App/src/Applications.tsx",
         "app/admin/operations.server.ts",
-        "app/admin/domain.ts",
-        "app/admin/mobile-api.ts",
-        "tests/mobile-api.test.mjs",
-        "/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx",
-        "/Users/fidaali/Proconsulting-App/src/mobile-api.ts"
+        "tests/mobile-api.test.mjs"
       ]
     }
   ],
@@ -148,24 +142,24 @@
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-21T12:51:08.691Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-BaqObf/typecheck.log"
+      "checkedAt": "2026-11-22T04:51:13.278Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-JKUpvF/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-21T12:51:16.017Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-BaqObf/test.log"
+      "checkedAt": "2026-11-22T04:51:20.754Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-JKUpvF/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-21T12:51:21.332Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-BaqObf/build.log"
+      "checkedAt": "2026-11-22T04:51:26.803Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-JKUpvF/build.log"
     }
   ],
-  "updatedAt": "2026-11-21T12:52:47.322Z",
-  "verifiedSourceFingerprint": "4fa0f1017c0ab59f3aa44d26d068cb2ab66827d94950789ed7b601e0a9a78036"
+  "updatedAt": "2026-11-22T04:51:49.669Z",
+  "verifiedSourceFingerprint": "e76eaff02665d8084083a351c25a22da5125a7764d88acb028599b5e6509e121"
 }

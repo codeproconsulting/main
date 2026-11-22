@@ -373,3 +373,7 @@ MOB-07 implements native Complete, Cancel and Reschedule with required outcome/r
 ## Retry-safe follow-up creation — 21 November
 
 MOB-08 shared creation and native panel implemented locally. Service tests passed repeated/lost replies, pending audit completion, later task changes, changed payloads, current permissions and interrupted assignment. Web action errors preserve draft identity; cross-platform recovery passed. Native typecheck/lint/ten tests/Android export and component Chrome check with DOM shims passed. Built web browser acceptance and final main checks are recorded in the session journal; device/VPS/OTA remain separate.
+
+## Native applications — 22 November
+
+MOB-09 API synthetic acceptance passed; native panel is implemented but interaction/device acceptance remains pending. No deployment.

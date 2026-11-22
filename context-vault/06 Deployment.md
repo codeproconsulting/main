@@ -335,3 +335,7 @@ MOB-07 requires the new follow-up detail/PATCH API and existing private tasks/ac
 ## Retry-safe follow-up creation — 21 November
 
 MOB-08 needs updated web lead forms, lead API form context and POST follow-ups. Existing tasks/activities/locks read/write access is used; no provisioning performed. Existing open web forms must reload for a submission ID. Accept web/native repeated-save deduplication and audit recovery before mobile publication. An unconfirmed remote task write retains lead/staff locks; stop owning processes and reconcile task/audit/request before targeted lock removal. No blind expiry takeover.
+
+## Native applications — 22 November
+
+Application API uses existing cases/activities/locks. No schema provisioned or VPS/OTA release performed. Accept scope/conflicts and native interaction before delivery.

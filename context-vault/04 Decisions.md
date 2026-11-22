@@ -311,3 +311,7 @@ Use the existing web task mutation instead of native-specific lifecycle logic. C
 ## Retry-safe follow-up creation — 21 November
 
 Require a UUID submission ID for all new web/native follow-up forms; old already-open forms must reload. Stable task/audit IDs prevent duplicate retries without changing schema. A genuinely unconfirmed task write retains locks for operator reconciliation; a known task with an unfinished audit can retry completion safely. Original request fields are kept even if the task later changes. Native creation clears offline persistence before sending and locks uncertain drafts for identical retry.
+
+## Native applications — 22 November
+
+Limit native case edits to stage/deadline and current version. Preserve institution/course/notes. Keep creation and offline mutation separate.

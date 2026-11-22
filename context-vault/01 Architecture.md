@@ -285,3 +285,7 @@ GET/PATCH `/admin/mobile/v1/follow-up?id=...` supplies current task details and 
 ## Retry-safe follow-up creation — 21 November
 
 Shared createTask now uses actor/lead/form-derived task and audit IDs under lead and staff-access locks. The immutable creation request lives in the existing activities record; retry compares normalized title/date to that request and returns the current task without resetting later lifecycle changes. No extra collection or schema field.
+
+## Native applications — 22 November
+
+Native applications use existing cases storage with scoped list/detail and a limited progress update preserving other fields.
