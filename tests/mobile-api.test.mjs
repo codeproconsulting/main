@@ -368,6 +368,31 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
     const appointmentList=await(await send("appointments",auth)).json();assert.equal(appointmentList.appointments.length,1);assert.equal(appointmentList.appointments[0].notes,undefined);
     assert.equal((await send("appointment?id=missing",auth)).status,404);
     const outcome=(body)=>send("appointment?id=appointment",{method:"PATCH",headers:{...auth.headers,"Content-Type":"application/json"},body:JSON.stringify(body)});
+    const originalBooking = {...appointments[0]};
+    const move = {action:"reschedule",version:1,startsAt:"2035-02-01T10:00+05:00",endsAt:"2035-02-01T11:00+05:00",reason:"Synthetic schedule change"};
+    for (const invalid of [
+      {reason:"  "}, {startsAt:"2035-02-01T10:00"}, {startsAt:"2035-02-30T10:00Z"},
+      {endsAt:move.startsAt}, {status:"Completed"}, {endsAt:null},
+      {startsAt:originalBooking.startsAt,endsAt:originalBooking.endsAt}
+    ]) assert.equal((await outcome({...move,...invalid})).status,400);
+    leads[0].owner="other";
+    assert.equal((await outcome(move)).status,403);
+    leads[0].owner="staff";
+    appointments.push({...originalBooking,$id:"busy-slot",startsAt:"2035-02-01T05:30Z",endsAt:"2035-02-01T06:30Z"});
+    assert.equal((await outcome(move)).status,409);
+    assert.deepEqual(appointments[0],originalBooking);
+    appointments[1].startsAt="2035-02-01T06:00Z";
+    const moved=await outcome({...move,notes:"ignored",title:"ignored",location:"ignored",leadId:"ignored",owner:"ignored"});
+    assert.equal(moved.status,200);
+    const newSlot={startsAt:"2035-02-01T05:00:00.000Z",endsAt:"2035-02-01T06:00:00.000Z",version:2};
+    assert.deepEqual(appointments[0],{...originalBooking,...newSlot});
+    assert.equal((await moved.json()).notes,undefined);
+    const moveAudit=[...activities.values()].findLast(row=>row.event==="Appointment saved");
+    assert.deepEqual(JSON.parse(moveAudit.details),{appointmentId:"appointment",fromVersion:1,toVersion:2,status:"Booked",startsAt:newSlot.startsAt,endsAt:newSlot.endsAt,reason:move.reason,state:"completed"});
+    assert.equal((await outcome(move)).status,409);
+    appointments[0].status="Cancelled";
+    assert.equal((await outcome({...move,version:2,startsAt:originalBooking.startsAt,endsAt:originalBooking.endsAt})).status,400);
+    appointments.splice(0,2,originalBooking);
     assert.equal((await outcome({version:1,status:"Cancelled",reason:""})).status,400);
     assert.equal((await outcome({version:1,status:"Invalid",reason:"test"})).status,400);
     appointments[0].startsAt="2035-01-01T10:00:00Z";appointments[0].endsAt="2035-01-01T11:00:00Z";

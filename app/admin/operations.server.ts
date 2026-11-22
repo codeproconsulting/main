@@ -100,11 +100,11 @@ export async function appointmentFor(staff: Staff,id: string){
  allow(canManage(staff)||(record.owner===staff.$id&&lead.owner===staff.$id));
  return record;
 }
-export async function saveAppointment(staff: Staff, form: FormData, teamRecordId?: string, outcomeOnly = false) {
+export async function saveAppointment(staff: Staff, form: FormData, teamRecordId?: string, mobileEdit?: "outcome" | "reschedule") {
   const teamManager = isRestrictedManager(staff);
   allow(staff.active && canUseCRM(staff) && (!teamManager || Boolean(teamRecordId)));
   const id = teamManager ? teamRecordId! : field(form, "id", 36);
-  if(outcomeOnly&&!id)throw new Response("Select an existing appointment.",{status:400});
+  if (mobileEdit && !id)throw new Response("Select an existing appointment.",{status:400});
   const readAppointment = () => getDocument<Appointment>("appointments", id).catch(error => {
     if (error instanceof AppwriteError && error.status === 404) throw new Response("Appointment not found", { status: 404 });
     throw error;
@@ -116,7 +116,7 @@ export async function saveAppointment(staff: Staff, form: FormData, teamRecordId
   });
   if (teamManager) await readLead();
   const save = () => serialized(appointmentCalendarLock, async () => {
-    if(outcomeOnly){
+    if (mobileEdit) {
       staff=await getDocument<Staff>("staff",staff.$id);
       allow(staff.active&&canUseCRM(staff)&&!isRestrictedManager(staff)&&!staff.revocationPending);
     }
@@ -134,18 +134,21 @@ export async function saveAppointment(staff: Staff, form: FormData, teamRecordId
       if (current.version !== Number(field(form, "version"))) throw new Response("Appointment changed. Refresh before saving.", { status: 409 });
     }
 
-    const startsAt = appointmentTime(outcomeOnly ? current!.startsAt : field(form, "startsAt", 40));
-    const endsAt = appointmentTime(outcomeOnly ? current!.endsAt : field(form, "endsAt", 40));
+    const startsAt = appointmentTime(mobileEdit === "outcome" ? current!.startsAt : field(form, "startsAt", 40));
+    const endsAt = appointmentTime(mobileEdit === "outcome" ? current!.endsAt : field(form, "endsAt", 40));
     const status = field(form, "status", 30);
-    const title = (teamManager || outcomeOnly) ? current!.title : field(form, "title", 300);
+    const title = (teamManager || mobileEdit) ? current!.title : field(form, "title", 300);
     const reason = field(form, "reason", 2000);
     if (!title || endsAt <= startsAt || !["Booked", "Completed", "Cancelled", "No show"].includes(status)) {
       throw new Response("Enter a title, a valid time range and a booking status.", { status: 400 });
     }
     const moved = !!current && (Date.parse(current.startsAt) !== Date.parse(startsAt) || Date.parse(current.endsAt) !== Date.parse(endsAt));
+    if (mobileEdit === "reschedule" && !moved) {
+      throw new Response("Change the start or end time to reschedule.", { status: 400 });
+    }
     const changedStatus = current?.status !== status;
     if (!current && status !== "Booked") throw new Response("New appointments must start as Booked.", { status: 400 });
-    if (current && current.status !== "Booked" && (teamManager || outcomeOnly || moved || changedStatus)) {
+    if (current && current.status !== "Booked" && (teamManager || mobileEdit || moved || changedStatus)) {
       throw new Response("This appointment is closed. Create a new booking to schedule another meeting.", { status: 400 });
     }
     if (moved && status !== "Booked") throw new Response("Save a reschedule separately from an outcome.", { status: 400 });
@@ -157,19 +160,19 @@ export async function saveAppointment(staff: Staff, form: FormData, teamRecordId
     }
     if (status === "Booked") await assertCalendarAvailable(lead.owner, [{ startsAt, endsAt }], new Set(id ? [id] : []));
 
-    const payload = { leadId, owner: lead.owner, title, startsAt, endsAt, status, location: outcomeOnly ? current!.location : teamManager ? "" : field(form, "location", 1000), notes: outcomeOnly ? current!.notes : teamManager ? "" : field(form, "notes", 10000), version: (current?.version ?? 0) + 1 };
+    const payload = { leadId, owner: lead.owner, title, startsAt, endsAt, status, location: teamManager || mobileEdit ? current!.location : field(form, "location", 1000), notes: teamManager || mobileEdit ? current!.notes : field(form, "notes", 10000), version: (current?.version ?? 0) + 1 };
     const appointmentId = current?.$id ?? randomUUID();
     const details = { appointmentId, fromVersion: current?.version ?? 0, toVersion: payload.version, status, startsAt, endsAt, reason };
     const event = await audit(staff, leadId, "lead", "Appointment save requested", { ...details, state: "pending" });
     let record;
     try {
       record = current
-        ? await updateDocument<Appointment>("appointments", appointmentId, teamManager
+        ? await updateDocument<Appointment>("appointments", appointmentId, teamManager || mobileEdit
           ? { startsAt, endsAt, status, version: payload.version }
           : payload)
         : await createDocument("appointments", payload, appointmentId);
     } catch (error) {
-      if ((teamManager || outcomeOnly) && !definitiveWriteRejection(error)) {
+      if ((teamManager || mobileEdit) && !definitiveWriteRejection(error)) {
         throw new UnconfirmedMutation("The appointment change may have saved. Ask an administrator to reconcile it before retrying.");
       }
       throw error;
@@ -179,5 +182,5 @@ export async function saveAppointment(staff: Staff, form: FormData, teamRecordId
     else await complete;
     return record;
   });
-  return serialized(`lead:${leadId}`, () => teamManager ? withCurrentTeamManager(staff, save) : outcomeOnly ? serialized(staffAccessLock,save) : save());
+  return serialized(`lead:${leadId}`, () => teamManager ? withCurrentTeamManager(staff, save) : mobileEdit ? serialized(staffAccessLock,save) : save());
 }

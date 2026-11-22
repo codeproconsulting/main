@@ -1,41 +1,41 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-22-02",
+  "sessionId": "2026-11-22-03",
   "sessionStatus": "completed",
-  "activeFeature": "MOB-10",
-  "objective": "Native appointment list/detail and status/outcome updates through shared calendar rules.",
+  "activeFeature": "MOB-11",
+  "objective": "Reschedule booked appointments from the native staff calendar.",
   "scope": [
-    "Scoped appointment API and native panel",
-    "Status transitions, reasons and stale/uncertain recovery"
+    "Scoped versioned time changes through the existing calendar",
+    "Online native time and reason editor with reload recovery"
   ],
   "outOfScope": [
-    "Appointment creation/rescheduling, offline writes and deployment"
+    "New bookings, offline writes and production delivery"
   ],
   "acceptance": [
     {
-      "id": "MOB10-API",
-      "description": "Scope, version, reason/timing validation and preserved appointment details",
+      "id": "MOB11-API",
+      "description": "Validate times, reason, ownership, version, collisions and preserved metadata",
       "status": "passed",
-      "evidence": "Synthetic API tests passed anonymous/current-lead denial, metadata/private-note protection, reason/status/future-outcome rejection, stale versions and closed guards. Committed-write/lost-ack test exposes current status and rejects stale retry. Main typecheck/full tests/build passed, including existing web calendar regressions."
+      "evidence": "Synthetic API checks passed for timezone normalization, reversed or unchanged intervals, required reasons, conflicting and adjacent slots, stale versions, closed bookings, changed ownership, audit details and preserved metadata. All 192 main tests, typecheck and build passed."
     },
     {
-      "id": "MOB10-UI",
-      "description": "Local native component interaction and mobile checks",
+      "id": "MOB11-UI",
+      "description": "Exercise native reschedule form, transport and recovery",
       "status": "passed",
-      "evidence": "Mobile typecheck/lint/eleven tests/Android export passed. Chrome component interaction with DOM shims passed paging, required reason, clear-before-write, uncertain reload, closed guard and stale denial suppression after unmount. Device background/account-switch behavior remains unverified."
+      "evidence": "Mobile typecheck, lint, 11 tests and Android bundle export passed. Chrome exercised the native component with DOM controls, including prefill, disabled saves, successful move, lost reply and reload of the saved interval."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Build native appointment rescheduling through shared conflict/timezone rules, preserving metadata and requiring a reason. Keep new bookings and production delivery separate.",
+      "action": "Add native booking creation from an assigned enquiry. Reuse the calendar conflict checks and protect retries against duplicate appointments after a lost response.",
       "files": [
         "app/admin/operations.server.ts",
-        "app/admin/calendar.server.ts",
         "app/admin/mobile-api.ts",
         "tests/mobile-api.test.mjs",
-        "/Users/fidaali/Proconsulting-App/src/Appointments.tsx"
+        "/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx",
+        "/Users/fidaali/Proconsulting-App/src/mobile-api.ts"
       ]
     }
   ],
@@ -140,31 +140,32 @@
     "nativeFollowUpActions": "Implemented and locally committed in mobile 0090df8; no mobile remote, production API rollout, OTA or device acceptance. Existing tasks schema reused.",
     "nativeFollowUpCreation": "Shared web/native creation verified locally; mobile commit b57a0c8 has no remote. No provisioning, VPS rollout, OTA or physical-device acceptance. Synthetic built web preview stopped.",
     "nativeApplications": "Locally accepted API and component workflow; mobile checkpoint a5bd16c is local only. No VPS/OTA or physical-device acceptance.",
-    "nativeAppointments": "Locally accepted API and component workflow. Mobile commit 86fa4ef is local only (no remote). No VPS, OTA or device acceptance; existing schema reused."
+    "nativeAppointments": "Locally accepted API and component workflow. Mobile commit 86fa4ef is local only (no remote). No VPS, OTA or device acceptance; existing schema reused.",
+    "nativeRescheduling": "Mobile d773f7e local only, CRM changes locally verified. No remote for mobile, VPS deployment, OTA or physical-device acceptance."
   },
   "checks": [
     {
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-22T05:20:03.763Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-I4cMkH/typecheck.log"
+      "checkedAt": "2026-11-22T14:47:24.321Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-tgE1iv/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-22T05:20:11.082Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-I4cMkH/test.log"
+      "checkedAt": "2026-11-22T14:47:31.835Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-tgE1iv/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-22T05:20:16.721Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-I4cMkH/build.log"
+      "checkedAt": "2026-11-22T14:47:37.395Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-tgE1iv/build.log"
     }
   ],
-  "updatedAt": "2026-11-22T05:20:44.370Z",
-  "verifiedSourceFingerprint": "addbe25e4cfdd782efcde844ded67f0b83a947a6385037d4faf5444ef43d3efb"
+  "updatedAt": "2026-11-22T14:48:12.992Z",
+  "verifiedSourceFingerprint": "e18e2fb0174ff3f0b2ae2693d85fef41351f2778fd7c0e91defb16d215050050"
 }

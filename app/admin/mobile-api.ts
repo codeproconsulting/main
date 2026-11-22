@@ -195,10 +195,28 @@ export function action({ request, params }: ActionFunctionArgs) {
       if(!isJson(request))return reply({error:"Expected JSON."},415);
       const text=await(await boundedBody(request,16384,"Appointment")).text();
       const body=(()=>{try{return JSON.parse(text);}catch{return null;}})();
-      if(!body||!Number.isSafeInteger(body.version)||body.version<0||typeof body.status!=="string"||typeof body.reason!=="string")return reply({error:"Invalid appointment update."},400);
-      const current=await appointmentFor(staff,id),form=new FormData();
-      for(const [key,value] of Object.entries({id,leadId:current.leadId,version:String(body.version),status:body.status,reason:body.reason}))form.set(key,value);
-      return reply(mobileAppointment(await saveAppointment(staff,form,undefined,true)));
+      if (!body || !Number.isSafeInteger(body.version) || body.version < 0 || typeof body.reason !== "string") {
+        return reply({error:"Invalid appointment update."},400);
+      }
+      const reschedule = body.action === "reschedule";
+      const form = new FormData();
+      if (reschedule) {
+        if (typeof body.startsAt !== "string" || typeof body.endsAt !== "string" || body.status !== undefined) {
+          return reply({error:"Provide a start and end time for the reschedule."},400);
+        }
+        form.set("startsAt",body.startsAt);
+        form.set("endsAt",body.endsAt);
+        form.set("status","Booked");
+      } else {
+        if (body.action !== undefined || typeof body.status !== "string") return reply({error:"Invalid appointment outcome."},400);
+        form.set("status",body.status);
+      }
+      const current = await appointmentFor(staff,id);
+      form.set("id",id);
+      form.set("leadId",current.leadId);
+      form.set("version",String(body.version));
+      form.set("reason",body.reason);
+      return reply(mobileAppointment(await saveAppointment(staff,form,undefined,reschedule ? "reschedule" : "outcome")));
     }
     if (params.resource === "application") {
       if(request.method!=="PATCH")return reply({error:"Method not allowed."},405);

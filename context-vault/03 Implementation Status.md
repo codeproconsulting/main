@@ -385,3 +385,7 @@ MOB-09 local component acceptance passed paging, no-op guard, uncertain reload, 
 ## Native appointments — 22 November
 
 MOB-10 native appointment list/detail and Completed/Cancelled/No show are implemented locally. Synthetic API and client checks pass; component Chrome interaction with DOM shims passes paging, required reason, cache invalidation, uncertain reload, closed guard and unmounted denial suppression. Mobile typecheck/lint/eleven tests/Android export pass. Production, OTA and device checks remain unperformed.
+
+## Native appointment rescheduling — 22 November
+
+MOB-11 passed local API, component and Android export checks. Counsellors can change the time of a booked meeting and record a reason. Staff still create bookings on the web. See [[Sessions/2026-11-22-03]].

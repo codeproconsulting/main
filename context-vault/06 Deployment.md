@@ -347,3 +347,7 @@ Native application updates require current staff/case/lead authorization plus op
 ## Native appointments — 22 November
 
 MOB-10 needs GET appointments/appointment and PATCH appointment plus existing private appointment/lead/staff/activities/locks access. No schema provisioning. Verify all status/timing/scope boundaries before OTA. Unconfirmed outcome writes retain lead/staff-access/calendar locks; stop owning processes and reconcile before targeted lock removal. No VPS changes performed.
+
+## Native appointment rescheduling — 22 November
+
+Deploy the appointment PATCH handler before releasing the compatible mobile JS update. Verify a scoped move, a conflicting slot and the recorded reason on the release candidate. This feature reuses the existing private collections and routes. VPS rollout, OTA publication and handset acceptance are pending.

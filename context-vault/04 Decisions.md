@@ -323,3 +323,7 @@ Application progress refreshes current staff inside the staff-access lock; uncon
 ## Native appointments — 22 November
 
 Preserve private appointment notes and existing metadata by applying native outcomes within the shared calendar mutation. Native cannot create, reschedule, reopen or alter the title/location. Cancellation/no-show require a reason; completion/no-show remain blocked before start. Uncertain writes retain locks for operator reconciliation and native requires reload.
+
+## Native appointment rescheduling — 22 November
+
+An explicit reschedule action accepts only an existing booking, a changed interval and a reason. Older clients can keep sending their existing outcome requests. After a stale version or uncertain write the native form requires a fresh appointment read.

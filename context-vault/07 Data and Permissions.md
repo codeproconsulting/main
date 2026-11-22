@@ -267,3 +267,7 @@ Native case projections omit notes and owner metadata. Counselors require both t
 ## Native appointments — 22 November
 
 Mobile appointment projections include ID, lead ID, title, times, status, location and version; notes and owner metadata are excluded. Counselors need current appointment and lead ownership. Only version/status/reason can cross the mutation boundary, and actor access is refreshed under the staff-access lock. Restricted managers stay in their web team workspace.
+
+## Native appointment rescheduling — 22 November
+
+Rescheduling accepts the current version, new start, new end and reason. Lead and assignee are derived from the stored booking. After checking scope and version under locks, the native update writes times, booked status and version. The audit records the reason and normalized interval. Private notes remain outside the mobile response.

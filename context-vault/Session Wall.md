@@ -3,40 +3,40 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-22-02]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-22-03]].
 
 ## Resume here
 
-**Session:** 2026-11-22-02
+**Session:** 2026-11-22-03
 
-**Active feature:** MOB-10
+**Active feature:** MOB-11
 
 **State:** completed
 
-**Objective:** Native appointment list/detail and status/outcome updates through shared calendar rules.
+**Objective:** Reschedule booked appointments from the native staff calendar.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Scoped appointment API and native panel
-- Status transitions, reasons and stale/uncertain recovery
+- Scoped versioned time changes through the existing calendar
+- Online native time and reason editor with reload recovery
 
 ## Out of scope
 
-- Appointment creation/rescheduling, offline writes and deployment
+- New bookings, offline writes and production delivery
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| MOB10-API | Scope, version, reason/timing validation and preserved appointment details | passed | Synthetic API tests passed anonymous/current-lead denial, metadata/private-note protection, reason/status/future-outcome rejection, stale versions and closed guards. Committed-write/lost-ack test exposes current status and rejects stale retry. Main typecheck/full tests/build passed, including existing web calendar regressions. |
-| MOB10-UI | Local native component interaction and mobile checks | passed | Mobile typecheck/lint/eleven tests/Android export passed. Chrome component interaction with DOM shims passed paging, required reason, clear-before-write, uncertain reload, closed guard and stale denial suppression after unmount. Device background/account-switch behavior remains unverified. |
+| MOB11-API | Validate times, reason, ownership, version, collisions and preserved metadata | passed | Synthetic API checks passed for timezone normalization, reversed or unchanged intervals, required reasons, conflicting and adjacent slots, stale versions, closed bookings, changed ownership, audit details and preserved metadata. All 192 main tests, typecheck and build passed. |
+| MOB11-UI | Exercise native reschedule form, transport and recovery | passed | Mobile typecheck, lint, 11 tests and Android bundle export passed. Chrome exercised the native component with DOM controls, including prefill, disabled saves, successful move, lost reply and reload of the saved interval. |
 
 ## Exact next actions
 
-1. Build native appointment rescheduling through shared conflict/timezone rules, preserving metadata and requiring a reason. Keep new bookings and production delivery separate.
-   Files: `app/admin/operations.server.ts`, `app/admin/calendar.server.ts`, `app/admin/mobile-api.ts`, `tests/mobile-api.test.mjs`, `/Users/fidaali/Proconsulting-App/src/Appointments.tsx`
+1. Add native booking creation from an assigned enquiry. Reuse the calendar conflict checks and protect retries against duplicate appointments after a lost response.
+   Files: `app/admin/operations.server.ts`, `app/admin/mobile-api.ts`, `tests/mobile-api.test.mjs`, `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`, `/Users/fidaali/Proconsulting-App/src/mobile-api.ts`
 
 ## Known risks and unfinished work
 
@@ -60,9 +60,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-22T05:20:03.763Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-I4cMkH/typecheck.log`
-- **passed**: `npm run test` (2026-11-22T05:20:11.082Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-I4cMkH/test.log`
-- **passed**: `npm run build` (2026-11-22T05:20:16.721Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-I4cMkH/build.log`
+- **passed**: `npm run typecheck` (2026-11-22T14:47:24.321Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-tgE1iv/typecheck.log`
+- **passed**: `npm run test` (2026-11-22T14:47:31.835Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-tgE1iv/test.log`
+- **passed**: `npm run build` (2026-11-22T14:47:37.395Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-tgE1iv/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -150,5 +150,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **nativeFollowUpCreation**: Shared web/native creation verified locally; mobile commit b57a0c8 has no remote. No provisioning, VPS rollout, OTA or physical-device acceptance. Synthetic built web preview stopped.
 - **nativeApplications**: Locally accepted API and component workflow; mobile checkpoint a5bd16c is local only. No VPS/OTA or physical-device acceptance.
 - **nativeAppointments**: Locally accepted API and component workflow. Mobile commit 86fa4ef is local only (no remote). No VPS, OTA or device acceptance; existing schema reused.
+- **nativeRescheduling**: Mobile d773f7e local only, CRM changes locally verified. No remote for mobile, VPS deployment, OTA or physical-device acceptance.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

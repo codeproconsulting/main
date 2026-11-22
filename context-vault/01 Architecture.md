@@ -293,3 +293,7 @@ Native applications use existing cases storage with scoped list/detail and a lim
 ## Native appointments — 22 November
 
 Native appointment tracking exposes existing scoped appointment records through list/detail resources. Outcome PATCH reuses saveAppointment in an outcome-only path, preserving current times/title/location/notes under lead, staff-access and calendar locks. Existing web scheduling callers retain their behavior.
+
+## Native appointment rescheduling — 22 November
+
+The native appointment PATCH accepts an explicit reschedule action. Both clients use the same calendar lock, timezone parser, overlap check and audit workflow. The API rechecks staff and lead access before writing the new interval.

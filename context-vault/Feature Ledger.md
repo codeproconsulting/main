@@ -46,3 +46,7 @@ See [[Sessions/2026-10-29-02]], [[03 Implementation Status]], and the full plan 
 MOB-09 native applications: API and local component acceptance passed. Mobile checks and full main checks passed. Physical-device, VPS and OTA acceptance remain pending. Resume [[Session Wall]].
 
 MOB-10 native appointments: scoped list/detail and versioned outcomes implemented locally. API/client/component checks passed; full-check evidence in [[Session Wall]]. Appointment creation/rescheduling, device and production acceptance remain separate.
+
+## Native appointment rescheduling — 22 November
+
+MOB-11 completed local acceptance for native appointment rescheduling. Release and physical-device checks remain pending. Evidence in [[Sessions/2026-11-22-03]].

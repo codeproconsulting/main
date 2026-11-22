@@ -38,3 +38,7 @@ MOB-08 adds follow-up creation on native and makes the shared web path retry-saf
 ## Native appointments — 22 November
 
 MOB-10 adds native appointment tracking/outcomes. Creation and rescheduling still use web. Device/server delivery is separate from local acceptance; resume the next bounded action in [[Session Wall]].
+
+## Native appointment rescheduling — 22 November
+
+MOB-11 completed local acceptance for native rescheduling. Next is online native booking creation from an assigned enquiry with duplicate prevention on retry. See [[Session Wall]].

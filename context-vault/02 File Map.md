@@ -345,3 +345,7 @@ operations.server.ts adds caseFor/updateCaseProgress; mobile-api.ts exposes appl
 ## Native appointments — 22 November
 
 operations.server.ts adds appointmentFor and the outcome-only save path; mobile-api.ts exposes appointments/appointment. tests/mobile-api.test.mjs covers scope/status/timing/version and lost acknowledgements. Separate mobile checkout adds src/Appointments.tsx and tests/appointments-api.test.mjs.
+
+## Native appointment rescheduling — 22 November
+
+The appointment handler in `app/admin/mobile-api.ts` selects the mutation mode in `app/admin/operations.server.ts`. Calendar and access regressions run in `tests/mobile-api.test.mjs`. The separate mobile checkout implements the form in `src/Appointments.tsx` and its transport in `src/mobile-api.ts`.
