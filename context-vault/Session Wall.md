@@ -11,11 +11,11 @@ Generated from `session-state.json` by `npm run session:status`. Edit that struc
 
 **Active feature:** MOB-09
 
-**State:** in_progress
+**State:** completed
 
 **Objective:** Native application list/detail and scoped stage/deadline editing.
 
-A user saying **continue** means resume this feature's next unfinished acceptance check. Do not start unrelated modules or repeat completed infrastructure work. Verify current files and drift before trusting the checkpoint.
+This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
@@ -29,13 +29,13 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| MOB09-API | Scoped reads and versioned progress preserve other details | passed | Synthetic API tests pass anonymous/current-lead denial, safe projection, invalid stage, timezone normalization, stale version and preservation of notes. |
-| MOB09-UI | Native device/component interaction acceptance | pending | Native panel implemented; automated interaction and physical-device acceptance not yet performed. |
+| MOB09-API | Scoped reads and versioned progress preserve other details | passed | Synthetic API tests pass anonymous/current-lead denial, safe projection, invalid stage, timezone normalization, stale version and preservation of notes. Lost-write acknowledgement test confirms current version and stale retry rejection. Current actor refreshed inside staff-access lock; uncertain writes retain locks. Full main checks pass. |
+| MOB09-UI | Local native component interaction acceptance; physical-device rollout separate | passed | Chrome component check using DOM shims passed paging, unchanged-save guard, uncertain reload, clear-before-write, deadline clearing, denial cleanup and late-denial suppression after unmount. Background hiding preserves component state by implementation; real-device background behavior remains unverified. Mobile typecheck/lint/ten tests/Android export pass. |
 
 ## Exact next actions
 
-1. Verify native application panel interactions, stale/uncertain reload, background draft retention and account-switch cleanup before closing MOB-09.
-   Files: `/Users/fidaali/Proconsulting-App/src/Applications.tsx`, `app/admin/operations.server.ts`, `tests/mobile-api.test.mjs`
+1. Build native appointment tracking with scoped list/detail and versioned outcome/status changes using existing calendar service. Keep appointment creation and production delivery separate.
+   Files: `app/admin/calendar.server.ts`, `app/admin/operations.server.ts`, `app/admin/mobile-api.ts`, `tests/mobile-api.test.mjs`, `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`
 
 ## Known risks and unfinished work
 
@@ -59,9 +59,9 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-22T04:51:13.278Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-JKUpvF/typecheck.log`
-- **passed**: `npm run test` (2026-11-22T04:51:20.754Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-JKUpvF/test.log`
-- **passed**: `npm run build` (2026-11-22T04:51:26.803Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-JKUpvF/build.log`
+- **passed**: `npm run typecheck` (2026-11-22T04:56:36.233Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ZhAZhV/typecheck.log`
+- **passed**: `npm run test` (2026-11-22T04:56:43.939Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ZhAZhV/test.log`
+- **passed**: `npm run build` (2026-11-22T04:56:49.677Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ZhAZhV/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -147,5 +147,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **nativeConsultationReports**: Implemented locally and committed in mobile 345623b; no mobile Git remote, VPS rollout, OTA publication or physical-device acceptance.
 - **nativeFollowUpActions**: Implemented and locally committed in mobile 0090df8; no mobile remote, production API rollout, OTA or device acceptance. Existing tasks schema reused.
 - **nativeFollowUpCreation**: Shared web/native creation verified locally; mobile commit b57a0c8 has no remote. No provisioning, VPS rollout, OTA or physical-device acceptance. Synthetic built web preview stopped.
+- **nativeApplications**: Locally accepted API and component workflow; mobile checkpoint a5bd16c is local only. No VPS/OTA or physical-device acceptance.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

@@ -377,3 +377,7 @@ MOB-08 shared creation and native panel implemented locally. Service tests passe
 ## Native applications — 22 November
 
 MOB-09 API synthetic acceptance passed; native panel is implemented but interaction/device acceptance remains pending. No deployment.
+
+## Application acceptance follow-up
+
+MOB-09 local component acceptance passed paging, no-op guard, uncertain reload, deadline clearing, clear-before-write, denial cleanup and late-denial suppression after unmount. Background now hides rather than unmounts the panel. Real-device, VPS and OTA acceptance remain pending.

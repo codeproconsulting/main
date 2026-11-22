@@ -43,4 +43,4 @@ A feature closes only after its explicit acceptance checks pass, failures and pe
 
 See [[Sessions/2026-10-29-02]], [[03 Implementation Status]], and the full plan at `docs/CRM-CMS-APPWRITE-IMPLEMENTATION-PLAN.md`.
 
-MOB-09 native applications: API tested; native panel implemented, interaction/device acceptance pending. Resume [[Session Wall]].
+MOB-09 native applications: API and local component acceptance passed. Mobile checks and full main checks passed. Physical-device, VPS and OTA acceptance remain pending. Resume [[Session Wall]].

@@ -339,3 +339,7 @@ MOB-08 needs updated web lead forms, lead API form context and POST follow-ups. 
 ## Native applications — 22 November
 
 Application API uses existing cases/activities/locks. No schema provisioned or VPS/OTA release performed. Accept scope/conflicts and native interaction before delivery.
+
+## Application acceptance follow-up
+
+Native application updates require current staff/case/lead authorization plus optimistic versions. Unconfirmed writes retain lead/staff-access locks; reconcile after stopping owning processes before targeted removal. Existing cases/activities/locks suffice. No deployment performed.

@@ -315,3 +315,7 @@ Require a UUID submission ID for all new web/native follow-up forms; old already
 ## Native applications — 22 November
 
 Limit native case edits to stage/deadline and current version. Preserve institution/course/notes. Keep creation and offline mutation separate.
+
+## Application acceptance follow-up
+
+Application progress refreshes current staff inside the staff-access lock; unconfirmed writes retain locks for operator reconciliation. Native stale responses cannot invoke access callbacks after unmount. Hide the backgrounded panel without discarding drafts.

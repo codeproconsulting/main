@@ -25,6 +25,7 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
   const consultations = [];
   let lostConsultationAck = false;
   let lostTaskAck = false;
+  let lostCaseAck = false;
   const leads = [
     { $id: "owned", owner: "staff", name: "Synthetic lead", email: "fixture@example.invalid", stage: "New", priority: "Normal", nextFollowUp: "2027-01-01T10:00:00.000Z", version: 1 },
     { $id: "foreign", owner: "other", name: "Other lead" },
@@ -106,6 +107,7 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
       if (!row) return Response.json({}, { status: 404 });
       if (options.method === "PATCH") {
         Object.assign(row, JSON.parse(options.body).data);
+        if (match[1] === "cases" && lostCaseAck) throw Error("synthetic lost case acknowledgement");
         if (match[1] === "tasks" && lostTaskAck) throw Error("synthetic lost task acknowledgement");
       }
       return Response.json(row);
@@ -355,6 +357,9 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
     assert.equal((await patchCase({version:1,stage:detail.stages[1],deadline:"2026-12-01T10:00:00+05:00",notes:"overwrite"})).status,200);
     assert.equal(cases[0].notes,"private");assert.equal(cases[0].deadline,"2026-12-01T05:00:00.000Z");
     assert.equal((await patchCase({version:1,stage:detail.stages[0],deadline:""})).status,409);
+    lostCaseAck=true;assert.equal((await patchCase({version:2,stage:detail.stages[0],deadline:""})).status,503);lostCaseAck=false;
+    assert.equal((await(await send("application?id=case",auth)).json()).version,3);
+    assert.equal((await patchCase({version:2,stage:detail.stages[1],deadline:""})).status,409);
     leads[0].owner="other";assert.equal((await send("application?id=case",auth)).status,403);leads[0].owner="staff";
     active = false;
     assert.equal((await send("follow-up?id=task",auth)).status,403);

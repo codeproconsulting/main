@@ -1,7 +1,7 @@
 import {randomUUID} from "node:crypto";
 import {AppwriteError,createDocument,getDocument,listDocuments,query,updateDocument} from "~/lib/appwrite.server";
 import {caseStagesFor,canManage,canUseCRM,isRestrictedManager,type Staff} from "./domain";
-import {allow,audit,dateField,definitiveWriteRejection,field,leadFor,writableEnquiry,scopedQueue,serialized,UnconfirmedMutation,withCurrentTeamManager} from "./crm.server";
+import {allow,audit,dateField,definitiveWriteRejection,field,leadFor,writableEnquiry,scopedQueue,staffAccessLock,serialized,UnconfirmedMutation,withCurrentTeamManager} from "./crm.server";
 export type CaseRecord={$id:string;leadId:string;owner:string;kind:string;institution:string;course:string;country:string;intake:string;stage:string;deadline:string;notes:string;version:number};
 import {appointmentCalendarLock,appointmentTime,assertCalendarAvailable,type Appointment} from "./calendar.server";
 export type {Appointment} from "./calendar.server";
@@ -21,18 +21,23 @@ export async function caseFor(staff: Staff, id: string) {
 }
 export async function updateCaseProgress(staff: Staff,id: string,form: FormData){
  const initial=await caseFor(staff,id);
- return serialized(`lead:${initial.leadId}`,async()=>{
-  const current=await caseFor(staff,id);
-  const lead=await writableEnquiry(staff,current.leadId);
+ return serialized(`lead:${initial.leadId}`,()=>serialized(staffAccessLock,async()=>{
+  const actor=await getDocument<Staff>("staff",staff.$id);
+  allow(actor.active&&canUseCRM(actor)&&!actor.revocationPending&&!isRestrictedManager(actor));
+  const current=await caseFor(actor,id);
+  const lead=await writableEnquiry(actor,current.leadId);
   if(current.leadId!==initial.leadId||current.owner!==lead.owner||Number(field(form,"version"))!==current.version)throw new Response("Application changed or assignment needs reconciliation. Reload before saving.",{status:409});
   const stage=field(form,"stage",80),deadline=dateField(field(form,"deadline",40));
   if(!caseStagesFor(current.kind).includes(stage))throw new Response("Invalid application stage",{status:400});
   const changes={stage,deadline,version:current.version+1};
-  const event=await audit(staff,current.leadId,"lead","Application save requested",{state:"pending",caseId:id,before:{stage:current.stage,deadline:current.deadline,version:current.version},after:changes});
-  const updated=await updateDocument<CaseRecord>("cases",id,changes);
+  const event=await audit(actor,current.leadId,"lead","Application save requested",{state:"pending",caseId:id,before:{stage:current.stage,deadline:current.deadline,version:current.version},after:changes});
+  const updated=await updateDocument<CaseRecord>("cases",id,changes).catch(error=>{
+   if(definitiveWriteRejection(error))throw error;
+   throw new UnconfirmedMutation("Application update is uncertain. An administrator must reconcile it before releasing its locks.");
+  });
   await updateDocument("activities",event.$id,{event:"Application updated",details:JSON.stringify({state:"completed",caseId:id,...changes})});
   return updated;
- });
+ }));
 }
 export async function saveCase(staff:Staff,form:FormData){const id=field(form,"id",36),leadId=field(form,"leadId",36);return serialized(`lead:${leadId}`,async()=>{
  const lead=await writableEnquiry(staff,leadId);
