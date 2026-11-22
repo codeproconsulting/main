@@ -1,4 +1,4 @@
-import { caseFor, updateCaseProgress, scopedRecords, type CaseRecord } from "./operations.server";
+import { appointmentFor, saveAppointment, type Appointment, caseFor, updateCaseProgress, scopedRecords, type CaseRecord } from "./operations.server";
 import { createCipheriv, createDecipheriv, randomBytes, randomUUID, scryptSync } from "node:crypto";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { appwrite, AppwriteError, configurationIssues } from "~/lib/appwrite.server";
@@ -106,6 +106,11 @@ function mobileLeads({ documents, total }: Awaited<ReturnType<typeof leadsFor>>)
   };
 }
 
+function mobileAppointment(record: Appointment){
+ const {$id:id,leadId,title,startsAt,endsAt,status,location,version}=record;
+ return {id,leadId,title,startsAt,endsAt,status,location,version};
+}
+
 function mobileCase(record: CaseRecord) {
  const {$id:id,leadId,kind,institution,course,country,intake,stage,deadline,version}=record;
  return {id,leadId,kind,institution,course,country,intake,stage,deadline,version,stages:caseStagesFor(kind)};
@@ -113,6 +118,12 @@ function mobileCase(record: CaseRecord) {
 
 export function loader({ request, params }: LoaderFunctionArgs) {
   return mobileRequest(request, async () => {
+    if(params.resource === "appointments"){
+      const page=queuePage(new URL(request.url).searchParams.get("page"));
+      const {records,hasMore}=await scopedRecords<Appointment>(await mobileStaff(request),"appointments",page);
+      return reply({page,hasMore,appointments:records.map(mobileAppointment)});
+    }
+    if(params.resource === "appointment")return reply(mobileAppointment(await appointmentFor(await mobileStaff(request),recordId(request,"appointment"))));
     if (params.resource === "applications") {
       const page=queuePage(new URL(request.url).searchParams.get("page"));
       const {records,hasMore}=await scopedRecords<CaseRecord>(await mobileStaff(request),"cases",page);
@@ -178,6 +189,17 @@ export function loader({ request, params }: LoaderFunctionArgs) {
 
 export function action({ request, params }: ActionFunctionArgs) {
   return mobileRequest(request, async () => {
+    if(params.resource === "appointment"){
+      if(request.method!=="PATCH")return reply({error:"Method not allowed."},405);
+      const staff=await mobileStaff(request),id=recordId(request,"appointment");
+      if(!isJson(request))return reply({error:"Expected JSON."},415);
+      const text=await(await boundedBody(request,16384,"Appointment")).text();
+      const body=(()=>{try{return JSON.parse(text);}catch{return null;}})();
+      if(!body||!Number.isSafeInteger(body.version)||body.version<0||typeof body.status!=="string"||typeof body.reason!=="string")return reply({error:"Invalid appointment update."},400);
+      const current=await appointmentFor(staff,id),form=new FormData();
+      for(const [key,value] of Object.entries({id,leadId:current.leadId,version:String(body.version),status:body.status,reason:body.reason}))form.set(key,value);
+      return reply(mobileAppointment(await saveAppointment(staff,form,undefined,true)));
+    }
     if (params.resource === "application") {
       if(request.method!=="PATCH")return reply({error:"Method not allowed."},405);
       const staff=await mobileStaff(request),id=recordId(request,"application");

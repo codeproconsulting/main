@@ -381,3 +381,7 @@ MOB-09 API synthetic acceptance passed; native panel is implemented but interact
 ## Application acceptance follow-up
 
 MOB-09 local component acceptance passed paging, no-op guard, uncertain reload, deadline clearing, clear-before-write, denial cleanup and late-denial suppression after unmount. Background now hides rather than unmounts the panel. Real-device, VPS and OTA acceptance remain pending.
+
+## Native appointments — 22 November
+
+MOB-10 native appointment list/detail and Completed/Cancelled/No show are implemented locally. Synthetic API and client checks pass; component Chrome interaction with DOM shims passes paging, required reason, cache invalidation, uncertain reload, closed guard and unmounted denial suppression. Mobile typecheck/lint/eleven tests/Android export pass. Production, OTA and device checks remain unperformed.

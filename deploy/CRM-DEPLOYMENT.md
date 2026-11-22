@@ -397,3 +397,9 @@ Unconfirmed task writes retain locks; stop the owning processes, inspect origina
 ### Native application progress
 
 Accept paginated application reads and versioned stage/deadline PATCH updates; confirm other details/notes stay unchanged and counselors cannot access reassigned leads. Verify invalid stage/timezone, stale versions and reload after lost acknowledgements. Unconfirmed writes retain lead/staff-access locks for operator reconciliation. On a real device check hidden background drafts, session expiry and account switching before OTA. No new schema or native module is required; local component checks do not establish production/device acceptance.
+
+### Native appointment outcome acceptance
+
+GET `/admin/mobile/v1/appointments?page=...` and GET/PATCH `/admin/mobile/v1/appointment?id=...` use existing private collections; no schema changes. Accept anonymous denial, counselor current lead/appointment scope, stale versions, cancellation/no-show reasons, and rejection of completion/no-show before start. Confirm title, times, location and notes survive the update unchanged and are not writable through this API. Private notes are not returned. Closed appointments cannot be reopened here; creation/rescheduling remain on web.
+
+Simulate lost acknowledgement, reload the latest status/version and reconcile pending audit intent. An unconfirmed write retains lead/staff-access/calendar locks: stop owning processes and inspect in-flight writes before targeted removal. Native clears saved workspace before writes and keeps this panel out of offline snapshots. Verify real-device background, expiry and account-switch behavior before OTA. No production or mobile delivery is implied by local tests.

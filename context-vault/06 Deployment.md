@@ -343,3 +343,7 @@ Application API uses existing cases/activities/locks. No schema provisioned or V
 ## Application acceptance follow-up
 
 Native application updates require current staff/case/lead authorization plus optimistic versions. Unconfirmed writes retain lead/staff-access locks; reconcile after stopping owning processes before targeted removal. Existing cases/activities/locks suffice. No deployment performed.
+
+## Native appointments — 22 November
+
+MOB-10 needs GET appointments/appointment and PATCH appointment plus existing private appointment/lead/staff/activities/locks access. No schema provisioning. Verify all status/timing/scope boundaries before OTA. Unconfirmed outcome writes retain lead/staff-access/calendar locks; stop owning processes and reconcile before targeted lock removal. No VPS changes performed.

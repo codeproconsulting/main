@@ -341,3 +341,7 @@ Receipt attachment downloads use the dedicated resource route `app/admin/expense
 ## Native applications — 22 November
 
 operations.server.ts adds caseFor/updateCaseProgress; mobile-api.ts exposes applications/application. Separate mobile checkout adds src/Applications.tsx.
+
+## Native appointments — 22 November
+
+operations.server.ts adds appointmentFor and the outcome-only save path; mobile-api.ts exposes appointments/appointment. tests/mobile-api.test.mjs covers scope/status/timing/version and lost acknowledgements. Separate mobile checkout adds src/Appointments.tsx and tests/appointments-api.test.mjs.

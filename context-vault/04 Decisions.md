@@ -319,3 +319,7 @@ Limit native case edits to stage/deadline and current version. Preserve institut
 ## Application acceptance follow-up
 
 Application progress refreshes current staff inside the staff-access lock; unconfirmed writes retain locks for operator reconciliation. Native stale responses cannot invoke access callbacks after unmount. Hide the backgrounded panel without discarding drafts.
+
+## Native appointments — 22 November
+
+Preserve private appointment notes and existing metadata by applying native outcomes within the shared calendar mutation. Native cannot create, reschedule, reopen or alter the title/location. Cancellation/no-show require a reason; completion/no-show remain blocked before start. Uncertain writes retain locks for operator reconciliation and native requires reload.

@@ -3,39 +3,40 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-22-01]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-22-02]].
 
 ## Resume here
 
-**Session:** 2026-11-22-01
+**Session:** 2026-11-22-02
 
-**Active feature:** MOB-09
+**Active feature:** MOB-10
 
 **State:** completed
 
-**Objective:** Native application list/detail and scoped stage/deadline editing.
+**Objective:** Native appointment list/detail and status/outcome updates through shared calendar rules.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Shared application progress API and native panel
+- Scoped appointment API and native panel
+- Status transitions, reasons and stale/uncertain recovery
 
 ## Out of scope
 
-- Application creation, offline edits and production rollout
+- Appointment creation/rescheduling, offline writes and deployment
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| MOB09-API | Scoped reads and versioned progress preserve other details | passed | Synthetic API tests pass anonymous/current-lead denial, safe projection, invalid stage, timezone normalization, stale version and preservation of notes. Lost-write acknowledgement test confirms current version and stale retry rejection. Current actor refreshed inside staff-access lock; uncertain writes retain locks. Full main checks pass. |
-| MOB09-UI | Local native component interaction acceptance; physical-device rollout separate | passed | Chrome component check using DOM shims passed paging, unchanged-save guard, uncertain reload, clear-before-write, deadline clearing, denial cleanup and late-denial suppression after unmount. Background hiding preserves component state by implementation; real-device background behavior remains unverified. Mobile typecheck/lint/ten tests/Android export pass. |
+| MOB10-API | Scope, version, reason/timing validation and preserved appointment details | passed | Synthetic API tests passed anonymous/current-lead denial, metadata/private-note protection, reason/status/future-outcome rejection, stale versions and closed guards. Committed-write/lost-ack test exposes current status and rejects stale retry. Main typecheck/full tests/build passed, including existing web calendar regressions. |
+| MOB10-UI | Local native component interaction and mobile checks | passed | Mobile typecheck/lint/eleven tests/Android export passed. Chrome component interaction with DOM shims passed paging, required reason, clear-before-write, uncertain reload, closed guard and stale denial suppression after unmount. Device background/account-switch behavior remains unverified. |
 
 ## Exact next actions
 
-1. Build native appointment tracking with scoped list/detail and versioned outcome/status changes using existing calendar service. Keep appointment creation and production delivery separate.
-   Files: `app/admin/calendar.server.ts`, `app/admin/operations.server.ts`, `app/admin/mobile-api.ts`, `tests/mobile-api.test.mjs`, `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`
+1. Build native appointment rescheduling through shared conflict/timezone rules, preserving metadata and requiring a reason. Keep new bookings and production delivery separate.
+   Files: `app/admin/operations.server.ts`, `app/admin/calendar.server.ts`, `app/admin/mobile-api.ts`, `tests/mobile-api.test.mjs`, `/Users/fidaali/Proconsulting-App/src/Appointments.tsx`
 
 ## Known risks and unfinished work
 
@@ -59,9 +60,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-22T04:56:36.233Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ZhAZhV/typecheck.log`
-- **passed**: `npm run test` (2026-11-22T04:56:43.939Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ZhAZhV/test.log`
-- **passed**: `npm run build` (2026-11-22T04:56:49.677Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ZhAZhV/build.log`
+- **passed**: `npm run typecheck` (2026-11-22T05:20:03.763Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-I4cMkH/typecheck.log`
+- **passed**: `npm run test` (2026-11-22T05:20:11.082Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-I4cMkH/test.log`
+- **passed**: `npm run build` (2026-11-22T05:20:16.721Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-I4cMkH/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -148,5 +149,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **nativeFollowUpActions**: Implemented and locally committed in mobile 0090df8; no mobile remote, production API rollout, OTA or device acceptance. Existing tasks schema reused.
 - **nativeFollowUpCreation**: Shared web/native creation verified locally; mobile commit b57a0c8 has no remote. No provisioning, VPS rollout, OTA or physical-device acceptance. Synthetic built web preview stopped.
 - **nativeApplications**: Locally accepted API and component workflow; mobile checkpoint a5bd16c is local only. No VPS/OTA or physical-device acceptance.
+- **nativeAppointments**: Locally accepted API and component workflow. Mobile commit 86fa4ef is local only (no remote). No VPS, OTA or device acceptance; existing schema reused.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

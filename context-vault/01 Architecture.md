@@ -289,3 +289,7 @@ Shared createTask now uses actor/lead/form-derived task and audit IDs under lead
 ## Native applications — 22 November
 
 Native applications use existing cases storage with scoped list/detail and a limited progress update preserving other fields.
+
+## Native appointments — 22 November
+
+Native appointment tracking exposes existing scoped appointment records through list/detail resources. Outcome PATCH reuses saveAppointment in an outcome-only path, preserving current times/title/location/notes under lead, staff-access and calendar locks. Existing web scheduling callers retain their behavior.

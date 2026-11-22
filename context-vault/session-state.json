@@ -1,40 +1,41 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-22-01",
+  "sessionId": "2026-11-22-02",
   "sessionStatus": "completed",
-  "activeFeature": "MOB-09",
-  "objective": "Native application list/detail and scoped stage/deadline editing.",
+  "activeFeature": "MOB-10",
+  "objective": "Native appointment list/detail and status/outcome updates through shared calendar rules.",
   "scope": [
-    "Shared application progress API and native panel"
+    "Scoped appointment API and native panel",
+    "Status transitions, reasons and stale/uncertain recovery"
   ],
   "outOfScope": [
-    "Application creation, offline edits and production rollout"
+    "Appointment creation/rescheduling, offline writes and deployment"
   ],
   "acceptance": [
     {
-      "id": "MOB09-API",
-      "description": "Scoped reads and versioned progress preserve other details",
+      "id": "MOB10-API",
+      "description": "Scope, version, reason/timing validation and preserved appointment details",
       "status": "passed",
-      "evidence": "Synthetic API tests pass anonymous/current-lead denial, safe projection, invalid stage, timezone normalization, stale version and preservation of notes. Lost-write acknowledgement test confirms current version and stale retry rejection. Current actor refreshed inside staff-access lock; uncertain writes retain locks. Full main checks pass."
+      "evidence": "Synthetic API tests passed anonymous/current-lead denial, metadata/private-note protection, reason/status/future-outcome rejection, stale versions and closed guards. Committed-write/lost-ack test exposes current status and rejects stale retry. Main typecheck/full tests/build passed, including existing web calendar regressions."
     },
     {
-      "id": "MOB09-UI",
-      "description": "Local native component interaction acceptance; physical-device rollout separate",
+      "id": "MOB10-UI",
+      "description": "Local native component interaction and mobile checks",
       "status": "passed",
-      "evidence": "Chrome component check using DOM shims passed paging, unchanged-save guard, uncertain reload, clear-before-write, deadline clearing, denial cleanup and late-denial suppression after unmount. Background hiding preserves component state by implementation; real-device background behavior remains unverified. Mobile typecheck/lint/ten tests/Android export pass."
+      "evidence": "Mobile typecheck/lint/eleven tests/Android export passed. Chrome component interaction with DOM shims passed paging, required reason, clear-before-write, uncertain reload, closed guard and stale denial suppression after unmount. Device background/account-switch behavior remains unverified."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Build native appointment tracking with scoped list/detail and versioned outcome/status changes using existing calendar service. Keep appointment creation and production delivery separate.",
+      "action": "Build native appointment rescheduling through shared conflict/timezone rules, preserving metadata and requiring a reason. Keep new bookings and production delivery separate.",
       "files": [
-        "app/admin/calendar.server.ts",
         "app/admin/operations.server.ts",
+        "app/admin/calendar.server.ts",
         "app/admin/mobile-api.ts",
         "tests/mobile-api.test.mjs",
-        "/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx"
+        "/Users/fidaali/Proconsulting-App/src/Appointments.tsx"
       ]
     }
   ],
@@ -138,31 +139,32 @@
     "nativeConsultationReports": "Implemented locally and committed in mobile 345623b; no mobile Git remote, VPS rollout, OTA publication or physical-device acceptance.",
     "nativeFollowUpActions": "Implemented and locally committed in mobile 0090df8; no mobile remote, production API rollout, OTA or device acceptance. Existing tasks schema reused.",
     "nativeFollowUpCreation": "Shared web/native creation verified locally; mobile commit b57a0c8 has no remote. No provisioning, VPS rollout, OTA or physical-device acceptance. Synthetic built web preview stopped.",
-    "nativeApplications": "Locally accepted API and component workflow; mobile checkpoint a5bd16c is local only. No VPS/OTA or physical-device acceptance."
+    "nativeApplications": "Locally accepted API and component workflow; mobile checkpoint a5bd16c is local only. No VPS/OTA or physical-device acceptance.",
+    "nativeAppointments": "Locally accepted API and component workflow. Mobile commit 86fa4ef is local only (no remote). No VPS, OTA or device acceptance; existing schema reused."
   },
   "checks": [
     {
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-22T04:56:36.233Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ZhAZhV/typecheck.log"
+      "checkedAt": "2026-11-22T05:20:03.763Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-I4cMkH/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-22T04:56:43.939Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ZhAZhV/test.log"
+      "checkedAt": "2026-11-22T05:20:11.082Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-I4cMkH/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-22T04:56:49.677Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ZhAZhV/build.log"
+      "checkedAt": "2026-11-22T05:20:16.721Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-I4cMkH/build.log"
     }
   ],
-  "updatedAt": "2026-11-22T04:57:15.457Z",
-  "verifiedSourceFingerprint": "20a956c3ae0c9af9d9d9ead5bf3de3e8eacbe1d7629063b58bf4263c7e26f4c6"
+  "updatedAt": "2026-11-22T05:20:44.370Z",
+  "verifiedSourceFingerprint": "addbe25e4cfdd782efcde844ded67f0b83a947a6385037d4faf5444ef43d3efb"
 }

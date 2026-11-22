@@ -263,3 +263,7 @@ Creation refreshes actor and active assignee under staff-access/lead locks and a
 ## Native applications — 22 November
 
 Native case projections omit notes and owner metadata. Counselors require both task-record and current lead ownership. Progress updates reject ownership mismatch and stale versions.
+
+## Native appointments — 22 November
+
+Mobile appointment projections include ID, lead ID, title, times, status, location and version; notes and owner metadata are excluded. Counselors need current appointment and lead ownership. Only version/status/reason can cross the mutation boundary, and actor access is refreshed under the staff-access lock. Restricted managers stay in their web team workspace.

@@ -34,3 +34,7 @@ MOB-05 consultations, MOB-06 consultation reporting and MOB-07 follow-up actions
 ## Retry-safe follow-up creation — 21 November
 
 MOB-08 adds follow-up creation on native and makes the shared web path retry-safe. Existing lifecycle editing and consultation reporting remain locally accepted. Production and device delivery remain deferred; continue from the exact next build in [[Session Wall]].
+
+## Native appointments — 22 November
+
+MOB-10 adds native appointment tracking/outcomes. Creation and rescheduling still use web. Device/server delivery is separate from local acceptance; resume the next bounded action in [[Session Wall]].

@@ -26,10 +26,12 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
   let lostConsultationAck = false;
   let lostTaskAck = false;
   let lostCaseAck = false;
+  let lostAppointmentAck = false;
   const leads = [
     { $id: "owned", owner: "staff", name: "Synthetic lead", email: "fixture@example.invalid", stage: "New", priority: "Normal", nextFollowUp: "2027-01-01T10:00:00.000Z", version: 1 },
     { $id: "foreign", owner: "other", name: "Other lead" },
   ];
+  const appointments=[{$id:"appointment",leadId:"owned",owner:"staff",title:"Synthetic appointment",startsAt:"2020-01-01T10:00:00Z",endsAt:"2020-01-01T11:00:00Z",status:"Booked",location:"Synthetic office",notes:"private appointment notes",version:1}];
   const cases=[{$id:"case",leadId:"owned",owner:"staff",kind:"Education",institution:"Synthetic university",course:"Synthetic course",country:"Germany",intake:"2027",stage:"Shortlisted",deadline:"",notes:"private",version:1}];
   const tasks = [
     { $id: "task", owner: "staff", leadId: "owned", title: "Follow up", status: "Open", dueAt: "2026-12-01T10:00:00Z", outcome: "", version: 1 },
@@ -94,9 +96,9 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
       const limit = filters.find(q => q.method === "limit")?.values[0] ?? 100;
       return Response.json({ documents: rows.slice(offset, offset + limit), total: rows.length });
     }
-    const match = url.pathname.match(/\/(leads|tasks|cases)\/documents(?:\/([^/]+))?$/);
+    const match = url.pathname.match(/\/(leads|tasks|cases|appointments)\/documents(?:\/([^/]+))?$/);
     assert.ok(match);
-    const rows = match[1] === "leads" ? leads : match[1] === "cases" ? cases : tasks;
+    const rows = match[1] === "leads" ? leads : match[1] === "cases" ? cases : match[1] === "appointments" ? appointments : tasks;
     if (options.method === "POST") {
       const {data,documentId,permissions}=JSON.parse(options.body);assert.deepEqual(permissions,[]);
       if(rows.some(row=>row.$id===documentId))return Response.json({}, {status:409});
@@ -107,6 +109,7 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
       if (!row) return Response.json({}, { status: 404 });
       if (options.method === "PATCH") {
         Object.assign(row, JSON.parse(options.body).data);
+        if (match[1] === "appointments" && lostAppointmentAck) throw Error("synthetic lost appointment acknowledgement");
         if (match[1] === "cases" && lostCaseAck) throw Error("synthetic lost case acknowledgement");
         if (match[1] === "tasks" && lostTaskAck) throw Error("synthetic lost task acknowledgement");
       }
@@ -361,6 +364,24 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
     assert.equal((await(await send("application?id=case",auth)).json()).version,3);
     assert.equal((await patchCase({version:2,stage:detail.stages[1],deadline:""})).status,409);
     leads[0].owner="other";assert.equal((await send("application?id=case",auth)).status,403);leads[0].owner="staff";
+    assert.equal((await send("appointments")).status,401);
+    const appointmentList=await(await send("appointments",auth)).json();assert.equal(appointmentList.appointments.length,1);assert.equal(appointmentList.appointments[0].notes,undefined);
+    assert.equal((await send("appointment?id=missing",auth)).status,404);
+    const outcome=(body)=>send("appointment?id=appointment",{method:"PATCH",headers:{...auth.headers,"Content-Type":"application/json"},body:JSON.stringify(body)});
+    assert.equal((await outcome({version:1,status:"Cancelled",reason:""})).status,400);
+    assert.equal((await outcome({version:1,status:"Invalid",reason:"test"})).status,400);
+    appointments[0].startsAt="2035-01-01T10:00:00Z";appointments[0].endsAt="2035-01-01T11:00:00Z";
+    assert.equal((await outcome({version:1,status:"Completed",reason:"test"})).status,400);
+    appointments[0].startsAt="2020-01-01T10:00:00Z";appointments[0].endsAt="2020-01-01T11:00:00Z";
+    assert.equal((await outcome({version:1,status:"Cancelled",reason:"Synthetic cancellation",notes:"overwrite",title:"overwrite"})).status,200);
+    assert.equal(appointments[0].notes,"private appointment notes");assert.equal(appointments[0].title,"Synthetic appointment");assert.equal(appointments[0].location,"Synthetic office");
+    assert.equal((await outcome({version:1,status:"Completed",reason:"test"})).status,409);
+    assert.equal((await outcome({version:2,status:"Completed",reason:"test"})).status,400);
+    appointments[0].status="Booked";appointments[0].version=3;
+    lostAppointmentAck=true;assert.equal((await outcome({version:3,status:"No show",reason:"Synthetic no show"})).status,503);lostAppointmentAck=false;
+    assert.equal((await(await send("appointment?id=appointment",auth)).json()).status,"No show");
+    assert.equal((await outcome({version:3,status:"Cancelled",reason:"test"})).status,409);
+    leads[0].owner="other";assert.equal((await send("appointment?id=appointment",auth)).status,403);leads[0].owner="staff";
     active = false;
     assert.equal((await send("follow-up?id=task",auth)).status,403);
     assert.equal((await send("consultations?id=owned",auth)).status,403);
