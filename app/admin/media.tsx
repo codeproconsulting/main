@@ -6,7 +6,20 @@ import {canEditContent,canPublish} from "./domain";
 import {listDocuments,query} from "~/lib/appwrite.server";
 import {uploadMedia,setMediaVisibility,mediaForm,type Media} from "./media.server";
 import {ActionError,Badge,Empty,PageHeading,Submit} from "./ui";
-export async function loader({request}:LoaderFunctionArgs){const staff=await requireStaff(request);allow(canEditContent(staff));const result=await listDocuments<Media>("media",[query("orderDesc","$createdAt"),query("limit",undefined,[100])]);return {items:result.documents,publisher:canPublish(staff),origin:process.env.VITE_APP_URL||"https://proconsulting.uk"};}
+export async function loader({request}:LoaderFunctionArgs){
+ const staff=await requireStaff(request);allow(canEditContent(staff));
+ const picker=new URL(request.url).searchParams.has("picker");
+ const queries=[query("orderDesc","$createdAt"),query("limit",undefined,[100])];
+ if(picker)queries.unshift(query("equal","published",[true]));
+ const settings={publisher:canPublish(staff),origin:process.env.VITE_APP_URL||"https://proconsulting.uk"};
+ try {
+   const result=await listDocuments<Media>("media",queries);
+   return {...settings,items:result.documents,error:""};
+ } catch(error) {
+   if(!picker)throw error;
+   return {...settings,items:[] as Media[],error:"The image library is unavailable. Retry or enter an image address."};
+ }
+}
 export async function action({request}:ActionFunctionArgs){
  const staff=await requireStaff(request);sameOrigin(request);allow(canEditContent(staff));
  try{

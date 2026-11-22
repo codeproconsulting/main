@@ -297,3 +297,7 @@ Native appointment tracking exposes existing scoped appointment records through 
 ## Native appointment rescheduling — 22 November
 
 The native appointment PATCH accepts an explicit reschedule action. Both clients use the same calendar lock, timezone parser, overlap check and audit workflow. The API rechecks staff and lead access before writing the new interval.
+
+## Blog Studio authoring — 22 November
+
+Blog Studio renders unsaved article previews through the authenticated HTML sanitizer. The visual editor inserts semantic HTML into the existing post body. The media selector loads published records on demand. The authoring and public delivery paths remain independent.

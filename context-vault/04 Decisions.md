@@ -327,3 +327,7 @@ Preserve private appointment notes and existing metadata by applying native outc
 ## Native appointment rescheduling — 22 November
 
 An explicit reschedule action accepts only an existing booking, a changed interval and a reason. Older clients can keep sending their existing outcome requests. After a stale version or uncertain write the native form requires a fresh appointment read.
+
+## Blog Studio authoring — 22 November
+
+Use the existing sanitized HTML and revision format for rich blocks. Keep the editable cover description in the existing feature_image_alt metadata property and merge only that property so other imported metadata survives edits. A new article gets a suggested slug until its author takes over.

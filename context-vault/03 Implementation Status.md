@@ -389,3 +389,7 @@ MOB-10 native appointment list/detail and Completed/Cancelled/No show are implem
 ## Native appointment rescheduling — 22 November
 
 MOB-11 passed local API, component and Android export checks. Counsellors can change the time of a booked meeting and record a reason. Staff still create bookings on the web. See [[Sessions/2026-11-22-03]].
+
+## Blog Studio authoring — 22 November
+
+CMS-05 passed local editor and save/restore acceptance. Staff can add inline links, captioned images, comparison tables and quotes, then inspect the article and search snippet before review or publication. See [[Sessions/2026-11-22-04]].

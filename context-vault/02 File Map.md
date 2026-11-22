@@ -349,3 +349,7 @@ operations.server.ts adds appointmentFor and the outcome-only save path; mobile-
 ## Native appointment rescheduling — 22 November
 
 The appointment handler in `app/admin/mobile-api.ts` selects the mutation mode in `app/admin/operations.server.ts`. Calendar and access regressions run in `tests/mobile-api.test.mjs`. The separate mobile checkout implements the form in `src/Appointments.tsx` and its transport in `src/mobile-api.ts`.
+
+## Blog Studio authoring — 22 November
+
+`app/admin/blog-edit.tsx` owns publication fields and search previews. `rich-editor.tsx` handles visual blocks and reader mode. `article-media-picker.tsx` selects recent public images through `media.tsx`. `content.server.ts` merges feature image descriptions into existing metadata and restores them from revisions.

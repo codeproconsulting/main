@@ -31,3 +31,18 @@ test('restoration preserves current URL/state and creates a fresh revision',asyn
 test('restoration rejects a foreign revision, stale state, and editor access to scheduled content',async()=>{reset();revisions.set('foreign',{$id:'foreign',postId:'another',payload:JSON.stringify(basePost())});await assert.rejects(()=>content.restorePost(user('publisher'),'article-one','foreign','1'),reject(403));await content.savePost(user('publisher'),'article-one',form({title:'Changed'}));const revision=[...revisions.values()].find(r=>r.postId==='article-one');await assert.rejects(()=>content.restorePost(user('publisher'),'article-one',revision.$id,'1'),reject(409));posts.set('article-one',{...posts.get('article-one'),status:'scheduled',publishedAt:'2099-01-01T00:00:00.000Z'});await assert.rejects(()=>content.restorePost(user('editor'),'article-one',revision.$id,'2'),reject(403));});
 
 test('audit intent failure prevents an unaudited content mutation',async()=>{reset();failAudit=true;await assert.rejects(()=>content.savePost(user('publisher'),'article-one',form({title:'Changed'})));assert.equal(posts.get('article-one').version,1);assert.equal(posts.get('article-one').title,'Original title');});
+
+test('studio blocks and cover description survive save and restore with imported metadata intact',async()=>{
+ reset();
+ const body='<h3>Section</h3><blockquote>Quote</blockquote><figure><img src="https://example.invalid/photo" alt="Campus" /><figcaption>Campus walk</figcaption></figure><table><thead><tr><th>Course</th></tr></thead><tbody><tr><td>Example</td></tr></tbody></table><p><a href="https://example.invalid/course">Course page</a></p>';
+ const post=await content.savePost(user('editor'),'article-one',form({body,imageAlt:'Campus entrance'}));
+ assert.equal(content.featureImageAlt(post),'Campus entrance');
+ assert.deepEqual(JSON.parse(post.metadata),{tags:['education'],feature_image_alt:'Campus entrance'});
+ for(const marker of ['<blockquote>','<figure>','<figcaption>','<table>','alt="Campus"','href="https://example.invalid/course"'])assert.ok(post.body.includes(marker));
+ const restored=await content.restorePost(user('editor'),'article-one',[...revisions.keys()][0],'2');
+ assert.equal(content.featureImageAlt(restored),'');
+ assert.deepEqual(JSON.parse(restored.metadata).tags,['education']);
+ reset({...basePost(),metadata:'malformed'});
+ await assert.rejects(()=>content.savePost(user('editor'),'article-one',form({imageAlt:'New description'})),reject(409));
+ assert.equal(posts.get('article-one').metadata,'malformed');
+});

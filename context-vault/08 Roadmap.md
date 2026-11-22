@@ -42,3 +42,7 @@ MOB-10 adds native appointment tracking/outcomes. Creation and rescheduling stil
 ## Native appointment rescheduling — 22 November
 
 MOB-11 completed local acceptance for native rescheduling. Next is online native booking creation from an assigned enquiry with duplicate prevention on retry. See [[Session Wall]].
+
+## Blog Studio authoring — 22 November
+
+The comprehensive web authoring pass is locally verified. Ghost migration acceptance and a native publishing interface remain separate work. The session wall retains the previously queued native appointment booking work.

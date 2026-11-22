@@ -3,35 +3,35 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-22-03]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-22-04]].
 
 ## Resume here
 
-**Session:** 2026-11-22-03
+**Session:** 2026-11-22-04
 
-**Active feature:** MOB-11
+**Active feature:** CMS-05
 
 **State:** completed
 
-**Objective:** Reschedule booked appointments from the native staff calendar.
+**Objective:** Expand the CRM Blog Studio authoring and preview workflow.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Scoped versioned time changes through the existing calendar
-- Online native time and reason editor with reload recovery
+- Visual article blocks and links
+- Private reading preview, search snippet and publication form
 
 ## Out of scope
 
-- New bookings, offline writes and production delivery
+- Ghost cutover, native editor and production deployment
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| MOB11-API | Validate times, reason, ownership, version, collisions and preserved metadata | passed | Synthetic API checks passed for timezone normalization, reversed or unchanged intervals, required reasons, conflicting and adjacent slots, stale versions, closed bookings, changed ownership, audit details and preserved metadata. All 192 main tests, typecheck and build passed. |
-| MOB11-UI | Exercise native reschedule form, transport and recovery | passed | Mobile typecheck, lint, 11 tests and Android bundle export passed. Chrome exercised the native component with DOM controls, including prefill, disabled saves, successful move, lost reply and reload of the saved interval. |
+| CMS05-WRITE | Compose rich blocks and persist them through the normal article save path | passed | The CMS regression saves headings, links, quotes, captioned images and tables, restores cover alternative text, preserves imported tags and rejects unsafe metadata replacement. All 193 tests, typecheck and production build passed. |
+| CMS05-PREVIEW | Verify private draft previews, publishing controls and existing workflows | passed | Isolated Chrome exercised media upload/publication and selection, slug override, link validation, rich blocks, search snippet, sanitized reader preview, scheduling controls and saving/reopening a review post. The editor fit a 393px viewport. |
 
 ## Exact next actions
 
@@ -60,9 +60,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-22T14:47:24.321Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-tgE1iv/typecheck.log`
-- **passed**: `npm run test` (2026-11-22T14:47:31.835Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-tgE1iv/test.log`
-- **passed**: `npm run build` (2026-11-22T14:47:37.395Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-tgE1iv/build.log`
+- **passed**: `npm run typecheck` (2026-11-22T14:55:18.917Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-BHj8Na/typecheck.log`
+- **passed**: `npm run test` (2026-11-22T14:55:26.408Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-BHj8Na/test.log`
+- **passed**: `npm run build` (2026-11-22T14:55:31.900Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-BHj8Na/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -151,5 +151,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **nativeApplications**: Locally accepted API and component workflow; mobile checkpoint a5bd16c is local only. No VPS/OTA or physical-device acceptance.
 - **nativeAppointments**: Locally accepted API and component workflow. Mobile commit 86fa4ef is local only (no remote). No VPS, OTA or device acceptance; existing schema reused.
 - **nativeRescheduling**: Mobile d773f7e local only, CRM changes locally verified. No remote for mobile, VPS deployment, OTA or physical-device acceptance.
+- **blogStudioAuthoring**: Locally verified with a synthetic publisher and in-memory storage. No VPS release or provider cutover. Native publishing UI remains separate.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

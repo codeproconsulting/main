@@ -50,3 +50,7 @@ MOB-10 native appointments: scoped list/detail and versioned outcomes implemente
 ## Native appointment rescheduling — 22 November
 
 MOB-11 completed local acceptance for native appointment rescheduling. Release and physical-device checks remain pending. Evidence in [[Sessions/2026-11-22-03]].
+
+## Blog Studio authoring — 22 November
+
+CMS-05 Blog Studio rich authoring and private previews passed local acceptance. The feature reuses the existing Appwrite schema. Git release and production verification are separate. See [[Sessions/2026-11-22-04]].

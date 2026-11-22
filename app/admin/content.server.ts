@@ -14,6 +14,16 @@ export async function postFor(staff: Staff, id: string) {
   const post = await getDocument<Post>("posts", id);
   return { ...post, body: safeArticle(post.body) };
 }
+function imageMetadata(raw?:string):Record<string,unknown> | null {
+  try {
+    const value = JSON.parse(raw || "{}");
+    return value && typeof value === "object" && !Array.isArray(value) ? value : null;
+  } catch {return null;}
+}
+export function featureImageAlt(post:Post | null) {
+  const alt = imageMetadata(post?.metadata)?.feature_image_alt;
+  return typeof alt === "string" ? alt : "";
+}
 async function snapshot(staff: Staff, post: Post) {
   const id = createHash("sha256").update(`revision:${post.$id}:${post.version}`).digest("hex").slice(0, 32);
   const data = { postId: post.$id, actor: staff.$id, payload: JSON.stringify(post), version: post.version };
@@ -47,7 +57,16 @@ export async function savePost(staff: Staff, id: string, form: FormData) {
     let publishedAt = existing?.publishedAt || "";
     if (status === "scheduled") publishedAt = requestedDate;
     else if (status === "published" && (!publishedAt || existing?.status === "scheduled")) publishedAt = new Date().toISOString();
-    const payload = { title, slug, section, status, body, excerpt: field(form, "excerpt", 2000), image, publishedAt, metaTitle: field(form, "metaTitle", 300), metaDescription: field(form, "metaDescription", 1000), author: field(form, "author", 200) || staff.name, legacyId: existing?.legacyId ?? "", version: (existing?.version ?? 0) + 1 };
+    let imageChange: {metadata?:string} = {};
+    if (form.has("imageAlt") && form.get("imageAlt") !== featureImageAlt(existing)) {
+      const alt = field(form,"imageAlt",300);
+      const metadata = imageMetadata(existing?.metadata);
+      if (!metadata) throw new Response("Existing image metadata needs review before changing alternative text.",{status:409});
+      const updated = JSON.stringify({...metadata,feature_image_alt:alt});
+      if (updated.length > 65536) throw new Response("Article metadata exceeds the supported size.",{status:400});
+      imageChange = {metadata:updated};
+    }
+    const payload = { ...imageChange, title, slug, section, status, body, excerpt: field(form, "excerpt", 2000), image, publishedAt, metaTitle: field(form, "metaTitle", 300), metaDescription: field(form, "metaDescription", 1000), author: field(form, "author", 200) || staff.name, legacyId: existing?.legacyId ?? "", version: (existing?.version ?? 0) + 1 };
     if (existing) await snapshot(staff, existing);
     const targetId = existing?.$id ?? randomUUID();
     const intent = await audit(staff, targetId, "post", "Post save requested", { title, status, fromVersion: existing?.version ?? 0, version: payload.version, state: "pending" });
@@ -64,6 +83,7 @@ export async function restorePost(staff: Staff, id: string, revisionId: string, 
   const restore = new FormData();
   for (const key of ["title", "body", "excerpt", "image", "metaTitle", "metaDescription", "author"] as const) restore.set(key, old[key] ?? "");
   for (const key of ["slug", "section", "status", "publishedAt"] as const) restore.set(key, post[key]);
+  restore.set("imageAlt",featureImageAlt(old));
   restore.set("version", version);
   return savePost(staff, id, restore);
 }

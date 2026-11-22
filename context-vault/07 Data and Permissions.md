@@ -271,3 +271,7 @@ Mobile appointment projections include ID, lead ID, title, times, status, locati
 ## Native appointment rescheduling — 22 November
 
 Rescheduling accepts the current version, new start, new end and reason. Lead and assignee are derived from the stored booking. After checking scope and version under locks, the native update writes times, booked status and version. The audit records the reason and normalized interval. Private notes remain outside the mobile response.
+
+## Blog Studio authoring — 22 November
+
+The image picker requires editorial access and queries public images only. Visibility changes stay in the existing publisher workflow. Reader preview uses the staff-only, same-origin sanitizer. Existing publish permissions, URL locks and version checks also apply to the new editor.
