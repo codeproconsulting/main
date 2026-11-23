@@ -1,6 +1,6 @@
 import { noticesFor, readNotice } from "./notifications.server";
 import { bookAppointment } from "./appointment-booking.server";
-import { appointmentFor, saveAppointment, type Appointment, caseFor, saveCase, updateCaseProgress, scopedRecords, type CaseRecord } from "./operations.server";
+import { appointmentFor, saveAppointment, type Appointment, caseFor, caseDetailFields, saveCase, updateCaseProgress, scopedRecords, type CaseRecord } from "./operations.server";
 import { createCipheriv, createDecipheriv, randomBytes, randomUUID, scryptSync } from "node:crypto";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { appwrite, AppwriteError, configurationIssues, query } from "~/lib/appwrite.server";
@@ -130,7 +130,7 @@ async function personalAgenda(staff:Staff,updatedAt:string) {
 
 function mobileCase(record: CaseRecord) {
  const {$id:id,leadId,kind,institution,course,country,intake,stage,deadline,version}=record;
- return {id,leadId,kind,institution,course,country,intake,stage,deadline,version,stages:caseStagesFor(kind)};
+ return {id,leadId,kind,institution,course,country,intake,stage,deadline,version,detailEditing:true,stages:caseStagesFor(kind)};
 }
 
 export function loader({ request, params }: LoaderFunctionArgs) {
@@ -312,10 +312,16 @@ export function action({ request, params }: ActionFunctionArgs) {
       if(request.method!=="PATCH")return reply({error:"Method not allowed."},405);
       const staff=await mobileStaff(request),id=recordId(request,"application");
       if(!isJson(request))return reply({error:"Expected JSON."},415);
-      const text=await(await boundedBody(request,4096,"Application")).text();
+      const text=await(await boundedBody(request,8192,"Application")).text();
       const body=(()=>{try{return JSON.parse(text);}catch{return null;}})();
       if(!body||!Number.isSafeInteger(body.version)||body.version<0||typeof body.stage!=="string"||typeof body.deadline!=="string")return reply({error:"Invalid application update."},400);
       const form=new FormData();form.set("version",String(body.version));form.set("stage",body.stage);form.set("deadline",body.deadline);
+      if (caseDetailFields.some(key => Object.hasOwn(body,key))) {
+        if (caseDetailFields.some(key => typeof body[key] !== "string")) {
+          return reply({error:"Send all application detail fields together."},400);
+        }
+        for (const key of caseDetailFields) form.set(key,body[key]);
+      }
       return reply(mobileCase(await updateCaseProgress(staff,id,form)));
     }
     if (params.resource === "follow-ups") {

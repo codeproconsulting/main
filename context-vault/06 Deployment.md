@@ -379,3 +379,7 @@ Roll out the CRM API first. Its online lead response enables note entry in the m
 ## Native application creation
 
 Deploy the CRM first to advertise application creation in online lead details. The existing case and activity collections are reused. Mobile commit d740660 is local and the checkout has no remote. VPS rollout, OTA publication and physical-phone acceptance remain pending.
+
+## Native application detail editing
+
+Mobile commit 7b5d315 is local. Roll out the CRM before publishing the compatible update. Physical-phone verification is pending.

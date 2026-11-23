@@ -355,3 +355,7 @@ Native retries reuse an activity document ID derived from the actor, lead and su
 ## Native application creation
 
 New mobile applications start at Shortlisted. A deterministic case ID and audit fingerprint let identical retries reconcile an uncertain save. The draft stays in memory while the lead editor is open.
+
+## Native application detail editing
+
+The application response advertises detail editing. Legacy clients can still send progress-only updates.

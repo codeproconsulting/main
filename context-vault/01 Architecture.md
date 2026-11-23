@@ -325,3 +325,7 @@ Web and native note writes share the lead and staff access locks.
 ## Native application creation
 
 Native lead details can create an application and open the confirmed case. The CRM shares validation with its web form.
+
+## Native application detail editing
+
+The mobile application PATCH action extends the existing versioned progress write with optional detail fields.

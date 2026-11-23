@@ -299,3 +299,7 @@ Note writes recheck current staff and lead access under locks. Staff with team-r
 ## Native application creation
 
 The CRM rechecks current staff and lead access under locks, derives the case owner from the lead and omits notes from the mobile response. The audit records a hash of the normalized submitted fields for retry comparison.
+
+## Native application detail editing
+
+Detail edits use existing lead ownership checks and write locks. The mobile response excludes private case notes.

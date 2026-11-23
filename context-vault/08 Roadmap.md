@@ -70,3 +70,7 @@ Native internal notes passed local acceptance. Native application creation is th
 ## Native application creation
 
 Native application creation passed local acceptance. The next feature extends the native application detail editor.
+
+## Native application detail editing
+
+The next planned mobile feature is application document status.

@@ -19,6 +19,18 @@ export async function caseFor(staff: Staff, id: string) {
  allow(canManage(staff)||(record.owner===staff.$id&&lead.owner===staff.$id));
  return record;
 }
+export const caseDetailFields = ["institution", "course", "country", "intake"] as const;
+
+function caseDetails(form: FormData, kind: string) {
+ const details = { institution: field(form,"institution",300), course: field(form,"course",300),
+   country: field(form,"country",150), intake: field(form,"intake",100) };
+ if (!details.institution || !details.country || (kind === "Education" && !details.course)) {
+  throw new Response(kind === "Education" ? "Enter an institution, course and destination." :
+    "Enter a visa category and destination.", {status:400});
+ }
+ return details;
+}
+
 export async function updateCaseProgress(staff: Staff,id: string,form: FormData){
  const initial=await caseFor(staff,id);
  return serialized(`lead:${initial.leadId}`,()=>serialized(staffAccessLock,async()=>{
@@ -29,7 +41,8 @@ export async function updateCaseProgress(staff: Staff,id: string,form: FormData)
   if(current.leadId!==initial.leadId||current.owner!==lead.owner||Number(field(form,"version"))!==current.version)throw new Response("Application changed or assignment needs reconciliation. Reload before saving.",{status:409});
   const stage=field(form,"stage",80),deadline=dateField(field(form,"deadline",40));
   if(!caseStagesFor(current.kind).includes(stage))throw new Response("Invalid application stage",{status:400});
-  const changes={stage,deadline,version:current.version+1};
+  const details = form.has("institution") ? caseDetails(form,current.kind) : {};
+  const changes={...details,stage,deadline,version:current.version+1};
   const event=await audit(actor,current.leadId,"lead","Application save requested",{state:"pending",caseId:id,before:{stage:current.stage,deadline:current.deadline,version:current.version},after:changes});
   const updated=await updateDocument<CaseRecord>("cases",id,changes).catch(error=>{
    if(definitiveWriteRejection(error))throw error;
@@ -46,10 +59,9 @@ export async function saveCase(staff: Staff, form: FormData, submissionId?: stri
  const current=id?await getDocument<CaseRecord>("cases",id):null;if(current){allow(current.leadId===leadId);if(current.version!==Number(field(form,"version")))throw new Response("Application changed. Refresh before saving.",{status:409});}
  const kind=field(form,"kind",30),stage=field(form,"stage",80);if(!["Education","Immigration"].includes(kind)||!caseStagesFor(kind).includes(stage))throw new Response("Invalid application type or stage",{status:400});
  if(current&&current.kind!==kind)throw new Response("Application service cannot be changed. Create a separate application for the other service.",{status:400});
- const payload={leadId,owner:lead.owner,kind,institution:field(form,"institution",300),course:field(form,"course",300),country:field(form,"country",150),intake:field(form,"intake",100),stage,deadline:dateField(field(form,"deadline",40)),notes:field(form,"notes",10000),version:(current?.version??0)+1};
+ const payload={leadId,owner:lead.owner,kind,...caseDetails(form,kind),stage,deadline:dateField(field(form,"deadline",40)),notes:field(form,"notes",10000),version:(current?.version??0)+1};
  if(!lead.owner)throw new Response("Assign the lead before creating or updating an application.",{status:400});
  const assignee=await getDocument<Staff>("staff",lead.owner);allow(assignee.active&&canUseCRM(assignee));
- if(!payload.institution||!payload.country||(kind==="Education"&&!payload.course))throw new Response(kind==="Education"?"Enter an institution, course and destination.":"Enter a visa category and destination.",{status:400});
  if (submissionId) {
    const caseId = createHash("sha256").update(`application:${staff.$id}:${leadId}:${submissionId}`).digest("hex").slice(0, 36);
    const { owner, ...submitted } = payload;

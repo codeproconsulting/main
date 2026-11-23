@@ -377,3 +377,7 @@ The note writer is in `app/admin/crm.server.ts`, the native action in `app/admin
 ## Native application creation
 
 The CRM action is in `app/admin/mobile-api.ts`, creation is in `app/admin/operations.server.ts` and the mobile form is in `src/ApplicationCreate.tsx`.
+
+## Native application detail editing
+
+`app/admin/operations.server.ts` shares field validation with the web form. The mobile editor lives in `src/Applications.tsx`.

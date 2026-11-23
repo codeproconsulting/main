@@ -417,3 +417,7 @@ MOB-16 passed local acceptance. [[Sessions/2026-11-23-04]]
 ## Native application creation
 
 MOB-17 passed local acceptance for online native education and immigration application creation. [[Sessions/2026-11-23-05]]
+
+## Native application detail editing
+
+MOB-18 passed local acceptance. [[Sessions/2026-11-23-06]]
