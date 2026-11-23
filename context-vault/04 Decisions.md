@@ -347,3 +347,7 @@ Keep reminder contents out of the offline snapshot because reassignment, deadlin
 ## Native lead activity — 23 November
 
 Recent lead history is read on demand and excluded from offline snapshots. The CRM uses the existing entity ID index and the existing 100-record limit, then excludes records associated with other entity types or with restricted events. An optional flag on the lead response lets the mobile editor work with older CRM deployments.
+
+## Native internal notes
+
+Native retries reuse an activity document ID derived from the actor, lead and submission. The draft stays in memory while the lead editor is open.

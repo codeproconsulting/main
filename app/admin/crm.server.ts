@@ -556,10 +556,28 @@ export async function updateLead(
     });
   });
 }
-export async function addNote(staff: Staff, id: string, note: string) {
-  await leadFor(staff, id);
-  if (!note) throw new Response("Write a note first", { status: 400 });
-  return audit(staff, id, "lead", "Note added", { note });
+export async function addNote(staff: Staff, id: string, note: string, submissionId?: string) {
+  note = note.trim();
+  if (!note || note.length > 5000) throw new Response("Enter a note of up to 5,000 characters.", { status: 400 });
+  return serialized(`lead:${id}`, () => serialized(staffAccessLock, async () => {
+    const actor = await getDocument<Staff>("staff", staff.$id);
+    allow(actor.active && !actor.revocationPending && !isRestrictedManager(actor));
+    await leadFor(actor, id);
+    if (!submissionId) return audit(actor, id, "lead", "Note added", { note });
+
+    const documentId = createHash("sha256").update(`note:${actor.$id}:${id}:${submissionId}`).digest("hex").slice(0, 36);
+    const entry = { actor: actor.$id, entityId: id, entityType: "lead", event: "Note added", details: JSON.stringify({ note }) };
+    try {
+      return await createDocument("activities", entry, documentId);
+    } catch (error) {
+      const saved = await getDocument<Activity>("activities", documentId).catch(() => { throw error; });
+      if (saved.actor !== entry.actor || saved.entityId !== id || saved.entityType !== "lead" ||
+          saved.event !== entry.event || saved.details !== entry.details) {
+        throw new Response("This submission ID already belongs to another note.", { status: 409 });
+      }
+      return saved;
+    }
+  }));
 }
 export async function createTask(staff: Staff, id: string, form: FormData) {
   return serialized(`lead:${id}`, () => serialized(staffAccessLock, async () => {

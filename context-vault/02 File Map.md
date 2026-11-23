@@ -369,3 +369,7 @@ The appointment handler in `app/admin/mobile-api.ts` selects the mutation mode i
 ## Native lead activity — 23 November
 
 `app/admin/crm.server.ts` scopes and projects events in `activityFor`. `app/admin/lead.tsx` renders these fields and `app/admin/mobile-api.ts` serves them with mobile-safe author labels. The mobile lead editor is in `src/NativeWorkspace.tsx` in the mobile checkout.
+
+## Native internal notes
+
+The note writer is in `app/admin/crm.server.ts`, the native action in `app/admin/mobile-api.ts` and the editor in the mobile checkout’s `src/NativeWorkspace.tsx`.

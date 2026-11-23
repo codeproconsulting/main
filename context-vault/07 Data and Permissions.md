@@ -291,3 +291,7 @@ The mobile inbox shares the recipient, lead and source-generation checks used by
 ## Native lead activity — 23 November
 
 Reading activity requires current CRM and lead access. Team-restricted managers receive no web timeline and remain excluded from the mobile API. Counsellors cannot see restricted contact-link and duplicate-decision request events. The mobile API returns display fields and an author label. Raw audit payloads, actor identifiers and unrelated entity events stay server-side for this endpoint.
+
+## Native internal notes
+
+Note writes recheck current staff and lead access under locks. Staff with team-restricted access cannot write timeline notes.

@@ -409,3 +409,7 @@ MOB-14 passed local acceptance for an online personal inbox with read acknowledg
 ## Native lead activity — 23 November
 
 MOB-15 passed local acceptance for recent lead history in native lead details. The matching web and mobile scope checks are covered by integration tests. [[Sessions/2026-11-23-03]]
+
+## Native internal notes
+
+MOB-16 passed local acceptance. [[Sessions/2026-11-23-04]]

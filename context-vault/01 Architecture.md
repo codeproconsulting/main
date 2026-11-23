@@ -317,3 +317,7 @@ The native staff inbox shares the web reminder service for paging and read ackno
 ## Native lead activity — 23 November
 
 Web lead details and the mobile read API share a server projection of the conversation timeline. The native lead editor requests activity on demand and discards history when hidden or backgrounded.
+
+## Native internal notes
+
+Web and native note writes share the lead and staff access locks.

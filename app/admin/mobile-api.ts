@@ -7,7 +7,7 @@ import { appwrite, AppwriteError, configurationIssues, query } from "~/lib/appwr
 import { openStaffSession, staffForSession } from "./auth.server";
 import { boundedBody } from "~/lib/request-body.server";
 import { expenseYear, expensePaymentMethods, expenseCategories, expenseMonth, recordExpense, voidExpense, saveOfficeBudget } from "./finance.server";
-import { activityFor, listStaff, createTask, changeTask, followUpFor, leadFor, leadsFor, queuePage, scopedQueue, taskPage, updateLead } from "./crm.server";
+import { addNote, activityFor, listStaff, createTask, changeTask, followUpFor, leadFor, leadsFor, queuePage, scopedQueue, taskPage, updateLead } from "./crm.server";
 
 import { consultationReport, consultationPage, consultationPageSize, leadConsultations, recordConsultation } from "./consultations.server";
 
@@ -80,7 +80,7 @@ function recordId(request: Request, label = "lead") {
 
 function editableLead(lead: Lead) {
   const { $id: id, name, stage, priority, version } = lead;
-  return { id, name, stage, priority, version, stages, priorities, closureStages, activityAvailable: true, taskSubmissionId: randomUUID(), bookingSubmissionId: randomUUID(), canSchedule: Boolean(lead.owner) && !lead.duplicateOf };
+  return { id, name, stage, priority, version, stages, priorities, closureStages, activityAvailable: true, noteSubmissionId: randomUUID(), taskSubmissionId: randomUUID(), bookingSubmissionId: randomUUID(), canSchedule: Boolean(lead.owner) && !lead.duplicateOf };
 }
 
 function editableFollowUp(task: Task) {
@@ -229,6 +229,19 @@ export function loader({ request, params }: LoaderFunctionArgs) {
 
 export function action({ request, params }: ActionFunctionArgs) {
   return mobileRequest(request, async () => {
+    if (params.resource === "lead-note") {
+      if (request.method !== "POST") return reply({ error: "Method not allowed." }, 405);
+      const staff = await mobileStaff(request);
+      const id = recordId(request);
+      const raw = await (await boundedBody(request, 32768, "Note")).text();
+      const body = isJson(request) ? await Promise.resolve(raw).then(JSON.parse).catch(() => null) : null;
+      if (typeof body?.note !== "string" || typeof body.submissionId !== "string" ||
+          !/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/.test(body.submissionId)) {
+        return reply({ error: "Invalid note submission." }, 400);
+      }
+      await addNote(staff, id, body.note, body.submissionId);
+      return reply({ nextSubmissionId: randomUUID() });
+    }
     if (params.resource === "reminder-read") {
       if (request.method !== "POST") return reply({error:"Method not allowed."},405);
       await readNotice(await mobileStaff(request),recordId(request,"reminder"));

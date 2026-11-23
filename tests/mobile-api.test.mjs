@@ -23,6 +23,7 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
   const activities = new Map();
   const additionalStaff = [];
   const notifications=[];
+  let loseNoteReply = false;
   let failCreationFinish = false;
   const consultations = [];
   let lostConsultationAck = false;
@@ -85,7 +86,9 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
       if (options.method === "POST") {
         const {data,documentId}=JSON.parse(options.body);
         if(activities.has(documentId))return Response.json({}, {status:409});
-        events.push(data);const row={...data,$id:documentId};activities.set(documentId,row);return Response.json(row);
+        events.push(data);const row={...data,$id:documentId};activities.set(documentId,row);
+        if (loseNoteReply && data.event === "Note added") throw Error("Synthetic lost note reply");
+        return Response.json(row);
       }
       if(options.method === "PATCH") {
         const {data}=JSON.parse(options.body);
@@ -306,6 +309,28 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
     managerScope="team"; leads[0].teamId="synthetic-team";
     assert.equal((await timeline()).status,403); assert.deepEqual(await webTimeline(),[]);
     role="counselor"; managerScope=""; delete leads[0].teamId; activities.clear();
+    const { noteSubmissionId } = await (await send("lead?id=owned", auth)).json();
+    const note = (text, id = "owned") => send("lead-note?id=" + id, {
+      method: "POST", headers: { ...auth.headers, "Content-Type": "application/json" },
+      body: JSON.stringify({ note: text, submissionId: noteSubmissionId }),
+    });
+    assert.equal((await note(" ")).status, 400);
+    assert.equal((await note("x".repeat(5001))).status, 400);
+    assert.equal((await note("Example note", "foreign")).status, 403);
+    loseNoteReply = true;
+    assert.equal((await note("Example note")).status, 200);
+    loseNoteReply = false;
+    assert.equal((await note("Example note")).status, 200);
+    assert.equal(activities.size, 1);
+    assert.equal((await note("Changed note")).status, 409);
+    leads[0].owner = "other";
+    assert.equal((await note("Example note")).status, 403);
+    leads[0].owner = "staff";
+    revoked = true;
+    assert.equal((await note("Example note")).status, 401);
+    revoked = false;
+    activities.clear();
+    events.length = 0;
     const edit = (id, changes) => send(`lead?id=${id}`, {
       method: "PATCH", headers: { ...auth.headers, "Content-Type": "application/json" },
       body: JSON.stringify(changes),

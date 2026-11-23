@@ -70,3 +70,7 @@ MOB-14 passed local acceptance for reminder paging, personal acknowledgements an
 ## Native lead activity — 23 November
 
 MOB-15 is locally accepted. The next native timeline action is internal-note entry. Production and device acceptance remain pending. [[Sessions/2026-11-23-03]]
+
+## Native internal notes
+
+MOB-16 native internal notes passed local acceptance. [[Sessions/2026-11-23-04]]

@@ -62,3 +62,7 @@ The native inbox is locally accepted. Next planned work is a scoped activity tim
 ## Native lead activity — 23 November
 
 The native read-only timeline passed local acceptance. The next planned feature is adding an internal note from the native timeline with ownership checks and safe retry handling. [[Sessions/2026-11-23-03]]
+
+## Native internal notes
+
+Native internal notes passed local acceptance. Native application creation is the next planned feature.

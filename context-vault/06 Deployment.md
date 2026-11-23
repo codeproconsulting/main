@@ -371,3 +371,7 @@ Release the CRM mobile reminder endpoints before publishing the mobile update. E
 ## Native lead activity — 23 November
 
 Release the CRM first. Its online lead response enables the timeline control in a compatible mobile update. Existing activity storage and indexes are reused. Check an assigned lead and a permission change on a test phone after rollout. Mobile commit `7914a0a` is local to `codex/mobile-staff`, which has no remote. VPS rollout, OTA publication and physical-phone checks remain pending.
+
+## Native internal notes
+
+Roll out the CRM API first. Its online lead response enables note entry in the matching mobile update. Existing activity storage is reused. Mobile commit 29add60 is local. VPS deployment, OTA publication and physical-phone testing remain pending.
