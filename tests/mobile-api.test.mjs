@@ -16,6 +16,7 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
     SESSION_SECRET: "synthetic-session-key-for-mobile-test", DASHBOARD_URL: "https://crm.example.invalid",
   });
   let revoked = false;
+  let reassignDuringChecklist = false;
   let active = true;
   let role = "counselor";
   let managerScope = "";
@@ -131,6 +132,18 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
       const offset = filters.find(q => q.method === "offset")?.values[0] ?? 0;
       const limit = filters.find(q => q.method === "limit")?.values[0] ?? 100;
       return Response.json({ documents: rows.slice(offset, offset + limit), total: rows.length });
+    }
+    if (url.pathname.endsWith("/documents/documents")) {
+      const queries=url.searchParams.getAll("queries[]").map(JSON.parse);
+      assert.ok(queries.some(q=>q.method==="equal" && q.attribute==="leadId" && q.values[0]==="owned"));
+      assert.deepEqual(queries.find(q=>q.method==="select").values,["$id","category","status","expiresAt","scannedAt"]);
+      if (reassignDuringChecklist) leads[0].owner="other";
+      return Response.json({documents:[
+        {$id:"passport",category:"Passport",scannedAt:"2020-01-01",status:"Accepted",expiresAt:"2099-01-01"},
+        {$id:"transcript",category:"Transcript",status:"Accepted"},
+        {$id:"degree",category:"Degree certificate",scannedAt:"2020-01-01",status:"Accepted",expiresAt:"2021-01-01"},
+        {$id:"english",category:"English test",scannedAt:"2020-01-01",status:"Pending review"},
+      ],total:4});
     }
     const match = url.pathname.match(/\/(leads|tasks|cases|appointments)\/documents(?:\/([^/]+))?$/);
     assert.ok(match);
@@ -508,6 +521,22 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
     assert.equal((await send("applications")).status,401);
     const appList=await(await send("applications",auth)).json();assert.equal(appList.applications.length,1);assert.equal(appList.applications[0].notes,undefined);
     const detail=await(await send("application?id=case",auth)).json();
+    assert.equal(detail.documentChecklistAvailable,true);
+    assert.equal((await send("application-documents?id=case")).status,401);
+    const checklistReply=await send("application-documents?id=case",auth);
+    assert.match(checklistReply.headers.get("Cache-Control"),/no-store/);
+    const checklist=(await checklistReply.json()).checklist;
+    assert.deepEqual(checklist.slice(0,5),[
+      {category:"Passport",status:"Ready"},{category:"Transcript",status:"Needs attention"},
+      {category:"Degree certificate",status:"Needs attention"},{category:"English test",status:"Awaiting review"},
+      {category:"Financial evidence",status:"Not uploaded"},
+    ]);
+    leads[0].owner="other";
+    assert.equal((await send("application-documents?id=case",auth)).status,403);
+    leads[0].owner="staff";
+    reassignDuringChecklist=true;
+    assert.equal((await send("application-documents?id=case",auth)).status,403);
+    reassignDuringChecklist=false;leads[0].owner="staff";
     const patchCase=body=>send("application?id=case",{method:"PATCH",headers:{...auth.headers,"Content-Type":"application/json"},body:JSON.stringify(body)});
     assert.equal((await patchCase({version:1,stage:"invalid",deadline:""})).status,400);
     assert.equal((await patchCase({version:1,stage:detail.stages[1],deadline:"2026-12-01T10:00:00+05:00",notes:"overwrite"})).status,200);

@@ -22,19 +22,20 @@ export function documentExpiry(value: string) {
   throw new Response("Enter a valid expiry date.", { status: 400 });
 }
 
-export async function documentsFor(staff: Staff, leadId: string) {
+export async function documentsFor(staff: Staff, leadId: string, view: "full" | "checklist" = "full") {
   const lead = await leadFor(staff, leadId);
   const teamScoped = isRestrictedManager(staff);
   const documents: ClientDocument[] = [];
   let cursor: string | undefined;
   while (true) {
     const filters = [query("equal", "leadId", [lead.$id]), query("orderDesc", "$createdAt"), query("limit", undefined, [100])];
-    if (teamScoped) filters.push(query("select", undefined, ["$id", "category", "status", "expiresAt", "scannedAt", "reviewVersion"]));
+    if (view === "checklist") filters.push(query("select", undefined, ["$id", "category", "status", "expiresAt", "scannedAt"]));
+    else if (teamScoped) filters.push(query("select", undefined, ["$id", "category", "status", "expiresAt", "scannedAt", "reviewVersion"]));
     if (cursor) filters.push(query("cursorAfter", undefined, [cursor]));
     const page = (await listDocuments<ClientDocument>("documents", filters)).documents;
     documents.push(...page);
     if (page.length < 100) {
-      if (teamScoped) await leadFor(staff, leadId);
+      if (teamScoped || view === "checklist") await leadFor(staff, leadId);
       return { lead, documents };
     }
     if (page.at(-1)?.$id === cursor) throw new Response("Could not page documents safely.", {status:503});

@@ -1,36 +1,36 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-23-06",
+  "sessionId": "2026-11-23-07",
   "sessionStatus": "completed",
-  "activeFeature": "MOB-18",
-  "objective": "Edit native application details online.",
+  "activeFeature": "MOB-19",
+  "objective": "Review lead document readiness in native application details.",
   "scope": [
-    "Scoped native application detail updates"
+    "Scoped online document status checklist"
   ],
   "outOfScope": [
-    "Offline edits and production rollout"
+    "File access, offline checklist and production rollout"
   ],
   "acceptance": [
     {
-      "id": "MOB18-API",
-      "description": "Check validation and access.",
+      "id": "MOB19-API",
+      "description": "Verify document statuses and access.",
       "status": "passed",
-      "evidence": "CRM typecheck, 193 tests and build passed. Tests covered full and partial payloads, required fields, reassignment, stale versions, and preservation of service and private notes."
+      "evidence": "CRM typecheck, 193 tests and build passed. Integration checks covered the metadata projection, category statuses, unauthenticated access and reassignment before or during a request."
     },
     {
-      "id": "MOB18-NATIVE",
-      "description": "Check editing and conflict recovery.",
+      "id": "MOB19-NATIVE",
+      "description": "Verify native loading, refresh and privacy lifecycle.",
       "status": "passed",
-      "evidence": "Mobile typecheck, lint, 13 tests and Android/iOS exports passed. Simulated controls verified field submission, conflict lockout and reload."
+      "evidence": "Mobile typecheck, lint, 13 tests and Android/iOS exports passed. Simulated native controls verified loading, refresh failure and recovery, background clearing and closing the application."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Add a native checklist for outstanding application documents. Start by reviewing the existing document metadata and access rules, and verify current lead scope before returning document statuses.",
+      "action": "Add native application search and stage filters. Reuse the scoped case queue and verify that pagination preserves active filters and current lead visibility.",
       "files": [
-        "app/admin/documents.server.ts",
+        "app/admin/operations.server.ts",
         "app/admin/mobile-api.ts",
         "tests/mobile-api.test.mjs",
         "/Users/fidaali/Proconsulting-App/src/Applications.tsx"
@@ -147,31 +147,32 @@
     "nativeLeadActivity": "Mobile commit `7914a0a` is local to `codex/mobile-staff`, which has no remote. VPS rollout, OTA publication and physical-phone checks remain pending.",
     "nativeLeadNotes": "Mobile commit 29add60 is local. VPS deployment, OTA publication and physical-phone testing remain pending.",
     "nativeApplicationCreation": "Mobile commit d740660 is local and the checkout has no remote. VPS rollout, OTA publication and physical-phone acceptance remain pending.",
-    "nativeApplicationEditing": "Mobile commit 7b5d315 is local. Roll out the CRM before publishing the compatible update. Physical-phone verification is pending."
+    "nativeApplicationEditing": "Mobile commit 7b5d315 is local. Roll out the CRM before publishing the compatible update. Physical-phone verification is pending.",
+    "nativeDocumentChecklist": "Mobile commit 94100b2 is local. VPS deployment, OTA publication and physical-phone testing remain pending."
   },
   "checks": [
     {
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-23T10:09:02.979Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-0AZ4KS/typecheck.log"
+      "checkedAt": "2026-11-23T10:16:24.282Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-BmlOt1/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-23T10:09:10.077Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-0AZ4KS/test.log"
+      "checkedAt": "2026-11-23T10:16:31.659Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-BmlOt1/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-23T10:09:15.167Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-0AZ4KS/build.log"
+      "checkedAt": "2026-11-23T10:16:36.959Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-BmlOt1/build.log"
     }
   ],
-  "updatedAt": "2026-11-23T10:09:33.471Z",
-  "verifiedSourceFingerprint": "39addffc7c72a8a1fcf5c07138863c11ec4d38962ce039e76c14ae2a430ac4e7"
+  "updatedAt": "2026-11-23T10:16:58.418Z",
+  "verifiedSourceFingerprint": "b5cf5272f70e392e119b57366395f04a6afdbfb19121b6868ed14c0e5693f6a1"
 }

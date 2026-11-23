@@ -1,3 +1,5 @@
+import { documentChecklist } from "./document-domain";
+import { documentsFor } from "./documents.server";
 import { noticesFor, readNotice } from "./notifications.server";
 import { bookAppointment } from "./appointment-booking.server";
 import { appointmentFor, saveAppointment, type Appointment, caseFor, caseDetailFields, saveCase, updateCaseProgress, scopedRecords, type CaseRecord } from "./operations.server";
@@ -130,7 +132,7 @@ async function personalAgenda(staff:Staff,updatedAt:string) {
 
 function mobileCase(record: CaseRecord) {
  const {$id:id,leadId,kind,institution,course,country,intake,stage,deadline,version}=record;
- return {id,leadId,kind,institution,course,country,intake,stage,deadline,version,detailEditing:true,stages:caseStagesFor(kind)};
+ return {id,leadId,kind,institution,course,country,intake,stage,deadline,version,detailEditing:true,documentChecklistAvailable:true,stages:caseStagesFor(kind)};
 }
 
 export function loader({ request, params }: LoaderFunctionArgs) {
@@ -153,6 +155,13 @@ export function loader({ request, params }: LoaderFunctionArgs) {
       const page=queuePage(new URL(request.url).searchParams.get("page"));
       const {records,hasMore}=await scopedRecords<CaseRecord>(await mobileStaff(request),"cases",page);
       return reply({page,hasMore,applications:records.map(mobileCase)});
+    }
+    if (params.resource === "application-documents") {
+      const staff = await mobileStaff(request), id = recordId(request,"application");
+      const {leadId} = await caseFor(staff,id);
+      const {documents} = await documentsFor(staff,leadId,"checklist");
+      if ((await caseFor(await mobileStaff(request),id)).leadId !== leadId) return reply({error:"Application changed. Reload and try again."},409);
+      return reply({checklist:documentChecklist(documents)});
     }
     if (params.resource === "application") return reply(mobileCase(await caseFor(await mobileStaff(request),recordId(request,"application"))));
     if (params.resource === "follow-up") {

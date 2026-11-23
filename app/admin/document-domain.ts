@@ -31,3 +31,12 @@ export function documentState(doc: Pick<ClientDocument, "status" | "expiresAt" |
   if (doc.expiresAt && Date.parse(doc.expiresAt) <= now) return "Expired";
   return doc.status;
 }
+
+export function documentChecklist(documents: Pick<ClientDocument, "category" | "status" | "expiresAt" | "scannedAt">[], now = Date.now()) {
+  return documentCategories.map(category => {
+    const states = documents.filter(doc => doc.category === category).map(doc => documentState(doc, now));
+    const status = states.includes("Accepted") ? "Ready" : !states.length ? "Not uploaded"
+      : states.includes("Pending review") ? "Awaiting review" : "Needs attention";
+    return { category, status };
+  });
+}

@@ -383,3 +383,7 @@ Deploy the CRM first to advertise application creation in online lead details. T
 ## Native application detail editing
 
 Mobile commit 7b5d315 is local. Roll out the CRM before publishing the compatible update. Physical-phone verification is pending.
+
+## Application document checklist
+
+Release the CRM API before publishing the mobile update. The feature reuses existing document storage, metadata and indexes. Mobile commit 94100b2 is local. VPS deployment, OTA publication and physical-phone testing remain pending.

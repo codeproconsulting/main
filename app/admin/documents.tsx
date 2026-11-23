@@ -3,7 +3,7 @@ import { Form, data, useActionData, useLoaderData } from "react-router";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { requireStaff, sameOrigin } from "./auth.server";
 import { field, leadFor } from "./crm.server";
-import { documentCategories, documentLimit, documentState, documentStatuses, expiryDay } from "./document-domain";
+import { documentCategories, documentChecklist, documentLimit, documentState, documentStatuses, expiryDay } from "./document-domain";
 import { documentsFor, reviewClientDocument, uploadClientDocument } from "./documents.server";
 import { boundedUploadForm } from "./storage.server";
 import { ActionError, Back, Badge, Empty, PageHeading, Submit } from "./ui";
@@ -76,13 +76,8 @@ export default function Documents() {
       <h2 id="document-checklist">Document checklist</h2>
       <p>Use the categories relevant to this client. A category is ready when it has an accepted document that has been scanned and has not expired.</p>
       <ul>
-        {documentCategories.map(category => {
-          const items = documents.filter(doc => doc.category === category);
-          const states = items.map(doc => documentState(doc));
-          const summary = states.includes("Accepted") ? "Ready" : !items.length ? "Not uploaded"
-            : states.includes("Pending review") ? "Awaiting review" : "Needs attention";
-          return <li key={category}>{category} · <Badge>{summary}</Badge></li>;
-        })}
+        {documentChecklist(documents).map(({category,status}) =>
+          <li key={category}>{category} · <Badge>{status}</Badge></li>)}
       </ul>
     </section>
     <section className="crm-panel">

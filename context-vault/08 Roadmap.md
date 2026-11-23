@@ -74,3 +74,7 @@ Native application creation passed local acceptance. The next feature extends th
 ## Native application detail editing
 
 The next planned mobile feature is application document status.
+
+## Application document checklist
+
+Application search and stage filtering are the next planned native feature.

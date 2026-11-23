@@ -303,3 +303,7 @@ The CRM rechecks current staff and lead access under locks, derives the case own
 ## Native application detail editing
 
 Detail edits use existing lead ownership checks and write locks. The mobile response excludes private case notes.
+
+## Application document checklist
+
+The CRM verifies current staff, application and enquiry access before returning category statuses. File names, links and reviewer notes stay outside the checklist response.

@@ -82,3 +82,7 @@ MOB-17 passed local acceptance. [[Sessions/2026-11-23-05]]
 ## Native application detail editing
 
 MOB-18 native application detail editing passed local acceptance. [[Sessions/2026-11-23-06]]
+
+## Application document checklist
+
+MOB-19 document checklist passed local acceptance. [[Sessions/2026-11-23-07]]

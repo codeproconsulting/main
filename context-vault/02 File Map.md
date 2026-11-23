@@ -381,3 +381,7 @@ The CRM action is in `app/admin/mobile-api.ts`, creation is in `app/admin/operat
 ## Native application detail editing
 
 `app/admin/operations.server.ts` shares field validation with the web form. The mobile editor lives in `src/Applications.tsx`.
+
+## Application document checklist
+
+Rules live in `app/admin/document-domain.ts`. The metadata query is in `app/admin/documents.server.ts`. The native component is in the mobile checkout’s `src/Applications.tsx`.

@@ -329,3 +329,7 @@ Native lead details can create an application and open the confirmed case. The C
 ## Native application detail editing
 
 The mobile application PATCH action extends the existing versioned progress write with optional detail fields.
+
+## Application document checklist
+
+Web and native screens share document-category summarization. The mobile application loads the checklist for its linked enquiry on demand.

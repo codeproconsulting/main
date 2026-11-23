@@ -3,39 +3,39 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-23-06]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-23-07]].
 
 ## Resume here
 
-**Session:** 2026-11-23-06
+**Session:** 2026-11-23-07
 
-**Active feature:** MOB-18
+**Active feature:** MOB-19
 
 **State:** completed
 
-**Objective:** Edit native application details online.
+**Objective:** Review lead document readiness in native application details.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Scoped native application detail updates
+- Scoped online document status checklist
 
 ## Out of scope
 
-- Offline edits and production rollout
+- File access, offline checklist and production rollout
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| MOB18-API | Check validation and access. | passed | CRM typecheck, 193 tests and build passed. Tests covered full and partial payloads, required fields, reassignment, stale versions, and preservation of service and private notes. |
-| MOB18-NATIVE | Check editing and conflict recovery. | passed | Mobile typecheck, lint, 13 tests and Android/iOS exports passed. Simulated controls verified field submission, conflict lockout and reload. |
+| MOB19-API | Verify document statuses and access. | passed | CRM typecheck, 193 tests and build passed. Integration checks covered the metadata projection, category statuses, unauthenticated access and reassignment before or during a request. |
+| MOB19-NATIVE | Verify native loading, refresh and privacy lifecycle. | passed | Mobile typecheck, lint, 13 tests and Android/iOS exports passed. Simulated native controls verified loading, refresh failure and recovery, background clearing and closing the application. |
 
 ## Exact next actions
 
-1. Add a native checklist for outstanding application documents. Start by reviewing the existing document metadata and access rules, and verify current lead scope before returning document statuses.
-   Files: `app/admin/documents.server.ts`, `app/admin/mobile-api.ts`, `tests/mobile-api.test.mjs`, `/Users/fidaali/Proconsulting-App/src/Applications.tsx`
+1. Add native application search and stage filters. Reuse the scoped case queue and verify that pagination preserves active filters and current lead visibility.
+   Files: `app/admin/operations.server.ts`, `app/admin/mobile-api.ts`, `tests/mobile-api.test.mjs`, `/Users/fidaali/Proconsulting-App/src/Applications.tsx`
 
 ## Known risks and unfinished work
 
@@ -59,9 +59,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-23T10:09:02.979Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-0AZ4KS/typecheck.log`
-- **passed**: `npm run test` (2026-11-23T10:09:10.077Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-0AZ4KS/test.log`
-- **passed**: `npm run build` (2026-11-23T10:09:15.167Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-0AZ4KS/build.log`
+- **passed**: `npm run typecheck` (2026-11-23T10:16:24.282Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-BmlOt1/typecheck.log`
+- **passed**: `npm run test` (2026-11-23T10:16:31.659Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-BmlOt1/test.log`
+- **passed**: `npm run build` (2026-11-23T10:16:36.959Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-BmlOt1/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -158,5 +158,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **nativeLeadNotes**: Mobile commit 29add60 is local. VPS deployment, OTA publication and physical-phone testing remain pending.
 - **nativeApplicationCreation**: Mobile commit d740660 is local and the checkout has no remote. VPS rollout, OTA publication and physical-phone acceptance remain pending.
 - **nativeApplicationEditing**: Mobile commit 7b5d315 is local. Roll out the CRM before publishing the compatible update. Physical-phone verification is pending.
+- **nativeDocumentChecklist**: Mobile commit 94100b2 is local. VPS deployment, OTA publication and physical-phone testing remain pending.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

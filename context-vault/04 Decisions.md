@@ -359,3 +359,7 @@ New mobile applications start at Shortlisted. A deterministic case ID and audit 
 ## Native application detail editing
 
 The application response advertises detail editing. Legacy clients can still send progress-only updates.
+
+## Application document checklist
+
+Checklist categories share the enquiry’s document records. Staff decide which categories apply to each application. The native checklist stays in memory while visible.
