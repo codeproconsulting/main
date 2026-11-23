@@ -405,3 +405,7 @@ MOB-13 passed local acceptance. Staff can read up to 12 upcoming personal bookin
 ## Native personal reminder inbox — 23 November
 
 MOB-14 passed local acceptance for an online personal inbox with read acknowledgement and direct navigation to all three kinds of source record. [[Sessions/2026-11-23-02]]
+
+## Native lead activity — 23 November
+
+MOB-15 passed local acceptance for recent lead history in native lead details. The matching web and mobile scope checks are covered by integration tests. [[Sessions/2026-11-23-03]]

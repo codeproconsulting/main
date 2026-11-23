@@ -7,11 +7,11 @@ import { appwrite, AppwriteError, configurationIssues, query } from "~/lib/appwr
 import { openStaffSession, staffForSession } from "./auth.server";
 import { boundedBody } from "~/lib/request-body.server";
 import { expenseYear, expensePaymentMethods, expenseCategories, expenseMonth, recordExpense, voidExpense, saveOfficeBudget } from "./finance.server";
-import { createTask, changeTask, followUpFor, leadFor, leadsFor, queuePage, scopedQueue, taskPage, updateLead } from "./crm.server";
+import { activityFor, listStaff, createTask, changeTask, followUpFor, leadFor, leadsFor, queuePage, scopedQueue, taskPage, updateLead } from "./crm.server";
 
 import { consultationReport, consultationPage, consultationPageSize, leadConsultations, recordConsultation } from "./consultations.server";
 
-import { caseStagesFor, isRestrictedManager, closureStages, priorities, stages, type Staff, type Lead, type Task } from "./domain";
+import { canManage, caseStagesFor, isRestrictedManager, closureStages, priorities, stages, type Staff, type Lead, type Task } from "./domain";
 
 const headers = { "Cache-Control": "private, no-store", "X-Robots-Tag": "noindex, nofollow" };
 const reply = (body: unknown, status = 200) => Response.json(body, { headers, status });
@@ -80,7 +80,7 @@ function recordId(request: Request, label = "lead") {
 
 function editableLead(lead: Lead) {
   const { $id: id, name, stage, priority, version } = lead;
-  return { id, name, stage, priority, version, stages, priorities, closureStages, taskSubmissionId: randomUUID(), bookingSubmissionId: randomUUID(), canSchedule: Boolean(lead.owner) && !lead.duplicateOf };
+  return { id, name, stage, priority, version, stages, priorities, closureStages, activityAvailable: true, taskSubmissionId: randomUUID(), bookingSubmissionId: randomUUID(), canSchedule: Boolean(lead.owner) && !lead.duplicateOf };
 }
 
 function editableFollowUp(task: Task) {
@@ -188,6 +188,17 @@ export function loader({ request, params }: LoaderFunctionArgs) {
       const staff = await mobileStaff(request);
       const month = new URL(request.url).searchParams.get("month") || new Date().toISOString().slice(0, 7);
       return reply({ ...await expenseMonth(staff, month), categories: expenseCategories, paymentMethods: expensePaymentMethods, submissionId: randomUUID() });
+    }
+    if (params.resource === "lead-activity") {
+      const staff = await mobileStaff(request);
+      const lead = await leadFor(staff, recordId(request));
+      const [activities, team] = await Promise.all([
+        activityFor(staff, lead), canManage(staff) ? listStaff() : [],
+      ]);
+      const names = new Map(team.map(person => [person.$id, person.name]));
+      return reply({ activities: activities.map(({actor, ...entry}) => ({
+        ...entry, author: actor === staff.$id ? "You" : names.get(actor) || "Team member",
+      })) });
     }
     if (params.resource === "lead") {
       const staff = await mobileStaff(request);

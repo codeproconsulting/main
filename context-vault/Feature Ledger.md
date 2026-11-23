@@ -66,3 +66,7 @@ MOB-13 personal offline appointment agenda passed local service, storage and com
 ## Native personal reminder inbox — 23 November
 
 MOB-14 passed local acceptance for reminder paging, personal acknowledgements and native record links. Production release and physical-device verification are pending. Next planned feature is the native lead activity timeline. [[Sessions/2026-11-23-02]]
+
+## Native lead activity — 23 November
+
+MOB-15 is locally accepted. The next native timeline action is internal-note entry. Production and device acceptance remain pending. [[Sessions/2026-11-23-03]]

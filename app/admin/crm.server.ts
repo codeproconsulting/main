@@ -667,6 +667,22 @@ export async function changeTask(staff: Staff, id: string, intent: string, expec
   });
 }
 export async function completeTask(staff:Staff,id:string,outcome:string,expectedVersion:string){return changeTask(staff,id,"complete",expectedVersion,outcome);}
-export async function activityFor(id: string) {
-  return (await listDocuments<Activity>("activities", [query("equal", "entityId", [id]), query("orderDesc", "$createdAt"), query("limit", undefined, [100])])).documents;
+export async function activityFor(staff: Staff, lead: Lead) {
+  allow(canAccessLead(staff, lead));
+  if (isRestrictedManager(staff)) return [];
+  const { documents } = await listDocuments<Activity>("activities", [
+    query("equal", "entityId", [lead.$id]), query("orderDesc", "$createdAt"), query("limit", undefined, [100]),
+  ]);
+  return documents.filter(row => row.entityType === "lead" && (canManage(staff) ||
+    !["Contact link change requested", "Duplicate decision requested"].includes(row.event))).map(row => {
+    let detail;
+    try { detail = JSON.parse(row.details); } catch { /* Older entries can lack structured details. */ }
+    return {
+      id: row.$id, at: row.$createdAt, event: row.event, actor: row.actor,
+      note: typeof detail?.note === "string" ? detail.note : "",
+      reason: typeof detail?.reason === "string" ? detail.reason : "",
+      title: typeof detail?.title === "string" ? detail.title : "",
+      dueAt: typeof detail?.dueAt === "string" ? detail.dueAt : "",
+    };
+  });
 }

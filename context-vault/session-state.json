@@ -1,42 +1,43 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-23-02",
+  "sessionId": "2026-11-23-03",
   "sessionStatus": "completed",
-  "activeFeature": "MOB-14",
-  "objective": "Read, acknowledge and act on personal reminders in the native workspace.",
+  "activeFeature": "MOB-15",
+  "objective": "Read the conversation timeline in native lead details.",
   "scope": [
-    "Recipient-scoped mobile inbox and cursor paging",
-    "Read acknowledgement and native navigation"
+    "Shared role-aware timeline and mobile read endpoint",
+    "Native on-demand timeline with refresh and privacy lifecycle"
   ],
   "outOfScope": [
-    "Push notifications, reminder generation and production rollout"
+    "Writing timeline events from the timeline screen and offline history",
+    "Deployments and update publication"
   ],
   "acceptance": [
     {
-      "id": "MOB14-API",
-      "description": "Verify scoped current reminders, cursor paging and mark-read behavior",
+      "id": "MOB15-ACCESS",
+      "description": "Verify lead visibility, event visibility and response fields on both surfaces.",
       "status": "passed",
-      "evidence": "Synthetic mobile API checks covered sign-in, cursor validation, empty pages with a continuation, recipient isolation, stale and reassigned records, all three linked source IDs and event times, repeated acknowledgement and unchanged task status. CRM typecheck, 193 tests and production build passed."
+      "evidence": "Integration checks exercised both web and mobile loaders, empty history, newest-first order, role-specific event and author visibility, cross-entity ID collisions, malformed details, no-store responses, revoked sessions and reassignment. CRM typecheck, 193 tests and production build passed."
     },
     {
-      "id": "MOB14-NATIVE",
-      "description": "Verify inbox loading, navigation, paging and refresh after an uncertain read",
+      "id": "MOB15-NATIVE",
+      "description": "Verify loading, empty history, refresh, background, errors and loss of access.",
       "status": "passed",
-      "evidence": "Mobile typecheck, lint, 13 tests and Android/iOS bundle exports passed. A Chrome interaction check using the native components with simulated controls covered empty pages, previous/next, all three linked record types, returning to the same page, read acknowledgement, lost response recovery, backgrounding, offline state, access denial and sign-out."
+      "evidence": "Mobile typecheck, lint, 13 tests and Android/iOS exports passed. A Chrome interaction check with simulated native controls exercised deferred loading, Karachi time, older entries, refresh, empty and failed reads, backgrounding, a late response after hiding, access loss, cache exclusion and a server without timeline support."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Add an online activity timeline in the native lead detail. Match the web lead loader’s current access and restricted-manager rules. Verify ownership changes and stale sessions before exposing activity details.",
+      "action": "Add internal-note entry to the native lead timeline. Reuse web note validation and scope, recheck current ownership at write time, and reconcile retries after a lost response before refreshing the timeline.",
       "files": [
-        "app/admin/lead.tsx",
         "app/admin/crm.server.ts",
+        "app/admin/lead.tsx",
         "app/admin/mobile-api.ts",
         "tests/mobile-api.test.mjs",
-        "/Users/fidaali/Proconsulting-App/src/mobile-api.ts",
-        "/Users/fidaali/Proconsulting-App/src/LeadEditor.tsx"
+        "/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx",
+        "/Users/fidaali/Proconsulting-App/src/mobile-api.ts"
       ]
     }
   ],
@@ -146,31 +147,32 @@
     "blogStudioAuthoring": "Locally verified with a synthetic publisher and in-memory storage. No VPS release or provider cutover. Native publishing UI remains separate.",
     "nativeBooking": "Mobile commit 6193625 on codex/mobile-staff is local only. Matching API verified on codex/crm-workspace. No VPS release, OTA publication or physical-device acceptance.",
     "offlineAgenda": "Local acceptance passed. Mobile aa25bfe has no configured remote. No live query, VPS release, OTA or physical-device acceptance.",
-    "nativeReminders": "Mobile commit `59a0399` is local to `codex/mobile-staff`, which has no configured remote. The CRM API must reach the VPS before publishing a compatible mobile update. Physical-phone verification, VPS rollout and OTA publication are pending."
+    "nativeReminders": "Mobile commit `59a0399` is local to `codex/mobile-staff`, which has no configured remote. The CRM API must reach the VPS before publishing a compatible mobile update. Physical-phone verification, VPS rollout and OTA publication are pending.",
+    "nativeLeadActivity": "Mobile commit `7914a0a` is local to `codex/mobile-staff`, which has no remote. VPS rollout, OTA publication and physical-phone checks remain pending."
   },
   "checks": [
     {
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-23T05:23:24.699Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-NH7Z2h/typecheck.log"
+      "checkedAt": "2026-11-23T05:41:15.796Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-p7Tqkw/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-23T05:23:31.989Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-NH7Z2h/test.log"
+      "checkedAt": "2026-11-23T05:41:23.061Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-p7Tqkw/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-23T05:23:37.309Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-NH7Z2h/build.log"
+      "checkedAt": "2026-11-23T05:41:28.252Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-p7Tqkw/build.log"
     }
   ],
-  "updatedAt": "2026-11-23T05:25:57.191Z",
-  "verifiedSourceFingerprint": "dd7234e54836e559df4355dd0ea82256996134d45087bbd00a00d4c3b7efd763"
+  "updatedAt": "2026-11-23T05:42:15.939Z",
+  "verifiedSourceFingerprint": "041fb12b717ec25c3a61b172181f4e19ad34ab6425fc067eae25d49ebe9e656c"
 }

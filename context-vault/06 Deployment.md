@@ -367,3 +367,7 @@ The workspace resource accepts the optional agenda=1 query flag. The implementat
 ## Native personal reminder inbox — 23 November
 
 Release the CRM mobile reminder endpoints before publishing the mobile update. Existing reminder storage and generator configuration are reused. Verify list, read and linked-record access with a test staff account on a physical phone after rollout. Mobile commit `59a0399` is local to `codex/mobile-staff`, which has no configured remote. The CRM API must reach the VPS before publishing a compatible mobile update. Physical-phone verification, VPS rollout and OTA publication are pending.
+
+## Native lead activity — 23 November
+
+Release the CRM first. Its online lead response enables the timeline control in a compatible mobile update. Existing activity storage and indexes are reused. Check an assigned lead and a permission change on a test phone after rollout. Mobile commit `7914a0a` is local to `codex/mobile-staff`, which has no remote. VPS rollout, OTA publication and physical-phone checks remain pending.

@@ -343,3 +343,7 @@ The server scans the first 25 upcoming records ordered by start time, filters to
 ## Native personal reminder inbox — 23 November
 
 Keep reminder contents out of the offline snapshot because reassignment, deadline changes and completed work affect visibility. A read acknowledgement changes only inbox state. The current source supplies the event time shown to staff.
+
+## Native lead activity — 23 November
+
+Recent lead history is read on demand and excluded from offline snapshots. The CRM uses the existing entity ID index and the existing 100-record limit, then excludes records associated with other entity types or with restricted events. An optional flag on the lead response lets the mobile editor work with older CRM deployments.

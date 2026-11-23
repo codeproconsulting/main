@@ -58,3 +58,7 @@ MOB-13 completed the read-only native agenda. The next planned native workflow i
 ## Native personal reminder inbox — 23 November
 
 The native inbox is locally accepted. Next planned work is a scoped activity timeline in native lead details with the same restricted-manager visibility rules as the web CRM. [[Sessions/2026-11-23-02]]
+
+## Native lead activity — 23 November
+
+The native read-only timeline passed local acceptance. The next planned feature is adding an internal note from the native timeline with ownership checks and safe retry handling. [[Sessions/2026-11-23-03]]

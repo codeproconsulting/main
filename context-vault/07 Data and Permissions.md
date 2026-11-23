@@ -287,3 +287,7 @@ Offline rows contain appointment ID, title, start and end only. Every role recei
 ## Native personal reminder inbox — 23 November
 
 The mobile inbox shares the recipient, lead and source-generation checks used by the web inbox. Only the notice ID, title, read state, source type and ID, and current event time are returned. Read acknowledgements repeat the recipient and source checks under the lead lock.
+
+## Native lead activity — 23 November
+
+Reading activity requires current CRM and lead access. Team-restricted managers receive no web timeline and remain excluded from the mobile API. Counsellors cannot see restricted contact-link and duplicate-decision request events. The mobile API returns display fields and an author label. Raw audit payloads, actor identifiers and unrelated entity events stay server-side for this endpoint.

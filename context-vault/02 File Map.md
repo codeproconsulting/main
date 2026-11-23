@@ -365,3 +365,7 @@ The appointment handler in `app/admin/mobile-api.ts` selects the mutation mode i
 ## Native personal reminder inbox — 23 November
 
 `app/admin/notifications.server.ts` resolves current reminders and their source times. `app/admin/mobile-api.ts` serves the mobile inbox and read action. `tests/mobile-api.test.mjs` exercises recipient and source checks. The mobile checkout contains the inbox in `src/Reminders.tsx` and record navigation in `src/NativeWorkspace.tsx`.
+
+## Native lead activity — 23 November
+
+`app/admin/crm.server.ts` scopes and projects events in `activityFor`. `app/admin/lead.tsx` renders these fields and `app/admin/mobile-api.ts` serves them with mobile-safe author labels. The mobile lead editor is in `src/NativeWorkspace.tsx` in the mobile checkout.

@@ -21,6 +21,7 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
   let managerScope = "";
   const events = [];
   const activities = new Map();
+  const additionalStaff = [];
   const notifications=[];
   let failCreationFinish = false;
   const consultations = [];
@@ -60,7 +61,7 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
     }
     if (url.pathname.endsWith("/staff/documents")) return Response.json({documents:[
       {$id:"staff",role,name:"Synthetic counselor",active},
-      {$id:"other",role:"counselor",name:"Former counselor",active:false},
+      {$id:"other",role:"counselor",name:"Former counselor",active:false}, ...additionalStaff,
     ]});
     if (url.pathname.includes("/notifications/documents")) {
       const id=url.pathname.split("/documents/")[1];
@@ -91,6 +92,15 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
         if(failBookingAudit && data.event==="Appointment booked")return Response.json({}, {status:503});
         if(failCreationFinish&&data.event==='Follow-up created')return Response.json({}, {status:503});
         Object.assign(activities.get(id),data);return Response.json(activities.get(id));
+      }
+      if (!id) {
+        const filters = url.searchParams.getAll("queries[]").map(JSON.parse);
+        const leadId = filters.find(f => f.method === "equal" && f.attribute === "entityId").values[0];
+        assert.ok(filters.some(f => f.method === "orderDesc" && f.attribute === "$createdAt"));
+        assert.ok(filters.some(f => f.method === "limit" && f.values[0] === 100));
+        const rows = [...activities.values()].filter(row => row.entityId === leadId)
+          .sort((a,b) => b.$createdAt.localeCompare(a.$createdAt));
+        return Response.json({documents: rows.slice(0,100), total: rows.length});
       }
       return activities.has(id)?Response.json(activities.get(id)):Response.json({}, {status:404});
     }
@@ -256,11 +266,46 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
     }
     const tampered = (token[0] === "a" ? "b" : "a") + token.slice(1);
     assert.equal((await send("workspace", { headers: { Authorization: `Bearer ${tampered}` } })).status, 401);
-    const { action: webAction } = await vite.ssrLoadModule("/app/admin/lead.tsx");
+    const { action: webAction, loader: webLead } = await vite.ssrLoadModule("/app/admin/lead.tsx");
     const { signIn: webSignIn } = await vite.ssrLoadModule("/app/admin/auth.server.ts");
     const browserHeaders = { Origin: "https://crm.example.invalid" };
     const browserLogin = await webSignIn(new Request("https://crm.example.invalid/admin/login", { headers: browserHeaders }), "fixture@example.invalid", "synthetic");
     const cookie = browserLogin.headers.get("Set-Cookie").split(";")[0];
+    const timeline = () => send("lead-activity?id=owned", auth);
+    const webTimeline = async () => (await webLead({params:{id:"owned"}, request:new Request("https://crm.example.invalid/admin/leads/owned", {headers:{Cookie:cookie}})})).activities;
+    assert.equal((await send("lead-activity?id=owned")).status,401);
+    assert.equal((await send("lead-activity?id=invalid/id",auth)).status,400);
+    assert.equal((await send("lead-activity?id=missing",auth)).status,404);
+    assert.deepEqual(await (await timeline()).json(),{activities:[]});
+    const baseEvent = {actor:"staff", entityType:"lead", entityId:"owned", $createdAt:"2020-01-01T00:00:00Z", details:"{}"};
+    for (const row of [
+      {$id:"bad", event:"Older entry", details:"{"},
+      {$id:"note", event:"Note added", actor:"colleague", $createdAt:"2020-01-02T00:00:00Z", details:JSON.stringify({note:"Example note",reason:"Example reason",title:"Example task",dueAt:"2020-01-03T00:00:00Z",internalField:"omit"})},
+      {$id:"link", event:"Contact link change requested"},
+      {$id:"duplicate", event:"Duplicate decision requested"},
+      {$id:"collision", event:"Office expense", entityType:"expense"},
+      {$id:"unrelated", event:"Other enquiry", entityId:"foreign"},
+    ]) activities.set(row.$id,{...baseEvent,...row});
+    const timelineReply = await timeline();
+    assert.match(timelineReply.headers.get("Cache-Control"),/no-store/);
+    const leadHistory = (await timelineReply.json()).activities;
+    assert.deepEqual(leadHistory.map(row=>row.id),["note","bad"]);
+    assert.deepEqual(leadHistory[0],{id:"note",at:"2020-01-02T00:00:00Z",event:"Note added",author:"Team member",note:"Example note",reason:"Example reason",title:"Example task",dueAt:"2020-01-03T00:00:00Z"});
+    assert.equal(leadHistory[1].note,""); assert.equal(leadHistory[1].author,"You");
+    const webHistory=await webTimeline();
+    assert.deepEqual(webHistory.map(row=>row.id),["note","bad"]);
+    assert.equal(webHistory[0].note,leadHistory[0].note); assert.equal(webHistory[0].details,undefined);
+    leads[0].owner="other"; assert.equal((await timeline()).status,403); leads[0].owner="staff";
+    revoked=true; assert.equal((await timeline()).status,401); revoked=false;
+    role="manager";
+    additionalStaff.push({$id:"colleague",role:"counselor",name:"Example colleague",active:true});
+    const managerHistory = (await (await timeline()).json()).activities;
+    assert.equal(managerHistory[0].author,"Example colleague");
+    assert.deepEqual(managerHistory.map(row=>row.id),["note","bad","link","duplicate"]);
+    additionalStaff.pop();
+    managerScope="team"; leads[0].teamId="synthetic-team";
+    assert.equal((await timeline()).status,403); assert.deepEqual(await webTimeline(),[]);
+    role="counselor"; managerScope=""; delete leads[0].teamId; activities.clear();
     const edit = (id, changes) => send(`lead?id=${id}`, {
       method: "PATCH", headers: { ...auth.headers, "Content-Type": "application/json" },
       body: JSON.stringify(changes),

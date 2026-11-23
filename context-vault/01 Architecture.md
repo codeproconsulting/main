@@ -313,3 +313,7 @@ On an opted-in mobile workspace refresh, the API supplies a bounded personal cal
 ## Native personal reminder inbox — 23 November
 
 The native staff inbox shares the web reminder service for paging and read acknowledgements. It resolves reminder dates from current task, appointment and application records. The mobile workspace opens the corresponding native detail screen.
+
+## Native lead activity — 23 November
+
+Web lead details and the mobile read API share a server projection of the conversation timeline. The native lead editor requests activity on demand and discards history when hidden or backgrounded.
