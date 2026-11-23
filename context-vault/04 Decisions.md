@@ -367,3 +367,7 @@ Checklist categories share the enquiry’s document records. Staff decide which 
 ## Native application search
 
 Search text is sent in the request body. Each scoped page is filtered in memory with existing indexes, so an empty filtered page can precede matches.
+
+## Native application deadline filters
+
+Upcoming windows use the remaining Karachi calendar day or today plus six days. Closed stages and invalid dates are excluded. Filters reuse existing page order.

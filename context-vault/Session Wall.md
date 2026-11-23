@@ -3,39 +3,39 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-23-08]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-23-09]].
 
 ## Resume here
 
-**Session:** 2026-11-23-08
+**Session:** 2026-11-23-09
 
-**Active feature:** MOB-20
+**Active feature:** MOB-21
 
 **State:** completed
 
-**Objective:** Search and filter the native application list.
+**Objective:** Find pending application deadlines on mobile.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Online application search, stage filters and pagination
+- Deadline filters and Karachi time display
 
 ## Out of scope
 
-- Production release and offline search
+- Offline deadline filters and production rollout
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| MOB20-API | Verify filtered scope and pagination. | passed | CRM typecheck, 193 tests and build passed. Integration checks verified case-insensitive trimmed search, invalid stage rejection, empty-page continuation, second-page matches and exclusion after reassignment. |
-| MOB20-NATIVE | Verify the native filter controls. | passed | Mobile typecheck, lint, 13 tests and Android/iOS exports passed. Simulated mobile controls verified apply, previous and next with the applied filters, and clear. |
+| MOB21-API | Verify deadline windows and pagination. | passed | CRM typecheck, 193 tests and build passed. Integration checks covered overdue paging, combined filters, invalid and closed deadlines, and Karachi midnight and seven-day boundaries. |
+| MOB21-NATIVE | Verify filter interaction and deadline display. | passed | Mobile typecheck, lint, 13 tests and both platform exports passed. Simulated mobile controls verified deadline selection, filtering with search and stage, paging, clearing and Karachi time display. |
 
 ## Exact next actions
 
-1. Extend the native application list with a deadline view. Reuse the scoped application queue and verify timezone boundaries, pending deadlines and pagination.
-   Files: `app/admin/operations.server.ts`, `app/admin/mobile-api.ts`, `tests/mobile-api.test.mjs`, `/Users/fidaali/Proconsulting-App/src/Applications.tsx`
+1. Add a native link from application detail to its assigned lead. Verify current lead scope on open and preserve the return path to the application.
+   Files: `/Users/fidaali/Proconsulting-App/src/Applications.tsx`, `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`, `tests/mobile-api.test.mjs`
 
 ## Known risks and unfinished work
 
@@ -59,9 +59,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-23T11:17:26.082Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ior8ZU/typecheck.log`
-- **passed**: `npm run test` (2026-11-23T11:17:33.445Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ior8ZU/test.log`
-- **passed**: `npm run build` (2026-11-23T11:17:38.696Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-ior8ZU/build.log`
+- **passed**: `npm run typecheck` (2026-11-23T12:01:24.698Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-D3b7BO/typecheck.log`
+- **passed**: `npm run test` (2026-11-23T12:01:32.812Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-D3b7BO/test.log`
+- **passed**: `npm run build` (2026-11-23T12:01:38.315Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-D3b7BO/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -160,5 +160,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **nativeApplicationEditing**: Mobile commit 7b5d315 is local. Roll out the CRM before publishing the compatible update. Physical-phone verification is pending.
 - **nativeDocumentChecklist**: Mobile commit 94100b2 is local. VPS deployment, OTA publication and physical-phone testing remain pending.
 - **nativeApplicationSearch**: Mobile commit 835216e is local. VPS rollout, OTA publication and physical-phone testing remain pending.
+- **nativeApplicationDeadlines**: Mobile commit 5221988 is local. VPS rollout, OTA publication and physical-phone testing remain pending.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

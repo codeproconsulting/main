@@ -90,3 +90,7 @@ MOB-19 document checklist passed local acceptance. [[Sessions/2026-11-23-07]]
 ## Native application search
 
 MOB-20 native application search passed local acceptance. [[Sessions/2026-11-23-08]]
+
+## Native application deadline filters
+
+MOB-21 native deadline filters passed local acceptance. [[Sessions/2026-11-23-09]]

@@ -520,8 +520,8 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
     assert.equal((await send("consultation-report",auth)).status,403);
     assert.equal((await send("applications")).status,401);
     const appList=await(await send("applications",auth)).json();assert.equal(appList.applications.length,1);assert.equal(appList.applications[0].notes,undefined);
-    const searchCases=(search,stage="",page=1)=>send("applications",{method:"POST",
-      headers:{...auth.headers,"Content-Type":"application/json"},body:JSON.stringify({search,stage,page})});
+    const searchCases=(search,stage="",page=1,deadline="")=>send("applications",{method:"POST",
+      headers:{...auth.headers,"Content-Type":"application/json"},body:JSON.stringify({search,stage,page,deadline})});
     assert.equal((await searchCases("","bad")).status,400);
     const fillers=Array.from({length:25},(_,index)=>({...cases[0],$id:"filler-"+index,institution:"Example filler",course:"Example course"}));
     cases.unshift(...fillers);
@@ -532,6 +532,21 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
     leads[0].owner="other";
     assert.deepEqual((await (await searchCases("synthetic","",2)).json()).applications,[]);
     leads[0].owner="staff";
+    assert.equal((await searchCases("","",1,"bad")).status,400);
+    cases.at(-1).deadline="2020-01-01T10:00:00Z";
+    assert.equal((await (await searchCases("","",1,"overdue")).json()).hasMore,true);
+    assert.deepEqual((await (await searchCases("synthetic","Shortlisted",2,"overdue")).json()).applications.map(row=>row.id),["case"]);
+    cases.at(-1).deadline="";
+    const {matchesCaseDeadline}=await vite.ssrLoadModule("/app/admin/operations.server.ts");
+    const deadlineClock=Date.parse("2030-01-01T18:59:00Z");
+    const matchDeadline=(deadline,filter,stage="Submitted")=>matchesCaseDeadline({deadline,stage},filter,deadlineClock);
+    assert.equal(matchDeadline("2030-01-01T18:58:59Z","overdue"),true);
+    assert.equal(matchDeadline("2030-01-01T18:59:00Z","today"),true);
+    assert.equal(matchDeadline("2030-01-01T19:00:00Z","today"),false);
+    assert.equal(matchDeadline("2030-01-01T19:00:00Z","week"),true);
+    assert.equal(matchDeadline("2030-01-07T19:00:00Z","week"),false);
+    assert.equal(matchDeadline("2030-01-01T18:58:59Z","overdue","Withdrawn"),false);
+    assert.equal(matchDeadline("invalid","week"),false);
     cases.splice(0,fillers.length);
     const detail=await(await send("application?id=case",auth)).json();
     assert.equal(detail.documentChecklistAvailable,true);

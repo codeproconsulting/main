@@ -1,3 +1,4 @@
+import {closedCaseStages} from "./reminder-policy";
 import {createHash,randomUUID} from "node:crypto";
 import {AppwriteError,createDocument,getDocument,listDocuments,query,updateDocument} from "~/lib/appwrite.server";
 import {caseStagesFor,canManage,canUseCRM,isRestrictedManager,type Activity,type Staff} from "./domain";
@@ -5,6 +6,19 @@ import {allow,audit,dateField,definitiveWriteRejection,field,leadFor,writableEnq
 export type CaseRecord={$id:string;leadId:string;owner:string;kind:string;institution:string;course:string;country:string;intake:string;stage:string;deadline:string;notes:string;version:number};
 import {appointmentCalendarLock,appointmentTime,assertCalendarAvailable,type Appointment} from "./calendar.server";
 export type {Appointment} from "./calendar.server";
+
+export const caseDeadlineFilters = ["overdue", "today", "week"] as const;
+export type CaseDeadlineFilter = typeof caseDeadlineFilters[number];
+const dayMs = 86_400_000;
+const karachiOffset = 5 * 3_600_000;
+
+export function matchesCaseDeadline(record: Pick<CaseRecord,"stage"|"deadline">, filter: CaseDeadlineFilter, now: number) {
+ const deadline = Date.parse(record.deadline);
+ if (!Number.isFinite(deadline) || closedCaseStages.includes(record.stage)) return false;
+ if (filter === "overdue") return deadline < now;
+ const today = Math.floor((now + karachiOffset) / dayMs) * dayMs - karachiOffset;
+ return deadline >= now && deadline < today + (filter === "today" ? 1 : 7) * dayMs;
+}
 
 export function scopedRecords<T extends {leadId:string}>(staff: Staff, collection: "cases" | "appointments", page = 1) {
   return scopedQueue<T>(staff, collection, [query("orderDesc", "$createdAt")], page);

@@ -311,3 +311,7 @@ The CRM verifies current staff, application and enquiry access before returning 
 ## Native application search
 
 The existing case queue rechecks current enquiry access before applying search and stage filters.
+
+## Native application deadline filters
+
+Deadline matching runs after the application queue applies current lead scope.

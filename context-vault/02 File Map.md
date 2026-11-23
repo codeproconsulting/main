@@ -389,3 +389,7 @@ Rules live in `app/admin/document-domain.ts`. The metadata query is in `app/admi
 ## Native application search
 
 The filter action lives in `app/admin/mobile-api.ts`. Mobile controls and applied pagination state live in `src/Applications.tsx`.
+
+## Native application deadline filters
+
+Deadline matching lives in `app/admin/operations.server.ts`, API negotiation in `app/admin/mobile-api.ts` and the native controls in `src/Applications.tsx`.

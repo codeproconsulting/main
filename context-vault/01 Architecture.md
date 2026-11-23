@@ -337,3 +337,7 @@ Web and native screens share document-category summarization. The mobile applica
 ## Native application search
 
 The mobile application list uses the shared scoped case queue for filtered and unfiltered requests.
+
+## Native application deadline filters
+
+The scoped application list can filter by pending deadline as well as text and stage.

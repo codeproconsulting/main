@@ -2,7 +2,7 @@ import { documentChecklist } from "./document-domain";
 import { documentsFor } from "./documents.server";
 import { noticesFor, readNotice } from "./notifications.server";
 import { bookAppointment } from "./appointment-booking.server";
-import { appointmentFor, saveAppointment, type Appointment, caseFor, caseDetailFields, saveCase, updateCaseProgress, scopedRecords, type CaseRecord } from "./operations.server";
+import { appointmentFor, saveAppointment, type Appointment, caseFor, caseDeadlineFilters, matchesCaseDeadline, caseDetailFields, saveCase, updateCaseProgress, scopedRecords, type CaseRecord } from "./operations.server";
 import { createCipheriv, createDecipheriv, randomBytes, randomUUID, scryptSync } from "node:crypto";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { appwrite, AppwriteError, configurationIssues, query } from "~/lib/appwrite.server";
@@ -154,7 +154,7 @@ export function loader({ request, params }: LoaderFunctionArgs) {
     if (params.resource === "applications") {
       const page=queuePage(new URL(request.url).searchParams.get("page"));
       const {records,hasMore}=await scopedRecords<CaseRecord>(await mobileStaff(request),"cases",page);
-      return reply({page,hasMore,filterStages:caseStages,applications:records.map(mobileCase)});
+      return reply({page,hasMore,filterStages:caseStages,deadlineFilters:caseDeadlineFilters,applications:records.map(mobileCase)});
     }
     if (params.resource === "application-documents") {
       const staff = await mobileStaff(request), id = recordId(request,"application");
@@ -244,7 +244,9 @@ export function action({ request, params }: ActionFunctionArgs) {
       if (!isJson(request)) return reply({error:"Expected JSON."},415);
       const raw = await (await boundedBody(request,4096,"Application search")).text();
       const body = await Promise.resolve(raw).then(JSON.parse).catch(() => null);
-      if (typeof body?.search !== "string" || body.search.trim().length > 150 ||
+      const deadline = body?.deadline === undefined ? "" : body.deadline;
+      const deadlineFilter = caseDeadlineFilters.find(value => value === deadline);
+      if ((deadline !== "" && !deadlineFilter) || typeof body?.search !== "string" || body.search.trim().length > 150 ||
           typeof body.stage !== "string" || (body.stage && !caseStages.includes(body.stage))) {
         return reply({error:"Invalid application filters."},400);
       }
@@ -252,9 +254,10 @@ export function action({ request, params }: ActionFunctionArgs) {
       const search = body.search.trim().toLowerCase();
       const {records,hasMore} = await scopedRecords<CaseRecord>(staff,"cases",page);
       // shortcut: filter each scoped page, use indexed search if case volumes make sparse pages impractical.
-      const matching = records.filter(record => (!body.stage || record.stage === body.stage) &&
+      const now = Date.now();
+      const matching = records.filter(record => (!deadlineFilter || matchesCaseDeadline(record,deadlineFilter,now)) && (!body.stage || record.stage === body.stage) &&
         (!search || [record.institution,record.course,record.country,record.intake].some(value => value?.toLowerCase().includes(search))));
-      return reply({page,hasMore,filterStages:caseStages,applications:matching.map(mobileCase)});
+      return reply({page,hasMore,filterStages:caseStages,deadlineFilters:caseDeadlineFilters,applications:matching.map(mobileCase)});
     }
     if (params.resource === "lead-note") {
       if (request.method !== "POST") return reply({ error: "Method not allowed." }, 405);

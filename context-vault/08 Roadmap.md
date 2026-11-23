@@ -82,3 +82,7 @@ Application search and stage filtering are the next planned native feature.
 ## Native application search
 
 The next planned application-list feature is a deadline view.
+
+## Native application deadline filters
+
+Next work is a native link from an application to its assigned lead.
