@@ -58,3 +58,7 @@ CMS-05 Blog Studio rich authoring and private previews passed local acceptance. 
 ## Native appointment booking — 23 November
 
 MOB-12 native appointment creation is implemented and locally tested. Mobile checkpoint `6193625` is local to the mobile checkout. The matching API is included on the CRM feature branch. Release verification remains pending. See [[Sessions/2026-11-22-05]].
+
+## Offline mobile agenda — 23 November
+
+MOB-13 personal offline appointment agenda passed local service, storage and component acceptance. Mobile `aa25bfe` is local only. Release and handset checks are pending. [[Sessions/2026-11-23-01]]

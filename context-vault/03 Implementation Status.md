@@ -397,3 +397,7 @@ CMS-05 passed local editor and save/restore acceptance. Staff can add inline lin
 ## Native appointment booking — 23 November
 
 MOB-12 is implemented and tested in the two local worktrees. Assigned staff can book in Karachi office time, choose a duration and location, and open the confirmed meeting natively. The mobile source is committed locally as `6193625` and this CRM checkpoint includes its matching API. VPS rollout, OTA publication and handset verification remain pending. Evidence in [[Sessions/2026-11-22-05]].
+
+## Offline mobile agenda — 23 November
+
+MOB-13 passed local acceptance. Staff can read up to 12 upcoming personal bookings in Karachi time, with the last-sync time and partial results identified. Mobile checkpoint `aa25bfe` is local. Live API, OTA and handset acceptance remain pending. [[Sessions/2026-11-23-01]]

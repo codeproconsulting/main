@@ -2,15 +2,15 @@ import { bookAppointment } from "./appointment-booking.server";
 import { appointmentFor, saveAppointment, type Appointment, caseFor, updateCaseProgress, scopedRecords, type CaseRecord } from "./operations.server";
 import { createCipheriv, createDecipheriv, randomBytes, randomUUID, scryptSync } from "node:crypto";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { appwrite, AppwriteError, configurationIssues } from "~/lib/appwrite.server";
+import { appwrite, AppwriteError, configurationIssues, query } from "~/lib/appwrite.server";
 import { openStaffSession, staffForSession } from "./auth.server";
 import { boundedBody } from "~/lib/request-body.server";
 import { expenseYear, expensePaymentMethods, expenseCategories, expenseMonth, recordExpense, voidExpense, saveOfficeBudget } from "./finance.server";
-import { createTask, changeTask, followUpFor, leadFor, leadsFor, queuePage, taskPage, updateLead } from "./crm.server";
+import { createTask, changeTask, followUpFor, leadFor, leadsFor, queuePage, scopedQueue, taskPage, updateLead } from "./crm.server";
 
 import { consultationReport, consultationPage, consultationPageSize, leadConsultations, recordConsultation } from "./consultations.server";
 
-import { caseStagesFor, isRestrictedManager, closureStages, priorities, stages, type Lead, type Task } from "./domain";
+import { caseStagesFor, isRestrictedManager, closureStages, priorities, stages, type Staff, type Lead, type Task } from "./domain";
 
 const headers = { "Cache-Control": "private, no-store", "X-Robots-Tag": "noindex, nofollow" };
 const reply = (body: unknown, status = 200) => Response.json(body, { headers, status });
@@ -112,6 +112,21 @@ function mobileAppointment(record: Appointment){
  return {id,leadId,title,startsAt,endsAt,status,location,version};
 }
 
+async function personalAgenda(staff:Staff,updatedAt:string) {
+  const filters = [query("greaterThanEqual","startsAt",[updatedAt]),query("orderAsc","startsAt"),
+    query("select",undefined,["$id","leadId","title","startsAt","endsAt","status"])];
+  let page;
+  try { page = await scopedQueue<Appointment>(staff,"appointments",filters,1,25,true); }
+  catch (error) {
+    // An older installation can still serve the leads and tasks snapshot.
+    if (error instanceof AppwriteError && [400,404].includes(error.status)) return undefined;
+    throw error;
+  }
+  const {records,hasMore} = page;
+  const booked = records.filter(record=>record.status==="Booked");
+  return { meetings:booked.slice(0,12).map(({$id:id,title,startsAt,endsAt})=>({id,title,startsAt,endsAt})), limited:hasMore || booked.length>12 };
+}
+
 function mobileCase(record: CaseRecord) {
  const {$id:id,leadId,kind,institution,course,country,intake,stage,deadline,version}=record;
  return {id,leadId,kind,institution,course,country,intake,stage,deadline,version,stages:caseStagesFor(kind)};
@@ -177,9 +192,13 @@ export function loader({ request, params }: LoaderFunctionArgs) {
     }
     if (params.resource !== "workspace") return reply({ error: "Unknown resource." }, 404);
     const staff = await mobileStaff(request);
-    const [leads, { records: tasks, hasMore }] = await Promise.all([leadsFor(staff), taskPage(staff, 1)]);
+    const updatedAt = new Date().toISOString();
+    const includeAgenda = new URL(request.url).searchParams.get("agenda")==="1";
+    const [leads, { records: tasks, hasMore }, agenda] = await Promise.all([
+      leadsFor(staff), taskPage(staff,1), includeAgenda ? personalAgenda(staff,updatedAt) : undefined,
+    ]);
     return reply({
-      updatedAt: new Date().toISOString(),
+      updatedAt, agenda,
       ...mobileLeads(leads),
       leadsHaveMore: leads.total > 25,
       tasksHaveMore: hasMore,

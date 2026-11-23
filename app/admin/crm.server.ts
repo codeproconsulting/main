@@ -76,17 +76,17 @@ export function queuePage(value: string | null) {
 }
 
 export async function scopedQueue<T extends { leadId: string }>(
-  staff: Staff, collection: "tasks" | "cases" | "appointments", filters: string[], page: number, size = 25,
+  staff: Staff, collection: "tasks" | "cases" | "appointments", filters: string[], page: number, size = 25, personal = false,
 ) {
   allow(canUseCRM(staff) && !isRestrictedManager(staff));
   const manager = canManage(staff);
   const offset = (page - 1) * size;
   const { documents, total } = await listDocuments<T>(collection, [
     ...filters, query("orderAsc", "$id"), query("limit", undefined, [size]), query("offset", undefined, [offset]),
-    ...(!manager ? [query("equal", "owner", [staff.$id])] : []),
+    ...(!manager || personal ? [query("equal", "owner", [staff.$id])] : []),
   ]);
   const hasMore = offset + size < total && page < 10000;
-  if (manager && collection === "tasks") return { records: documents, hasMore };
+  if (manager && !personal && collection === "tasks") return { records: documents, hasMore };
   // Filter after pagination so stale owner metadata cannot block navigation to the next raw page.
   const ids = [...new Set(documents.map(row => row.leadId))];
   const allowed = new Set<string>();
@@ -94,7 +94,7 @@ export async function scopedQueue<T extends { leadId: string }>(
     await Promise.all(ids.slice(i, i + 8).map(async id => {
       try {
         const lead = await getDocument<Lead>("leads", id);
-        if (canAccessLead(staff, lead)) allowed.add(id);
+        if (canAccessLead(staff, lead) && (!personal || lead.owner === staff.$id)) allowed.add(id);
       } catch (error) {
         if (!(error instanceof AppwriteError && error.status === 404)) throw error;
       }

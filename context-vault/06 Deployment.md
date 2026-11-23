@@ -359,3 +359,7 @@ CMS-05 ships with the existing dashboard build on crm.proconsulting.uk. It reuse
 ## Native appointment booking — 23 November
 
 The native booking form requires the lead response with bookingSubmissionId and authenticated POST to `/admin/mobile/v1/appointments?id=<lead-id>`. The form uses existing Appwrite collections and locks. Deploy and verify the matching API before releasing the mobile bundle. No production or signed-device evidence was recorded in this review.
+
+## Offline mobile agenda — 23 November
+
+The workspace resource accepts the optional agenda=1 query flag. The implementation reuses the existing appointment owner/start index and the mobile runtime’s SecureStore. Verify chronological results, current assignment, an offline restart and a refresh after a calendar write on the release candidate before OTA. No production change was performed.

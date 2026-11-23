@@ -50,3 +50,7 @@ The comprehensive web authoring pass is locally verified. Ghost migration accept
 ## Native appointment booking — 23 November
 
 The native booking workflow is feature-tested. The next planned mobile calendar feature is a read-only offline agenda within the existing encrypted workspace. Physical-device testing, the server release and the mobile update have separate acceptance steps.
+
+## Offline mobile agenda — 23 November
+
+MOB-13 completed the read-only native agenda. The next planned native workflow is the staff reminder inbox, reusing the existing web reminder permissions. VPS, mobile release and device verification are tracked separately.

@@ -1,41 +1,41 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-22-05",
+  "sessionId": "2026-11-23-01",
   "sessionStatus": "completed",
-  "activeFeature": "MOB-12",
-  "objective": "Create appointments entirely within the native enquiry workspace.",
+  "activeFeature": "MOB-13",
+  "objective": "Read upcoming personal appointments offline in the native workspace.",
   "scope": [
-    "Staff-scoped booking with calendar conflict checks and duplicate-safe retry",
-    "Native booking form with office-local dates, start time and duration"
+    "Scoped agenda in the encrypted workspace snapshot",
+    "Read-only phone view, invalidation and compatibility"
   ],
   "outOfScope": [
-    "Offline writes, VPS deployment and OTA publication"
+    "Offline writes and production rollout"
   ],
   "acceptance": [
     {
-      "id": "MOB12-API",
-      "description": "Booking scope, conflicts and retry after a lost reply",
+      "id": "MOB13-SCOPE",
+      "description": "Verify current scope and bounded projection",
       "status": "passed",
-      "evidence": "The local CRM verification passed typecheck, 193 tests and production build. The mobile API integration covered assigned and foreign enquiries, overlapping requests, two concurrent bookings for one slot, a lost write acknowledgement, audit completion retry and replay after cancellation."
+      "evidence": "Synthetic API checks cover chronological order, the 12-meeting bound, booked status, current appointment and enquiry ownership for counsellors and managers, legacy response shape, optional query failure and access denial. CRM typecheck, 193 tests and production build passed."
     },
     {
-      "id": "MOB12-NATIVE",
-      "description": "Exercise the native form, retry behavior and mobile bundles",
+      "id": "MOB13-OFFLINE",
+      "description": "Verify offline reads, refresh, expiry, sign-out and write invalidation",
       "status": "passed",
-      "evidence": "Mobile typecheck, lint, 12 tests and Android/iOS JS exports passed. Chrome component checks exercised the form with simulated native controls, cache-clear failure, identical retry, opening the confirmed record and returning to the list. Physical-phone acceptance remains pending."
+      "evidence": "Mobile typecheck, lint, 12 tests and Android/iOS bundle exports passed. SecureStore tests cover older snapshots, malformed agenda, refresh replacement, expiry and storage limits. A Chrome workspace interaction check with simulated native controls covered offline restart, read-only display, foreground hiding, expiry, sign-out and invalidation before a calendar write."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Build a read-only offline appointment agenda in the native workspace. Cache scoped upcoming meetings within the existing encrypted snapshot and verify expiry, sign-out, refresh and cache invalidation after writes.",
+      "action": "Build a native staff reminder inbox using the web reminder service and its current staff scope. Include paging, read status and a native route to the associated follow-up when permitted.",
       "files": [
+        "app/admin/notifications.server.ts",
         "app/admin/mobile-api.ts",
         "tests/mobile-api.test.mjs",
-        "/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx",
-        "/Users/fidaali/Proconsulting-App/src/offline-cache.ts",
-        "/Users/fidaali/Proconsulting-App/tests/offline-cache.test.mjs"
+        "/Users/fidaali/Proconsulting-App/src/mobile-api.ts",
+        "/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx"
       ]
     }
   ],
@@ -143,31 +143,32 @@
     "nativeAppointments": "Locally accepted API and component workflow. Mobile commit 86fa4ef is local only (no remote). No VPS, OTA or device acceptance; existing schema reused.",
     "nativeRescheduling": "Mobile d773f7e local only, CRM changes locally verified. No remote for mobile, VPS deployment, OTA or physical-device acceptance.",
     "blogStudioAuthoring": "Locally verified with a synthetic publisher and in-memory storage. No VPS release or provider cutover. Native publishing UI remains separate.",
-    "nativeBooking": "Mobile commit 6193625 on codex/mobile-staff is local only. Matching API verified on codex/crm-workspace. No VPS release, OTA publication or physical-device acceptance."
+    "nativeBooking": "Mobile commit 6193625 on codex/mobile-staff is local only. Matching API verified on codex/crm-workspace. No VPS release, OTA publication or physical-device acceptance.",
+    "offlineAgenda": "Local acceptance passed. Mobile aa25bfe has no configured remote. No live query, VPS release, OTA or physical-device acceptance."
   },
   "checks": [
     {
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-23T05:06:36.087Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-VFiqAl/typecheck.log"
+      "checkedAt": "2026-11-23T05:11:50.468Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-dCiZYd/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-23T05:06:43.444Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-VFiqAl/test.log"
+      "checkedAt": "2026-11-23T05:11:58.547Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-dCiZYd/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-23T05:06:48.938Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-VFiqAl/build.log"
+      "checkedAt": "2026-11-23T05:12:04.229Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-dCiZYd/build.log"
     }
   ],
-  "updatedAt": "2026-11-23T05:07:00.992Z",
-  "verifiedSourceFingerprint": "130e679ceca7128f6196f591b6d75d6eb786cd41302f1c638cf7817749de9d18"
+  "updatedAt": "2026-11-23T05:13:36.691Z",
+  "verifiedSourceFingerprint": "34f0f6c60f5a1ec2ac1756c5b2418f3bc095e2f871235d4323379147e10465c8"
 }

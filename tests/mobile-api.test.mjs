@@ -27,6 +27,7 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
   let lostTaskAck = false;
   let lostCaseAck = false;
   let lostAppointmentAck = false;
+  let agendaFailure = 0;
   let failBookingAudit = false, loseBookingCreateAck = false;
   const leads = [
     { $id: "owned", owner: "staff", name: "Synthetic lead", email: "fixture@example.invalid", stage: "New", priority: "Normal", nextFollowUp: "2027-01-01T10:00:00.000Z", version: 1 },
@@ -121,11 +122,14 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
     }
     const filters = url.searchParams.getAll("queries[]").map(JSON.parse);
     if (role === "counselor") assert.ok(filters.some(filter => filter.attribute === "owner" && filter.values[0] === "staff"));
+    if (agendaFailure && match[1]==="appointments" && filters.some(f=>f.method==="greaterThanEqual")) return Response.json({}, {status:agendaFailure});
     const documents = rows.filter(row => filters.every(filter => {
       if (filter.method === "equal") return filter.values.includes(row[filter.attribute]);
+      if (filter.method === "greaterThanEqual") return row[filter.attribute]>=filter.values[0];
       if (filter.method === "search") return row[filter.attribute].includes(filter.values[0]);
       return true;
     }));
+    if (filters.some(f=>f.method==="orderAsc" && f.attribute==="startsAt")) documents.sort((a,b)=>a.startsAt.localeCompare(b.startsAt));
     const offset = filters.find(filter => filter.method === "offset")?.values[0] ?? 0;
     const limit = filters.find(filter => filter.method === "limit")?.values[0] ?? 100;
     return Response.json({ documents: documents.slice(offset, offset + limit), total: documents.length });
@@ -155,6 +159,31 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
     assert.deepEqual(data.leads.map(lead => lead.id), ["owned"]);
     assert.equal(data.leads[0].email, undefined);
     assert.deepEqual(data.tasks.map(task => task.id), ["task"]);
+    assert.equal(data.agenda,undefined);
+    const originalCount=appointments.length;
+    for(let n=15;n>0;n--){
+      const date="2098-02-"+String(n).padStart(2,"0");
+      appointments.push({...appointments[0],$id:"upcoming-"+n,startsAt:date+"T09:00:00.000Z",endsAt:date+"T10:00:00.000Z"});
+    }
+    Object.assign(appointments.at(-1),{owner:"other"});
+    Object.assign(appointments.at(-2),{leadId:"foreign"});
+    Object.assign(appointments.at(-3),{status:"Cancelled"});
+    const agenda=async()=>(await(await send("workspace?agenda=1",auth)).json()).agenda;
+    const personal=await agenda();
+    assert.equal(personal.limited,false);
+    assert.deepEqual(personal.meetings.map(m=>m.id),Array.from({length:12},(_,i)=>"upcoming-"+(i+4)));
+    assert.deepEqual(Object.keys(personal.meetings[0]).sort(),["endsAt","id","startsAt","title"]);
+    appointments.at(-3).status="Booked";
+    assert.equal((await agenda()).limited,true);
+    role="owner";
+    assert.ok(!(await agenda()).meetings.some(m=>["upcoming-1","upcoming-2"].includes(m.id)));
+    role="counselor";
+    agendaFailure=400;
+    const legacy=await send("workspace?agenda=1",auth);
+    assert.equal(legacy.status,200);assert.equal((await legacy.json()).agenda,undefined);
+    agendaFailure=403;assert.equal((await send("workspace?agenda=1",auth)).status,403);
+    agendaFailure=0;
+    appointments.splice(originalCount);
     const searchLeads = (q, page = 1, headers = auth.headers) => send("leads", {
       method: "POST", headers: { ...headers, "Content-Type": "application/json" },
       body: JSON.stringify({ q, page }),

@@ -335,3 +335,7 @@ Use the existing sanitized HTML and revision format for rich blocks. Keep the ed
 ## Native appointment booking — 23 November
 
 Acquire lead, staff-access and calendar locks in that order. Record a fingerprint of the original form before creating a booking. Reject a changed payload submitted with a used token. Confirm an identical retry against the stored record and audit so it cannot undo a later cancellation.
+
+## Offline mobile agenda — 23 November
+
+The server scans the first 25 upcoming records ordered by start time, filters to current lead ownership and booked status, then returns up to 12 meetings. Mobile retains the original snapshot deadline and drops the optional agenda first if secure storage fills. Older clients continue using the base workspace response.

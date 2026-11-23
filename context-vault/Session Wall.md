@@ -3,40 +3,40 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-22-05]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-23-01]].
 
 ## Resume here
 
-**Session:** 2026-11-22-05
+**Session:** 2026-11-23-01
 
-**Active feature:** MOB-12
+**Active feature:** MOB-13
 
 **State:** completed
 
-**Objective:** Create appointments entirely within the native enquiry workspace.
+**Objective:** Read upcoming personal appointments offline in the native workspace.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Staff-scoped booking with calendar conflict checks and duplicate-safe retry
-- Native booking form with office-local dates, start time and duration
+- Scoped agenda in the encrypted workspace snapshot
+- Read-only phone view, invalidation and compatibility
 
 ## Out of scope
 
-- Offline writes, VPS deployment and OTA publication
+- Offline writes and production rollout
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| MOB12-API | Booking scope, conflicts and retry after a lost reply | passed | The local CRM verification passed typecheck, 193 tests and production build. The mobile API integration covered assigned and foreign enquiries, overlapping requests, two concurrent bookings for one slot, a lost write acknowledgement, audit completion retry and replay after cancellation. |
-| MOB12-NATIVE | Exercise the native form, retry behavior and mobile bundles | passed | Mobile typecheck, lint, 12 tests and Android/iOS JS exports passed. Chrome component checks exercised the form with simulated native controls, cache-clear failure, identical retry, opening the confirmed record and returning to the list. Physical-phone acceptance remains pending. |
+| MOB13-SCOPE | Verify current scope and bounded projection | passed | Synthetic API checks cover chronological order, the 12-meeting bound, booked status, current appointment and enquiry ownership for counsellors and managers, legacy response shape, optional query failure and access denial. CRM typecheck, 193 tests and production build passed. |
+| MOB13-OFFLINE | Verify offline reads, refresh, expiry, sign-out and write invalidation | passed | Mobile typecheck, lint, 12 tests and Android/iOS bundle exports passed. SecureStore tests cover older snapshots, malformed agenda, refresh replacement, expiry and storage limits. A Chrome workspace interaction check with simulated native controls covered offline restart, read-only display, foreground hiding, expiry, sign-out and invalidation before a calendar write. |
 
 ## Exact next actions
 
-1. Build a read-only offline appointment agenda in the native workspace. Cache scoped upcoming meetings within the existing encrypted snapshot and verify expiry, sign-out, refresh and cache invalidation after writes.
-   Files: `app/admin/mobile-api.ts`, `tests/mobile-api.test.mjs`, `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`, `/Users/fidaali/Proconsulting-App/src/offline-cache.ts`, `/Users/fidaali/Proconsulting-App/tests/offline-cache.test.mjs`
+1. Build a native staff reminder inbox using the web reminder service and its current staff scope. Include paging, read status and a native route to the associated follow-up when permitted.
+   Files: `app/admin/notifications.server.ts`, `app/admin/mobile-api.ts`, `tests/mobile-api.test.mjs`, `/Users/fidaali/Proconsulting-App/src/mobile-api.ts`, `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`
 
 ## Known risks and unfinished work
 
@@ -60,9 +60,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-23T05:06:36.087Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-VFiqAl/typecheck.log`
-- **passed**: `npm run test` (2026-11-23T05:06:43.444Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-VFiqAl/test.log`
-- **passed**: `npm run build` (2026-11-23T05:06:48.938Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-VFiqAl/build.log`
+- **passed**: `npm run typecheck` (2026-11-23T05:11:50.468Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-dCiZYd/typecheck.log`
+- **passed**: `npm run test` (2026-11-23T05:11:58.547Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-dCiZYd/test.log`
+- **passed**: `npm run build` (2026-11-23T05:12:04.229Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-dCiZYd/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -153,5 +153,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **nativeRescheduling**: Mobile d773f7e local only, CRM changes locally verified. No remote for mobile, VPS deployment, OTA or physical-device acceptance.
 - **blogStudioAuthoring**: Locally verified with a synthetic publisher and in-memory storage. No VPS release or provider cutover. Native publishing UI remains separate.
 - **nativeBooking**: Mobile commit 6193625 on codex/mobile-staff is local only. Matching API verified on codex/crm-workspace. No VPS release, OTA publication or physical-device acceptance.
+- **offlineAgenda**: Local acceptance passed. Mobile aa25bfe has no configured remote. No live query, VPS release, OTA or physical-device acceptance.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

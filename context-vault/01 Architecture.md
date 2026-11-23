@@ -305,3 +305,7 @@ Blog Studio renders unsaved article previews through the authenticated HTML sani
 ## Native appointment booking — 23 November
 
 The native staff workspace now has an online booking form on assigned enquiries. Its POST uses the existing CRM bearer session and the shared calendar lock. A stable submission ID links the private appointment and its creation audit. Replaying a completed request returns the current appointment, including subsequent changes.
+
+## Offline mobile agenda — 23 November
+
+On an opted-in mobile workspace refresh, the API supplies a bounded personal calendar summary alongside leads and tasks. React Native reads the summary from the same encrypted snapshot for online or offline viewing. Calendar writes and workspace refresh share a request guard.

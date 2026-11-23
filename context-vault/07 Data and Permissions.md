@@ -279,3 +279,7 @@ The image picker requires editorial access and queries public images only. Visib
 ## Native appointment booking — 23 November
 
 The server rechecks current staff and enquiry access under lock and derives the assignee from the lead. The phone keeps booking input in memory and clears the saved offline workspace before posting. Private appointment notes are excluded from the response.
+
+## Offline mobile agenda — 23 November
+
+Offline rows contain appointment ID, title, start and end only. Every role receives its own assigned meetings, with current enquiry ownership rechecked. Session and snapshot expiry, sign-out, access denial and clearing saved data restrict offline visibility. A calendar change drops the in-memory agenda and clears storage before submission.

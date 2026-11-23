@@ -357,3 +357,7 @@ The appointment handler in `app/admin/mobile-api.ts` selects the mutation mode i
 ## Native appointment booking — 23 November
 
 `app/admin/mobile-api.ts` issues the form token and accepts booking requests. `app/admin/appointment-booking.server.ts` handles access, conflict checking and creation recovery. `tests/mobile-api.test.mjs` covers the API. In the separate mobile checkout, `src/AppointmentCreate.tsx` owns the form, `src/booking-time.ts` converts the office date and time, and `src/Appointments.tsx` opens the confirmed appointment.
+
+## Offline mobile agenda — 23 November
+
+`app/admin/mobile-api.ts` handles the optional agenda query. The personal mode of `scopedQueue` in `app/admin/crm.server.ts` checks owner and lead scope. Mobile `src/SavedAgenda.tsx` renders titles and times, `src/NativeWorkspace.tsx` handles refresh and invalidation, and `src/offline-cache.ts` owns persistence and expiry.
