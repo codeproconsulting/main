@@ -1,3 +1,4 @@
+import { noticesFor, readNotice } from "./notifications.server";
 import { bookAppointment } from "./appointment-booking.server";
 import { appointmentFor, saveAppointment, type Appointment, caseFor, updateCaseProgress, scopedRecords, type CaseRecord } from "./operations.server";
 import { createCipheriv, createDecipheriv, randomBytes, randomUUID, scryptSync } from "node:crypto";
@@ -134,6 +135,14 @@ function mobileCase(record: CaseRecord) {
 
 export function loader({ request, params }: LoaderFunctionArgs) {
   return mobileRequest(request, async () => {
+    if (params.resource === "reminders") {
+      const after = new URL(request.url).searchParams.get("after") || "";
+      const { notices, next } = await noticesFor(await mobileStaff(request), after);
+      return reply({next, reminders:notices.map(notice=>({
+        id:notice.$id, title:notice.title, eventAt:notice.eventAt, read:notice.read,
+        target:notice.kind, targetId:notice.sourceId,
+      }))});
+    }
     if(params.resource === "appointments"){
       const page=queuePage(new URL(request.url).searchParams.get("page"));
       const {records,hasMore}=await scopedRecords<Appointment>(await mobileStaff(request),"appointments",page);
@@ -209,6 +218,11 @@ export function loader({ request, params }: LoaderFunctionArgs) {
 
 export function action({ request, params }: ActionFunctionArgs) {
   return mobileRequest(request, async () => {
+    if (params.resource === "reminder-read") {
+      if (request.method !== "POST") return reply({error:"Method not allowed."},405);
+      await readNotice(await mobileStaff(request),recordId(request,"reminder"));
+      return new Response(null,{status:204,headers});
+    }
     if (params.resource === "appointments") {
       if (request.method !== "POST") return reply({error:"Method not allowed."},405);
       const staff = await mobileStaff(request), leadId = recordId(request);

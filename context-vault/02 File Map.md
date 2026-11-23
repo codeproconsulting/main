@@ -361,3 +361,7 @@ The appointment handler in `app/admin/mobile-api.ts` selects the mutation mode i
 ## Offline mobile agenda — 23 November
 
 `app/admin/mobile-api.ts` handles the optional agenda query. The personal mode of `scopedQueue` in `app/admin/crm.server.ts` checks owner and lead scope. Mobile `src/SavedAgenda.tsx` renders titles and times, `src/NativeWorkspace.tsx` handles refresh and invalidation, and `src/offline-cache.ts` owns persistence and expiry.
+
+## Native personal reminder inbox — 23 November
+
+`app/admin/notifications.server.ts` resolves current reminders and their source times. `app/admin/mobile-api.ts` serves the mobile inbox and read action. `tests/mobile-api.test.mjs` exercises recipient and source checks. The mobile checkout contains the inbox in `src/Reminders.tsx` and record navigation in `src/NativeWorkspace.tsx`.

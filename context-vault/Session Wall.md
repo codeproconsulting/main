@@ -3,40 +3,40 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-23-01]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-23-02]].
 
 ## Resume here
 
-**Session:** 2026-11-23-01
+**Session:** 2026-11-23-02
 
-**Active feature:** MOB-13
+**Active feature:** MOB-14
 
 **State:** completed
 
-**Objective:** Read upcoming personal appointments offline in the native workspace.
+**Objective:** Read, acknowledge and act on personal reminders in the native workspace.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Scoped agenda in the encrypted workspace snapshot
-- Read-only phone view, invalidation and compatibility
+- Recipient-scoped mobile inbox and cursor paging
+- Read acknowledgement and native navigation
 
 ## Out of scope
 
-- Offline writes and production rollout
+- Push notifications, reminder generation and production rollout
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| MOB13-SCOPE | Verify current scope and bounded projection | passed | Synthetic API checks cover chronological order, the 12-meeting bound, booked status, current appointment and enquiry ownership for counsellors and managers, legacy response shape, optional query failure and access denial. CRM typecheck, 193 tests and production build passed. |
-| MOB13-OFFLINE | Verify offline reads, refresh, expiry, sign-out and write invalidation | passed | Mobile typecheck, lint, 12 tests and Android/iOS bundle exports passed. SecureStore tests cover older snapshots, malformed agenda, refresh replacement, expiry and storage limits. A Chrome workspace interaction check with simulated native controls covered offline restart, read-only display, foreground hiding, expiry, sign-out and invalidation before a calendar write. |
+| MOB14-API | Verify scoped current reminders, cursor paging and mark-read behavior | passed | Synthetic mobile API checks covered sign-in, cursor validation, empty pages with a continuation, recipient isolation, stale and reassigned records, all three linked source IDs and event times, repeated acknowledgement and unchanged task status. CRM typecheck, 193 tests and production build passed. |
+| MOB14-NATIVE | Verify inbox loading, navigation, paging and refresh after an uncertain read | passed | Mobile typecheck, lint, 13 tests and Android/iOS bundle exports passed. A Chrome interaction check using the native components with simulated controls covered empty pages, previous/next, all three linked record types, returning to the same page, read acknowledgement, lost response recovery, backgrounding, offline state, access denial and sign-out. |
 
 ## Exact next actions
 
-1. Build a native staff reminder inbox using the web reminder service and its current staff scope. Include paging, read status and a native route to the associated follow-up when permitted.
-   Files: `app/admin/notifications.server.ts`, `app/admin/mobile-api.ts`, `tests/mobile-api.test.mjs`, `/Users/fidaali/Proconsulting-App/src/mobile-api.ts`, `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`
+1. Add an online activity timeline in the native lead detail. Match the web lead loader’s current access and restricted-manager rules. Verify ownership changes and stale sessions before exposing activity details.
+   Files: `app/admin/lead.tsx`, `app/admin/crm.server.ts`, `app/admin/mobile-api.ts`, `tests/mobile-api.test.mjs`, `/Users/fidaali/Proconsulting-App/src/mobile-api.ts`, `/Users/fidaali/Proconsulting-App/src/LeadEditor.tsx`
 
 ## Known risks and unfinished work
 
@@ -60,9 +60,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-23T05:11:50.468Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-dCiZYd/typecheck.log`
-- **passed**: `npm run test` (2026-11-23T05:11:58.547Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-dCiZYd/test.log`
-- **passed**: `npm run build` (2026-11-23T05:12:04.229Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-dCiZYd/build.log`
+- **passed**: `npm run typecheck` (2026-11-23T05:23:24.699Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-NH7Z2h/typecheck.log`
+- **passed**: `npm run test` (2026-11-23T05:23:31.989Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-NH7Z2h/test.log`
+- **passed**: `npm run build` (2026-11-23T05:23:37.309Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-NH7Z2h/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -154,5 +154,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **blogStudioAuthoring**: Locally verified with a synthetic publisher and in-memory storage. No VPS release or provider cutover. Native publishing UI remains separate.
 - **nativeBooking**: Mobile commit 6193625 on codex/mobile-staff is local only. Matching API verified on codex/crm-workspace. No VPS release, OTA publication or physical-device acceptance.
 - **offlineAgenda**: Local acceptance passed. Mobile aa25bfe has no configured remote. No live query, VPS release, OTA or physical-device acceptance.
+- **nativeReminders**: Mobile commit `59a0399` is local to `codex/mobile-staff`, which has no configured remote. The CRM API must reach the VPS before publishing a compatible mobile update. Physical-phone verification, VPS rollout and OTA publication are pending.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

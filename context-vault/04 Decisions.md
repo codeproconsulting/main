@@ -339,3 +339,7 @@ Acquire lead, staff-access and calendar locks in that order. Record a fingerprin
 ## Offline mobile agenda — 23 November
 
 The server scans the first 25 upcoming records ordered by start time, filters to current lead ownership and booked status, then returns up to 12 meetings. Mobile retains the original snapshot deadline and drops the optional agenda first if secure storage fills. Older clients continue using the base workspace response.
+
+## Native personal reminder inbox — 23 November
+
+Keep reminder contents out of the offline snapshot because reassignment, deadline changes and completed work affect visibility. A read acknowledgement changes only inbox state. The current source supplies the event time shown to staff.

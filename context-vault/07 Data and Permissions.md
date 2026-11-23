@@ -283,3 +283,7 @@ The server rechecks current staff and enquiry access under lock and derives the 
 ## Offline mobile agenda — 23 November
 
 Offline rows contain appointment ID, title, start and end only. Every role receives its own assigned meetings, with current enquiry ownership rechecked. Session and snapshot expiry, sign-out, access denial and clearing saved data restrict offline visibility. A calendar change drops the in-memory agenda and clears storage before submission.
+
+## Native personal reminder inbox — 23 November
+
+The mobile inbox shares the recipient, lead and source-generation checks used by the web inbox. Only the notice ID, title, read state, source type and ID, and current event time are returned. Read acknowledgements repeat the recipient and source checks under the lead lock.

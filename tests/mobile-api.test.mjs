@@ -21,6 +21,7 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
   let managerScope = "";
   const events = [];
   const activities = new Map();
+  const notifications=[];
   let failCreationFinish = false;
   const consultations = [];
   let lostConsultationAck = false;
@@ -61,6 +62,23 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
       {$id:"staff",role,name:"Synthetic counselor",active},
       {$id:"other",role:"counselor",name:"Former counselor",active:false},
     ]});
+    if (url.pathname.includes("/notifications/documents")) {
+      const id=url.pathname.split("/documents/")[1];
+      if(id){
+        const row=notifications.find(item=>item.$id===id);
+        if(!row)return Response.json({}, {status:404});
+        if(options.method==="PATCH"){
+          const {data}=JSON.parse(options.body);assert.deepEqual(data,{read:true});Object.assign(row,data);
+        }
+        return Response.json(row);
+      }
+      const filters=url.searchParams.getAll("queries[]").map(JSON.parse);
+      assert.ok(filters.some(q=>q.method==="equal" && q.attribute==="recipient" && q.values[0]==="staff"));
+      const rows=notifications.filter(row=>row.recipient==="staff");
+      const after=filters.find(q=>q.method==="cursorAfter")?.values[0];
+      const index=after?rows.findIndex(row=>row.$id===after)+1:0;
+      return Response.json({documents:rows.slice(index,index+25),total:rows.length});
+    }
     if (url.pathname.includes("/activities/documents")) {
       const id=url.pathname.split("/documents/")[1];
       if (options.method === "POST") {
@@ -153,6 +171,35 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
     const { token } = await login.json();
     assert.ok(!Buffer.from(token, "base64url").includes(Buffer.from("synthetic-appwrite-session")));
     const auth = { headers: { Authorization: `Bearer ${token}` } };
+    const taskDue=tasks[0].dueAt;
+    tasks[0].dueAt="2020-01-01T10:00:00.000Z";
+    const reminder={$id:"notice",recipient:"staff",entityId:"owned",kind:"task",sourceId:"task",sourceVersion:1,dueAt:tasks[0].dueAt,read:false,title:"Stored title",body:"Stored text"};
+    notifications.push(...Array.from({length:25},(_,n)=>({...reminder,$id:"old-"+n,sourceVersion:0})),reminder,{...reminder,$id:"foreign-notice",recipient:"other"});
+    const inbox=(after="")=>send("reminders?after="+encodeURIComponent(after),auth);
+    const mark=id=>send("reminder-read?id="+id,{...auth,method:"POST"});
+    assert.equal((await send("reminders")).status,401);
+    assert.equal((await inbox("invalid/cursor")).status,400);
+    assert.deepEqual(await(await inbox()).json(),{reminders:[],next:"old-24"});
+    const currentPage=async()=>(await(await inbox("old-24")).json()).reminders;
+    assert.deepEqual(await currentPage(),[{id:"notice",title:"Follow-up due: Follow up",eventAt:tasks[0].dueAt,read:false,target:"task",targetId:"task"}]);
+    assert.equal((await mark("foreign-notice")).status,403);
+    assert.equal((await mark("missing")).status,404);
+    assert.equal((await mark("old-0")).status,409);
+    assert.equal((await mark("notice")).status,204);
+    assert.equal((await mark("notice")).status,204);
+    assert.equal((await currentPage())[0].read,true);
+    assert.equal(tasks[0].status,"Open");
+    leads[0].owner="other";assert.deepEqual(await currentPage(),[]);assert.equal((await mark("notice")).status,409);
+    leads[0].owner="staff";tasks[0].dueAt=taskDue;
+    const now=Date.now();
+    const start=new Date(now+1800000).toISOString(), deadline=new Date(now+14400000).toISOString();
+    appointments.push({...appointments[0],$id:"soon",startsAt:start});
+    cases.push({...cases[0],$id:"deadline",deadline});
+    notifications.push({...reminder,$id:"booking-reminder",kind:"appointment",sourceId:"soon",dueAt:new Date(Date.parse(start)-3600000).toISOString()},
+      {...reminder,$id:"case-reminder",kind:"case",sourceId:"deadline",dueAt:new Date(Date.parse(deadline)-86400000).toISOString()});
+    assert.deepEqual((await currentPage()).map(({target,targetId})=>[target,targetId]),[["appointment","soon"],["case","deadline"]]);
+    assert.deepEqual((await currentPage()).map(row=>row.eventAt),[start,deadline]);
+    appointments.pop();cases.pop();
     const snapshot = await send("workspace", auth);
     assert.equal(snapshot.status, 200);
     const data = await snapshot.json();

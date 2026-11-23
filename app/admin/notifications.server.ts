@@ -13,17 +13,17 @@ async function currentNotice(staff:Staff,notice:Notice,now:string){
    const booking=await getDocument<Appointment>("appointments",notice.sourceId);
    const dueAt=appointmentReminderDueAt(booking,lead,now);
    if(!dueAt||lead.owner!==staff.$id||notice.sourceVersion!==booking.version||notice.dueAt!==dueAt)return null;
-   return {...notice,title:`Upcoming appointment: ${booking.title}`,body:`Starts ${booking.startsAt}.`};
+   return {...notice,eventAt:booking.startsAt,title:`Upcoming appointment: ${booking.title}`,body:`Starts ${booking.startsAt}.`};
   }
   if(notice.kind==="case"){
    const record=await getDocument<CaseRecord>("cases",notice.sourceId);
    const dueAt=caseReminderDueAt(record,lead,now);
    if(!dueAt||lead.owner!==staff.$id||notice.sourceVersion!==record.version||notice.dueAt!==dueAt)return null;
-   return {...notice,title:"Upcoming application deadline",body:`Deadline ${record.deadline}.`};
+   return {...notice,eventAt:record.deadline,title:"Upcoming application deadline",body:`Deadline ${record.deadline}.`};
   }
   const task=await getDocument<Task>("tasks",notice.sourceId);
   if(!currentTaskNotice(notice,task,lead,staff.$id,now))return null;
-  return {...notice,title:`Follow-up due: ${task.title}`,body:`Due ${task.dueAt}. Open the lead to record an outcome.`};
+  return {...notice,eventAt:task.dueAt,title:`Follow-up due: ${task.title}`,body:`Due ${task.dueAt}. Open the lead to record an outcome.`};
  }catch(error){if((error instanceof Response&&[403,404].includes(error.status))||(error instanceof AppwriteError&&error.status===404))return null;throw error;}
 }
 export async function noticesFor(staff:Staff,cursor="",now=new Date().toISOString()){

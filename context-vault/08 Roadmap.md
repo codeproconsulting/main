@@ -54,3 +54,7 @@ The native booking workflow is feature-tested. The next planned mobile calendar 
 ## Offline mobile agenda — 23 November
 
 MOB-13 completed the read-only native agenda. The next planned native workflow is the staff reminder inbox, reusing the existing web reminder permissions. VPS, mobile release and device verification are tracked separately.
+
+## Native personal reminder inbox — 23 November
+
+The native inbox is locally accepted. Next planned work is a scoped activity timeline in native lead details with the same restricted-manager visibility rules as the web CRM. [[Sessions/2026-11-23-02]]

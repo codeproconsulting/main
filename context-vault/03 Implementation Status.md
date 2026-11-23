@@ -401,3 +401,7 @@ MOB-12 is implemented and tested in the two local worktrees. Assigned staff can 
 ## Offline mobile agenda — 23 November
 
 MOB-13 passed local acceptance. Staff can read up to 12 upcoming personal bookings in Karachi time, with the last-sync time and partial results identified. Mobile checkpoint `aa25bfe` is local. Live API, OTA and handset acceptance remain pending. [[Sessions/2026-11-23-01]]
+
+## Native personal reminder inbox — 23 November
+
+MOB-14 passed local acceptance for an online personal inbox with read acknowledgement and direct navigation to all three kinds of source record. [[Sessions/2026-11-23-02]]

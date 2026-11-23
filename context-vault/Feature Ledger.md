@@ -62,3 +62,7 @@ MOB-12 native appointment creation is implemented and locally tested. Mobile che
 ## Offline mobile agenda — 23 November
 
 MOB-13 personal offline appointment agenda passed local service, storage and component acceptance. Mobile `aa25bfe` is local only. Release and handset checks are pending. [[Sessions/2026-11-23-01]]
+
+## Native personal reminder inbox — 23 November
+
+MOB-14 passed local acceptance for reminder paging, personal acknowledgements and native record links. Production release and physical-device verification are pending. Next planned feature is the native lead activity timeline. [[Sessions/2026-11-23-02]]

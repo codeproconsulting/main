@@ -309,3 +309,7 @@ The native staff workspace now has an online booking form on assigned enquiries.
 ## Offline mobile agenda — 23 November
 
 On an opted-in mobile workspace refresh, the API supplies a bounded personal calendar summary alongside leads and tasks. React Native reads the summary from the same encrypted snapshot for online or offline viewing. Calendar writes and workspace refresh share a request guard.
+
+## Native personal reminder inbox — 23 November
+
+The native staff inbox shares the web reminder service for paging and read acknowledgements. It resolves reminder dates from current task, appointment and application records. The mobile workspace opens the corresponding native detail screen.

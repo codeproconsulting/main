@@ -363,3 +363,7 @@ The native booking form requires the lead response with bookingSubmissionId and 
 ## Offline mobile agenda — 23 November
 
 The workspace resource accepts the optional agenda=1 query flag. The implementation reuses the existing appointment owner/start index and the mobile runtime’s SecureStore. Verify chronological results, current assignment, an offline restart and a refresh after a calendar write on the release candidate before OTA. No production change was performed.
+
+## Native personal reminder inbox — 23 November
+
+Release the CRM mobile reminder endpoints before publishing the mobile update. Existing reminder storage and generator configuration are reused. Verify list, read and linked-record access with a test staff account on a physical phone after rollout. Mobile commit `59a0399` is local to `codex/mobile-staff`, which has no configured remote. The CRM API must reach the VPS before publishing a compatible mobile update. Physical-phone verification, VPS rollout and OTA publication are pending.
