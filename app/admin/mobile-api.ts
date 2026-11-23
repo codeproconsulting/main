@@ -1,3 +1,4 @@
+import { bookAppointment } from "./appointment-booking.server";
 import { appointmentFor, saveAppointment, type Appointment, caseFor, updateCaseProgress, scopedRecords, type CaseRecord } from "./operations.server";
 import { createCipheriv, createDecipheriv, randomBytes, randomUUID, scryptSync } from "node:crypto";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
@@ -78,7 +79,7 @@ function recordId(request: Request, label = "lead") {
 
 function editableLead(lead: Lead) {
   const { $id: id, name, stage, priority, version } = lead;
-  return { id, name, stage, priority, version, stages, priorities, closureStages, taskSubmissionId: randomUUID(), canSchedule: Boolean(lead.owner) && !lead.duplicateOf };
+  return { id, name, stage, priority, version, stages, priorities, closureStages, taskSubmissionId: randomUUID(), bookingSubmissionId: randomUUID(), canSchedule: Boolean(lead.owner) && !lead.duplicateOf };
 }
 
 function editableFollowUp(task: Task) {
@@ -189,6 +190,20 @@ export function loader({ request, params }: LoaderFunctionArgs) {
 
 export function action({ request, params }: ActionFunctionArgs) {
   return mobileRequest(request, async () => {
+    if (params.resource === "appointments") {
+      if (request.method !== "POST") return reply({error:"Method not allowed."},405);
+      const staff = await mobileStaff(request), leadId = recordId(request);
+      if (!isJson(request)) return reply({error:"Expected JSON."},415);
+      const raw = await (await boundedBody(request,16384,"Booking")).text();
+      let body;
+      try {body = JSON.parse(raw);} catch {return reply({error:"Invalid booking details."},400);}
+      const form = new FormData();
+      for (const key of ["submissionId","title","startsAt","endsAt","location"]) {
+        if (typeof body?.[key] !== "string") return reply({error:"Invalid booking details."},400);
+        form.set(key,body[key]);
+      }
+      return reply(mobileAppointment(await bookAppointment(staff,leadId,form)));
+    }
     if(params.resource === "appointment"){
       if(request.method!=="PATCH")return reply({error:"Method not allowed."},405);
       const staff=await mobileStaff(request),id=recordId(request,"appointment");

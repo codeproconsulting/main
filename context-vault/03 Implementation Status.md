@@ -393,3 +393,7 @@ MOB-11 passed local API, component and Android export checks. Counsellors can ch
 ## Blog Studio authoring — 22 November
 
 CMS-05 passed local editor and save/restore acceptance. Staff can add inline links, captioned images, comparison tables and quotes, then inspect the article and search snippet before review or publication. See [[Sessions/2026-11-22-04]].
+
+## Native appointment booking — 23 November
+
+MOB-12 is implemented and tested in the two local worktrees. Assigned staff can book in Karachi office time, choose a duration and location, and open the confirmed meeting natively. The mobile source is committed locally as `6193625` and this CRM checkpoint includes its matching API. VPS rollout, OTA publication and handset verification remain pending. Evidence in [[Sessions/2026-11-22-05]].

@@ -46,3 +46,7 @@ MOB-11 completed local acceptance for native rescheduling. Next is online native
 ## Blog Studio authoring — 22 November
 
 The comprehensive web authoring pass is locally verified. Ghost migration acceptance and a native publishing interface remain separate work. The session wall retains the previously queued native appointment booking work.
+
+## Native appointment booking — 23 November
+
+The native booking workflow is feature-tested. The next planned mobile calendar feature is a read-only offline agenda within the existing encrypted workspace. Physical-device testing, the server release and the mobile update have separate acceptance steps.

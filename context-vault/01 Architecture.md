@@ -301,3 +301,7 @@ The native appointment PATCH accepts an explicit reschedule action. Both clients
 ## Blog Studio authoring — 22 November
 
 Blog Studio renders unsaved article previews through the authenticated HTML sanitizer. The visual editor inserts semantic HTML into the existing post body. The media selector loads published records on demand. The authoring and public delivery paths remain independent.
+
+## Native appointment booking — 23 November
+
+The native staff workspace now has an online booking form on assigned enquiries. Its POST uses the existing CRM bearer session and the shared calendar lock. A stable submission ID links the private appointment and its creation audit. Replaying a completed request returns the current appointment, including subsequent changes.

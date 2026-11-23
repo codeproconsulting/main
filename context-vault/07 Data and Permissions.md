@@ -275,3 +275,7 @@ Rescheduling accepts the current version, new start, new end and reason. Lead an
 ## Blog Studio authoring — 22 November
 
 The image picker requires editorial access and queries public images only. Visibility changes stay in the existing publisher workflow. Reader preview uses the staff-only, same-origin sanitizer. Existing publish permissions, URL locks and version checks also apply to the new editor.
+
+## Native appointment booking — 23 November
+
+The server rechecks current staff and enquiry access under lock and derives the assignee from the lead. The phone keeps booking input in memory and clears the saved offline workspace before posting. Private appointment notes are excluded from the response.

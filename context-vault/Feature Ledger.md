@@ -54,3 +54,7 @@ MOB-11 completed local acceptance for native appointment rescheduling. Release a
 ## Blog Studio authoring — 22 November
 
 CMS-05 Blog Studio rich authoring and private previews passed local acceptance. The feature reuses the existing Appwrite schema. Git release and production verification are separate. See [[Sessions/2026-11-22-04]].
+
+## Native appointment booking — 23 November
+
+MOB-12 native appointment creation is implemented and locally tested. Mobile checkpoint `6193625` is local to the mobile checkout. The matching API is included on the CRM feature branch. Release verification remains pending. See [[Sessions/2026-11-22-05]].

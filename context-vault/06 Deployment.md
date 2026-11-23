@@ -355,3 +355,7 @@ Deploy the appointment PATCH handler before releasing the compatible mobile JS u
 ## Blog Studio authoring — 22 November
 
 CMS-05 ships with the existing dashboard build on crm.proconsulting.uk. It reuses the current media, post, revision, audit and authentication configuration. On the release candidate, open Blog Studio, use a public library image in a draft, preview, save for review and reopen. Local acceptance is complete. VPS rollout and Ghost cutover remain separate.
+
+## Native appointment booking — 23 November
+
+The native booking form requires the lead response with bookingSubmissionId and authenticated POST to `/admin/mobile/v1/appointments?id=<lead-id>`. The form uses existing Appwrite collections and locks. Deploy and verify the matching API before releasing the mobile bundle. No production or signed-device evidence was recorded in this review.

@@ -3,40 +3,40 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-22-04]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-22-05]].
 
 ## Resume here
 
-**Session:** 2026-11-22-04
+**Session:** 2026-11-22-05
 
-**Active feature:** CMS-05
+**Active feature:** MOB-12
 
 **State:** completed
 
-**Objective:** Expand the CRM Blog Studio authoring and preview workflow.
+**Objective:** Create appointments entirely within the native enquiry workspace.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Visual article blocks and links
-- Private reading preview, search snippet and publication form
+- Staff-scoped booking with calendar conflict checks and duplicate-safe retry
+- Native booking form with office-local dates, start time and duration
 
 ## Out of scope
 
-- Ghost cutover, native editor and production deployment
+- Offline writes, VPS deployment and OTA publication
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| CMS05-WRITE | Compose rich blocks and persist them through the normal article save path | passed | The CMS regression saves headings, links, quotes, captioned images and tables, restores cover alternative text, preserves imported tags and rejects unsafe metadata replacement. All 193 tests, typecheck and production build passed. |
-| CMS05-PREVIEW | Verify private draft previews, publishing controls and existing workflows | passed | Isolated Chrome exercised media upload/publication and selection, slug override, link validation, rich blocks, search snippet, sanitized reader preview, scheduling controls and saving/reopening a review post. The editor fit a 393px viewport. |
+| MOB12-API | Booking scope, conflicts and retry after a lost reply | passed | The local CRM verification passed typecheck, 193 tests and production build. The mobile API integration covered assigned and foreign enquiries, overlapping requests, two concurrent bookings for one slot, a lost write acknowledgement, audit completion retry and replay after cancellation. |
+| MOB12-NATIVE | Exercise the native form, retry behavior and mobile bundles | passed | Mobile typecheck, lint, 12 tests and Android/iOS JS exports passed. Chrome component checks exercised the form with simulated native controls, cache-clear failure, identical retry, opening the confirmed record and returning to the list. Physical-phone acceptance remains pending. |
 
 ## Exact next actions
 
-1. Add native booking creation from an assigned enquiry. Reuse the calendar conflict checks and protect retries against duplicate appointments after a lost response.
-   Files: `app/admin/operations.server.ts`, `app/admin/mobile-api.ts`, `tests/mobile-api.test.mjs`, `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`, `/Users/fidaali/Proconsulting-App/src/mobile-api.ts`
+1. Build a read-only offline appointment agenda in the native workspace. Cache scoped upcoming meetings within the existing encrypted snapshot and verify expiry, sign-out, refresh and cache invalidation after writes.
+   Files: `app/admin/mobile-api.ts`, `tests/mobile-api.test.mjs`, `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`, `/Users/fidaali/Proconsulting-App/src/offline-cache.ts`, `/Users/fidaali/Proconsulting-App/tests/offline-cache.test.mjs`
 
 ## Known risks and unfinished work
 
@@ -60,9 +60,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-22T14:55:18.917Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-BHj8Na/typecheck.log`
-- **passed**: `npm run test` (2026-11-22T14:55:26.408Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-BHj8Na/test.log`
-- **passed**: `npm run build` (2026-11-22T14:55:31.900Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-BHj8Na/build.log`
+- **passed**: `npm run typecheck` (2026-11-23T05:06:36.087Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-VFiqAl/typecheck.log`
+- **passed**: `npm run test` (2026-11-23T05:06:43.444Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-VFiqAl/test.log`
+- **passed**: `npm run build` (2026-11-23T05:06:48.938Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-VFiqAl/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -152,5 +152,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **nativeAppointments**: Locally accepted API and component workflow. Mobile commit 86fa4ef is local only (no remote). No VPS, OTA or device acceptance; existing schema reused.
 - **nativeRescheduling**: Mobile d773f7e local only, CRM changes locally verified. No remote for mobile, VPS deployment, OTA or physical-device acceptance.
 - **blogStudioAuthoring**: Locally verified with a synthetic publisher and in-memory storage. No VPS release or provider cutover. Native publishing UI remains separate.
+- **nativeBooking**: Mobile commit 6193625 on codex/mobile-staff is local only. Matching API verified on codex/crm-workspace. No VPS release, OTA publication or physical-device acceptance.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

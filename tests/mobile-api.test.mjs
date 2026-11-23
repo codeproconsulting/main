@@ -27,6 +27,7 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
   let lostTaskAck = false;
   let lostCaseAck = false;
   let lostAppointmentAck = false;
+  let failBookingAudit = false, loseBookingCreateAck = false;
   const leads = [
     { $id: "owned", owner: "staff", name: "Synthetic lead", email: "fixture@example.invalid", stage: "New", priority: "Normal", nextFollowUp: "2027-01-01T10:00:00.000Z", version: 1 },
     { $id: "foreign", owner: "other", name: "Other lead" },
@@ -68,6 +69,7 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
       }
       if(options.method === "PATCH") {
         const {data}=JSON.parse(options.body);
+        if(failBookingAudit && data.event==="Appointment booked")return Response.json({}, {status:503});
         if(failCreationFinish&&data.event==='Follow-up created')return Response.json({}, {status:503});
         Object.assign(activities.get(id),data);return Response.json(activities.get(id));
       }
@@ -102,7 +104,9 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
     if (options.method === "POST") {
       const {data,documentId,permissions}=JSON.parse(options.body);assert.deepEqual(permissions,[]);
       if(rows.some(row=>row.$id===documentId))return Response.json({}, {status:409});
-      const row={...data,$id:documentId};rows.push(row);return Response.json(row);
+      const row={...data,$id:documentId};rows.push(row);
+      if(match[1]==="appointments"&&loseBookingCreateAck)throw Error("Synthetic booking reply lost");
+      return Response.json(row);
     }
     if (match[2]) {
       const row = rows.find(row => row.$id === match[2]);
@@ -407,6 +411,37 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
     assert.equal((await(await send("appointment?id=appointment",auth)).json()).status,"No show");
     assert.equal((await outcome({version:3,status:"Cancelled",reason:"test"})).status,409);
     leads[0].owner="other";assert.equal((await send("appointment?id=appointment",auth)).status,403);leads[0].owner="staff";
+    const bookingToken=(await(await send("lead?id=owned",auth)).json()).bookingSubmissionId;
+    const booking={submissionId:bookingToken,title:"Synthetic meeting",location:"Example office",startsAt:"2036-01-01T10:00+05:00",endsAt:"2036-01-01T10:30+05:00"};
+    const book=(input,id="owned",headers=auth.headers)=>send("appointments?id="+id,{method:"POST",headers:{...headers,"Content-Type":"application/json"},body:JSON.stringify(input)});
+    assert.equal((await book(booking,"owned",{})).status,401);
+    assert.equal((await book(booking,"foreign")).status,403);
+    for(const invalid of [{title:" "},{submissionId:"bad"},{endsAt:booking.startsAt},{startsAt:"2036-01-01T10:00"}]) {
+      assert.equal((await book({...booking,...invalid})).status,400);
+    }
+    appointments.push({...originalBooking,$id:"occupied",status:"Booked",startsAt:"2036-01-01T05:00Z",endsAt:"2036-01-01T05:15Z"});
+    assert.equal((await book(booking)).status,409);
+    appointments.pop();
+    const count=appointments.length;
+    failBookingAudit=true;loseBookingCreateAck=true;
+    assert.equal((await book({...booking,owner:"other",status:"Completed",notes:"ignored"})).status,503);
+    failBookingAudit=false;loseBookingCreateAck=false;
+    assert.equal(appointments.length,count+1);
+    const replay=await book(booking);
+    assert.equal(replay.status,200);
+    const booked=await replay.json();
+    assert.equal(booked.startsAt,"2036-01-01T05:00:00.000Z");
+    assert.equal(booked.status,"Booked");assert.equal(booked.notes,undefined);assert.equal(appointments.at(-1).owner,"staff");
+    assert.equal(activities.get(booked.id).event,"Appointment booked");
+    Object.assign(appointments.at(-1),{status:"Cancelled",version:2});
+    assert.equal((await(await book(booking)).json()).status,"Cancelled");
+    assert.equal((await book({...booking,location:"Another office"})).status,409);
+    assert.equal(appointments.length,count+1);
+    const newToken=(await(await send("lead?id=owned",auth)).json()).bookingSubmissionId;
+    const secondToken=(await(await send("lead?id=owned",auth)).json()).bookingSubmissionId;
+    const racing=await Promise.all([book({...booking,submissionId:newToken}),book({...booking,submissionId:secondToken})]);
+    assert.deepEqual(racing.map(response=>response.status).sort(),[200,409]);
+    assert.equal(appointments.length,count+2);
     active = false;
     assert.equal((await send("follow-up?id=task",auth)).status,403);
     assert.equal((await send("consultations?id=owned",auth)).status,403);

@@ -331,3 +331,7 @@ An explicit reschedule action accepts only an existing booking, a changed interv
 ## Blog Studio authoring — 22 November
 
 Use the existing sanitized HTML and revision format for rich blocks. Keep the editable cover description in the existing feature_image_alt metadata property and merge only that property so other imported metadata survives edits. A new article gets a suggested slug until its author takes over.
+
+## Native appointment booking — 23 November
+
+Acquire lead, staff-access and calendar locks in that order. Record a fingerprint of the original form before creating a booking. Reject a changed payload submitted with a used token. Confirm an identical retry against the stored record and audit so it cannot undo a later cancellation.

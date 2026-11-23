@@ -353,3 +353,7 @@ The appointment handler in `app/admin/mobile-api.ts` selects the mutation mode i
 ## Blog Studio authoring — 22 November
 
 `app/admin/blog-edit.tsx` owns publication fields and search previews. `rich-editor.tsx` handles visual blocks and reader mode. `article-media-picker.tsx` selects recent public images through `media.tsx`. `content.server.ts` merges feature image descriptions into existing metadata and restores them from revisions.
+
+## Native appointment booking — 23 November
+
+`app/admin/mobile-api.ts` issues the form token and accepts booking requests. `app/admin/appointment-booking.server.ts` handles access, conflict checking and creation recovery. `tests/mobile-api.test.mjs` covers the API. In the separate mobile checkout, `src/AppointmentCreate.tsx` owns the form, `src/booking-time.ts` converts the office date and time, and `src/Appointments.tsx` opens the confirmed appointment.
