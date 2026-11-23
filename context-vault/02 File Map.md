@@ -385,3 +385,7 @@ The CRM action is in `app/admin/mobile-api.ts`, creation is in `app/admin/operat
 ## Application document checklist
 
 Rules live in `app/admin/document-domain.ts`. The metadata query is in `app/admin/documents.server.ts`. The native component is in the mobile checkout’s `src/Applications.tsx`.
+
+## Native application search
+
+The filter action lives in `app/admin/mobile-api.ts`. Mobile controls and applied pagination state live in `src/Applications.tsx`.

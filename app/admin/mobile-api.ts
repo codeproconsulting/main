@@ -13,7 +13,7 @@ import { addNote, activityFor, listStaff, createTask, changeTask, followUpFor, l
 
 import { consultationReport, consultationPage, consultationPageSize, leadConsultations, recordConsultation } from "./consultations.server";
 
-import { canManage, caseStagesFor, isRestrictedManager, closureStages, priorities, stages, type Staff, type Lead, type Task } from "./domain";
+import { canManage, caseStages, caseStagesFor, isRestrictedManager, closureStages, priorities, stages, type Staff, type Lead, type Task } from "./domain";
 
 const headers = { "Cache-Control": "private, no-store", "X-Robots-Tag": "noindex, nofollow" };
 const reply = (body: unknown, status = 200) => Response.json(body, { headers, status });
@@ -154,7 +154,7 @@ export function loader({ request, params }: LoaderFunctionArgs) {
     if (params.resource === "applications") {
       const page=queuePage(new URL(request.url).searchParams.get("page"));
       const {records,hasMore}=await scopedRecords<CaseRecord>(await mobileStaff(request),"cases",page);
-      return reply({page,hasMore,applications:records.map(mobileCase)});
+      return reply({page,hasMore,filterStages:caseStages,applications:records.map(mobileCase)});
     }
     if (params.resource === "application-documents") {
       const staff = await mobileStaff(request), id = recordId(request,"application");
@@ -238,6 +238,24 @@ export function loader({ request, params }: LoaderFunctionArgs) {
 
 export function action({ request, params }: ActionFunctionArgs) {
   return mobileRequest(request, async () => {
+    if (params.resource === "applications") {
+      if (request.method !== "POST") return reply({error:"Method not allowed."},405);
+      const staff = await mobileStaff(request);
+      if (!isJson(request)) return reply({error:"Expected JSON."},415);
+      const raw = await (await boundedBody(request,4096,"Application search")).text();
+      const body = await Promise.resolve(raw).then(JSON.parse).catch(() => null);
+      if (typeof body?.search !== "string" || body.search.trim().length > 150 ||
+          typeof body.stage !== "string" || (body.stage && !caseStages.includes(body.stage))) {
+        return reply({error:"Invalid application filters."},400);
+      }
+      const page = queuePage(typeof body.page === "number" ? String(body.page) : null);
+      const search = body.search.trim().toLowerCase();
+      const {records,hasMore} = await scopedRecords<CaseRecord>(staff,"cases",page);
+      // shortcut: filter each scoped page, use indexed search if case volumes make sparse pages impractical.
+      const matching = records.filter(record => (!body.stage || record.stage === body.stage) &&
+        (!search || [record.institution,record.course,record.country,record.intake].some(value => value?.toLowerCase().includes(search))));
+      return reply({page,hasMore,filterStages:caseStages,applications:matching.map(mobileCase)});
+    }
     if (params.resource === "lead-note") {
       if (request.method !== "POST") return reply({ error: "Method not allowed." }, 405);
       const staff = await mobileStaff(request);

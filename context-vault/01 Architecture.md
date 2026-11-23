@@ -333,3 +333,7 @@ The mobile application PATCH action extends the existing versioned progress writ
 ## Application document checklist
 
 Web and native screens share document-category summarization. The mobile application loads the checklist for its linked enquiry on demand.
+
+## Native application search
+
+The mobile application list uses the shared scoped case queue for filtered and unfiltered requests.

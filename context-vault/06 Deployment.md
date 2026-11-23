@@ -387,3 +387,7 @@ Mobile commit 7b5d315 is local. Roll out the CRM before publishing the compatibl
 ## Application document checklist
 
 Release the CRM API before publishing the mobile update. The feature reuses existing document storage, metadata and indexes. Mobile commit 94100b2 is local. VPS deployment, OTA publication and physical-phone testing remain pending.
+
+## Native application search
+
+Deploy the CRM first. The existing list response advertises supported stage filters. Mobile commit 835216e is local. VPS rollout, OTA publication and physical-phone testing remain pending.

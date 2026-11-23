@@ -78,3 +78,7 @@ The next planned mobile feature is application document status.
 ## Application document checklist
 
 Application search and stage filtering are the next planned native feature.
+
+## Native application search
+
+The next planned application-list feature is a deadline view.

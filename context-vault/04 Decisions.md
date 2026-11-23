@@ -363,3 +363,7 @@ The application response advertises detail editing. Legacy clients can still sen
 ## Application document checklist
 
 Checklist categories share the enquiry’s document records. Staff decide which categories apply to each application. The native checklist stays in memory while visible.
+
+## Native application search
+
+Search text is sent in the request body. Each scoped page is filtered in memory with existing indexes, so an empty filtered page can precede matches.

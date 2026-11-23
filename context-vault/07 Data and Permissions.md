@@ -307,3 +307,7 @@ Detail edits use existing lead ownership checks and write locks. The mobile resp
 ## Application document checklist
 
 The CRM verifies current staff, application and enquiry access before returning category statuses. File names, links and reviewer notes stay outside the checklist response.
+
+## Native application search
+
+The existing case queue rechecks current enquiry access before applying search and stage filters.

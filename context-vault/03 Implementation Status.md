@@ -425,3 +425,7 @@ MOB-18 passed local acceptance. [[Sessions/2026-11-23-06]]
 ## Application document checklist
 
 MOB-19 passed local acceptance. [[Sessions/2026-11-23-07]]
+
+## Native application search
+
+MOB-20 passed local acceptance. [[Sessions/2026-11-23-08]]

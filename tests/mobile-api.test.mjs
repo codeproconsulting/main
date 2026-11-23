@@ -520,6 +520,19 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
     assert.equal((await send("consultation-report",auth)).status,403);
     assert.equal((await send("applications")).status,401);
     const appList=await(await send("applications",auth)).json();assert.equal(appList.applications.length,1);assert.equal(appList.applications[0].notes,undefined);
+    const searchCases=(search,stage="",page=1)=>send("applications",{method:"POST",
+      headers:{...auth.headers,"Content-Type":"application/json"},body:JSON.stringify({search,stage,page})});
+    assert.equal((await searchCases("","bad")).status,400);
+    const fillers=Array.from({length:25},(_,index)=>({...cases[0],$id:"filler-"+index,institution:"Example filler",course:"Example course"}));
+    cases.unshift(...fillers);
+    const sparse=await (await searchCases(" SYNTHETIC ",cases.at(-1).stage)).json();
+    assert.deepEqual(sparse.applications,[]);assert.equal(sparse.hasMore,true);
+    const matching=await (await searchCases("synthetic",cases.at(-1).stage,2)).json();
+    assert.deepEqual(matching.applications.map(row=>row.id),["case"]);
+    leads[0].owner="other";
+    assert.deepEqual((await (await searchCases("synthetic","",2)).json()).applications,[]);
+    leads[0].owner="staff";
+    cases.splice(0,fillers.length);
     const detail=await(await send("application?id=case",auth)).json();
     assert.equal(detail.documentChecklistAvailable,true);
     assert.equal((await send("application-documents?id=case")).status,401);
