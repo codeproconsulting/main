@@ -413,3 +413,7 @@ MOB-15 passed local acceptance for recent lead history in native lead details. T
 ## Native internal notes
 
 MOB-16 passed local acceptance. [[Sessions/2026-11-23-04]]
+
+## Native application creation
+
+MOB-17 passed local acceptance for online native education and immigration application creation. [[Sessions/2026-11-23-05]]

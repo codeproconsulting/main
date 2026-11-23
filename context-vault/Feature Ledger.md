@@ -74,3 +74,7 @@ MOB-15 is locally accepted. The next native timeline action is internal-note ent
 ## Native internal notes
 
 MOB-16 native internal notes passed local acceptance. [[Sessions/2026-11-23-04]]
+
+## Native application creation
+
+MOB-17 passed local acceptance. [[Sessions/2026-11-23-05]]

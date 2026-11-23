@@ -1,38 +1,39 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-23-04",
+  "sessionId": "2026-11-23-05",
   "sessionStatus": "completed",
-  "activeFeature": "MOB-16",
-  "objective": "Save internal notes from native lead details with safe retries.",
+  "activeFeature": "MOB-17",
+  "objective": "Create education or immigration applications from an assigned lead on mobile.",
   "scope": [
-    "Shared web/mobile note service and native note form"
+    "Native creation form and CRM application service"
   ],
   "outOfScope": [
-    "Offline note writes and production rollout"
+    "Offline creation and production release"
   ],
   "acceptance": [
     {
-      "id": "MOB16-API",
-      "description": "Validate notes and reconcile repeated submissions within current access.",
+      "id": "MOB17-API",
+      "description": "Verify scope, validation and safe retries.",
       "status": "passed",
-      "evidence": "CRM typecheck, 193 tests and build passed. Integration checks verified size limits, current assignment, revoked sessions, reconciliation after a lost storage response, repeated submissions and rejection of changed text for a used submission ID."
+      "evidence": "CRM typecheck, 193 tests and build passed. Integration checks covered both services, required fields, timezone validation, reassignment, concurrent retries, changed payload rejection and recovery after a lost create response and failed audit update."
     },
     {
-      "id": "MOB16-NATIVE",
-      "description": "Verify native entry, retry and refresh.",
+      "id": "MOB17-NATIVE",
+      "description": "Verify form, retry and detail navigation.",
       "status": "passed",
-      "evidence": "Mobile typecheck, lint, 13 tests and Android/iOS bundle exports passed. A simulated native interaction check verified retry with the same text and ID after backgrounding, clearing the confirmed draft and using a fresh ID for the next note."
+      "evidence": "Mobile typecheck, lint, 13 tests and Android/iOS exports passed. Simulated native controls verified required fields, switching services, freezing a submitted draft, retrying the same payload and opening the resulting application."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Build native application creation from an assigned lead using the existing application validation. Verify access, required fields and duplicate submission handling.",
+      "action": "Extend native application details to show and edit the institution or visa category, course, destination and intake. Review the existing web update and mobile progress paths first, and verify scoped writes and stale-version recovery.",
       "files": [
         "app/admin/operations.server.ts",
         "app/admin/mobile-api.ts",
-        "/Users/fidaali/Proconsulting-App/src/Applications.tsx"
+        "/Users/fidaali/Proconsulting-App/src/Applications.tsx",
+        "tests/mobile-api.test.mjs"
       ]
     }
   ],
@@ -144,31 +145,32 @@
     "offlineAgenda": "Local acceptance passed. Mobile aa25bfe has no configured remote. No live query, VPS release, OTA or physical-device acceptance.",
     "nativeReminders": "Mobile commit `59a0399` is local to `codex/mobile-staff`, which has no configured remote. The CRM API must reach the VPS before publishing a compatible mobile update. Physical-phone verification, VPS rollout and OTA publication are pending.",
     "nativeLeadActivity": "Mobile commit `7914a0a` is local to `codex/mobile-staff`, which has no remote. VPS rollout, OTA publication and physical-phone checks remain pending.",
-    "nativeLeadNotes": "Mobile commit 29add60 is local. VPS deployment, OTA publication and physical-phone testing remain pending."
+    "nativeLeadNotes": "Mobile commit 29add60 is local. VPS deployment, OTA publication and physical-phone testing remain pending.",
+    "nativeApplicationCreation": "Mobile commit d740660 is local and the checkout has no remote. VPS rollout, OTA publication and physical-phone acceptance remain pending."
   },
   "checks": [
     {
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-23T05:49:46.026Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-OO1z1Y/typecheck.log"
+      "checkedAt": "2026-11-23T09:02:42.178Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-gu8osB/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-23T05:49:53.583Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-OO1z1Y/test.log"
+      "checkedAt": "2026-11-23T09:02:49.793Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-gu8osB/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-23T05:49:59.127Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-OO1z1Y/build.log"
+      "checkedAt": "2026-11-23T09:02:56.343Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-gu8osB/build.log"
     }
   ],
-  "updatedAt": "2026-11-23T05:50:57.132Z",
-  "verifiedSourceFingerprint": "8e660401c39c290618132791d2ca8d8bd6d075e8c2a8c818d50d65dfccbde1ed"
+  "updatedAt": "2026-11-23T09:03:19.836Z",
+  "verifiedSourceFingerprint": "2b16ccc7bee837f9b3e0aec3c76cdbecdeaf09903f90362943509e993a540bc3"
 }

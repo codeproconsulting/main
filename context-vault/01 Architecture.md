@@ -321,3 +321,7 @@ Web lead details and the mobile read API share a server projection of the conver
 ## Native internal notes
 
 Web and native note writes share the lead and staff access locks.
+
+## Native application creation
+
+Native lead details can create an application and open the confirmed case. The CRM shares validation with its web form.

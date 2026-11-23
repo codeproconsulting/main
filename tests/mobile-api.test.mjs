@@ -31,6 +31,7 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
   let lostCaseAck = false;
   let lostAppointmentAck = false;
   let agendaFailure = 0;
+  let failCaseCreateAudit = false, loseCaseCreateAck = false;
   let failBookingAudit = false, loseBookingCreateAck = false;
   const leads = [
     { $id: "owned", owner: "staff", name: "Synthetic lead", email: "fixture@example.invalid", stage: "New", priority: "Normal", nextFollowUp: "2027-01-01T10:00:00.000Z", version: 1 },
@@ -92,6 +93,7 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
       }
       if(options.method === "PATCH") {
         const {data}=JSON.parse(options.body);
+        if(failCaseCreateAudit && data.event==="Application created")return Response.json({}, {status:503});
         if(failBookingAudit && data.event==="Appointment booked")return Response.json({}, {status:503});
         if(failCreationFinish&&data.event==='Follow-up created')return Response.json({}, {status:503});
         Object.assign(activities.get(id),data);return Response.json(activities.get(id));
@@ -137,6 +139,7 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
       const {data,documentId,permissions}=JSON.parse(options.body);assert.deepEqual(permissions,[]);
       if(rows.some(row=>row.$id===documentId))return Response.json({}, {status:409});
       const row={...data,$id:documentId};rows.push(row);
+      if(match[1]==="cases"&&loseCaseCreateAck)throw Error("Synthetic case reply lost");
       if(match[1]==="appointments"&&loseBookingCreateAck)throw Error("Synthetic booking reply lost");
       return Response.json(row);
     }
@@ -588,6 +591,34 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
     const racing=await Promise.all([book({...booking,submissionId:newToken}),book({...booking,submissionId:secondToken})]);
     assert.deepEqual(racing.map(response=>response.status).sort(),[200,409]);
     assert.equal(appointments.length,count+2);
+    const {applicationSubmissionId} = await (await send("lead?id=owned",auth)).json();
+    const application = {submissionId:applicationSubmissionId,kind:"Education",institution:"Example institution",
+      course:"Example course",country:"Italy",intake:"Autumn",deadline:"2036-01-03T09:00+05:00",notes:"Example note"};
+    const createCase = (body,leadId="owned") => send("application-create?id="+leadId,{
+      method:"POST",headers:{...auth.headers,"Content-Type":"application/json"},body:JSON.stringify(body),
+    });
+    assert.equal((await createCase({...application, course:""})).status,400);
+    assert.equal((await createCase({...application, deadline:"2036-01-03T09:00"})).status,400);
+    assert.equal((await createCase(application,"foreign")).status,403);
+    const caseCount = cases.length;
+    failCaseCreateAudit=true;loseCaseCreateAck=true;
+    assert.equal((await createCase(application)).status,503);
+    failCaseCreateAudit=false;loseCaseCreateAck=false;
+    const caseReplies = await Promise.all([createCase(application),createCase(application)]);
+    assert.deepEqual(caseReplies.map(response=>response.status),[200,200]);
+    const createdCases = await Promise.all(caseReplies.map(response=>response.json()));
+    assert.equal(createdCases[0].id,createdCases[1].id);
+    assert.equal(createdCases[0].stage,"Shortlisted");
+    assert.equal(createdCases[0].notes,undefined);
+    assert.equal(cases.length,caseCount+1);
+    assert.equal(activities.get(createdCases[0].id).event,"Application created");
+    assert.equal((await createCase({...application, country:"Germany"})).status,409);
+    const immigration = {...application, kind:"Immigration", course:"", institution:"Example visa category",
+      submissionId:(await (await send("lead?id=owned",auth)).json()).applicationSubmissionId};
+    assert.equal((await createCase(immigration)).status,200);
+    leads[0].owner="other";
+    assert.equal((await createCase(application)).status,403);
+    leads[0].owner="staff";
     active = false;
     assert.equal((await send("follow-up?id=task",auth)).status,403);
     assert.equal((await send("consultations?id=owned",auth)).status,403);

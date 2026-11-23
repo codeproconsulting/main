@@ -1,6 +1,6 @@
-import {randomUUID} from "node:crypto";
+import {createHash,randomUUID} from "node:crypto";
 import {AppwriteError,createDocument,getDocument,listDocuments,query,updateDocument} from "~/lib/appwrite.server";
-import {caseStagesFor,canManage,canUseCRM,isRestrictedManager,type Staff} from "./domain";
+import {caseStagesFor,canManage,canUseCRM,isRestrictedManager,type Activity,type Staff} from "./domain";
 import {allow,audit,dateField,definitiveWriteRejection,field,leadFor,writableEnquiry,scopedQueue,staffAccessLock,serialized,UnconfirmedMutation,withCurrentTeamManager} from "./crm.server";
 export type CaseRecord={$id:string;leadId:string;owner:string;kind:string;institution:string;course:string;country:string;intake:string;stage:string;deadline:string;notes:string;version:number};
 import {appointmentCalendarLock,appointmentTime,assertCalendarAvailable,type Appointment} from "./calendar.server";
@@ -39,7 +39,9 @@ export async function updateCaseProgress(staff: Staff,id: string,form: FormData)
   return updated;
  }));
 }
-export async function saveCase(staff:Staff,form:FormData){const id=field(form,"id",36),leadId=field(form,"leadId",36);return serialized(`lead:${leadId}`,async()=>{
+export async function saveCase(staff: Staff, form: FormData, submissionId?: string) {
+ const id = field(form, "id", 36), leadId = field(form, "leadId", 36);
+ const save = async (staff: Staff) => {
  const lead=await writableEnquiry(staff,leadId);
  const current=id?await getDocument<CaseRecord>("cases",id):null;if(current){allow(current.leadId===leadId);if(current.version!==Number(field(form,"version")))throw new Response("Application changed. Refresh before saving.",{status:409});}
  const kind=field(form,"kind",30),stage=field(form,"stage",80);if(!["Education","Immigration"].includes(kind)||!caseStagesFor(kind).includes(stage))throw new Response("Invalid application type or stage",{status:400});
@@ -48,11 +50,43 @@ export async function saveCase(staff:Staff,form:FormData){const id=field(form,"i
  if(!lead.owner)throw new Response("Assign the lead before creating or updating an application.",{status:400});
  const assignee=await getDocument<Staff>("staff",lead.owner);allow(assignee.active&&canUseCRM(assignee));
  if(!payload.institution||!payload.country||(kind==="Education"&&!payload.course))throw new Response(kind==="Education"?"Enter an institution, course and destination.":"Enter a visa category and destination.",{status:400});
+ if (submissionId) {
+   const caseId = createHash("sha256").update(`application:${staff.$id}:${leadId}:${submissionId}`).digest("hex").slice(0, 36);
+   const { owner, ...submitted } = payload;
+   const fingerprint = createHash("sha256").update(JSON.stringify(submitted)).digest("hex");
+   const entry = { actor: staff.$id, entityId: leadId, entityType: "lead", event: "Application save requested",
+     details: JSON.stringify({ caseId, fingerprint, state: "pending" }) };
+   const intent = await createDocument("activities", entry, caseId).catch(
+     error => getDocument<Activity>("activities", caseId).catch(() => { throw error; }),
+   );
+   const saved = JSON.parse(intent.details);
+   if (intent.actor !== staff.$id || intent.entityId !== leadId || intent.entityType !== "lead" ||
+       saved.fingerprint !== fingerprint || !["pending", "completed"].includes(saved.state)) {
+     throw new Response("This submission already belongs to another application.", { status: 409 });
+   }
+   const record = saved.state === "completed" ? await caseFor(staff, caseId) :
+     await createDocument("cases", payload, caseId).catch(
+       error => caseFor(staff, caseId).catch(() => { throw error; }),
+     );
+   if (record.leadId !== leadId || record.owner !== owner) {
+     throw new Response("Application assignment needs reconciliation.", { status: 409 });
+   }
+   if (saved.state === "pending") await updateDocument("activities", caseId, {
+     event: "Application created", details: JSON.stringify({ caseId, fingerprint, state: "completed" }),
+   });
+   return record;
+ }
  const caseId=current?.$id||randomUUID();
  const event=await audit(staff,leadId,"lead","Application save requested",{state:"pending",caseId,fromVersion:current?.version??0,toVersion:payload.version,stage});
  const record=current?await updateDocument<CaseRecord>("cases",caseId,payload):await createDocument("cases",payload,caseId);
  await updateDocument("activities",event.$id,{event:current?"Application updated":"Application created",details:JSON.stringify({state:"completed",caseId,stage,version:payload.version})});return record;
- });}
+ };
+ return serialized(`lead:${leadId}`, () => submissionId ? serialized(staffAccessLock, async () => {
+   const actor = await getDocument<Staff>("staff", staff.$id);
+   allow(actor.active && !actor.revocationPending && !isRestrictedManager(actor) && canUseCRM(actor));
+   return save(actor);
+ }) : save(staff));
+}
 export async function updateTeamCase(staff: Staff, id: string, form: FormData) {
   allow(staff.active && isRestrictedManager(staff) && !!id);
   const readCase = () => getDocument<CaseRecord>("cases", id).catch(error => {

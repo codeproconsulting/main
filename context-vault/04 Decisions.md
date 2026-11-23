@@ -351,3 +351,7 @@ Recent lead history is read on demand and excluded from offline snapshots. The C
 ## Native internal notes
 
 Native retries reuse an activity document ID derived from the actor, lead and submission. The draft stays in memory while the lead editor is open.
+
+## Native application creation
+
+New mobile applications start at Shortlisted. A deterministic case ID and audit fingerprint let identical retries reconcile an uncertain save. The draft stays in memory while the lead editor is open.

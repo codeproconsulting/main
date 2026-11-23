@@ -1,6 +1,6 @@
 import { noticesFor, readNotice } from "./notifications.server";
 import { bookAppointment } from "./appointment-booking.server";
-import { appointmentFor, saveAppointment, type Appointment, caseFor, updateCaseProgress, scopedRecords, type CaseRecord } from "./operations.server";
+import { appointmentFor, saveAppointment, type Appointment, caseFor, saveCase, updateCaseProgress, scopedRecords, type CaseRecord } from "./operations.server";
 import { createCipheriv, createDecipheriv, randomBytes, randomUUID, scryptSync } from "node:crypto";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { appwrite, AppwriteError, configurationIssues, query } from "~/lib/appwrite.server";
@@ -80,7 +80,7 @@ function recordId(request: Request, label = "lead") {
 
 function editableLead(lead: Lead) {
   const { $id: id, name, stage, priority, version } = lead;
-  return { id, name, stage, priority, version, stages, priorities, closureStages, activityAvailable: true, noteSubmissionId: randomUUID(), taskSubmissionId: randomUUID(), bookingSubmissionId: randomUUID(), canSchedule: Boolean(lead.owner) && !lead.duplicateOf };
+  return { id, name, stage, priority, version, stages, priorities, closureStages, activityAvailable: true, noteSubmissionId: randomUUID(), taskSubmissionId: randomUUID(), bookingSubmissionId: randomUUID(), applicationSubmissionId: lead.owner && !lead.duplicateOf ? randomUUID() : undefined, canSchedule: Boolean(lead.owner) && !lead.duplicateOf };
 }
 
 function editableFollowUp(task: Task) {
@@ -289,6 +289,24 @@ export function action({ request, params }: ActionFunctionArgs) {
       form.set("version",String(body.version));
       form.set("reason",body.reason);
       return reply(mobileAppointment(await saveAppointment(staff,form,undefined,reschedule ? "reschedule" : "outcome")));
+    }
+    if (params.resource === "application-create") {
+      if (request.method !== "POST") return reply({ error: "Method not allowed." }, 405);
+      const staff = await mobileStaff(request), leadId = recordId(request);
+      if (!isJson(request)) return reply({ error: "Expected JSON." }, 415);
+      const raw = await (await boundedBody(request, 70000, "Application")).text();
+      const body = await Promise.resolve(raw).then(JSON.parse).catch(() => null);
+      const fields = ["kind", "institution", "course", "country", "intake", "deadline", "notes"] as const;
+      if (typeof body?.submissionId !== "string" ||
+          !/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/.test(body.submissionId) ||
+          fields.some(key => typeof body[key] !== "string")) {
+        return reply({ error: "Invalid application submission." }, 400);
+      }
+      const form = new FormData();
+      for (const key of fields) form.set(key, body[key]);
+      form.set("leadId", leadId);
+      form.set("stage", "Shortlisted");
+      return reply(mobileCase(await saveCase(staff, form, body.submissionId)));
     }
     if (params.resource === "application") {
       if(request.method!=="PATCH")return reply({error:"Method not allowed."},405);

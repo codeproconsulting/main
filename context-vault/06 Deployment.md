@@ -375,3 +375,7 @@ Release the CRM first. Its online lead response enables the timeline control in 
 ## Native internal notes
 
 Roll out the CRM API first. Its online lead response enables note entry in the matching mobile update. Existing activity storage is reused. Mobile commit 29add60 is local. VPS deployment, OTA publication and physical-phone testing remain pending.
+
+## Native application creation
+
+Deploy the CRM first to advertise application creation in online lead details. The existing case and activity collections are reused. Mobile commit d740660 is local and the checkout has no remote. VPS rollout, OTA publication and physical-phone acceptance remain pending.

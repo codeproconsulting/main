@@ -373,3 +373,7 @@ The appointment handler in `app/admin/mobile-api.ts` selects the mutation mode i
 ## Native internal notes
 
 The note writer is in `app/admin/crm.server.ts`, the native action in `app/admin/mobile-api.ts` and the editor in the mobile checkout’s `src/NativeWorkspace.tsx`.
+
+## Native application creation
+
+The CRM action is in `app/admin/mobile-api.ts`, creation is in `app/admin/operations.server.ts` and the mobile form is in `src/ApplicationCreate.tsx`.

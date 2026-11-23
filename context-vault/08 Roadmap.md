@@ -66,3 +66,7 @@ The native read-only timeline passed local acceptance. The next planned feature 
 ## Native internal notes
 
 Native internal notes passed local acceptance. Native application creation is the next planned feature.
+
+## Native application creation
+
+Native application creation passed local acceptance. The next feature extends the native application detail editor.

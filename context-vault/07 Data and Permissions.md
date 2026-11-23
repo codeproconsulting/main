@@ -295,3 +295,7 @@ Reading activity requires current CRM and lead access. Team-restricted managers 
 ## Native internal notes
 
 Note writes recheck current staff and lead access under locks. Staff with team-restricted access cannot write timeline notes.
+
+## Native application creation
+
+The CRM rechecks current staff and lead access under locks, derives the case owner from the lead and omits notes from the mobile response. The audit records a hash of the normalized submitted fields for retry comparison.

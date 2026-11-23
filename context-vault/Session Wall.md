@@ -3,39 +3,39 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-23-04]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-23-05]].
 
 ## Resume here
 
-**Session:** 2026-11-23-04
+**Session:** 2026-11-23-05
 
-**Active feature:** MOB-16
+**Active feature:** MOB-17
 
 **State:** completed
 
-**Objective:** Save internal notes from native lead details with safe retries.
+**Objective:** Create education or immigration applications from an assigned lead on mobile.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Shared web/mobile note service and native note form
+- Native creation form and CRM application service
 
 ## Out of scope
 
-- Offline note writes and production rollout
+- Offline creation and production release
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| MOB16-API | Validate notes and reconcile repeated submissions within current access. | passed | CRM typecheck, 193 tests and build passed. Integration checks verified size limits, current assignment, revoked sessions, reconciliation after a lost storage response, repeated submissions and rejection of changed text for a used submission ID. |
-| MOB16-NATIVE | Verify native entry, retry and refresh. | passed | Mobile typecheck, lint, 13 tests and Android/iOS bundle exports passed. A simulated native interaction check verified retry with the same text and ID after backgrounding, clearing the confirmed draft and using a fresh ID for the next note. |
+| MOB17-API | Verify scope, validation and safe retries. | passed | CRM typecheck, 193 tests and build passed. Integration checks covered both services, required fields, timezone validation, reassignment, concurrent retries, changed payload rejection and recovery after a lost create response and failed audit update. |
+| MOB17-NATIVE | Verify form, retry and detail navigation. | passed | Mobile typecheck, lint, 13 tests and Android/iOS exports passed. Simulated native controls verified required fields, switching services, freezing a submitted draft, retrying the same payload and opening the resulting application. |
 
 ## Exact next actions
 
-1. Build native application creation from an assigned lead using the existing application validation. Verify access, required fields and duplicate submission handling.
-   Files: `app/admin/operations.server.ts`, `app/admin/mobile-api.ts`, `/Users/fidaali/Proconsulting-App/src/Applications.tsx`
+1. Extend native application details to show and edit the institution or visa category, course, destination and intake. Review the existing web update and mobile progress paths first, and verify scoped writes and stale-version recovery.
+   Files: `app/admin/operations.server.ts`, `app/admin/mobile-api.ts`, `/Users/fidaali/Proconsulting-App/src/Applications.tsx`, `tests/mobile-api.test.mjs`
 
 ## Known risks and unfinished work
 
@@ -59,9 +59,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-23T05:49:46.026Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-OO1z1Y/typecheck.log`
-- **passed**: `npm run test` (2026-11-23T05:49:53.583Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-OO1z1Y/test.log`
-- **passed**: `npm run build` (2026-11-23T05:49:59.127Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-OO1z1Y/build.log`
+- **passed**: `npm run typecheck` (2026-11-23T09:02:42.178Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-gu8osB/typecheck.log`
+- **passed**: `npm run test` (2026-11-23T09:02:49.793Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-gu8osB/test.log`
+- **passed**: `npm run build` (2026-11-23T09:02:56.343Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-gu8osB/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -156,5 +156,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **nativeReminders**: Mobile commit `59a0399` is local to `codex/mobile-staff`, which has no configured remote. The CRM API must reach the VPS before publishing a compatible mobile update. Physical-phone verification, VPS rollout and OTA publication are pending.
 - **nativeLeadActivity**: Mobile commit `7914a0a` is local to `codex/mobile-staff`, which has no remote. VPS rollout, OTA publication and physical-phone checks remain pending.
 - **nativeLeadNotes**: Mobile commit 29add60 is local. VPS deployment, OTA publication and physical-phone testing remain pending.
+- **nativeApplicationCreation**: Mobile commit d740660 is local and the checkout has no remote. VPS rollout, OTA publication and physical-phone acceptance remain pending.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]
