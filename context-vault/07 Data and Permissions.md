@@ -315,3 +315,7 @@ The existing case queue rechecks current enquiry access before applying search a
 ## Native application deadline filters
 
 Deadline matching runs after the application queue applies current lead scope.
+
+## Application-to-lead navigation
+
+Opening the linked lead checks current CRM access. Access denial closes the application and returns to Leads.

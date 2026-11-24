@@ -341,3 +341,7 @@ The mobile application list uses the shared scoped case queue for filtered and u
 ## Native application deadline filters
 
 The scoped application list can filter by pending deadline as well as text and stage.
+
+## Application-to-lead navigation
+
+The mobile application opens its linked lead through the existing online lead endpoint.

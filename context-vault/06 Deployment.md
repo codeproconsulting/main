@@ -395,3 +395,7 @@ Deploy the CRM first. The existing list response advertises supported stage filt
 ## Native application deadline filters
 
 Release the CRM before enabling deadline filters in the mobile update. Existing indexes suffice. Mobile commit 5221988 is local. VPS rollout, OTA publication and physical-phone testing remain pending.
+
+## Application-to-lead navigation
+
+Mobile commit e4b7684 is local. Navigation reuses the current API. Mobile publication and physical-phone testing are pending.

@@ -371,3 +371,7 @@ Search text is sent in the request body. Each scoped page is filtered in memory 
 ## Native application deadline filters
 
 Upcoming windows use the remaining Karachi calendar day or today plus six days. Closed stages and invalid dates are excluded. Filters reuse existing page order.
+
+## Application-to-lead navigation
+
+Save or reload application edits before opening the linked lead. Returning fetches fresh application details.

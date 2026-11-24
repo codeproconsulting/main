@@ -316,7 +316,7 @@
   "tests/manual/REMIND-01-browser.md": "b0c395ee0ec8b0ab5721c30ba801d05ac7da8ff5fc2e19caef6284954fa54475",
   "tests/manual/TEAM-01-browser.md": "4bbf0b795bf1a275b667721d685fa079073fac7ab0d0eeff06cbac5b42e704a2",
   "tests/media.test.mjs": "e3e33fbcc2198855ab28dc471c278fb73c6991651d9b93e2564b0b2c63ae9c54",
-  "tests/mobile-api.test.mjs": "19c3af384a9f1c5e36bb9385e3bcaa75f13b9fc8a79f45f1fe5715f5277de8f5",
+  "tests/mobile-api.test.mjs": "57fecf1bd707e97253a6c7a06e63b529e55fe0fe461f1aad6a77300bbf6d1fa9",
   "tests/reminder-email-pilot.test.mjs": "410ed7c5709fffa7055bfc4d5ed7cb9d2645018b2cee3647da168fe3bc031cda",
   "tests/reminder-preferences.test.mjs": "01e65f01bab643afa864ddf14aadd0bb6d313a7ecd50e67bf0734c2a9cde5a4a",
   "tests/reminder-workflow.test.mjs": "0d5dd02cb681438d2142ff07f58fb810b043d9cb14b190782478d513919dc2ee",

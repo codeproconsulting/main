@@ -393,3 +393,7 @@ The filter action lives in `app/admin/mobile-api.ts`. Mobile controls and applie
 ## Native application deadline filters
 
 Deadline matching lives in `app/admin/operations.server.ts`, API negotiation in `app/admin/mobile-api.ts` and the native controls in `src/Applications.tsx`.
+
+## Application-to-lead navigation
+
+The mobile controls are in `src/Applications.tsx` and `src/NativeWorkspace.tsx`.

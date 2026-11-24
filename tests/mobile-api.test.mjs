@@ -549,6 +549,10 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
     assert.equal(matchDeadline("invalid","week"),false);
     cases.splice(0,fillers.length);
     const detail=await(await send("application?id=case",auth)).json();
+    assert.equal((await (await send("lead?id="+detail.leadId,auth)).json()).id,"owned");
+    leads[0].owner="other";
+    assert.equal((await send("lead?id="+detail.leadId,auth)).status,403);
+    leads[0].owner="staff";
     assert.equal(detail.documentChecklistAvailable,true);
     assert.equal((await send("application-documents?id=case")).status,401);
     const checklistReply=await send("application-documents?id=case",auth);

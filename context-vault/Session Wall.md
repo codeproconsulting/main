@@ -3,39 +3,39 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-23-09]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-24-01]].
 
 ## Resume here
 
-**Session:** 2026-11-23-09
+**Session:** 2026-11-24-01
 
-**Active feature:** MOB-21
+**Active feature:** MOB-22
 
 **State:** completed
 
-**Objective:** Find pending application deadlines on mobile.
+**Objective:** Open a linked lead from mobile application details and return to the application.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Deadline filters and Karachi time display
+- Scoped application-to-lead navigation
 
 ## Out of scope
 
-- Offline deadline filters and production rollout
+- Production and OTA rollout
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| MOB21-API | Verify deadline windows and pagination. | passed | CRM typecheck, 193 tests and build passed. Integration checks covered overdue paging, combined filters, invalid and closed deadlines, and Karachi midnight and seven-day boundaries. |
-| MOB21-NATIVE | Verify filter interaction and deadline display. | passed | Mobile typecheck, lint, 13 tests and both platform exports passed. Simulated mobile controls verified deadline selection, filtering with search and stage, paging, clearing and Karachi time display. |
+| MOB22-API | Verify access after reassignment. | passed | CRM typecheck, 193 tests and build passed. Integration verified direct lead access via the application response and denial after reassignment. |
+| MOB22-NATIVE | Verify open and return without losing unsaved edits. | passed | Mobile typecheck, lint, 13 tests and Android/iOS exports passed. Simulated controls verified open, return to the same application, unsaved-edit protection and access denial. |
 
 ## Exact next actions
 
-1. Add a native link from application detail to its assigned lead. Verify current lead scope on open and preserve the return path to the application.
-   Files: `/Users/fidaali/Proconsulting-App/src/Applications.tsx`, `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`, `tests/mobile-api.test.mjs`
+1. Add scoped navigation from a lead to its existing applications. Keep the lead filter active across pages and verify reassignment handling.
+   Files: `app/admin/mobile-api.ts`, `tests/mobile-api.test.mjs`, `/Users/fidaali/Proconsulting-App/src/Applications.tsx`, `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`
 
 ## Known risks and unfinished work
 
@@ -59,9 +59,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-23T12:01:24.698Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-D3b7BO/typecheck.log`
-- **passed**: `npm run test` (2026-11-23T12:01:32.812Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-D3b7BO/test.log`
-- **passed**: `npm run build` (2026-11-23T12:01:38.315Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-D3b7BO/build.log`
+- **passed**: `npm run typecheck` (2026-11-24T17:42:27.522Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-UmYzVb/typecheck.log`
+- **passed**: `npm run test` (2026-11-24T17:42:35.379Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-UmYzVb/test.log`
+- **passed**: `npm run build` (2026-11-24T17:42:41.298Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-UmYzVb/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -161,5 +161,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **nativeDocumentChecklist**: Mobile commit 94100b2 is local. VPS deployment, OTA publication and physical-phone testing remain pending.
 - **nativeApplicationSearch**: Mobile commit 835216e is local. VPS rollout, OTA publication and physical-phone testing remain pending.
 - **nativeApplicationDeadlines**: Mobile commit 5221988 is local. VPS rollout, OTA publication and physical-phone testing remain pending.
+- **nativeApplicationLeadLink**: Mobile commit e4b7684 is local. Navigation reuses the current API. Mobile publication and physical-phone testing are pending.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

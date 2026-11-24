@@ -86,3 +86,7 @@ The next planned application-list feature is a deadline view.
 ## Native application deadline filters
 
 Next work is a native link from an application to its assigned lead.
+
+## Application-to-lead navigation
+
+The next native navigation feature is viewing existing applications from a lead.
