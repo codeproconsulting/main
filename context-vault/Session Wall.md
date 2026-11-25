@@ -3,38 +3,38 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-25-03]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-25-04]].
 
 ## Resume here
 
-**Session:** 2026-11-25-03
+**Session:** 2026-11-25-04
 
-**Active feature:** MOB-25
+**Active feature:** MOB-26
 
 **State:** completed
 
-**Objective:** Open appointment leads and restore the originating appointment.
+**Objective:** Use customer contact details and enquiry context in the native lead workspace.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Appointment lead navigation and draft protection
+- Online contact profile, call, email and share actions
 
 ## Out of scope
 
-- Production rollout
+- Offline contact data and automatic communication
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| MOB25 | Verify navigation, return and scope. | passed | CRM typecheck, 193 tests and build passed. Mobile typecheck, lint, 13 tests and both exports passed. Simulated controls verified draft protection, linked lead open, return and retained list scope. |
+| MOB26 | Verify scoped profile and native contact actions. | passed | CRM typecheck, 193 tests and build passed. Mobile typecheck, lint, 13 tests and both exports passed. Simulated controls verified call and email URLs, shared contact text and background clearing. API checks verified profile allowlisting and exclusion from workspace snapshots. |
 
 ## Exact next actions
 
-1. Review the feature ledger against the approved CRM plan and select the next incomplete user workflow, recording acceptance criteria before implementation.
-   Files: `context-vault/Feature Ledger.md`, `docs/CRM-CMS-APPWRITE-IMPLEMENTATION-PLAN.md`
+1. Extend the native contact workflow with the original enquiry fields using the web profile allowlist. Verify privacy, malformed legacy details and access changes.
+   Files: `app/admin/mobile-api.ts`, `app/admin/lead.tsx`, `tests/mobile-api.test.mjs`, `/Users/fidaali/Proconsulting-App/src/ContactProfile.tsx`
 
 ## Known risks and unfinished work
 
@@ -58,9 +58,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-25T10:56:33.888Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-x77JZR/typecheck.log`
-- **passed**: `npm run test` (2026-11-25T10:56:41.521Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-x77JZR/test.log`
-- **passed**: `npm run build` (2026-11-25T10:56:47.459Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-x77JZR/build.log`
+- **passed**: `npm run typecheck` (2026-11-25T10:59:06.362Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-A5nsqF/typecheck.log`
+- **passed**: `npm run test` (2026-11-25T10:59:14.259Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-A5nsqF/test.log`
+- **passed**: `npm run build` (2026-11-25T10:59:19.976Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-A5nsqF/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -164,5 +164,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **nativeLeadApplications**: Mobile commit 76d6882 is local. VPS rollout, mobile publication and physical-device checks are pending.
 - **nativeLeadAppointments**: Mobile commit b8eabd6 is local. VPS rollout, mobile publication and physical-device checks remain pending.
 - **nativeAppointmentLead**: Mobile 711863e is local. Publication and handset checks pending.
+- **nativeContactProfile**: Mobile e084307 is local. Server rollout, mobile publication and physical-device testing pending.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

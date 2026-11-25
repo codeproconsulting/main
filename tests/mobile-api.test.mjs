@@ -375,6 +375,13 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
     assert.equal(conflict.data.conflict, true);
     webForm.set("version", "2");
     assert.equal((await updateInBrowser()).success, true);
+    const contactProfile = (await (await send("lead?id=owned",auth)).json()).profile;
+    assert.equal(contactProfile.email,"fixture@example.invalid");
+    assert.equal(contactProfile.details,undefined);
+    assert.equal(contactProfile.owner,undefined);
+    const contactSnapshot = await (await send("workspace",auth)).json();
+    assert.equal(contactSnapshot.leads[0].profile,undefined);
+    assert.equal(contactSnapshot.leads[0].email,undefined);
     const current = await send("lead?id=owned", auth);
     assert.equal((await current.json()).stage, "Qualified");
     assert.equal((await edit("owned", { version: 2, stage: "Contacted", priority: "Urgent" })).status, 409);
