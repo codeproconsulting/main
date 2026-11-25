@@ -401,3 +401,7 @@ The mobile controls are in `src/Applications.tsx` and `src/NativeWorkspace.tsx`.
 ## Lead applications
 
 `app/admin/mobile-api.ts` applies lead scope. Mobile navigation and paging live in `src/NativeWorkspace.tsx` and `src/Applications.tsx`.
+
+## Lead appointments
+
+`app/admin/mobile-api.ts` handles the scoped appointment list. The mobile controls live in `src/NativeWorkspace.tsx` and `src/Appointments.tsx`.

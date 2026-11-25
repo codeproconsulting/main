@@ -94,3 +94,7 @@ The next native navigation feature is viewing existing applications from a lead.
 ## Lead applications
 
 The next native navigation feature is a lead-scoped appointments list.
+
+## Lead appointments
+
+Next work adds the linked-lead action from appointment details.

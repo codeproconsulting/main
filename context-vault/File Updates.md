@@ -1,6 +1,6 @@
 # File updates
 
-Generated snapshot of changes since the previous inventory; Nov 25, 2026, 3:30 p.m. (Asia/Karachi).
+Generated snapshot of changes since the previous inventory; Nov 25, 2026, 3:53 p.m. (Asia/Karachi).
 
 [[02 File Map]] · [[Source Inventory]] · [[05 Maintenance]]
 
@@ -9,3 +9,4 @@ Review these changes and update human-authored architecture/status notes where n
 ## Modified
 
 - `app/admin/mobile-api.ts`
+- `tests/mobile-api.test.mjs`

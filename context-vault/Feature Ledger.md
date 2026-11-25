@@ -102,3 +102,7 @@ MOB-22 application-to-lead navigation passed local acceptance. [[Sessions/2026-1
 ## Lead applications
 
 MOB-23 lead application navigation passed local acceptance. [[Sessions/2026-11-25-01]]
+
+## Lead appointments
+
+MOB-24 lead appointment navigation passed local acceptance. [[Sessions/2026-11-25-02]]

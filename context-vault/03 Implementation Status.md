@@ -441,3 +441,7 @@ MOB-22 passed local acceptance. [[Sessions/2026-11-24-01]]
 ## Lead applications
 
 MOB-23 passed local acceptance. [[Sessions/2026-11-25-01]]
+
+## Lead appointments
+
+MOB-24 passed local acceptance. [[Sessions/2026-11-25-02]]

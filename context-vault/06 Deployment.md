@@ -403,3 +403,7 @@ Mobile commit e4b7684 is local. Navigation reuses the current API. Mobile public
 ## Lead applications
 
 Deploy the CRM first to advertise the capability. Existing case indexes are reused. Mobile commit 76d6882 is local. VPS rollout, mobile publication and physical-device checks are pending.
+
+## Lead appointments
+
+Release the CRM API before publishing the mobile update so the lead response advertises the feature. Existing indexes are reused. Mobile commit b8eabd6 is local. VPS rollout, mobile publication and physical-device checks remain pending.

@@ -379,3 +379,7 @@ Save or reload application edits before opening the linked lead. Returning fetch
 ## Lead applications
 
 The lead is a fixed filter for this navigation path. The client verifies that the API returned the expected scope.
+
+## Lead appointments
+
+The client verifies the lead scope on every page. The lead-specific list requires a connection.

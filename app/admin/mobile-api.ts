@@ -80,14 +80,14 @@ function recordId(request: Request, label = "lead") {
   return id;
 }
 
-async function applicationPage(staff: Staff, request: Request, page: number): Promise<{records:CaseRecord[];hasMore:boolean;leadId?:string}> {
+async function schedulePage<T extends {leadId:string; owner:string}>(staff: Staff, request: Request, collection: "cases" | "appointments", page: number): Promise<{records:T[];hasMore:boolean;leadId?:string}> {
   const leadId = new URL(request.url).searchParams.get("leadId");
-  if (leadId === null) return scopedRecords<CaseRecord>(staff,"cases",page);
+  if (leadId === null) return scopedRecords<T>(staff,collection,page);
   if (!/^[A-Za-z0-9][A-Za-z0-9._-]{0,35}$/.test(leadId)) {
     throw new Response("Invalid lead ID.",{status:400});
   }
   await leadFor(staff,leadId);
-  const result = await scopedQueue<CaseRecord>(staff,"cases",
+  const result = await scopedQueue<T>(staff,collection,
     [query("equal","leadId",[leadId]),query("orderDesc","$createdAt")],page);
   const current = await mobileStaff(request);
   await leadFor(current,leadId);
@@ -97,7 +97,7 @@ async function applicationPage(staff: Staff, request: Request, page: number): Pr
 
 function editableLead(lead: Lead) {
   const { $id: id, name, stage, priority, version } = lead;
-  return { id, name, stage, priority, version, stages, priorities, closureStages, activityAvailable: true, applicationListAvailable: true, noteSubmissionId: randomUUID(), taskSubmissionId: randomUUID(), bookingSubmissionId: randomUUID(), applicationSubmissionId: lead.owner && !lead.duplicateOf ? randomUUID() : undefined, canSchedule: Boolean(lead.owner) && !lead.duplicateOf };
+  return { id, name, stage, priority, version, stages, priorities, closureStages, activityAvailable: true, applicationListAvailable: true, appointmentListAvailable: true, noteSubmissionId: randomUUID(), taskSubmissionId: randomUUID(), bookingSubmissionId: randomUUID(), applicationSubmissionId: lead.owner && !lead.duplicateOf ? randomUUID() : undefined, canSchedule: Boolean(lead.owner) && !lead.duplicateOf };
 }
 
 function editableFollowUp(task: Task) {
@@ -162,13 +162,13 @@ export function loader({ request, params }: LoaderFunctionArgs) {
     }
     if(params.resource === "appointments"){
       const page=queuePage(new URL(request.url).searchParams.get("page"));
-      const {records,hasMore}=await scopedRecords<Appointment>(await mobileStaff(request),"appointments",page);
-      return reply({page,hasMore,appointments:records.map(mobileAppointment)});
+      const {records,hasMore,leadId}=await schedulePage<Appointment>(await mobileStaff(request),request,"appointments",page);
+      return reply({page,hasMore,leadId,appointments:records.map(mobileAppointment)});
     }
     if(params.resource === "appointment")return reply(mobileAppointment(await appointmentFor(await mobileStaff(request),recordId(request,"appointment"))));
     if (params.resource === "applications") {
       const page=queuePage(new URL(request.url).searchParams.get("page"));
-      const {records,hasMore,leadId}=await applicationPage(await mobileStaff(request),request,page);
+      const {records,hasMore,leadId}=await schedulePage<CaseRecord>(await mobileStaff(request),request,"cases",page);
       return reply({page,hasMore,leadId,filterStages:caseStages,deadlineFilters:caseDeadlineFilters,applications:records.map(mobileCase)});
     }
     if (params.resource === "application-documents") {
@@ -267,7 +267,7 @@ export function action({ request, params }: ActionFunctionArgs) {
       }
       const page = queuePage(typeof body.page === "number" ? String(body.page) : null);
       const search = body.search.trim().toLowerCase();
-      const {records,hasMore,leadId} = await applicationPage(staff,request,page);
+      const {records,hasMore,leadId} = await schedulePage<CaseRecord>(staff,request,"cases",page);
       // shortcut: filter each scoped page, use indexed search if case volumes make sparse pages impractical.
       const now = Date.now();
       const matching = records.filter(record => (!deadlineFilter || matchesCaseDeadline(record,deadlineFilter,now)) && (!body.stage || record.stage === body.stage) &&

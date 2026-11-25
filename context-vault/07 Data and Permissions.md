@@ -323,3 +323,7 @@ Opening the linked lead checks current CRM access. Access denial closes the appl
 ## Lead applications
 
 The CRM checks lead access before and after listing. The mobile app closes the scoped view after access denial.
+
+## Lead appointments
+
+The CRM checks current lead access before and after listing. Scoped results continue to respect appointment ownership.

@@ -349,3 +349,7 @@ The mobile application opens its linked lead through the existing online lead en
 ## Lead applications
 
 Native lead details open an application list scoped by lead ID before pagination.
+
+## Lead appointments
+
+Lead details open a scoped appointment list. The mobile API shares lead-list scoping across cases and appointments.
