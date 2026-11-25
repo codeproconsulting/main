@@ -375,3 +375,7 @@ Upcoming windows use the remaining Karachi calendar day or today plus six days. 
 ## Application-to-lead navigation
 
 Save or reload application edits before opening the linked lead. Returning fetches fresh application details.
+
+## Lead applications
+
+The lead is a fixed filter for this navigation path. The client verifies that the API returned the expected scope.

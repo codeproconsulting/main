@@ -319,3 +319,7 @@ Deadline matching runs after the application queue applies current lead scope.
 ## Application-to-lead navigation
 
 Opening the linked lead checks current CRM access. Access denial closes the application and returns to Leads.
+
+## Lead applications
+
+The CRM checks lead access before and after listing. The mobile app closes the scoped view after access denial.

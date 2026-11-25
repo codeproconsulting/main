@@ -397,3 +397,7 @@ Deadline matching lives in `app/admin/operations.server.ts`, API negotiation in 
 ## Application-to-lead navigation
 
 The mobile controls are in `src/Applications.tsx` and `src/NativeWorkspace.tsx`.
+
+## Lead applications
+
+`app/admin/mobile-api.ts` applies lead scope. Mobile navigation and paging live in `src/NativeWorkspace.tsx` and `src/Applications.tsx`.

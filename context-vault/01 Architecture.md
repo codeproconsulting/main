@@ -345,3 +345,7 @@ The scoped application list can filter by pending deadline as well as text and s
 ## Application-to-lead navigation
 
 The mobile application opens its linked lead through the existing online lead endpoint.
+
+## Lead applications
+
+Native lead details open an application list scoped by lead ID before pagination.

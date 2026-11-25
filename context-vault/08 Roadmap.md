@@ -90,3 +90,7 @@ Next work is a native link from an application to its assigned lead.
 ## Application-to-lead navigation
 
 The next native navigation feature is viewing existing applications from a lead.
+
+## Lead applications
+
+The next native navigation feature is a lead-scoped appointments list.

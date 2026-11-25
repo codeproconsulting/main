@@ -548,6 +548,25 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
     assert.equal(matchDeadline("2030-01-01T18:58:59Z","overdue","Withdrawn"),false);
     assert.equal(matchDeadline("invalid","week"),false);
     cases.splice(0,fillers.length);
+    cases.unshift(...Array.from({length:25},(_,i)=>({...cases[0],$id:"different-"+i,leadId:"foreign"})));
+    const leadCases=await (await send("applications?leadId=owned",auth)).json();
+    assert.equal(leadCases.leadId,"owned");
+    assert.deepEqual(leadCases.applications.map(row=>row.id),["case"]);
+    assert.equal(leadCases.hasMore,false);
+    assert.equal((await send("applications?leadId=foreign",auth)).status,403);
+    assert.equal((await send("applications?leadId=bad%2Fid",auth)).status,400);
+    assert.equal((await send("applications?leadId=missing",auth)).status,404);
+    cases.splice(0,25);
+    cases.unshift(...Array.from({length:25},(_,i)=>({...cases[0],$id:"same-"+i,institution:"Example filler",course:"Example course"})));
+    const filteredLeadCases=await (await send("applications?leadId=owned",{
+      method:"POST",headers:{...auth.headers,"Content-Type":"application/json"},
+      body:JSON.stringify({page:2,search:"synthetic",stage:"Shortlisted"}),
+    })).json();
+    assert.deepEqual(filteredLeadCases.applications.map(row=>row.id),["case"]);
+    leads[0].owner="other";
+    assert.equal((await send("applications?leadId=owned&page=2",auth)).status,403);
+    leads[0].owner="staff";
+    cases.splice(0,25);
     const detail=await(await send("application?id=case",auth)).json();
     assert.equal((await (await send("lead?id="+detail.leadId,auth)).json()).id,"owned");
     leads[0].owner="other";

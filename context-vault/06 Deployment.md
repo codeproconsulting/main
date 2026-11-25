@@ -399,3 +399,7 @@ Release the CRM before enabling deadline filters in the mobile update. Existing 
 ## Application-to-lead navigation
 
 Mobile commit e4b7684 is local. Navigation reuses the current API. Mobile publication and physical-phone testing are pending.
+
+## Lead applications
+
+Deploy the CRM first to advertise the capability. Existing case indexes are reused. Mobile commit 76d6882 is local. VPS rollout, mobile publication and physical-device checks are pending.

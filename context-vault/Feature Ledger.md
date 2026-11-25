@@ -98,3 +98,7 @@ MOB-21 native deadline filters passed local acceptance. [[Sessions/2026-11-23-09
 ## Application-to-lead navigation
 
 MOB-22 application-to-lead navigation passed local acceptance. [[Sessions/2026-11-24-01]]
+
+## Lead applications
+
+MOB-23 lead application navigation passed local acceptance. [[Sessions/2026-11-25-01]]
