@@ -623,6 +623,11 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
     assert.equal(cases[0].kind,"Education");assert.equal(cases[0].notes,"private");
     assert.equal((await patchCase(detailsUpdate)).status,409);
     assert.equal((await (await send("application?id=case",auth)).json()).intake,"Spring");
+    const leadTasks=await (await send("follow-up-history?leadId=owned&status=Open",auth)).json();
+    assert.equal(leadTasks.leadId,"owned");
+    assert.ok(leadTasks.tasks.every(task=>task.leadId==="owned" && task.status==="Open"));
+    assert.equal((await send("follow-up-history?leadId=foreign&status=Open",auth)).status,403);
+    assert.equal((await send("follow-up-history?leadId=invalid%2Fid",auth)).status,400);
     const originalTaskStatus=tasks[0].status;
     tasks[0].status="Completed";tasks[0].outcome="Example recorded outcome";
     assert.equal((await send("follow-up-history")).status,401);

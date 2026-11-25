@@ -100,7 +100,7 @@ function editableLead(lead: Lead) {
   const { $id: id, name, stage, priority, version } = lead;
   const profile = {email:lead.email,phone:lead.phone,country:lead.country,service:lead.service,
     enquiry:enquiryFields(lead.details),source:lead.source,receivedAt:lead.$createdAt,nextFollowUp:lead.nextFollowUp};
-  return { id, name, profile, stage, priority, version, stages, priorities, closureStages, activityAvailable: true, applicationListAvailable: true, appointmentListAvailable: true, noteSubmissionId: randomUUID(), taskSubmissionId: randomUUID(), bookingSubmissionId: randomUUID(), applicationSubmissionId: lead.owner && !lead.duplicateOf ? randomUUID() : undefined, canSchedule: Boolean(lead.owner) && !lead.duplicateOf };
+  return { id, name, profile, stage, priority, version, stages, priorities, closureStages, activityAvailable: true, applicationListAvailable: true, appointmentListAvailable: true, followUpListAvailable: true, noteSubmissionId: randomUUID(), taskSubmissionId: randomUUID(), bookingSubmissionId: randomUUID(), applicationSubmissionId: lead.owner && !lead.duplicateOf ? randomUUID() : undefined, canSchedule: Boolean(lead.owner) && !lead.duplicateOf };
 }
 
 function editableFollowUp(task: Task) {
@@ -234,12 +234,19 @@ export function loader({ request, params }: LoaderFunctionArgs) {
     if (params.resource === "follow-up-history") {
       const staff=await mobileStaff(request);
       const url=new URL(request.url), status=url.searchParams.get("status") || "Completed";
-      if (!["Completed","Cancelled"].includes(status)) return reply({error:"Invalid task status."},400);
+      if (!["Open","Completed","Cancelled"].includes(status)) return reply({error:"Invalid task status."},400);
       const page=queuePage(url.searchParams.get("page"));
+      const leadId=url.searchParams.get("leadId");
+      if(leadId!==null){
+        if(!/^[A-Za-z0-9][A-Za-z0-9._-]{0,35}$/.test(leadId))return reply({error:"Invalid lead ID."},400);
+        await leadFor(staff,leadId);
+      }
       const {records,hasMore}=await scopedQueue<Task>(staff,"tasks",[
+        ...(leadId ? [query("equal","leadId",[leadId])] : []),
         query("equal","status",[status]),query("orderDesc","$updatedAt"),
       ],page,25,true);
-      return reply({page,hasMore,tasks:records.map(editableFollowUp)});
+      if(leadId)await leadFor(await mobileStaff(request),leadId);
+      return reply({page,hasMore,leadId:leadId||undefined,tasks:records.map(editableFollowUp)});
     }
     if (params.resource === "follow-ups") {
       const staff = await mobileStaff(request);

@@ -122,3 +122,7 @@ MOB-27 projects intake-supported scalar fields through `app/admin/enquiry-profil
 ## Native follow-up history
 
 MOB-28 provides completed and cancelled follow-ups with outcomes, paging and current task detail. The API uses personal scoped tasks and current lead access. The native component is `src/FollowUpHistory.tsx`. CRM typecheck, 193 tests and build passed. Mobile typecheck, lint, 13 tests and both exports passed. API checks covered authentication, invalid status, outcomes and reassignment. Simulated controls verified empty-page continuation, pagination, status reset, detail navigation and background clearing. Mobile `d603368` is local. Rollout and handset checks remain pending. [[Sessions/2026-11-25-06]]
+
+## Lead follow-ups
+
+MOB-29 extends the online history endpoint and native component with a fixed lead scope and open status. Each list checks current access and returns its lead scope for client verification. CRM typecheck, 193 tests and build passed. Mobile typecheck, lint, 13 tests and both exports passed. API checks verified scoped open tasks and invalid or unauthorized lead IDs. Simulated controls verified lead navigation, status switching, paging and task detail return. Mobile `0a17043` is local. Deployment, publication and handset checks remain pending. [[Sessions/2026-11-25-07]]

@@ -1,31 +1,29 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-25-06",
+  "sessionId": "2026-11-25-07",
   "sessionStatus": "completed",
-  "activeFeature": "MOB-28",
-  "objective": "Review completed and cancelled mobile follow-ups.",
+  "activeFeature": "MOB-29",
+  "objective": "Manage lead follow-ups by status from native lead details.",
   "scope": [
-    "Scoped task history with outcomes and pagination"
+    "Scoped open and closed follow-ups with paging"
   ],
   "outOfScope": [
     "Offline history and rollout"
   ],
   "acceptance": [
     {
-      "id": "MOB28",
-      "description": "Verify scoped history and mobile controls.",
+      "id": "MOB29",
+      "description": "Verify scoped status lists and native navigation.",
       "status": "passed",
-      "evidence": "CRM typecheck, 193 tests and build passed. Mobile typecheck, lint, 13 tests and both exports passed. API checks covered authentication, invalid status, outcomes and reassignment. Simulated controls verified empty-page continuation, pagination, status reset, detail navigation and background clearing."
+      "evidence": "CRM typecheck, 193 tests and build passed. Mobile typecheck, lint, 13 tests and both exports passed. API checks verified scoped open tasks and invalid or unauthorized lead IDs. Simulated controls verified lead navigation, status switching, paging and task detail return."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Add scoped follow-up history from individual lead details, including open and closed tasks and status filtering. Verify current lead access and pagination.",
+      "action": "Preserve selected status and page when returning from follow-up detail. Verify refresh after task completion and access changes.",
       "files": [
-        "app/admin/mobile-api.ts",
-        "tests/mobile-api.test.mjs",
         "/Users/fidaali/Proconsulting-App/src/FollowUpHistory.tsx",
         "/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx"
       ]
@@ -151,31 +149,32 @@
     "nativeAppointmentLead": "Mobile 711863e is local. Publication and handset checks pending.",
     "nativeContactProfile": "Mobile e084307 is local. Server rollout, mobile publication and physical-device testing pending.",
     "nativeEnquiry": "Mobile 8fe84ef is local. Server rollout, mobile publication and physical-phone testing pending.",
-    "nativeTaskHistory": "Mobile d603368 is local. VPS rollout, publication and handset checks pending."
+    "nativeTaskHistory": "Mobile d603368 is local. VPS rollout, publication and handset checks pending.",
+    "nativeLeadFollowUps": "Mobile 0a17043 is local. Rollout, publication and handset checks pending."
   },
   "checks": [
     {
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-25T11:19:06.659Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-y6Pegq/typecheck.log"
+      "checkedAt": "2026-11-25T11:34:48.243Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-mYLqzj/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-25T11:19:14.010Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-y6Pegq/test.log"
+      "checkedAt": "2026-11-25T11:34:56.038Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-mYLqzj/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-25T11:19:19.357Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-y6Pegq/build.log"
+      "checkedAt": "2026-11-25T11:35:01.756Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-mYLqzj/build.log"
     }
   ],
-  "updatedAt": "2026-11-25T11:19:34.557Z",
-  "verifiedSourceFingerprint": "8c5a70bc2f86e9ac74c21bffe053d85cef60dece0a2d50b6aac459bf27dd86b0"
+  "updatedAt": "2026-11-25T11:35:25.185Z",
+  "verifiedSourceFingerprint": "3f25fe20867a5cc27098f849d08ce803ee9f7148d0b5e2209d5b1c29c2e4a519"
 }

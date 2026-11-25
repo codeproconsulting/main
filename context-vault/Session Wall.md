@@ -3,23 +3,23 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-25-06]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-25-07]].
 
 ## Resume here
 
-**Session:** 2026-11-25-06
+**Session:** 2026-11-25-07
 
-**Active feature:** MOB-28
+**Active feature:** MOB-29
 
 **State:** completed
 
-**Objective:** Review completed and cancelled mobile follow-ups.
+**Objective:** Manage lead follow-ups by status from native lead details.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Scoped task history with outcomes and pagination
+- Scoped open and closed follow-ups with paging
 
 ## Out of scope
 
@@ -29,12 +29,12 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| MOB28 | Verify scoped history and mobile controls. | passed | CRM typecheck, 193 tests and build passed. Mobile typecheck, lint, 13 tests and both exports passed. API checks covered authentication, invalid status, outcomes and reassignment. Simulated controls verified empty-page continuation, pagination, status reset, detail navigation and background clearing. |
+| MOB29 | Verify scoped status lists and native navigation. | passed | CRM typecheck, 193 tests and build passed. Mobile typecheck, lint, 13 tests and both exports passed. API checks verified scoped open tasks and invalid or unauthorized lead IDs. Simulated controls verified lead navigation, status switching, paging and task detail return. |
 
 ## Exact next actions
 
-1. Add scoped follow-up history from individual lead details, including open and closed tasks and status filtering. Verify current lead access and pagination.
-   Files: `app/admin/mobile-api.ts`, `tests/mobile-api.test.mjs`, `/Users/fidaali/Proconsulting-App/src/FollowUpHistory.tsx`, `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`
+1. Preserve selected status and page when returning from follow-up detail. Verify refresh after task completion and access changes.
+   Files: `/Users/fidaali/Proconsulting-App/src/FollowUpHistory.tsx`, `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`
 
 ## Known risks and unfinished work
 
@@ -58,9 +58,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-25T11:19:06.659Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-y6Pegq/typecheck.log`
-- **passed**: `npm run test` (2026-11-25T11:19:14.010Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-y6Pegq/test.log`
-- **passed**: `npm run build` (2026-11-25T11:19:19.357Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-y6Pegq/build.log`
+- **passed**: `npm run typecheck` (2026-11-25T11:34:48.243Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-mYLqzj/typecheck.log`
+- **passed**: `npm run test` (2026-11-25T11:34:56.038Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-mYLqzj/test.log`
+- **passed**: `npm run build` (2026-11-25T11:35:01.756Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-mYLqzj/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -167,5 +167,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **nativeContactProfile**: Mobile e084307 is local. Server rollout, mobile publication and physical-device testing pending.
 - **nativeEnquiry**: Mobile 8fe84ef is local. Server rollout, mobile publication and physical-phone testing pending.
 - **nativeTaskHistory**: Mobile d603368 is local. VPS rollout, publication and handset checks pending.
+- **nativeLeadFollowUps**: Mobile 0a17043 is local. Rollout, publication and handset checks pending.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]
