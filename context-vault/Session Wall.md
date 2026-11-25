@@ -3,39 +3,38 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-25-02]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-25-03]].
 
 ## Resume here
 
-**Session:** 2026-11-25-02
+**Session:** 2026-11-25-03
 
-**Active feature:** MOB-24
+**Active feature:** MOB-25
 
 **State:** completed
 
-**Objective:** Open existing appointments from a mobile lead.
+**Objective:** Open appointment leads and restore the originating appointment.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Scoped online appointment list and paging
+- Appointment lead navigation and draft protection
 
 ## Out of scope
 
-- Offline list and production rollout
+- Production rollout
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| MOB24-API | Verify lead scope and pagination. | passed | CRM typecheck, 193 tests and build passed. Integration verified excluding other leads before pagination, second-page results and reassignment denial. |
-| MOB24-NATIVE | Verify navigation and scope retention. | passed | Mobile typecheck, lint, 13 tests and Android/iOS exports passed. Simulated controls verified opening from a lead, scope on subsequent pages, returning from appointment detail, and loss of access. |
+| MOB25 | Verify navigation, return and scope. | passed | CRM typecheck, 193 tests and build passed. Mobile typecheck, lint, 13 tests and both exports passed. Simulated controls verified draft protection, linked lead open, return and retained list scope. |
 
 ## Exact next actions
 
-1. Add a linked-lead action from native appointment detail. Verify access and restore the originating appointment and list scope when returning.
-   Files: `/Users/fidaali/Proconsulting-App/src/Appointments.tsx`, `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`, `tests/mobile-api.test.mjs`
+1. Review the feature ledger against the approved CRM plan and select the next incomplete user workflow, recording acceptance criteria before implementation.
+   Files: `context-vault/Feature Ledger.md`, `docs/CRM-CMS-APPWRITE-IMPLEMENTATION-PLAN.md`
 
 ## Known risks and unfinished work
 
@@ -59,9 +58,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-25T10:53:33.217Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-PyVsgG/typecheck.log`
-- **passed**: `npm run test` (2026-11-25T10:53:40.863Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-PyVsgG/test.log`
-- **passed**: `npm run build` (2026-11-25T10:53:46.528Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-PyVsgG/build.log`
+- **passed**: `npm run typecheck` (2026-11-25T10:56:33.888Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-x77JZR/typecheck.log`
+- **passed**: `npm run test` (2026-11-25T10:56:41.521Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-x77JZR/test.log`
+- **passed**: `npm run build` (2026-11-25T10:56:47.459Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-x77JZR/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -164,5 +163,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **nativeApplicationLeadLink**: Mobile commit e4b7684 is local. Navigation reuses the current API. Mobile publication and physical-phone testing are pending.
 - **nativeLeadApplications**: Mobile commit 76d6882 is local. VPS rollout, mobile publication and physical-device checks are pending.
 - **nativeLeadAppointments**: Mobile commit b8eabd6 is local. VPS rollout, mobile publication and physical-device checks remain pending.
+- **nativeAppointmentLead**: Mobile 711863e is local. Publication and handset checks pending.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

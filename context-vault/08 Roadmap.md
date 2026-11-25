@@ -98,3 +98,7 @@ The next native navigation feature is a lead-scoped appointments list.
 ## Lead appointments
 
 Next work adds the linked-lead action from appointment details.
+
+## Appointment lead navigation
+
+MOB-25 uses the existing scoped lead API to open appointment enquiries and returns to the original meeting. Pending edits require saving or reloading before navigation. CRM typecheck, 193 tests and build passed. Mobile typecheck, lint, 13 tests and both exports passed. Simulated controls verified draft protection, linked lead open, return and retained list scope. Mobile commit `711863e` is local. Publication and physical-device verification remain pending. [[Sessions/2026-11-25-03]]
