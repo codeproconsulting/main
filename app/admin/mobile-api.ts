@@ -231,6 +231,16 @@ export function loader({ request, params }: LoaderFunctionArgs) {
       const staff = await mobileStaff(request);
       return reply(editableLead(await leadFor(staff, recordId(request))));
     }
+    if (params.resource === "follow-up-history") {
+      const staff=await mobileStaff(request);
+      const url=new URL(request.url), status=url.searchParams.get("status") || "Completed";
+      if (!["Completed","Cancelled"].includes(status)) return reply({error:"Invalid task status."},400);
+      const page=queuePage(url.searchParams.get("page"));
+      const {records,hasMore}=await scopedQueue<Task>(staff,"tasks",[
+        query("equal","status",[status]),query("orderDesc","$updatedAt"),
+      ],page,25,true);
+      return reply({page,hasMore,tasks:records.map(editableFollowUp)});
+    }
     if (params.resource === "follow-ups") {
       const staff = await mobileStaff(request);
       const page = queuePage(new URL(request.url).searchParams.get("page"));

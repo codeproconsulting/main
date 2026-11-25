@@ -623,6 +623,16 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
     assert.equal(cases[0].kind,"Education");assert.equal(cases[0].notes,"private");
     assert.equal((await patchCase(detailsUpdate)).status,409);
     assert.equal((await (await send("application?id=case",auth)).json()).intake,"Spring");
+    const originalTaskStatus=tasks[0].status;
+    tasks[0].status="Completed";tasks[0].outcome="Example recorded outcome";
+    assert.equal((await send("follow-up-history")).status,401);
+    assert.equal((await send("follow-up-history?status=Invalid",auth)).status,400);
+    const taskHistory=await (await send("follow-up-history?status=Completed",auth)).json();
+    assert.ok(taskHistory.tasks.some(row=>row.id==="task"));assert.ok(taskHistory.tasks.every(row=>row.status==="Completed"));
+    assert.equal(taskHistory.tasks[0].outcome,"Example recorded outcome");
+    leads[0].owner="other";
+    assert.deepEqual((await (await send("follow-up-history",auth)).json()).tasks,[]);
+    leads[0].owner="staff";tasks[0].status=originalTaskStatus;
     assert.equal((await send("appointments")).status,401);
     const appointmentList=await(await send("appointments",auth)).json();assert.equal(appointmentList.appointments.length,1);assert.equal(appointmentList.appointments[0].notes,undefined);
     const scopedAppointments=(page=1)=>send("appointments?leadId=owned&page="+page,auth);

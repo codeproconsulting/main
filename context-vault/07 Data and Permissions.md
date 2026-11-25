@@ -339,3 +339,7 @@ MOB-26 adds an online contact profile and explicit call, email and share actions
 ## Original enquiry on mobile
 
 MOB-27 projects intake-supported scalar fields through `app/admin/enquiry-profile.ts` into the online contact profile. Staff expand selectable text in the mobile contact panel. The saved workspace excludes this profile. CRM typecheck, 193 tests and build passed. Mobile typecheck, lint, 13 tests and both exports passed. Synthetic checks covered malformed and nested legacy values, zero and false, unknown keys, text bounds, expand and collapse, contact actions and background clearing. Mobile `8fe84ef` is local. Deployment, publication and handset checks remain pending. [[Sessions/2026-11-25-05]]
+
+## Native follow-up history
+
+MOB-28 provides completed and cancelled follow-ups with outcomes, paging and current task detail. The API uses personal scoped tasks and current lead access. The native component is `src/FollowUpHistory.tsx`. CRM typecheck, 193 tests and build passed. Mobile typecheck, lint, 13 tests and both exports passed. API checks covered authentication, invalid status, outcomes and reassignment. Simulated controls verified empty-page continuation, pagination, status reset, detail navigation and background clearing. Mobile `d603368` is local. Rollout and handset checks remain pending. [[Sessions/2026-11-25-06]]

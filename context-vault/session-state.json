@@ -1,31 +1,33 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-25-05",
+  "sessionId": "2026-11-25-06",
   "sessionStatus": "completed",
-  "activeFeature": "MOB-27",
-  "objective": "Read original enquiry fields on mobile.",
+  "activeFeature": "MOB-28",
+  "objective": "Review completed and cancelled mobile follow-ups.",
   "scope": [
-    "Allowlisted enquiry display and legacy parsing"
+    "Scoped task history with outcomes and pagination"
   ],
   "outOfScope": [
-    "Production rollout"
+    "Offline history and rollout"
   ],
   "acceptance": [
     {
-      "id": "MOB27",
-      "description": "Verify safe projection and display.",
+      "id": "MOB28",
+      "description": "Verify scoped history and mobile controls.",
       "status": "passed",
-      "evidence": "CRM typecheck, 193 tests and build passed. Mobile typecheck, lint, 13 tests and both exports passed. Synthetic checks covered malformed and nested legacy values, zero and false, unknown keys, text bounds, expand and collapse, contact actions and background clearing."
+      "evidence": "CRM typecheck, 193 tests and build passed. Mobile typecheck, lint, 13 tests and both exports passed. API checks covered authentication, invalid status, outcomes and reassignment. Simulated controls verified empty-page continuation, pagination, status reset, detail navigation and background clearing."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Review native workflow coverage against the approved plan and identify a complete remaining operational workflow with concrete acceptance checks.",
+      "action": "Add scoped follow-up history from individual lead details, including open and closed tasks and status filtering. Verify current lead access and pagination.",
       "files": [
-        "docs/CRM-CMS-APPWRITE-IMPLEMENTATION-PLAN.md",
-        "context-vault/Feature Ledger.md"
+        "app/admin/mobile-api.ts",
+        "tests/mobile-api.test.mjs",
+        "/Users/fidaali/Proconsulting-App/src/FollowUpHistory.tsx",
+        "/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx"
       ]
     }
   ],
@@ -148,31 +150,32 @@
     "nativeLeadAppointments": "Mobile commit b8eabd6 is local. VPS rollout, mobile publication and physical-device checks remain pending.",
     "nativeAppointmentLead": "Mobile 711863e is local. Publication and handset checks pending.",
     "nativeContactProfile": "Mobile e084307 is local. Server rollout, mobile publication and physical-device testing pending.",
-    "nativeEnquiry": "Mobile 8fe84ef is local. Server rollout, mobile publication and physical-phone testing pending."
+    "nativeEnquiry": "Mobile 8fe84ef is local. Server rollout, mobile publication and physical-phone testing pending.",
+    "nativeTaskHistory": "Mobile d603368 is local. VPS rollout, publication and handset checks pending."
   },
   "checks": [
     {
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-25T11:01:57.767Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-jQFVPU/typecheck.log"
+      "checkedAt": "2026-11-25T11:19:06.659Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-y6Pegq/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-25T11:02:05.566Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-jQFVPU/test.log"
+      "checkedAt": "2026-11-25T11:19:14.010Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-y6Pegq/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-25T11:02:11.460Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-jQFVPU/build.log"
+      "checkedAt": "2026-11-25T11:19:19.357Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-y6Pegq/build.log"
     }
   ],
-  "updatedAt": "2026-11-25T11:02:34.759Z",
-  "verifiedSourceFingerprint": "a714573b167148020ed17bce279ab5f7c4e06b90354a79adbd5e75f4ff0eb5c9"
+  "updatedAt": "2026-11-25T11:19:34.557Z",
+  "verifiedSourceFingerprint": "8c5a70bc2f86e9ac74c21bffe053d85cef60dece0a2d50b6aac459bf27dd86b0"
 }
