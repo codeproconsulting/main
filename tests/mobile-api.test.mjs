@@ -375,8 +375,14 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
     assert.equal(conflict.data.conflict, true);
     webForm.set("version", "2");
     assert.equal((await updateInBrowser()).success, true);
+    const {enquiryFields}=await vite.ssrLoadModule("/app/admin/enquiry-profile.ts");
+    for(const raw of ["null","[]","invalid","42"]) assert.deepEqual(enquiryFields(raw),[]);
+    leads[0].details=JSON.stringify({message:"Example enquiry",needScholarship:false,gradeScore:0,unknown:"hidden",notes:{nested:"hidden"}});
+    assert.deepEqual(enquiryFields(leads[0].details).map(row=>row.value),["0","false","Example enquiry"]);
+    assert.equal(enquiryFields(JSON.stringify({message:"x".repeat(5000)}))[0].value.length,4000);
     const contactProfile = (await (await send("lead?id=owned",auth)).json()).profile;
     assert.equal(contactProfile.email,"fixture@example.invalid");
+    assert.deepEqual(contactProfile.enquiry.map(row=>row.value),["0","false","Example enquiry"]);
     assert.equal(contactProfile.details,undefined);
     assert.equal(contactProfile.owner,undefined);
     const contactSnapshot = await (await send("workspace",auth)).json();

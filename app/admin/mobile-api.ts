@@ -1,3 +1,4 @@
+import {enquiryFields} from "./enquiry-profile";
 import { documentChecklist } from "./document-domain";
 import { documentsFor } from "./documents.server";
 import { noticesFor, readNotice } from "./notifications.server";
@@ -98,7 +99,7 @@ async function schedulePage<T extends {leadId:string; owner:string}>(staff: Staf
 function editableLead(lead: Lead) {
   const { $id: id, name, stage, priority, version } = lead;
   const profile = {email:lead.email,phone:lead.phone,country:lead.country,service:lead.service,
-    source:lead.source,receivedAt:lead.$createdAt,nextFollowUp:lead.nextFollowUp};
+    enquiry:enquiryFields(lead.details),source:lead.source,receivedAt:lead.$createdAt,nextFollowUp:lead.nextFollowUp};
   return { id, name, profile, stage, priority, version, stages, priorities, closureStages, activityAvailable: true, applicationListAvailable: true, appointmentListAvailable: true, noteSubmissionId: randomUUID(), taskSubmissionId: randomUUID(), bookingSubmissionId: randomUUID(), applicationSubmissionId: lead.owner && !lead.duplicateOf ? randomUUID() : undefined, canSchedule: Boolean(lead.owner) && !lead.duplicateOf };
 }
 

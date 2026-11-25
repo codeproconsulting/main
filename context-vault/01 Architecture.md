@@ -361,3 +361,7 @@ MOB-25 uses the existing scoped lead API to open appointment enquiries and retur
 ## Native customer contact workflow
 
 MOB-26 adds an online contact profile and explicit call, email and share actions. The profile includes enquiry source, service, destination, received date and next follow-up. It stays outside offline storage. Code lives in the CRM mobile API and the mobile checkout’s `src/ContactProfile.tsx`. CRM typecheck, 193 tests and build passed. Mobile typecheck, lint, 13 tests and both exports passed. Simulated controls verified call and email URLs, shared contact text and background clearing. API checks verified profile allowlisting and exclusion from workspace snapshots. Mobile commit `e084307` is local. Release and handset checks remain pending. [[Sessions/2026-11-25-04]]
+
+## Original enquiry on mobile
+
+MOB-27 projects intake-supported scalar fields through `app/admin/enquiry-profile.ts` into the online contact profile. Staff expand selectable text in the mobile contact panel. The saved workspace excludes this profile. CRM typecheck, 193 tests and build passed. Mobile typecheck, lint, 13 tests and both exports passed. Synthetic checks covered malformed and nested legacy values, zero and false, unknown keys, text bounds, expand and collapse, contact actions and background clearing. Mobile `8fe84ef` is local. Deployment, publication and handset checks remain pending. [[Sessions/2026-11-25-05]]
