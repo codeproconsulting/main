@@ -251,6 +251,11 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
     deadlineFailure=403;
     assert.equal((await send("workspace?deadlines=1",auth)).status,403);
     deadlineFailure=0;
+    const savedCases=async()=>(await (await send("workspace?applications=1",auth)).json()).applications;
+    assert.deepEqual((await savedCases()).items.map(row=>row.id),["case"]);
+    assert.equal((await savedCases()).items[0].notes,undefined);
+    assert.equal((await savedCases()).items[0].owner,undefined);
+    leads[0].owner="other";assert.deepEqual((await savedCases()).items,[]);leads[0].owner="staff";
     const deadlines=async()=>(await(await send("workspace?deadlines=1",auth)).json()).deadlines;
     assert.deepEqual((await deadlines()).items.map(row=>row.id),["case"]);
     assert.equal((await deadlines()).items[0].notes,undefined);

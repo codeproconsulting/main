@@ -1,33 +1,32 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-28-03",
+  "sessionId": "2026-11-28-04",
   "sessionStatus": "completed",
-  "activeFeature": "MOB-32",
-  "objective": "Verify offline deadline lifecycle and optional API compatibility.",
+  "activeFeature": "MOB-33",
+  "objective": "Browse saved application summaries offline.",
   "scope": [
-    "Optional deadline query compatibility",
-    "Offline restart and local overdue/upcoming views"
+    "Personal snapshots, secure storage, offline search and stage filters"
   ],
   "outOfScope": [
-    "Rollout"
+    "Offline writes and rollout"
   ],
   "acceptance": [
     {
-      "id": "MOB32",
-      "description": "Verify legacy fallback, offline restart and expiry.",
+      "id": "MOB33",
+      "description": "Verify scope, storage and offline browsing.",
       "status": "passed",
-      "evidence": "CRM typecheck, 193 tests and build passed. Mobile typecheck, lint, 13 tests and both exports passed. Simulated workspace controls verified offline restart, partial indicators, overdue and upcoming filters, background hiding and signout. API checks verified legacy optional-query fallback while access failures remain errors."
+      "evidence": "CRM typecheck, 193 tests and build passed. Mobile typecheck, lint, 13 tests and both exports passed. API checks verified personal scope and projection. Storage checks verified restore and malformed data handling. Simulated controls verified offline restart, search, stage filters, background hiding and signout."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Build a complete offline application summary workflow including storage, scope, refresh and read-only browsing. Define acceptance across server, storage and mobile UI before implementation.",
+      "action": "Verify application snapshot invalidation across native creation, updates and access changes. Add recovery checks for storage limits and refresh replacement before release.",
       "files": [
-        "app/admin/mobile-api.ts",
-        "/Users/fidaali/Proconsulting-App/src/offline-cache.ts",
-        "/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx"
+        "/Users/fidaali/Proconsulting-App/src/ApplicationCreate.tsx",
+        "/Users/fidaali/Proconsulting-App/src/Applications.tsx",
+        "/Users/fidaali/Proconsulting-App/src/offline-cache.ts"
       ]
     }
   ],
@@ -155,31 +154,32 @@
     "nativeLeadFollowUps": "Mobile 0a17043 is local. Rollout, publication and handset checks pending.",
     "nativeHistoryPosition": "Mobile 23f2411 is local. Publication and physical-device checks pending.",
     "offlineApplicationDeadlines": "Mobile 187fcab is local. VPS rollout, publication and physical-phone acceptance pending.",
-    "offlineDeadlineLifecycle": "Mobile bd85c67 is local. Publication and physical-device checks pending."
+    "offlineDeadlineLifecycle": "Mobile bd85c67 is local. Publication and physical-device checks pending.",
+    "offlineApplications": "Mobile e3a9e50 is local. Rollout, publication and physical-phone acceptance pending."
   },
   "checks": [
     {
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-27T19:43:39.630Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-2FXpfh/typecheck.log"
+      "checkedAt": "2026-11-27T19:48:05.316Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Fyl2wv/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-27T19:43:46.944Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-2FXpfh/test.log"
+      "checkedAt": "2026-11-27T19:48:13.041Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Fyl2wv/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-27T19:43:52.245Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-2FXpfh/build.log"
+      "checkedAt": "2026-11-27T19:48:23.269Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Fyl2wv/build.log"
     }
   ],
-  "updatedAt": "2026-11-27T19:46:06.917Z",
-  "verifiedSourceFingerprint": "dbba34f52f4cc27653004f730eb72ed983c355659352863fea0ff02439e8bfa1"
+  "updatedAt": "2026-11-27T19:48:50.393Z",
+  "verifiedSourceFingerprint": "4e773b492f0f61116deb8f35993c29759bbb0a5363856e53b94fdac5bc14287e"
 }

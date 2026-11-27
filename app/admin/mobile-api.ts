@@ -163,6 +163,19 @@ async function personalDeadlines(staff:Staff,now:string) {
   country:record.country,stage:record.stage,deadline:record.deadline})),limited:hasMore||pending.length>12};
 }
 
+async function personalApplications(staff:Staff) {
+ try {
+  const {records,hasMore}=await scopedQueue<CaseRecord>(staff,"cases",[query("orderDesc","$updatedAt")],1,25,true);
+  return {limited:hasMore||records.length>12,items:records.slice(0,12).map(record=>({
+   id:record.$id,institution:record.institution,kind:record.kind,course:record.course,country:record.country,
+   intake:record.intake,stage:record.stage,deadline:record.deadline,
+  }))};
+ }catch(error){
+  if(error instanceof AppwriteError && [400,404].includes(error.status))return undefined;
+  throw error;
+ }
+}
+
 function mobileCase(record: CaseRecord) {
  const {$id:id,leadId,kind,institution,course,country,intake,stage,deadline,version}=record;
  return {id,leadId,kind,institution,course,country,intake,stage,deadline,version,detailEditing:true,documentChecklistAvailable:true,stages:caseStagesFor(kind)};
@@ -273,12 +286,13 @@ export function loader({ request, params }: LoaderFunctionArgs) {
     const staff = await mobileStaff(request);
     const updatedAt = new Date().toISOString();
     const includeAgenda = new URL(request.url).searchParams.get("agenda")==="1";
-    const [leads, { records: tasks, hasMore }, agenda, deadlines] = await Promise.all([
+    const [leads, { records: tasks, hasMore }, agenda, deadlines, applications] = await Promise.all([
       leadsFor(staff), taskPage(staff,1), includeAgenda ? personalAgenda(staff,updatedAt) : undefined,
       new URL(request.url).searchParams.get("deadlines")==="1" ? personalDeadlines(staff,updatedAt) : undefined,
+      new URL(request.url).searchParams.get("applications")==="1" ? personalApplications(staff) : undefined,
     ]);
     return reply({
-      updatedAt, agenda, deadlines,
+      updatedAt, agenda, deadlines, applications,
       ...mobileLeads(leads),
       leadsHaveMore: leads.total > 25,
       tasksHaveMore: hasMore,
