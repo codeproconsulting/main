@@ -31,3 +31,7 @@ It reviews repository drift and maintains documentation only. It must not deploy
 Start with [[Session Wall]], `session-state.json`, and [[Feature Ledger]]. Keep one active feature. `npm run session:status` validates structured state and regenerates the wall. `npm run session:verify` refreshes the source inventory, runs typecheck/tests/build, and records actual outcomes plus local log paths. It refuses a completed session if acceptance or current-source verification is incomplete. General checks never mark feature criteria complete automatically.
 
 On a user request to continue, inspect repository drift and execute the wall's next incomplete action. Record blocked dependencies precisely; do not skip them or substitute unrelated features. The daily documentation heartbeat may report drift and stale checkpoints but must not silently pick another feature or change acceptance results without evidence.
+
+## Delivery scope
+
+A session should deliver a connected user workflow and its acceptance checks. A checkpoint records progress and supports continuation through related fixes. Small component or navigation changes can be completed together within the active workflow.

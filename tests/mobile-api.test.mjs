@@ -31,7 +31,7 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
   let lostTaskAck = false;
   let lostCaseAck = false;
   let lostAppointmentAck = false;
-  let agendaFailure = 0;
+  let agendaFailure = 0, deadlineFailure = 0;
   let failCaseCreateAudit = false, loseCaseCreateAck = false;
   let failBookingAudit = false, loseBookingCreateAck = false;
   const leads = [
@@ -169,6 +169,7 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
     }
     const filters = url.searchParams.getAll("queries[]").map(JSON.parse);
     if (role === "counselor") assert.ok(filters.some(filter => filter.attribute === "owner" && filter.values[0] === "staff"));
+    if (deadlineFailure && match[1]==="cases" && filters.some(f=>f.method==="greaterThanEqual")) return Response.json({}, {status:deadlineFailure});
     if (agendaFailure && match[1]==="appointments" && filters.some(f=>f.method==="greaterThanEqual")) return Response.json({}, {status:agendaFailure});
     const documents = rows.filter(row => filters.every(filter => {
       if (filter.method === "equal") return filter.values.includes(row[filter.attribute]);
@@ -245,6 +246,11 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
     Object.assign(appointments.at(-2),{leadId:"foreign"});
     Object.assign(appointments.at(-3),{status:"Cancelled"});
     cases[0].deadline="2098-01-01T10:00:00Z";
+    deadlineFailure=400;
+    assert.equal((await send("workspace?deadlines=1",auth)).status,200);
+    deadlineFailure=403;
+    assert.equal((await send("workspace?deadlines=1",auth)).status,403);
+    deadlineFailure=0;
     const deadlines=async()=>(await(await send("workspace?deadlines=1",auth)).json()).deadlines;
     assert.deepEqual((await deadlines()).items.map(row=>row.id),["case"]);
     assert.equal((await deadlines()).items[0].notes,undefined);

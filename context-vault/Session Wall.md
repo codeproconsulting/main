@@ -3,38 +3,39 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-28-02]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-28-03]].
 
 ## Resume here
 
-**Session:** 2026-11-28-02
+**Session:** 2026-11-28-03
 
-**Active feature:** MOB-31
+**Active feature:** MOB-32
 
 **State:** completed
 
-**Objective:** Read saved application deadlines offline.
+**Objective:** Verify offline deadline lifecycle and optional API compatibility.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Scoped deadline snapshot and saved agenda display
+- Optional deadline query compatibility
+- Offline restart and local overdue/upcoming views
 
 ## Out of scope
 
-- Offline writes and rollout
+- Rollout
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| MOB31 | Verify snapshot scope and offline restore. | passed | CRM typecheck, 193 tests and build passed. Mobile typecheck, lint, 13 tests and both exports passed. API checks verified current scope, closed case exclusion and response fields. SecureStore checks verified deadline restore and malformed-section removal. |
+| MOB32 | Verify legacy fallback, offline restart and expiry. | passed | CRM typecheck, 193 tests and build passed. Mobile typecheck, lint, 13 tests and both exports passed. Simulated workspace controls verified offline restart, partial indicators, overdue and upcoming filters, background hiding and signout. API checks verified legacy optional-query fallback while access failures remain errors. |
 
 ## Exact next actions
 
-1. Verify the saved deadline agenda through simulated native workspace interactions, including offline restart, expiry, last-sync display and account changes. Review older-server compatibility for the optional deadlines query.
-   Files: `app/admin/mobile-api.ts`, `/Users/fidaali/Proconsulting-App/src/SavedAgenda.tsx`, `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`
+1. Build a complete offline application summary workflow including storage, scope, refresh and read-only browsing. Define acceptance across server, storage and mobile UI before implementation.
+   Files: `app/admin/mobile-api.ts`, `/Users/fidaali/Proconsulting-App/src/offline-cache.ts`, `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`
 
 ## Known risks and unfinished work
 
@@ -58,9 +59,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-27T19:24:47.187Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-CJd9WE/typecheck.log`
-- **passed**: `npm run test` (2026-11-27T19:24:55.405Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-CJd9WE/test.log`
-- **passed**: `npm run build` (2026-11-27T19:25:00.912Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-CJd9WE/build.log`
+- **passed**: `npm run typecheck` (2026-11-27T19:43:39.630Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-2FXpfh/typecheck.log`
+- **passed**: `npm run test` (2026-11-27T19:43:46.944Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-2FXpfh/test.log`
+- **passed**: `npm run build` (2026-11-27T19:43:52.245Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-2FXpfh/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -170,5 +171,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **nativeLeadFollowUps**: Mobile 0a17043 is local. Rollout, publication and handset checks pending.
 - **nativeHistoryPosition**: Mobile 23f2411 is local. Publication and physical-device checks pending.
 - **offlineApplicationDeadlines**: Mobile 187fcab is local. VPS rollout, publication and physical-phone acceptance pending.
+- **offlineDeadlineLifecycle**: Mobile bd85c67 is local. Publication and physical-device checks pending.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

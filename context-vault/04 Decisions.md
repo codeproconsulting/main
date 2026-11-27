@@ -411,3 +411,7 @@ MOB-30 stores status and page in the mobile workspace and reloads history when r
 ## Saved application deadlines
 
 MOB-31 adds a bounded, personal deadline section to the encrypted workspace and saved agenda. Closed cases are excluded, and timestamps use Karachi time. CRM typecheck, 193 tests and build passed. Mobile typecheck, lint, 13 tests and both exports passed. API checks verified current scope, closed case exclusion and response fields. SecureStore checks verified deadline restore and malformed-section removal. Mobile `187fcab` is local. Workspace interaction and physical-phone checks remain pending. [[Sessions/2026-11-28-02]]
+
+## Offline deadline lifecycle
+
+MOB-32 adds overdue and upcoming saved views and optional-query compatibility. CRM typecheck, 193 tests and build passed. Mobile typecheck, lint, 13 tests and both exports passed. Simulated workspace controls verified offline restart, partial indicators, overdue and upcoming filters, background hiding and signout. API checks verified legacy optional-query fallback while access failures remain errors. Mobile `bd85c67` is local. Rollout and handset acceptance remain pending. [[Sessions/2026-11-28-03]]

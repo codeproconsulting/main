@@ -149,9 +149,15 @@ async function personalAgenda(staff:Staff,updatedAt:string) {
 }
 
 async function personalDeadlines(staff:Staff,now:string) {
- const {records,hasMore}=await scopedQueue<CaseRecord>(staff,"cases",[
+ let result;
+ try { result=await scopedQueue<CaseRecord>(staff,"cases",[
   query("greaterThanEqual","deadline",[now]),query("orderAsc","deadline"),
  ],1,25,true);
+ } catch(error) {
+  if(error instanceof AppwriteError && [400,404].includes(error.status)) return undefined;
+  throw error;
+ }
+ const {records,hasMore}=result;
  const pending=records.filter(record=>!["Approved","Refused","Enrolled","Withdrawn"].includes(record.stage));
  return {items:pending.slice(0,12).map(record=>({id:record.$id,institution:record.institution,
   country:record.country,stage:record.stage,deadline:record.deadline})),limited:hasMore||pending.length>12};
