@@ -1,32 +1,40 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-28-04",
-  "sessionStatus": "completed",
-  "activeFeature": "MOB-33",
-  "objective": "Browse saved application summaries offline.",
+  "sessionId": "2026-11-28-05",
+  "sessionStatus": "in_progress",
+  "activeFeature": "MOBILE-REDESIGN-1",
+  "objective": "Deliver the mobile navigation and account foundation.",
   "scope": [
-    "Personal snapshots, secure storage, offline search and stage filters"
+    "Today, Leads, Tasks and More navigation",
+    "Rendered layout review and Android back handling"
   ],
   "outOfScope": [
-    "Offline writes and rollout"
+    "OTA publication and production deployment"
   ],
   "acceptance": [
     {
-      "id": "MOB33",
-      "description": "Verify scope, storage and offline browsing.",
+      "id": "NAV-RENDER",
+      "description": "Render primary destinations and verify all existing entry points.",
       "status": "passed",
-      "evidence": "CRM typecheck, 193 tests and build passed. Mobile typecheck, lint, 13 tests and both exports passed. API checks verified personal scope and projection. Storage checks verified restore and malformed data handling. Simulated controls verified offline restart, search, stage filters, background hiding and signout."
+      "evidence": "Mobile typecheck, lint, 13 tests and Android/iOS exports passed. React Native Web at 390×844 rendered Today, Leads, More and lead detail. Interaction checks covered destination changes, search retention, filter disclosure and maintenance-action isolation. CRM typecheck, 193 tests and build passed."
+    },
+    {
+      "id": "NAV-NATIVE",
+      "description": "Verify Android back, keyboard and dirty forms on device.",
+      "status": "pending",
+      "evidence": "Hardware-back handler and lead/follow-up discard prompts are implemented. Application/appointment form navigation guards and Android device keyboard/back acceptance remain pending."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Implement phase 1 of the mobile redesign plan, starting with rendered role-aware baseline captures and the complete navigation/account foundation. Define and verify its acceptance before completion.",
+      "action": "Finish phase 1 form navigation guards for application and appointment editing and nested creation forms. Review native Android back behavior on a device or emulator, then capture all role-specific destinations. Preserve current implementation and do not mark the phase complete until acceptance passes.",
       "files": [
-        "docs/MOBILE-CRM-REDESIGN-PLAN.md",
         "/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx",
-        "/Users/fidaali/Proconsulting-App/src/app/_layout.tsx"
+        "/Users/fidaali/Proconsulting-App/src/Applications.tsx",
+        "/Users/fidaali/Proconsulting-App/src/Appointments.tsx",
+        "docs/MOBILE-CRM-REDESIGN-PLAN.md"
       ]
     }
   ],
@@ -155,31 +163,32 @@
     "nativeHistoryPosition": "Mobile 23f2411 is local. Publication and physical-device checks pending.",
     "offlineApplicationDeadlines": "Mobile 187fcab is local. VPS rollout, publication and physical-phone acceptance pending.",
     "offlineDeadlineLifecycle": "Mobile bd85c67 is local. Publication and physical-device checks pending.",
-    "offlineApplications": "Mobile e3a9e50 is local. Rollout, publication and physical-phone acceptance pending."
+    "offlineApplications": "Mobile e3a9e50 is local. Rollout, publication and physical-phone acceptance pending.",
+    "mobileRedesign": "Mobile 4a5012c is local. Rendered navigation checkpoint accepted locally, phase 1 native acceptance pending. Runtime 1.0.4 retained. No OTA publication."
   },
   "checks": [
     {
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-27T20:38:38.984Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-vlJzvX/typecheck.log"
+      "checkedAt": "2026-11-27T20:42:42.295Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-3sNKMW/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-27T20:38:47.332Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-vlJzvX/test.log"
+      "checkedAt": "2026-11-27T20:42:49.751Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-3sNKMW/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-27T20:38:54.131Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-vlJzvX/build.log"
+      "checkedAt": "2026-11-27T20:42:55.531Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-3sNKMW/build.log"
     }
   ],
-  "updatedAt": "2026-11-27T20:38:54.131Z",
+  "updatedAt": "2026-11-27T20:44:08.955Z",
   "verifiedSourceFingerprint": "5a09cd0337ee8db4e1fdbc4e0de23a4bba5ba47701d6d9283c77dc368b97a60e"
 }

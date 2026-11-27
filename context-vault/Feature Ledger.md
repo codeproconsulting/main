@@ -146,3 +146,7 @@ MOB-33 adds up to 12 personal application summaries to the encrypted workspace a
 ## Mobile redesign programme
 
 The planned six-phase execution programme is recorded in `docs/MOBILE-CRM-REDESIGN-PLAN.md`. Rendered previews established the navigation and density problems. Phase 1 covers the complete navigation foundation. Design implementation and physical-device acceptance are pending. Compatible updates can target the generated Android 1.0.4 preview runtime.
+
+## Mobile navigation redesign
+
+MOBILE-REDESIGN-1 is in progress. Navigation and rendered layout checkpoint passed locally. Native acceptance remains pending. [[Sessions/2026-11-28-05]]

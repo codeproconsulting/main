@@ -3,38 +3,40 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-28-04]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-28-05]].
 
 ## Resume here
 
-**Session:** 2026-11-28-04
+**Session:** 2026-11-28-05
 
-**Active feature:** MOB-33
+**Active feature:** MOBILE-REDESIGN-1
 
-**State:** completed
+**State:** in_progress
 
-**Objective:** Browse saved application summaries offline.
+**Objective:** Deliver the mobile navigation and account foundation.
 
-This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
+A user saying **continue** means resume this feature's next unfinished acceptance check. Do not start unrelated modules or repeat completed infrastructure work. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Personal snapshots, secure storage, offline search and stage filters
+- Today, Leads, Tasks and More navigation
+- Rendered layout review and Android back handling
 
 ## Out of scope
 
-- Offline writes and rollout
+- OTA publication and production deployment
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| MOB33 | Verify scope, storage and offline browsing. | passed | CRM typecheck, 193 tests and build passed. Mobile typecheck, lint, 13 tests and both exports passed. API checks verified personal scope and projection. Storage checks verified restore and malformed data handling. Simulated controls verified offline restart, search, stage filters, background hiding and signout. |
+| NAV-RENDER | Render primary destinations and verify all existing entry points. | passed | Mobile typecheck, lint, 13 tests and Android/iOS exports passed. React Native Web at 390×844 rendered Today, Leads, More and lead detail. Interaction checks covered destination changes, search retention, filter disclosure and maintenance-action isolation. CRM typecheck, 193 tests and build passed. |
+| NAV-NATIVE | Verify Android back, keyboard and dirty forms on device. | pending | Hardware-back handler and lead/follow-up discard prompts are implemented. Application/appointment form navigation guards and Android device keyboard/back acceptance remain pending. |
 
 ## Exact next actions
 
-1. Implement phase 1 of the mobile redesign plan, starting with rendered role-aware baseline captures and the complete navigation/account foundation. Define and verify its acceptance before completion.
-   Files: `docs/MOBILE-CRM-REDESIGN-PLAN.md`, `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`, `/Users/fidaali/Proconsulting-App/src/app/_layout.tsx`
+1. Finish phase 1 form navigation guards for application and appointment editing and nested creation forms. Review native Android back behavior on a device or emulator, then capture all role-specific destinations. Preserve current implementation and do not mark the phase complete until acceptance passes.
+   Files: `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`, `/Users/fidaali/Proconsulting-App/src/Applications.tsx`, `/Users/fidaali/Proconsulting-App/src/Appointments.tsx`, `docs/MOBILE-CRM-REDESIGN-PLAN.md`
 
 ## Known risks and unfinished work
 
@@ -58,9 +60,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-27T20:38:38.984Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-vlJzvX/typecheck.log`
-- **passed**: `npm run test` (2026-11-27T20:38:47.332Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-vlJzvX/test.log`
-- **passed**: `npm run build` (2026-11-27T20:38:54.131Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-vlJzvX/build.log`
+- **passed**: `npm run typecheck` (2026-11-27T20:42:42.295Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-3sNKMW/typecheck.log`
+- **passed**: `npm run test` (2026-11-27T20:42:49.751Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-3sNKMW/test.log`
+- **passed**: `npm run build` (2026-11-27T20:42:55.531Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-3sNKMW/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -172,5 +174,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **offlineApplicationDeadlines**: Mobile 187fcab is local. VPS rollout, publication and physical-phone acceptance pending.
 - **offlineDeadlineLifecycle**: Mobile bd85c67 is local. Publication and physical-device checks pending.
 - **offlineApplications**: Mobile e3a9e50 is local. Rollout, publication and physical-phone acceptance pending.
+- **mobileRedesign**: Mobile 4a5012c is local. Rendered navigation checkpoint accepted locally, phase 1 native acceptance pending. Runtime 1.0.4 retained. No OTA publication.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

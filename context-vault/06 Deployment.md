@@ -447,3 +447,7 @@ MOB-33 adds up to 12 personal application summaries to the encrypted workspace a
 ## Android APK 1.0.4
 
 EAS build fb3e0ac7-ab73-4318-8ced-8ea8cb98f66a finished with version code 5 and runtime 1.0.4. It includes native source through e3a9e50 plus release configuration in mobile 4ecdf7a. The downloaded APK passed ZIP integrity and ARM64 presence checks. Installation and latest API production parity remain unverified.
+
+## Mobile navigation redesign
+
+Mobile checkpoint 4a5012c retains runtime 1.0.4 and changes JavaScript only. OTA publication awaits the phase acceptance gates. No native dependency was added.
