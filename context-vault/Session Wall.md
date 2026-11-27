@@ -33,8 +33,8 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Exact next actions
 
-1. Verify application snapshot invalidation across native creation, updates and access changes. Add recovery checks for storage limits and refresh replacement before release.
-   Files: `/Users/fidaali/Proconsulting-App/src/ApplicationCreate.tsx`, `/Users/fidaali/Proconsulting-App/src/Applications.tsx`, `/Users/fidaali/Proconsulting-App/src/offline-cache.ts`
+1. Implement phase 1 of the mobile redesign plan, starting with rendered role-aware baseline captures and the complete navigation/account foundation. Define and verify its acceptance before completion.
+   Files: `docs/MOBILE-CRM-REDESIGN-PLAN.md`, `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`, `/Users/fidaali/Proconsulting-App/src/app/_layout.tsx`
 
 ## Known risks and unfinished work
 
@@ -58,9 +58,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-27T19:48:05.316Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Fyl2wv/typecheck.log`
-- **passed**: `npm run test` (2026-11-27T19:48:13.041Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Fyl2wv/test.log`
-- **passed**: `npm run build` (2026-11-27T19:48:23.269Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-Fyl2wv/build.log`
+- **passed**: `npm run typecheck` (2026-11-27T20:38:38.984Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-vlJzvX/typecheck.log`
+- **passed**: `npm run test` (2026-11-27T20:38:47.332Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-vlJzvX/test.log`
+- **passed**: `npm run build` (2026-11-27T20:38:54.131Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-vlJzvX/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 

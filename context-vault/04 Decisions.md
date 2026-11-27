@@ -419,3 +419,7 @@ MOB-32 adds overdue and upcoming saved views and optional-query compatibility. C
 ## Offline application browsing
 
 MOB-33 adds up to 12 personal application summaries to the encrypted workspace and renders them in `src/SavedApplications.tsx` when offline. Local search and stage filters operate on the saved list. Optional-query fallback supports older installations. CRM typecheck, 193 tests and build passed. Mobile typecheck, lint, 13 tests and both exports passed. API checks verified personal scope and projection. Storage checks verified restore and malformed data handling. Simulated controls verified offline restart, search, stage filters, background hiding and signout. Mobile `e3a9e50` is local. Release and handset checks remain pending. [[Sessions/2026-11-28-04]]
+
+## Mobile redesign programme
+
+The planned six-phase execution programme is recorded in `docs/MOBILE-CRM-REDESIGN-PLAN.md`. Rendered previews established the navigation and density problems. Phase 1 covers the complete navigation foundation. Design implementation and physical-device acceptance are pending. Compatible updates can target the generated Android 1.0.4 preview runtime.
