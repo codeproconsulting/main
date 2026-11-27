@@ -465,3 +465,7 @@ MOB-28 provides completed and cancelled follow-ups with outcomes, paging and cur
 ## Lead follow-ups
 
 MOB-29 extends the online history endpoint and native component with a fixed lead scope and open status. Each list checks current access and returns its lead scope for client verification. CRM typecheck, 193 tests and build passed. Mobile typecheck, lint, 13 tests and both exports passed. API checks verified scoped open tasks and invalid or unauthorized lead IDs. Simulated controls verified lead navigation, status switching, paging and task detail return. Mobile `0a17043` is local. Deployment, publication and handset checks remain pending. [[Sessions/2026-11-25-07]]
+
+## Follow-up history position
+
+MOB-30 stores status and page in the mobile workspace and reloads history when returning from detail. Scope changes and sign-out reset this navigation state. CRM typecheck, 193 tests and build passed. Mobile typecheck, lint, 13 tests and both exports passed. Simulated controls verified return to page two with its status intact and reset to page one on status change. Mobile `23f2411` is local. Publication and handset checks remain pending. [[Sessions/2026-11-28-01]]
