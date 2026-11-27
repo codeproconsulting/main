@@ -244,6 +244,14 @@ test("mobile sign-in, shared lead edits, scoped snapshot and revocation", async 
     Object.assign(appointments.at(-1),{owner:"other"});
     Object.assign(appointments.at(-2),{leadId:"foreign"});
     Object.assign(appointments.at(-3),{status:"Cancelled"});
+    cases[0].deadline="2098-01-01T10:00:00Z";
+    const deadlines=async()=>(await(await send("workspace?deadlines=1",auth)).json()).deadlines;
+    assert.deepEqual((await deadlines()).items.map(row=>row.id),["case"]);
+    assert.equal((await deadlines()).items[0].notes,undefined);
+    cases[0].stage="Withdrawn";assert.deepEqual((await deadlines()).items,[]);
+    cases[0].stage="Shortlisted";
+    leads[0].owner="other";assert.deepEqual((await deadlines()).items,[]);
+    leads[0].owner="staff";cases[0].deadline="";
     const agenda=async()=>(await(await send("workspace?agenda=1",auth)).json()).agenda;
     const personal=await agenda();
     assert.equal(personal.limited,false);

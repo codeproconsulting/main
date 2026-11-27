@@ -3,38 +3,38 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-28-01]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-28-02]].
 
 ## Resume here
 
-**Session:** 2026-11-28-01
+**Session:** 2026-11-28-02
 
-**Active feature:** MOB-30
+**Active feature:** MOB-31
 
 **State:** completed
 
-**Objective:** Restore follow-up list position after task actions.
+**Objective:** Read saved application deadlines offline.
 
 This feature is complete. On **continue**, start the next bounded session named in Exact next actions; preserve this feature's evidence and do not redo completed checks without a reason. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- History page and status retention with fresh reads
+- Scoped deadline snapshot and saved agenda display
 
 ## Out of scope
 
-- Rollout
+- Offline writes and rollout
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| MOB30 | Verify return to current filtered history. | passed | CRM typecheck, 193 tests and build passed. Mobile typecheck, lint, 13 tests and both exports passed. Simulated controls verified return to page two with its status intact and reset to page one on status change. |
+| MOB31 | Verify snapshot scope and offline restore. | passed | CRM typecheck, 193 tests and build passed. Mobile typecheck, lint, 13 tests and both exports passed. API checks verified current scope, closed case exclusion and response fields. SecureStore checks verified deadline restore and malformed-section removal. |
 
 ## Exact next actions
 
-1. Review mobile offline coverage and prioritize the next complete offline read workflow from the approved plan.
-   Files: `context-vault/Feature Ledger.md`, `/Users/fidaali/Proconsulting-App/src/offline-cache.ts`, `docs/CRM-CMS-APPWRITE-IMPLEMENTATION-PLAN.md`
+1. Verify the saved deadline agenda through simulated native workspace interactions, including offline restart, expiry, last-sync display and account changes. Review older-server compatibility for the optional deadlines query.
+   Files: `app/admin/mobile-api.ts`, `/Users/fidaali/Proconsulting-App/src/SavedAgenda.tsx`, `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`
 
 ## Known risks and unfinished work
 
@@ -58,9 +58,9 @@ This feature is complete. On **continue**, start the next bounded session named 
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-27T19:03:56.588Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-nhRA9f/typecheck.log`
-- **passed**: `npm run test` (2026-11-27T19:04:04.374Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-nhRA9f/test.log`
-- **passed**: `npm run build` (2026-11-27T19:04:09.924Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-nhRA9f/build.log`
+- **passed**: `npm run typecheck` (2026-11-27T19:24:47.187Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-CJd9WE/typecheck.log`
+- **passed**: `npm run test` (2026-11-27T19:24:55.405Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-CJd9WE/test.log`
+- **passed**: `npm run build` (2026-11-27T19:25:00.912Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-CJd9WE/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -169,5 +169,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **nativeTaskHistory**: Mobile d603368 is local. VPS rollout, publication and handset checks pending.
 - **nativeLeadFollowUps**: Mobile 0a17043 is local. Rollout, publication and handset checks pending.
 - **nativeHistoryPosition**: Mobile 23f2411 is local. Publication and physical-device checks pending.
+- **offlineApplicationDeadlines**: Mobile 187fcab is local. VPS rollout, publication and physical-phone acceptance pending.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

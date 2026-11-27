@@ -429,3 +429,7 @@ MOB-29 extends the online history endpoint and native component with a fixed lea
 ## Follow-up history position
 
 MOB-30 stores status and page in the mobile workspace and reloads history when returning from detail. Scope changes and sign-out reset this navigation state. CRM typecheck, 193 tests and build passed. Mobile typecheck, lint, 13 tests and both exports passed. Simulated controls verified return to page two with its status intact and reset to page one on status change. Mobile `23f2411` is local. Publication and handset checks remain pending. [[Sessions/2026-11-28-01]]
+
+## Saved application deadlines
+
+MOB-31 adds a bounded, personal deadline section to the encrypted workspace and saved agenda. Closed cases are excluded, and timestamps use Karachi time. CRM typecheck, 193 tests and build passed. Mobile typecheck, lint, 13 tests and both exports passed. API checks verified current scope, closed case exclusion and response fields. SecureStore checks verified deadline restore and malformed-section removal. Mobile `187fcab` is local. Workspace interaction and physical-phone checks remain pending. [[Sessions/2026-11-28-02]]

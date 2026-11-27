@@ -148,6 +148,15 @@ async function personalAgenda(staff:Staff,updatedAt:string) {
   return { meetings:booked.slice(0,12).map(({$id:id,title,startsAt,endsAt})=>({id,title,startsAt,endsAt})), limited:hasMore || booked.length>12 };
 }
 
+async function personalDeadlines(staff:Staff,now:string) {
+ const {records,hasMore}=await scopedQueue<CaseRecord>(staff,"cases",[
+  query("greaterThanEqual","deadline",[now]),query("orderAsc","deadline"),
+ ],1,25,true);
+ const pending=records.filter(record=>!["Approved","Refused","Enrolled","Withdrawn"].includes(record.stage));
+ return {items:pending.slice(0,12).map(record=>({id:record.$id,institution:record.institution,
+  country:record.country,stage:record.stage,deadline:record.deadline})),limited:hasMore||pending.length>12};
+}
+
 function mobileCase(record: CaseRecord) {
  const {$id:id,leadId,kind,institution,course,country,intake,stage,deadline,version}=record;
  return {id,leadId,kind,institution,course,country,intake,stage,deadline,version,detailEditing:true,documentChecklistAvailable:true,stages:caseStagesFor(kind)};
@@ -258,11 +267,12 @@ export function loader({ request, params }: LoaderFunctionArgs) {
     const staff = await mobileStaff(request);
     const updatedAt = new Date().toISOString();
     const includeAgenda = new URL(request.url).searchParams.get("agenda")==="1";
-    const [leads, { records: tasks, hasMore }, agenda] = await Promise.all([
+    const [leads, { records: tasks, hasMore }, agenda, deadlines] = await Promise.all([
       leadsFor(staff), taskPage(staff,1), includeAgenda ? personalAgenda(staff,updatedAt) : undefined,
+      new URL(request.url).searchParams.get("deadlines")==="1" ? personalDeadlines(staff,updatedAt) : undefined,
     ]);
     return reply({
-      updatedAt, agenda,
+      updatedAt, agenda, deadlines,
       ...mobileLeads(leads),
       leadsHaveMore: leads.total > 25,
       tasksHaveMore: hasMore,
