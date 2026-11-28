@@ -31,12 +31,12 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| DAILY-WORK | Render bounded daily work, missing/partial/offline states and useful navigation. | pending | Today summaries implemented; typecheck/lint, 21 mobile tests, both exports and existing actual Router regression harness passed. Dedicated summary visual fixtures remain pending. |
-| LEAD-DISCOVERY | Verify lead search/filter controls and readable cards. | pending | Draft/apply/reset filters and applied summary implemented. Actual Router browser harness verified selection does not filter before Apply, applied empty state and reset restoration. Lead card refinements and dedicated Today fixtures remain pending. |
+| DAILY-WORK | Render bounded daily work, missing/partial/offline states and useful navigation. | passed | Dedicated actual-Router browser fixtures passed populated, partial, empty, unavailable and failed-refresh/offline summaries. Screenshots inspected at 390x844; Today task detail return verified. Typecheck/lint, 21 tests and both exports passed. Native acceptance remains deferred. |
+| LEAD-DISCOVERY | Verify lead search/filter controls and readable cards. | pending | Draft/apply/reset and retention regression checks passed previously. Long-name card and explicit overdue follow-up inspected. Dedicated online search/paging and compact filter-retention checks remain pending. |
 
 ## Exact next actions
 
-1. Finish dedicated Today summary fixtures (populated, empty, partial, offline and failed), then refine lead cards and verify long names, search/paging and filter retention. Keep native tooling installation deferred.
+1. Complete dedicated lead online search/paging, filter retention and compact-width checks. Preserve passed Today fixtures; do not install native tooling or publish updates.
    Files: `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`
 
 ## Known risks and unfinished work
@@ -61,9 +61,9 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-28T15:25:46.292Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-BYiDEE/typecheck.log`
-- **passed**: `npm run test` (2026-11-28T15:25:53.726Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-BYiDEE/test.log`
-- **passed**: `npm run build` (2026-11-28T15:25:59.085Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-BYiDEE/build.log`
+- **passed**: `npm run typecheck` (2026-11-28T15:27:46.334Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-FSIHlR/typecheck.log`
+- **passed**: `npm run test` (2026-11-28T15:27:53.872Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-FSIHlR/test.log`
+- **passed**: `npm run build` (2026-11-28T15:27:59.327Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-FSIHlR/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
