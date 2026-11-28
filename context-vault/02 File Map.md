@@ -469,3 +469,7 @@ Dedicated Router fixtures verified populated, partial, empty, unavailable and fa
 ## Phase 2 lead-discovery acceptance
 
 Actual Router synthetic browser checks passed online search terms, next/previous paging, destination/search/filter retention, cancelled draft filters and clear search. Compact 320×568 inspection exposed an almost-hidden lead card; search/filter controls now share a row and sync details appear when filters expand. Final screenshot inspected. Harness `/tmp/proconsulting-lead-acceptance.cjs`, log `/tmp/proconsulting-lead-acceptance.log`. Typecheck/lint, 21 tests and both exports passed. Both phase 2 local acceptance criteria are met; native/device acceptance remains explicitly deferred. No tooling installation or publication.
+
+## Phase 3 lead workspace checkpoint
+
+Mobile NativeWorkspace separates lead Overview, Activity, Tasks and Edit. Activity/task surfaces mount on first visit and remain mounted when hidden to preserve draft and retry state. Exit checks cover hidden drafts. Typecheck/lint, 21 tests, both exports and a dedicated actual-Router browser draft-retention check passed; screenshot inspected. Harness `/tmp/proconsulting-lead-workspace.cjs`, evidence `/tmp/proconsulting-lead-workspace.log`. Full save/retry and linked-record regression acceptance remains pending. No API/schema change, native tooling installation or publication.

@@ -3,24 +3,24 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-28-06]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-28-07]].
 
 ## Resume here
 
-**Session:** 2026-11-28-06
+**Session:** 2026-11-28-07
 
-**Active feature:** MOBILE-REDESIGN-2
+**Active feature:** MOBILE-REDESIGN-3
 
-**State:** complete
+**State:** in_progress
 
-**Objective:** Improve mobile daily work and lead discovery using scoped loaded data.
+**Objective:** Organize native lead Overview, Activity, Tasks and focused editing.
 
 A user saying **continue** means resume this feature's next unfinished acceptance check. Do not start unrelated modules or repeat completed infrastructure work. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Today task, meeting and deadline summaries
-- Lead discovery and compact readable cards
+- Lead workspace organization
+- Preserved drafts, retries and return paths
 
 ## Out of scope
 
@@ -31,13 +31,12 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| DAILY-WORK | Render bounded daily work, missing/partial/offline states and useful navigation. | passed | Dedicated actual-Router browser fixtures passed populated, partial, empty, unavailable and failed-refresh/offline summaries. Screenshots inspected at 390x844; Today task detail return verified. Typecheck/lint, 21 tests and both exports passed. Native acceptance remains deferred. |
-| LEAD-DISCOVERY | Verify lead search/filter controls and readable cards. | passed | Actual Router browser fixture verified online search request terms, next/previous pagination, route/search/filter retention, cancelled filter draft and clear search. Inspected compact 320x568 screenshot; tightened control row and moved lead sync details into expanded filters so a card remains visible. Typecheck/lint, 21 tests and both exports passed. |
+| LEAD-WORKSPACE | Verify organized lead workflows and preserved hidden drafts. | pending | Overview/Activity/Tasks/Edit implemented; actual Router browser harness passed hidden-control checks, task/note/edit draft retention across sections and cancelled exit. Typecheck/lint, 21 tests and both exports passed. Full save/retry and linked-record regression acceptance remain pending. |
 
 ## Exact next actions
 
-1. Begin approved mobile redesign phase 3: lead Overview/Activity/Tasks organization with focused editing. Preserve phase 1 deferred Android acceptance and phase 2 evidence. Do not install tooling or publish without the relevant release checks.
-   Files: `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`, `docs/MOBILE-CRM-REDESIGN-PLAN.md`
+1. Verify all reorganized lead workflows, hidden draft preservation, uncertain writes and scoped return paths. Keep Android installation deferred.
+   Files: `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`
 
 ## Known risks and unfinished work
 
@@ -61,9 +60,9 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-28T16:03:43.109Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-QW30Jx/typecheck.log`
-- **passed**: `npm run test` (2026-11-28T16:03:50.902Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-QW30Jx/test.log`
-- **passed**: `npm run build` (2026-11-28T16:03:56.376Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-QW30Jx/build.log`
+- **passed**: `npm run typecheck` (2026-11-28T16:11:21.358Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-FuQSU7/typecheck.log`
+- **passed**: `npm run test` (2026-11-28T16:11:28.869Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-FuQSU7/test.log`
+- **passed**: `npm run build` (2026-11-28T16:11:34.323Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-FuQSU7/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 

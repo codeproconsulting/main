@@ -439,3 +439,7 @@ Keep one persistent authenticated owner above file-based Router screens. Replace
 ## Phase 2 Today checkpoint
 
 Use loaded snapshot counts, distinguish missing summaries from empty arrays, and show partial indicators. No aggregate totals are inferred.
+
+## Phase 3 lead workspace checkpoint
+
+Mobile NativeWorkspace separates lead Overview, Activity, Tasks and Edit. Activity/task surfaces mount on first visit and remain mounted when hidden to preserve draft and retry state. Exit checks cover hidden drafts. Typecheck/lint, 21 tests, both exports and a dedicated actual-Router browser draft-retention check passed; screenshot inspected. Harness `/tmp/proconsulting-lead-workspace.cjs`, evidence `/tmp/proconsulting-lead-workspace.log`. Full save/retry and linked-record regression acceptance remains pending. No API/schema change, native tooling installation or publication.
