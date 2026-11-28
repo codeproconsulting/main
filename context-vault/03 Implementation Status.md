@@ -485,3 +485,7 @@ MOB-33 adds up to 12 personal application summaries to the encrypted workspace a
 ## Mobile navigation redesign
 
 Mobile redesign phase 1 has an implemented and visually reviewed navigation checkpoint. Device and remaining form-guard acceptance are pending. [[Sessions/2026-11-28-05]]
+
+### Mobile phase 1 continuation — 28 November 2026
+
+Nested-draft guards and application/appointment tab, reload and back protection are implemented and locally tested. More now groups workspace, management and account rows, with role visibility checked for owner/admin/manager/counselor. Mobile typecheck, lint, 17 tests and Android/iOS exports passed. Actual React Native Web components with synthetic APIs verified draft cancellation, page restoration, pending booking protection, owner Finance back, and uncertain application retry recovery. Native Alert/BackHandler were simulated in the browser harness. Android device behavior and planned Router extraction remain unaccepted; phase 1 stays in progress. No publication or deployment. [[Sessions/2026-11-28-05]]

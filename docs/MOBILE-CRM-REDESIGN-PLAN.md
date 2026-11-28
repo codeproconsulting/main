@@ -100,3 +100,9 @@ The redesign is complete only when the core counsellor journeys and authorized o
 
 - https://docs.expo.dev/eas-update/runtime-versions/
 - https://docs.expo.dev/eas-update/how-it-works/
+
+## Phase 1 checkpoint — 28 November 2026
+
+Implemented primary navigation, grouped role-aware More rows, secondary destination selection and shared draft protection. Parent lead navigation includes nested creation/note drafts, and application/appointment edits protect tab changes, reloads and return to paged lists. Four role menus and connected synthetic interactions passed. Mobile typecheck/lint, 17 tests and both platform exports passed. Acceptance details and retained previews live in the mobile checkout’s `docs/NAVIGATION-ACCEPTANCE.md`.
+
+Phase 1 is still in progress: the existing Expo Router entry hosts the stateful workspace. Extracting destinations with preserved authenticated data/draft owners, and actual Android keyboard/back/device verification, remain required. No OTA publication or native binary change occurred.

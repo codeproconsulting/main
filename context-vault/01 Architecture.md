@@ -393,3 +393,7 @@ MOB-33 adds up to 12 personal application summaries to the encrypted workspace a
 ## Mobile navigation redesign
 
 Primary navigation uses Today, Leads, Tasks and More inside the existing Expo Router workspace entry. The workspace retains list state through navigation.
+
+## Mobile draft navigation protection — 28 November 2026
+
+The mobile workspace now owns a mounted-draft registry shared by lead, task, application, appointment and Finance screens. It stores dirty/busy flags and navigation callbacks, never field values. Native confirmation is separate from the pure guard policy. Parent lead exits and classification saves check nested creation/note drafts before remounting. Session/access cleanup retains priority over unsaved work. Drafts remain memory-only; this does not implement offline edits. The existing Expo Router entry still hosts the workspace; route extraction remains planned. [[Sessions/2026-11-28-05]]

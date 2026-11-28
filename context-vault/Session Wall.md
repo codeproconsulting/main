@@ -31,12 +31,17 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
 | NAV-RENDER | Render primary destinations and verify all existing entry points. | passed | Mobile typecheck, lint, 13 tests and Android/iOS exports passed. React Native Web at 390×844 rendered Today, Leads, More and lead detail. Interaction checks covered destination changes, search retention, filter disclosure and maintenance-action isolation. CRM typecheck, 193 tests and build passed. |
-| NAV-NATIVE | Verify Android back, keyboard and dirty forms on device. | pending | Hardware-back handler and lead/follow-up discard prompts are implemented. Application/appointment form navigation guards and Android device keyboard/back acceptance remain pending. |
+| NAV-NATIVE | Verify Android back, keyboard and dirty forms on device. | pending | Shared guards now cover nested lead forms, notes, application/appointment editing and Finance exit. Synthetic BackHandler/dialog callbacks passed alongside tab/reload/back and retry checks; Android hardware, keyboard and safe-area acceptance remain pending. |
+| NAV-GUARDS | Protect nested drafts, pending saves, detail returns and stale confirmations. | passed | 17 mobile tests include four guard policy tests. Actual React Native Web components with synthetic APIs passed nested draft cancellation, application/appointment tab/reload/back, page-two restoration, owner Finance exit, pending booking and uncertain application retry. Four role menus checked and retained previews recorded in mobile docs/NAVIGATION-ACCEPTANCE.md. |
+| NAV-ROUTER | Use installed Expo Router destinations while preserving authenticated data and draft ownership. | pending | Existing Router entry retained; section state still belongs to NativeWorkspace. Extract routes without remounting data owners, preserve Back/draft guards and rerun connected workflow checks. |
 
 ## Exact next actions
 
-1. Finish phase 1 form navigation guards for application and appointment editing and nested creation forms. Review native Android back behavior on a device or emulator, then capture all role-specific destinations. Preserve current implementation and do not mark the phase complete until acceptance passes.
-   Files: `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`, `/Users/fidaali/Proconsulting-App/src/Applications.tsx`, `/Users/fidaali/Proconsulting-App/src/Appointments.tsx`, `docs/MOBILE-CRM-REDESIGN-PLAN.md`
+1. Complete phase 1 Router destination extraction while retaining shared session, workspace, list and draft ownership. Preserve the new draft guards and repeat connected interaction checks before committing the next checkpoint.
+   Files: `/Users/fidaali/Proconsulting-App/src/app/_layout.tsx`, `/Users/fidaali/Proconsulting-App/src/app/index.tsx`, `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`, `/Users/fidaali/Proconsulting-App/src/NavigationGuard.tsx`, `docs/MOBILE-CRM-REDESIGN-PLAN.md`
+
+2. Verify Android hardware Back, keyboard, safe areas, large text and interrupted saves on a device or emulator. Keep phase 1 in progress until native acceptance passes; browser callback simulation is not hardware evidence.
+   Files: `/Users/fidaali/Proconsulting-App/docs/NAVIGATION-ACCEPTANCE.md`
 
 ## Known risks and unfinished work
 
@@ -60,9 +65,9 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-27T20:42:42.295Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-3sNKMW/typecheck.log`
-- **passed**: `npm run test` (2026-11-27T20:42:49.751Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-3sNKMW/test.log`
-- **passed**: `npm run build` (2026-11-27T20:42:55.531Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-3sNKMW/build.log`
+- **passed**: `npm run typecheck` (2026-11-28T09:59:13.067Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-FjSBrG/typecheck.log`
+- **passed**: `npm run test` (2026-11-28T09:59:20.392Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-FjSBrG/test.log`
+- **passed**: `npm run build` (2026-11-28T09:59:25.920Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-FjSBrG/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -174,6 +179,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **offlineApplicationDeadlines**: Mobile 187fcab is local. VPS rollout, publication and physical-phone acceptance pending.
 - **offlineDeadlineLifecycle**: Mobile bd85c67 is local. Publication and physical-device checks pending.
 - **offlineApplications**: Mobile e3a9e50 is local. Rollout, publication and physical-phone acceptance pending.
-- **mobileRedesign**: Mobile 4a5012c is local. Rendered navigation checkpoint accepted locally, phase 1 native acceptance pending. Runtime 1.0.4 retained. No OTA publication.
+- **mobileRedesign**: Mobile bb61415 is local on codex/mobile-staff (no remote). Shared navigation/draft guards verified with four role menus, 17 mobile tests and both exports. Runtime 1.0.4 retained. Router extraction and Android device acceptance pending; no OTA publication.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

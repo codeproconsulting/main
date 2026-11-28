@@ -451,3 +451,7 @@ EAS build fb3e0ac7-ab73-4318-8ced-8ea8cb98f66a finished with version code 5 and 
 ## Mobile navigation redesign
 
 Mobile checkpoint 4a5012c retains runtime 1.0.4 and changes JavaScript only. OTA publication awaits the phase acceptance gates. No native dependency was added.
+
+### Mobile navigation guard checkpoint — 28 November 2026
+
+Navigation/menu and draft-guard changes are local source with both platform JavaScript exports verified. There are no native dependency or app configuration changes; runtime 1.0.4 is retained. This checkpoint is absent from the existing APK and has not been OTA published. Phase 1 device and Router acceptance remain open. The mobile checkout still has no remote, so its source checkpoint is local; CRM documentation push is separate from mobile publication.

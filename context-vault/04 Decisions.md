@@ -427,3 +427,7 @@ The planned six-phase execution programme is recorded in `docs/MOBILE-CRM-REDESI
 ## Mobile navigation redesign
 
 Retain the current workspace ownership of authenticated data during the first navigation pass. The existing Expo Router entry remains in use. Further route extraction requires preserving sessions and edit lifetimes.
+
+### Shared draft guards within the mobile workspace
+
+Use one mounted-draft registry rather than separate discard policies for each navigation control. Parent exits check nested drafts; local cancellation checks its own form. Busy/uncertain creation writes retain existing retry semantics. Invalidate old dialog callbacks after screen/account changes. This checkpoint retains the installed Expo Router entry and current data owners; route extraction remains an explicit unfinished phase 1 action. Do not count simulated BackHandler callbacks as native Android acceptance.

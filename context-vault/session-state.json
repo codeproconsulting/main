@@ -23,18 +23,38 @@
       "id": "NAV-NATIVE",
       "description": "Verify Android back, keyboard and dirty forms on device.",
       "status": "pending",
-      "evidence": "Hardware-back handler and lead/follow-up discard prompts are implemented. Application/appointment form navigation guards and Android device keyboard/back acceptance remain pending."
+      "evidence": "Shared guards now cover nested lead forms, notes, application/appointment editing and Finance exit. Synthetic BackHandler/dialog callbacks passed alongside tab/reload/back and retry checks; Android hardware, keyboard and safe-area acceptance remain pending."
+    },
+    {
+      "id": "NAV-GUARDS",
+      "description": "Protect nested drafts, pending saves, detail returns and stale confirmations.",
+      "status": "passed",
+      "evidence": "17 mobile tests include four guard policy tests. Actual React Native Web components with synthetic APIs passed nested draft cancellation, application/appointment tab/reload/back, page-two restoration, owner Finance exit, pending booking and uncertain application retry. Four role menus checked and retained previews recorded in mobile docs/NAVIGATION-ACCEPTANCE.md."
+    },
+    {
+      "id": "NAV-ROUTER",
+      "description": "Use installed Expo Router destinations while preserving authenticated data and draft ownership.",
+      "status": "pending",
+      "evidence": "Existing Router entry retained; section state still belongs to NativeWorkspace. Extract routes without remounting data owners, preserve Back/draft guards and rerun connected workflow checks."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Finish phase 1 form navigation guards for application and appointment editing and nested creation forms. Review native Android back behavior on a device or emulator, then capture all role-specific destinations. Preserve current implementation and do not mark the phase complete until acceptance passes.",
+      "action": "Complete phase 1 Router destination extraction while retaining shared session, workspace, list and draft ownership. Preserve the new draft guards and repeat connected interaction checks before committing the next checkpoint.",
       "files": [
+        "/Users/fidaali/Proconsulting-App/src/app/_layout.tsx",
+        "/Users/fidaali/Proconsulting-App/src/app/index.tsx",
         "/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx",
-        "/Users/fidaali/Proconsulting-App/src/Applications.tsx",
-        "/Users/fidaali/Proconsulting-App/src/Appointments.tsx",
+        "/Users/fidaali/Proconsulting-App/src/NavigationGuard.tsx",
         "docs/MOBILE-CRM-REDESIGN-PLAN.md"
+      ]
+    },
+    {
+      "order": 2,
+      "action": "Verify Android hardware Back, keyboard, safe areas, large text and interrupted saves on a device or emulator. Keep phase 1 in progress until native acceptance passes; browser callback simulation is not hardware evidence.",
+      "files": [
+        "/Users/fidaali/Proconsulting-App/docs/NAVIGATION-ACCEPTANCE.md"
       ]
     }
   ],
@@ -164,31 +184,31 @@
     "offlineApplicationDeadlines": "Mobile 187fcab is local. VPS rollout, publication and physical-phone acceptance pending.",
     "offlineDeadlineLifecycle": "Mobile bd85c67 is local. Publication and physical-device checks pending.",
     "offlineApplications": "Mobile e3a9e50 is local. Rollout, publication and physical-phone acceptance pending.",
-    "mobileRedesign": "Mobile 4a5012c is local. Rendered navigation checkpoint accepted locally, phase 1 native acceptance pending. Runtime 1.0.4 retained. No OTA publication."
+    "mobileRedesign": "Mobile bb61415 is local on codex/mobile-staff (no remote). Shared navigation/draft guards verified with four role menus, 17 mobile tests and both exports. Runtime 1.0.4 retained. Router extraction and Android device acceptance pending; no OTA publication."
   },
   "checks": [
     {
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-27T20:42:42.295Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-3sNKMW/typecheck.log"
+      "checkedAt": "2026-11-28T09:59:13.067Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-FjSBrG/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-27T20:42:49.751Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-3sNKMW/test.log"
+      "checkedAt": "2026-11-28T09:59:20.392Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-FjSBrG/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-27T20:42:55.531Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-3sNKMW/build.log"
+      "checkedAt": "2026-11-28T09:59:25.920Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-FjSBrG/build.log"
     }
   ],
-  "updatedAt": "2026-11-27T20:44:08.955Z",
-  "verifiedSourceFingerprint": "5a09cd0337ee8db4e1fdbc4e0de23a4bba5ba47701d6d9283c77dc368b97a60e"
+  "updatedAt": "2026-11-28T09:59:44.977Z",
+  "verifiedSourceFingerprint": "e8fcefd5913b4720628bd2c9d2a83d6896b3f624c1025e85e38175d453a3be94"
 }

@@ -445,3 +445,7 @@ MOB-33 adds up to 12 personal application summaries to the encrypted workspace a
 ## Mobile navigation redesign
 
 Navigation, Today and More are implemented in the mobile checkout’s `src/NativeWorkspace.tsx`. Follow-up discard handling is in `src/FollowUpEditor.tsx`.
+
+### Mobile guard checkpoint — 28 November 2026
+
+In the separate mobile checkout, `src/navigation-guard.ts` implements the tested draft policy; `src/NavigationGuard.tsx` binds mounted screens to native confirmation. Callers include the workspace, application/appointment editors and creation forms, follow-up editor/creation, consultations and Finance. `tests/navigation-guard.test.mjs` covers the policy. `docs/NAVIGATION-ACCEPTANCE.md` records synthetic interaction evidence and links retained role-menu previews. No new dependency or backend endpoint was added.
