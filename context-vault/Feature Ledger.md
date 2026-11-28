@@ -156,3 +156,5 @@ MOBILE-REDESIGN-2 is active: Today and lead discovery. Phase 1 remains locally v
 Phase 2 Today and lead discovery local acceptance passed, including compact rendered search/paging/filter checks. Production publication and phase 1 native acceptance remain separate.
 
 MOBILE-REDESIGN-3 is active: lead sections and focused editing. Initial draft-retention checks pass; complete workflow acceptance remains pending. Phase 2 local acceptance is complete.
+
+Phase 3 lead workspace local acceptance passed, including save/retry, hidden drafts, linked returns and access denial. Phase 4 operational screens are next; phase 1 native acceptance stays deferred.

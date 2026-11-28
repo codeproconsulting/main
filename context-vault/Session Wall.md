@@ -11,7 +11,7 @@ Generated from `session-state.json` by `npm run session:status`. Edit that struc
 
 **Active feature:** MOBILE-REDESIGN-3
 
-**State:** in_progress
+**State:** complete
 
 **Objective:** Organize native lead Overview, Activity, Tasks and focused editing.
 
@@ -31,12 +31,12 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| LEAD-WORKSPACE | Verify organized lead workflows and preserved hidden drafts. | pending | Overview/Activity/Tasks/Edit implemented; actual Router browser harness passed hidden-control checks, task/note/edit draft retention across sections and cancelled exit. Typecheck/lint, 21 tests and both exports passed. Full save/retry and linked-record regression acceptance remain pending. |
+| LEAD-WORKSPACE | Verify organized lead workflows and preserved hidden drafts. | passed | Actual Router synthetic regressions passed linked applications/appointments and returns, hidden drafts, note/follow-up retry identity, pending back holds, stale classification reload/success and denied-lead private-detail clearing. Source 3de3ee2 already passed typecheck/lint, 21 tests and both exports; this continuation changed acceptance documentation only. Native testing deferred. |
 
 ## Exact next actions
 
-1. Verify all reorganized lead workflows, hidden draft preservation, uncertain writes and scoped return paths. Keep Android installation deferred.
-   Files: `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`
+1. Begin mobile redesign phase 4: consistent task, appointment and application workflows; preserve phase 3 guarded drafts/retries. Keep native tooling and publication deferred.
+   Files: `/Users/fidaali/Proconsulting-App/src/FollowUpEditor.tsx`, `/Users/fidaali/Proconsulting-App/src/Appointments.tsx`, `/Users/fidaali/Proconsulting-App/src/Applications.tsx`, `docs/MOBILE-CRM-REDESIGN-PLAN.md`
 
 ## Known risks and unfinished work
 
@@ -60,9 +60,9 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-28T16:11:21.358Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-FuQSU7/typecheck.log`
-- **passed**: `npm run test` (2026-11-28T16:11:28.869Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-FuQSU7/test.log`
-- **passed**: `npm run build` (2026-11-28T16:11:34.323Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-FuQSU7/build.log`
+- **passed**: `npm run typecheck` (2026-11-28T16:14:12.150Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-LHc9jr/typecheck.log`
+- **passed**: `npm run test` (2026-11-28T16:14:19.585Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-LHc9jr/test.log`
+- **passed**: `npm run build` (2026-11-28T16:14:24.854Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-LHc9jr/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -176,5 +176,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **offlineApplications**: Mobile e3a9e50 is local. Rollout, publication and physical-phone acceptance pending.
 - **mobileRedesign**: Mobile 99778a6 committed locally on codex/mobile-staff (no remote). Eleven top-level file routes, persistent shared owner and guarded push/replacement transitions verified: 20 mobile tests, real Expo Router synthetic interactions and both exports passed. Runtime 1.0.4 unchanged; Android device acceptance pending. No OTA, APK or VPS publication.
 - **mobileDailyWork**: Phase 2 local acceptance complete through mobile dfd8192 (local only, no remote). 21 mobile tests, both exports, dedicated Today and lead-discovery Router browser checks passed. No native tooling, OTA or VPS release; phase 1 native acceptance deferred.
+- **mobileLeadWorkspace**: Local phase 3 acceptance passed for source 3de3ee2; evidence doc committed as dad4483 in mobile checkout (no remote). Native acceptance deferred, no OTA or deployment.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]
