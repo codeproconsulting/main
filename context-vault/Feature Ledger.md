@@ -158,3 +158,5 @@ Phase 2 Today and lead discovery local acceptance passed, including compact rend
 MOBILE-REDESIGN-3 is active: lead sections and focused editing. Initial draft-retention checks pass; complete workflow acceptance remains pending. Phase 2 local acceptance is complete.
 
 Phase 3 lead workspace local acceptance passed, including save/retry, hidden drafts, linked returns and access denial. Phase 4 operational screens are next; phase 1 native acceptance stays deferred.
+
+MOBILE-REDESIGN-4 is active: operational screens. Shared office-time display is implemented; practical date/time entry and complete acceptance remain pending.

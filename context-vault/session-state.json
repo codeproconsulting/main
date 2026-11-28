@@ -1,13 +1,13 @@
 {
   "formatVersion": 1,
   "project": "ProConsulting",
-  "sessionId": "2026-11-28-07",
-  "sessionStatus": "complete",
-  "activeFeature": "MOBILE-REDESIGN-3",
-  "objective": "Organize native lead Overview, Activity, Tasks and focused editing.",
+  "sessionId": "2026-11-28-08",
+  "sessionStatus": "in_progress",
+  "activeFeature": "MOBILE-REDESIGN-4",
+  "objective": "Improve native task, appointment and application workflows.",
   "scope": [
-    "Lead workspace organization",
-    "Preserved drafts, retries and return paths"
+    "Consistent operational screen hierarchy",
+    "Office-time entry, feedback and guarded retries"
   ],
   "outOfScope": [
     "Android tooling installation and native acceptance",
@@ -15,21 +15,20 @@
   ],
   "acceptance": [
     {
-      "id": "LEAD-WORKSPACE",
-      "description": "Verify organized lead workflows and preserved hidden drafts.",
-      "status": "passed",
-      "evidence": "Actual Router synthetic regressions passed linked applications/appointments and returns, hidden drafts, note/follow-up retry identity, pending back holds, stale classification reload/success and denied-lead private-detail clearing. Source 3de3ee2 already passed typecheck/lint, 21 tests and both exports; this continuation changed acceptance documentation only. Native testing deferred."
+      "id": "OPERATIONS",
+      "description": "Verify task, meeting and application workflows with consistent controls.",
+      "status": "pending",
+      "evidence": "Office-time summaries shared across tasks/appointments/applications; prominent version metadata removed without changing versioned writes. Typecheck/lint, 22 tests and Router regression passed. Practical date/time entry and full phase 4 acceptance remain pending."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Begin mobile redesign phase 4: consistent task, appointment and application workflows; preserve phase 3 guarded drafts/retries. Keep native tooling and publication deferred.",
+      "action": "Implement practical office date/time entry and complete operational workflow regression checks, preserving validation and retry identities.",
       "files": [
         "/Users/fidaali/Proconsulting-App/src/FollowUpEditor.tsx",
         "/Users/fidaali/Proconsulting-App/src/Appointments.tsx",
-        "/Users/fidaali/Proconsulting-App/src/Applications.tsx",
-        "docs/MOBILE-CRM-REDESIGN-PLAN.md"
+        "/Users/fidaali/Proconsulting-App/src/Applications.tsx"
       ]
     }
   ],
@@ -168,24 +167,24 @@
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-28T16:14:12.150Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-LHc9jr/typecheck.log"
+      "checkedAt": "2026-11-28T16:44:37.162Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-IQyjNn/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-28T16:14:19.585Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-LHc9jr/test.log"
+      "checkedAt": "2026-11-28T16:44:44.520Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-IQyjNn/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-28T16:14:24.854Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-LHc9jr/build.log"
+      "checkedAt": "2026-11-28T16:44:49.941Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-IQyjNn/build.log"
     }
   ],
-  "updatedAt": "2026-11-28T16:14:30.806Z",
+  "updatedAt": "2026-11-28T16:44:55.221Z",
   "verifiedSourceFingerprint": "7477357c497506023884b26a102de54e9e7aeb0bc37f6e91a8f8f95778e69a78"
 }

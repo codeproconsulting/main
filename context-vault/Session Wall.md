@@ -3,24 +3,24 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-28-07]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-28-08]].
 
 ## Resume here
 
-**Session:** 2026-11-28-07
+**Session:** 2026-11-28-08
 
-**Active feature:** MOBILE-REDESIGN-3
+**Active feature:** MOBILE-REDESIGN-4
 
-**State:** complete
+**State:** in_progress
 
-**Objective:** Organize native lead Overview, Activity, Tasks and focused editing.
+**Objective:** Improve native task, appointment and application workflows.
 
 A user saying **continue** means resume this feature's next unfinished acceptance check. Do not start unrelated modules or repeat completed infrastructure work. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Lead workspace organization
-- Preserved drafts, retries and return paths
+- Consistent operational screen hierarchy
+- Office-time entry, feedback and guarded retries
 
 ## Out of scope
 
@@ -31,12 +31,12 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| LEAD-WORKSPACE | Verify organized lead workflows and preserved hidden drafts. | passed | Actual Router synthetic regressions passed linked applications/appointments and returns, hidden drafts, note/follow-up retry identity, pending back holds, stale classification reload/success and denied-lead private-detail clearing. Source 3de3ee2 already passed typecheck/lint, 21 tests and both exports; this continuation changed acceptance documentation only. Native testing deferred. |
+| OPERATIONS | Verify task, meeting and application workflows with consistent controls. | pending | Office-time summaries shared across tasks/appointments/applications; prominent version metadata removed without changing versioned writes. Typecheck/lint, 22 tests and Router regression passed. Practical date/time entry and full phase 4 acceptance remain pending. |
 
 ## Exact next actions
 
-1. Begin mobile redesign phase 4: consistent task, appointment and application workflows; preserve phase 3 guarded drafts/retries. Keep native tooling and publication deferred.
-   Files: `/Users/fidaali/Proconsulting-App/src/FollowUpEditor.tsx`, `/Users/fidaali/Proconsulting-App/src/Appointments.tsx`, `/Users/fidaali/Proconsulting-App/src/Applications.tsx`, `docs/MOBILE-CRM-REDESIGN-PLAN.md`
+1. Implement practical office date/time entry and complete operational workflow regression checks, preserving validation and retry identities.
+   Files: `/Users/fidaali/Proconsulting-App/src/FollowUpEditor.tsx`, `/Users/fidaali/Proconsulting-App/src/Appointments.tsx`, `/Users/fidaali/Proconsulting-App/src/Applications.tsx`
 
 ## Known risks and unfinished work
 
@@ -60,9 +60,9 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-28T16:14:12.150Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-LHc9jr/typecheck.log`
-- **passed**: `npm run test` (2026-11-28T16:14:19.585Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-LHc9jr/test.log`
-- **passed**: `npm run build` (2026-11-28T16:14:24.854Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-LHc9jr/build.log`
+- **passed**: `npm run typecheck` (2026-11-28T16:44:37.162Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-IQyjNn/typecheck.log`
+- **passed**: `npm run test` (2026-11-28T16:44:44.520Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-IQyjNn/test.log`
+- **passed**: `npm run build` (2026-11-28T16:44:49.941Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-IQyjNn/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
