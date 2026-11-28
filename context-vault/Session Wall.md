@@ -11,7 +11,7 @@ Generated from `session-state.json` by `npm run session:status`. Edit that struc
 
 **Active feature:** MOBILE-REDESIGN-2
 
-**State:** in_progress
+**State:** complete
 
 **Objective:** Improve mobile daily work and lead discovery using scoped loaded data.
 
@@ -32,12 +32,12 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
 | DAILY-WORK | Render bounded daily work, missing/partial/offline states and useful navigation. | passed | Dedicated actual-Router browser fixtures passed populated, partial, empty, unavailable and failed-refresh/offline summaries. Screenshots inspected at 390x844; Today task detail return verified. Typecheck/lint, 21 tests and both exports passed. Native acceptance remains deferred. |
-| LEAD-DISCOVERY | Verify lead search/filter controls and readable cards. | pending | Draft/apply/reset and retention regression checks passed previously. Long-name card and explicit overdue follow-up inspected. Dedicated online search/paging and compact filter-retention checks remain pending. |
+| LEAD-DISCOVERY | Verify lead search/filter controls and readable cards. | passed | Actual Router browser fixture verified online search request terms, next/previous pagination, route/search/filter retention, cancelled filter draft and clear search. Inspected compact 320x568 screenshot; tightened control row and moved lead sync details into expanded filters so a card remains visible. Typecheck/lint, 21 tests and both exports passed. |
 
 ## Exact next actions
 
-1. Complete dedicated lead online search/paging, filter retention and compact-width checks. Preserve passed Today fixtures; do not install native tooling or publish updates.
-   Files: `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`
+1. Begin approved mobile redesign phase 3: lead Overview/Activity/Tasks organization with focused editing. Preserve phase 1 deferred Android acceptance and phase 2 evidence. Do not install tooling or publish without the relevant release checks.
+   Files: `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`, `docs/MOBILE-CRM-REDESIGN-PLAN.md`
 
 ## Known risks and unfinished work
 
@@ -61,9 +61,9 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-28T15:27:46.334Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-FSIHlR/typecheck.log`
-- **passed**: `npm run test` (2026-11-28T15:27:53.872Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-FSIHlR/test.log`
-- **passed**: `npm run build` (2026-11-28T15:27:59.327Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-FSIHlR/build.log`
+- **passed**: `npm run typecheck` (2026-11-28T16:03:43.109Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-QW30Jx/typecheck.log`
+- **passed**: `npm run test` (2026-11-28T16:03:50.902Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-QW30Jx/test.log`
+- **passed**: `npm run build` (2026-11-28T16:03:56.376Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-QW30Jx/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -176,6 +176,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **offlineDeadlineLifecycle**: Mobile bd85c67 is local. Publication and physical-device checks pending.
 - **offlineApplications**: Mobile e3a9e50 is local. Rollout, publication and physical-phone acceptance pending.
 - **mobileRedesign**: Mobile 99778a6 committed locally on codex/mobile-staff (no remote). Eleven top-level file routes, persistent shared owner and guarded push/replacement transitions verified: 20 mobile tests, real Expo Router synthetic interactions and both exports passed. Runtime 1.0.4 unchanged; Android device acceptance pending. No OTA, APK or VPS publication.
-- **mobileDailyWork**: Mobile 41a67b6 local only, no remote. Today summary checkpoint tested locally; phase 2 acceptance remains pending. No OTA or tooling installation.
+- **mobileDailyWork**: Phase 2 local acceptance complete through mobile dfd8192 (local only, no remote). 21 mobile tests, both exports, dedicated Today and lead-discovery Router browser checks passed. No native tooling, OTA or VPS release; phase 1 native acceptance deferred.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

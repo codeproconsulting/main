@@ -152,3 +152,5 @@ The planned six-phase execution programme is recorded in `docs/MOBILE-CRM-REDESI
 MOBILE-REDESIGN-1 is in progress. File-based Router destinations, shared authenticated state, grouped role menus and draft/removal guards passed local integration checks (20 mobile tests and both exports). Native Android acceptance remains pending; no publication. [[Sessions/2026-11-28-05]]
 
 MOBILE-REDESIGN-2 is active: Today and lead discovery. Phase 1 remains locally verified with native acceptance deferred by user.
+
+Phase 2 Today and lead discovery local acceptance passed, including compact rendered search/paging/filter checks. Production publication and phase 1 native acceptance remain separate.
