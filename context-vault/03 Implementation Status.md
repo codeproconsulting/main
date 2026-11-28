@@ -497,3 +497,7 @@ NAV-ROUTER passed local source/integration acceptance. The actual installed Expo
 ## Phase 2 Today checkpoint
 
 Phase 2 started with Today summaries. Dedicated visual acceptance and lead discovery remain unfinished. Phase 1 native acceptance remains deferred by user.
+
+## Lead filter checkpoint
+
+Mobile NativeWorkspace now separates draft and applied lead filters, adds Apply/reset and an applied summary, and explains page-scoped empty results. Typecheck/lint, 21 tests and actual Router browser checks passed, including selection before Apply and reset restoration. Dedicated Today visual states and lead-card refinement remain unfinished. No tooling installation or OTA publication.

@@ -32,11 +32,11 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
 | DAILY-WORK | Render bounded daily work, missing/partial/offline states and useful navigation. | pending | Today summaries implemented; typecheck/lint, 21 mobile tests, both exports and existing actual Router regression harness passed. Dedicated summary visual fixtures remain pending. |
-| LEAD-DISCOVERY | Verify lead search/filter controls and readable cards. | pending | Pending. |
+| LEAD-DISCOVERY | Verify lead search/filter controls and readable cards. | pending | Draft/apply/reset filters and applied summary implemented. Actual Router browser harness verified selection does not filter before Apply, applied empty state and reset restoration. Lead card refinements and dedicated Today fixtures remain pending. |
 
 ## Exact next actions
 
-1. Finish phase 2 lead discovery controls/cards and dedicated Today summary visual/interaction fixtures, including empty, partial, offline and failed states. Keep phase 1 native acceptance deferred and do not install tooling.
+1. Finish dedicated Today summary fixtures (populated, empty, partial, offline and failed), then refine lead cards and verify long names, search/paging and filter retention. Keep native tooling installation deferred.
    Files: `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`
 
 ## Known risks and unfinished work
@@ -61,9 +61,9 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-28T15:24:02.419Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-7ptqKw/typecheck.log`
-- **passed**: `npm run test` (2026-11-28T15:24:09.894Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-7ptqKw/test.log`
-- **passed**: `npm run build` (2026-11-28T15:24:15.220Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-7ptqKw/build.log`
+- **passed**: `npm run typecheck` (2026-11-28T15:25:46.292Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-BYiDEE/typecheck.log`
+- **passed**: `npm run test` (2026-11-28T15:25:53.726Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-BYiDEE/test.log`
+- **passed**: `npm run build` (2026-11-28T15:25:59.085Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-BYiDEE/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 

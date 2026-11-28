@@ -457,3 +457,7 @@ Separate mobile checkout: `src/app/_layout.tsx` mounts the persistent owner and 
 ## Phase 2 Today checkpoint
 
 Mobile src/daily-work.ts derives sorted daily work; src/NativeWorkspace.tsx renders summaries; tests/daily-work.test.mjs covers date boundaries and snapshot preservation.
+
+## Lead filter checkpoint
+
+Mobile NativeWorkspace now separates draft and applied lead filters, adds Apply/reset and an applied summary, and explains page-scoped empty results. Typecheck/lint, 21 tests and actual Router browser checks passed, including selection before Apply and reset restoration. Dedicated Today visual states and lead-card refinement remain unfinished. No tooling installation or OTA publication.
