@@ -453,3 +453,7 @@ In the separate mobile checkout, `src/navigation-guard.ts` implements the tested
 ### Mobile Router integration — 28 November 2026
 
 Separate mobile checkout: `src/app/_layout.tsx` mounts the persistent owner and Router Navigator. `src/app/index.tsx` plus ten named destination files render `src/WorkspaceRoute.tsx`. `src/workspace-routes.ts` maps known destination names/paths; `src/workspace-router.ts` enforces top-level replacement semantics. `tests/workspace-routes.test.mjs` verifies route files and round trips; `tests/workspace-router.test.mjs` verifies action normalization; guard tests now cover reactive subscriptions. `docs/DEVICE-ACCEPTANCE.md` records the pending native checklist.
+
+## Phase 2 Today checkpoint
+
+Mobile src/daily-work.ts derives sorted daily work; src/NativeWorkspace.tsx renders summaries; tests/daily-work.test.mjs covers date boundaries and snapshot preservation.

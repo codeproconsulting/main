@@ -401,3 +401,7 @@ The mobile workspace now owns a mounted-draft registry shared by lead, task, app
 ## Routed mobile workspace — 28 November 2026 continuation
 
 Top-level mobile destinations now use file routes in the installed Expo Router. `NativeWorkspace` owns authenticated state above a `Navigator`, so route replacement preserves sessions, saved workspace and parent lead/task search/list state. `WorkspaceRoute` supplies the rendered screen and binds SDK 58 removal prevention to the draft registry. The registry exposes a primitive aggregate protection snapshot, not field values. Top-level push/navigation actions become replacements so hiding a route cannot bypass its removal guard; separate record stacks remain future work. [[Sessions/2026-11-28-05]]
+
+## Phase 2 Today checkpoint
+
+Today derives bounded daily work from the existing scoped workspace; no new API or stored data.

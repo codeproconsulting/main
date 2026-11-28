@@ -493,3 +493,7 @@ Nested-draft guards and application/appointment tab, reload and back protection 
 ### Mobile Router acceptance — 28 November 2026 continuation
 
 NAV-ROUTER passed local source/integration acceptance. The actual installed ExpoRoot/Navigator/usePreventRemove ran in a synthetic React Native Web harness; route pushes/replacements checked dirty/busy forms, direct role gates, session/search retention, clean-record exit, list-page return and offline destination changes. Compact 320×568 sign-in and 390×844 offline previews were inspected. Mobile typecheck/lint, 20 tests and Android/iOS exports passed. Native Alert, BackHandler and safe-area surfaces were bridged, not device-tested. NAV-NATIVE remains pending; phase 1 is not complete or published. [[Sessions/2026-11-28-05]]
+
+## Phase 2 Today checkpoint
+
+Phase 2 started with Today summaries. Dedicated visual acceptance and lead discovery remain unfinished. Phase 1 native acceptance remains deferred by user.

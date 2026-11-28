@@ -3,42 +3,41 @@ tags: [session, continuation, active]
 ---
 # Session wall
 
-Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-28-05]].
+Generated from `session-state.json` by `npm run session:status`. Edit that structured record, then regenerate this note. Human decisions and detailed history belong in [[Sessions/2026-11-28-06]].
 
 ## Resume here
 
-**Session:** 2026-11-28-05
+**Session:** 2026-11-28-06
 
-**Active feature:** MOBILE-REDESIGN-1
+**Active feature:** MOBILE-REDESIGN-2
 
 **State:** in_progress
 
-**Objective:** Deliver the mobile navigation and account foundation.
+**Objective:** Improve mobile daily work and lead discovery using scoped loaded data.
 
 A user saying **continue** means resume this feature's next unfinished acceptance check. Do not start unrelated modules or repeat completed infrastructure work. Verify current files and drift before trusting the checkpoint.
 
 ## In scope
 
-- Today, Leads, Tasks and More navigation
-- Rendered layout review and Android back handling
+- Today task, meeting and deadline summaries
+- Lead discovery and compact readable cards
 
 ## Out of scope
 
-- OTA publication and production deployment
+- Android tooling installation and native acceptance
+- OTA and production deployment
 
 ## Acceptance checks
 
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
-| NAV-RENDER | Render primary destinations and verify all existing entry points. | passed | Mobile typecheck, lint, 13 tests and Android/iOS exports passed. React Native Web at 390×844 rendered Today, Leads, More and lead detail. Interaction checks covered destination changes, search retention, filter disclosure and maintenance-action isolation. CRM typecheck, 193 tests and build passed. |
-| NAV-NATIVE | Verify Android back, keyboard and dirty forms on device. | pending | Scrollable sign-in, keyboard avoidance and native-back callback logic implemented. Browser previews at 320×568 and 390×844 and simulated callbacks passed. No adb on PATH or Xcode application; Android hardware/keyboard/safe-area/large-text/lifecycle acceptance remains unperformed. Existing APK lacks this source. |
-| NAV-GUARDS | Protect nested drafts, pending saves, detail returns and stale confirmations. | passed | 17 mobile tests include four guard policy tests. Actual React Native Web components with synthetic APIs passed nested draft cancellation, application/appointment tab/reload/back, page-two restoration, owner Finance exit, pending booking and uncertain application retry. Four role menus checked and retained previews recorded in mobile docs/NAVIGATION-ACCEPTANCE.md. |
-| NAV-ROUTER | Use installed Expo Router destinations while preserving authenticated data and draft ownership. | passed | Eleven file routes now share a persistent workspace owner above installed Expo Router Navigator. Actual ExpoRoot/usePreventRemove integration passed pushed/replaced dirty-route protection, pending booking, clean-record exit, role-gated direct paths, retained session/search and offline transitions. Mobile typecheck/lint, 20 tests and both exports passed. Native Alert/BackHandler/safe-area APIs were bridged. |
+| DAILY-WORK | Render bounded daily work, missing/partial/offline states and useful navigation. | pending | Today summaries implemented; typecheck/lint, 21 mobile tests, both exports and existing actual Router regression harness passed. Dedicated summary visual fixtures remain pending. |
+| LEAD-DISCOVERY | Verify lead search/filter controls and readable cards. | pending | Pending. |
 
 ## Exact next actions
 
-1. Run the twelve Android device acceptance checks against a reviewed pilot/development build containing the current Router source. Verify hardware Back, keyboard/safe areas, large text, interrupted saves, direct navigation, offline lifecycle and account isolation. Record actual source/update ID and device results; keep phase 1 in progress until accepted. Do not mistake the old APK or browser bridge for native evidence.
-   Files: `/Users/fidaali/Proconsulting-App/docs/DEVICE-ACCEPTANCE.md`, `/Users/fidaali/Proconsulting-App/docs/NAVIGATION-ACCEPTANCE.md`, `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`, `/Users/fidaali/Proconsulting-App/src/WorkspaceRoute.tsx`, `context-vault/session-state.json`
+1. Finish phase 2 lead discovery controls/cards and dedicated Today summary visual/interaction fixtures, including empty, partial, offline and failed states. Keep phase 1 native acceptance deferred and do not install tooling.
+   Files: `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`
 
 ## Known risks and unfinished work
 
@@ -62,9 +61,9 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-28T11:13:07.975Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-hMtcy2/typecheck.log`
-- **passed**: `npm run test` (2026-11-28T11:13:15.479Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-hMtcy2/test.log`
-- **passed**: `npm run build` (2026-11-28T11:13:21.140Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-hMtcy2/build.log`
+- **passed**: `npm run typecheck` (2026-11-28T15:24:02.419Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-7ptqKw/typecheck.log`
+- **passed**: `npm run test` (2026-11-28T15:24:09.894Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-7ptqKw/test.log`
+- **passed**: `npm run build` (2026-11-28T15:24:15.220Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-7ptqKw/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -177,5 +176,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **offlineDeadlineLifecycle**: Mobile bd85c67 is local. Publication and physical-device checks pending.
 - **offlineApplications**: Mobile e3a9e50 is local. Rollout, publication and physical-phone acceptance pending.
 - **mobileRedesign**: Mobile 99778a6 committed locally on codex/mobile-staff (no remote). Eleven top-level file routes, persistent shared owner and guarded push/replacement transitions verified: 20 mobile tests, real Expo Router synthetic interactions and both exports passed. Runtime 1.0.4 unchanged; Android device acceptance pending. No OTA, APK or VPS publication.
+- **mobileDailyWork**: Mobile 41a67b6 local only, no remote. Today summary checkpoint tested locally; phase 2 acceptance remains pending. No OTA or tooling installation.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

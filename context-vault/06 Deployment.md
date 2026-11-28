@@ -459,3 +459,7 @@ Navigation/menu and draft-guard changes are local source with both platform Java
 ### Routed mobile source checkpoint — 28 November 2026
 
 File-route integration, direct local role guards and keyboard-layout changes passed local bundle/integration checks. No server endpoint, schema, native dependency, configuration or runtime change. Runtime remains 1.0.4. Existing APK source predates this code; no update was published. Device acceptance must run a reviewed pilot/development build containing the checkpoint, not the unchanged old APK. The native checklist is in the separate mobile checkout’s `docs/DEVICE-ACCEPTANCE.md`.
+
+## Phase 2 Today checkpoint
+
+Phase 2 Today changes are local source only; no OTA, native build or server deployment.
