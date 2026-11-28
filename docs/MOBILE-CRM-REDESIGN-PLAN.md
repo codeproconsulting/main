@@ -106,3 +106,9 @@ The redesign is complete only when the core counsellor journeys and authorized o
 Implemented primary navigation, grouped role-aware More rows, secondary destination selection and shared draft protection. Parent lead navigation includes nested creation/note drafts, and application/appointment edits protect tab changes, reloads and return to paged lists. Four role menus and connected synthetic interactions passed. Mobile typecheck/lint, 17 tests and both platform exports passed. Acceptance details and retained previews live in the mobile checkout’s `docs/NAVIGATION-ACCEPTANCE.md`.
 
 Phase 1 is still in progress: the existing Expo Router entry hosts the stateful workspace. Extracting destinations with preserved authenticated data/draft owners, and actual Android keyboard/back/device verification, remain required. No OTA publication or native binary change occurred.
+
+### Phase 1 Router continuation
+
+Top-level file-route integration is now implemented and locally accepted. The persistent workspace owner remains above the installed Router Navigator; destination screens use removal prevention and a single-active-destination policy. Incoming push/navigation actions become replacements so dirty forms cannot be hidden without the removal guard. Direct role routes, retained session/search, busy and uncertain saves, offline destination changes, and compact sign-in passed with actual Expo Router in a synthetic browser harness. Twenty mobile tests and both exports passed.
+
+The remaining phase 1 gate is Android device acceptance (hardware Back, keyboard/safe areas, large text and lifecycle). The checklist lives in mobile `docs/DEVICE-ACCEPTANCE.md`. Native APIs were bridged in browser tests. No native binary or OTA was published, and phase 1 remains in progress.

@@ -31,17 +31,14 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 | ID | Check | Status | Evidence or exact gap |
 | --- | --- | --- | --- |
 | NAV-RENDER | Render primary destinations and verify all existing entry points. | passed | Mobile typecheck, lint, 13 tests and Android/iOS exports passed. React Native Web at 390×844 rendered Today, Leads, More and lead detail. Interaction checks covered destination changes, search retention, filter disclosure and maintenance-action isolation. CRM typecheck, 193 tests and build passed. |
-| NAV-NATIVE | Verify Android back, keyboard and dirty forms on device. | pending | Shared guards now cover nested lead forms, notes, application/appointment editing and Finance exit. Synthetic BackHandler/dialog callbacks passed alongside tab/reload/back and retry checks; Android hardware, keyboard and safe-area acceptance remain pending. |
+| NAV-NATIVE | Verify Android back, keyboard and dirty forms on device. | pending | Scrollable sign-in, keyboard avoidance and native-back callback logic implemented. Browser previews at 320×568 and 390×844 and simulated callbacks passed. No adb on PATH or Xcode application; Android hardware/keyboard/safe-area/large-text/lifecycle acceptance remains unperformed. Existing APK lacks this source. |
 | NAV-GUARDS | Protect nested drafts, pending saves, detail returns and stale confirmations. | passed | 17 mobile tests include four guard policy tests. Actual React Native Web components with synthetic APIs passed nested draft cancellation, application/appointment tab/reload/back, page-two restoration, owner Finance exit, pending booking and uncertain application retry. Four role menus checked and retained previews recorded in mobile docs/NAVIGATION-ACCEPTANCE.md. |
-| NAV-ROUTER | Use installed Expo Router destinations while preserving authenticated data and draft ownership. | pending | Existing Router entry retained; section state still belongs to NativeWorkspace. Extract routes without remounting data owners, preserve Back/draft guards and rerun connected workflow checks. |
+| NAV-ROUTER | Use installed Expo Router destinations while preserving authenticated data and draft ownership. | passed | Eleven file routes now share a persistent workspace owner above installed Expo Router Navigator. Actual ExpoRoot/usePreventRemove integration passed pushed/replaced dirty-route protection, pending booking, clean-record exit, role-gated direct paths, retained session/search and offline transitions. Mobile typecheck/lint, 20 tests and both exports passed. Native Alert/BackHandler/safe-area APIs were bridged. |
 
 ## Exact next actions
 
-1. Complete phase 1 Router destination extraction while retaining shared session, workspace, list and draft ownership. Preserve the new draft guards and repeat connected interaction checks before committing the next checkpoint.
-   Files: `/Users/fidaali/Proconsulting-App/src/app/_layout.tsx`, `/Users/fidaali/Proconsulting-App/src/app/index.tsx`, `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`, `/Users/fidaali/Proconsulting-App/src/NavigationGuard.tsx`, `docs/MOBILE-CRM-REDESIGN-PLAN.md`
-
-2. Verify Android hardware Back, keyboard, safe areas, large text and interrupted saves on a device or emulator. Keep phase 1 in progress until native acceptance passes; browser callback simulation is not hardware evidence.
-   Files: `/Users/fidaali/Proconsulting-App/docs/NAVIGATION-ACCEPTANCE.md`
+1. Run the twelve Android device acceptance checks against a reviewed pilot/development build containing the current Router source. Verify hardware Back, keyboard/safe areas, large text, interrupted saves, direct navigation, offline lifecycle and account isolation. Record actual source/update ID and device results; keep phase 1 in progress until accepted. Do not mistake the old APK or browser bridge for native evidence.
+   Files: `/Users/fidaali/Proconsulting-App/docs/DEVICE-ACCEPTANCE.md`, `/Users/fidaali/Proconsulting-App/docs/NAVIGATION-ACCEPTANCE.md`, `/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx`, `/Users/fidaali/Proconsulting-App/src/WorkspaceRoute.tsx`, `context-vault/session-state.json`
 
 ## Known risks and unfinished work
 
@@ -65,9 +62,9 @@ A user saying **continue** means resume this feature's next unfinished acceptanc
 
 ## Verification
 
-- **passed**: `npm run typecheck` (2026-11-28T09:59:13.067Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-FjSBrG/typecheck.log`
-- **passed**: `npm run test` (2026-11-28T09:59:20.392Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-FjSBrG/test.log`
-- **passed**: `npm run build` (2026-11-28T09:59:25.920Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-FjSBrG/build.log`
+- **passed**: `npm run typecheck` (2026-11-28T11:13:07.975Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-hMtcy2/typecheck.log`
+- **passed**: `npm run test` (2026-11-28T11:13:15.479Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-hMtcy2/test.log`
+- **passed**: `npm run build` (2026-11-28T11:13:21.140Z); local log: `/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-hMtcy2/build.log`
 
 Source inventory matches verified checkpoint: **yes**. Passing general checks does not automatically complete feature acceptance.
 
@@ -179,6 +176,6 @@ Source inventory matches verified checkpoint: **yes**. Passing general checks do
 - **offlineApplicationDeadlines**: Mobile 187fcab is local. VPS rollout, publication and physical-phone acceptance pending.
 - **offlineDeadlineLifecycle**: Mobile bd85c67 is local. Publication and physical-device checks pending.
 - **offlineApplications**: Mobile e3a9e50 is local. Rollout, publication and physical-phone acceptance pending.
-- **mobileRedesign**: Mobile bb61415 is local on codex/mobile-staff (no remote). Shared navigation/draft guards verified with four role menus, 17 mobile tests and both exports. Runtime 1.0.4 retained. Router extraction and Android device acceptance pending; no OTA publication.
+- **mobileRedesign**: Mobile 99778a6 committed locally on codex/mobile-staff (no remote). Eleven top-level file routes, persistent shared owner and guarded push/replacement transitions verified: 20 mobile tests, real Expo Router synthetic interactions and both exports passed. Runtime 1.0.4 unchanged; Android device acceptance pending. No OTA, APK or VPS publication.
 
 [[Feature Ledger]] · [[03 Implementation Status]] · [[05 Maintenance]]

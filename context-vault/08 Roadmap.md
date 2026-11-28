@@ -142,3 +142,7 @@ The planned six-phase execution programme is recorded in `docs/MOBILE-CRM-REDESI
 ## Mobile navigation redesign
 
 Continue phase 1 with complete form navigation guards and Android back/keyboard verification before moving to the next phase.
+
+### Mobile phase 1 Router checkpoint
+
+Primary/secondary file destinations, persistent workspace ownership, removal guards and top-level push normalization are implemented and locally accepted. MOBILE-REDESIGN-1 remains active for actual Android keyboard/back/safe-area/large-text and lifecycle acceptance. Phase 2 daily-work redesign is still planned; no unrelated module was started. See [[Session Wall]] and [[Sessions/2026-11-28-05]].

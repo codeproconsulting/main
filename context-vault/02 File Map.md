@@ -449,3 +449,7 @@ Navigation, Today and More are implemented in the mobile checkout’s `src/Nativ
 ### Mobile guard checkpoint — 28 November 2026
 
 In the separate mobile checkout, `src/navigation-guard.ts` implements the tested draft policy; `src/NavigationGuard.tsx` binds mounted screens to native confirmation. Callers include the workspace, application/appointment editors and creation forms, follow-up editor/creation, consultations and Finance. `tests/navigation-guard.test.mjs` covers the policy. `docs/NAVIGATION-ACCEPTANCE.md` records synthetic interaction evidence and links retained role-menu previews. No new dependency or backend endpoint was added.
+
+### Mobile Router integration — 28 November 2026
+
+Separate mobile checkout: `src/app/_layout.tsx` mounts the persistent owner and Router Navigator. `src/app/index.tsx` plus ten named destination files render `src/WorkspaceRoute.tsx`. `src/workspace-routes.ts` maps known destination names/paths; `src/workspace-router.ts` enforces top-level replacement semantics. `tests/workspace-routes.test.mjs` verifies route files and round trips; `tests/workspace-router.test.mjs` verifies action normalization; guard tests now cover reactive subscriptions. `docs/DEVICE-ACCEPTANCE.md` records the pending native checklist.

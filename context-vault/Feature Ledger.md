@@ -149,4 +149,4 @@ The planned six-phase execution programme is recorded in `docs/MOBILE-CRM-REDESI
 
 ## Mobile navigation redesign
 
-MOBILE-REDESIGN-1 is in progress. Primary navigation, grouped role menus and shared draft guards passed local policy/rendered interaction checks (17 mobile tests and both exports). Router extraction and native acceptance remain pending. [[Sessions/2026-11-28-05]]
+MOBILE-REDESIGN-1 is in progress. File-based Router destinations, shared authenticated state, grouped role menus and draft/removal guards passed local integration checks (20 mobile tests and both exports). Native Android acceptance remains pending; no publication. [[Sessions/2026-11-28-05]]

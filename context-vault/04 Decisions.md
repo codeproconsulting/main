@@ -431,3 +431,7 @@ Retain the current workspace ownership of authenticated data during the first na
 ### Shared draft guards within the mobile workspace
 
 Use one mounted-draft registry rather than separate discard policies for each navigation control. Parent exits check nested drafts; local cancellation checks its own form. Busy/uncertain creation writes retain existing retry semantics. Invalidate old dialog callbacks after screen/account changes. This checkpoint retains the installed Expo Router entry and current data owners; route extraction remains an explicit unfinished phase 1 action. Do not count simulated BackHandler callbacks as native Android acceptance.
+
+### Single active top-level mobile destination
+
+Keep one persistent authenticated owner above file-based Router screens. Replace top-level destinations, including incoming push/navigation actions, so removal prevention covers hidden-form data loss. Reuse installed SDK 58 Navigator/StackRouter/usePreventRemove instead of adding a navigation dependency. The factory depends on the installed Router API and must be retested on upgrades. Detail editors retain their current version/retry and record-to-list behavior. Device and future record-stack acceptance remain separate.

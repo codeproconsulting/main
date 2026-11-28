@@ -367,3 +367,7 @@ MOB-33 adds up to 12 personal application summaries to the encrypted workspace a
 ## Mobile navigation redesign
 
 Role gates for Finance and consultation reports remain in More. Online/offline checks remain on each operational screen. Discard guards for applications and appointments require further acceptance.
+
+### Mobile direct destinations
+
+File-based Finance and consultation destinations preserve the native role gates: Finance renders for owner only, reports for owner/admin/manager. URLs carry destination names only; client IDs, credentials and sessions remain outside route parameters. Server authorization is unchanged and remains authoritative. Synthetic direct-route checks passed; no live role or client record changes were made.

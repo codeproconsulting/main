@@ -23,7 +23,7 @@
       "id": "NAV-NATIVE",
       "description": "Verify Android back, keyboard and dirty forms on device.",
       "status": "pending",
-      "evidence": "Shared guards now cover nested lead forms, notes, application/appointment editing and Finance exit. Synthetic BackHandler/dialog callbacks passed alongside tab/reload/back and retry checks; Android hardware, keyboard and safe-area acceptance remain pending."
+      "evidence": "Scrollable sign-in, keyboard avoidance and native-back callback logic implemented. Browser previews at 320×568 and 390×844 and simulated callbacks passed. No adb on PATH or Xcode application; Android hardware/keyboard/safe-area/large-text/lifecycle acceptance remains unperformed. Existing APK lacks this source."
     },
     {
       "id": "NAV-GUARDS",
@@ -34,27 +34,20 @@
     {
       "id": "NAV-ROUTER",
       "description": "Use installed Expo Router destinations while preserving authenticated data and draft ownership.",
-      "status": "pending",
-      "evidence": "Existing Router entry retained; section state still belongs to NativeWorkspace. Extract routes without remounting data owners, preserve Back/draft guards and rerun connected workflow checks."
+      "status": "passed",
+      "evidence": "Eleven file routes now share a persistent workspace owner above installed Expo Router Navigator. Actual ExpoRoot/usePreventRemove integration passed pushed/replaced dirty-route protection, pending booking, clean-record exit, role-gated direct paths, retained session/search and offline transitions. Mobile typecheck/lint, 20 tests and both exports passed. Native Alert/BackHandler/safe-area APIs were bridged."
     }
   ],
   "nextActions": [
     {
       "order": 1,
-      "action": "Complete phase 1 Router destination extraction while retaining shared session, workspace, list and draft ownership. Preserve the new draft guards and repeat connected interaction checks before committing the next checkpoint.",
+      "action": "Run the twelve Android device acceptance checks against a reviewed pilot/development build containing the current Router source. Verify hardware Back, keyboard/safe areas, large text, interrupted saves, direct navigation, offline lifecycle and account isolation. Record actual source/update ID and device results; keep phase 1 in progress until accepted. Do not mistake the old APK or browser bridge for native evidence.",
       "files": [
-        "/Users/fidaali/Proconsulting-App/src/app/_layout.tsx",
-        "/Users/fidaali/Proconsulting-App/src/app/index.tsx",
+        "/Users/fidaali/Proconsulting-App/docs/DEVICE-ACCEPTANCE.md",
+        "/Users/fidaali/Proconsulting-App/docs/NAVIGATION-ACCEPTANCE.md",
         "/Users/fidaali/Proconsulting-App/src/NativeWorkspace.tsx",
-        "/Users/fidaali/Proconsulting-App/src/NavigationGuard.tsx",
-        "docs/MOBILE-CRM-REDESIGN-PLAN.md"
-      ]
-    },
-    {
-      "order": 2,
-      "action": "Verify Android hardware Back, keyboard, safe areas, large text and interrupted saves on a device or emulator. Keep phase 1 in progress until native acceptance passes; browser callback simulation is not hardware evidence.",
-      "files": [
-        "/Users/fidaali/Proconsulting-App/docs/NAVIGATION-ACCEPTANCE.md"
+        "/Users/fidaali/Proconsulting-App/src/WorkspaceRoute.tsx",
+        "context-vault/session-state.json"
       ]
     }
   ],
@@ -184,31 +177,31 @@
     "offlineApplicationDeadlines": "Mobile 187fcab is local. VPS rollout, publication and physical-phone acceptance pending.",
     "offlineDeadlineLifecycle": "Mobile bd85c67 is local. Publication and physical-device checks pending.",
     "offlineApplications": "Mobile e3a9e50 is local. Rollout, publication and physical-phone acceptance pending.",
-    "mobileRedesign": "Mobile bb61415 is local on codex/mobile-staff (no remote). Shared navigation/draft guards verified with four role menus, 17 mobile tests and both exports. Runtime 1.0.4 retained. Router extraction and Android device acceptance pending; no OTA publication."
+    "mobileRedesign": "Mobile 99778a6 committed locally on codex/mobile-staff (no remote). Eleven top-level file routes, persistent shared owner and guarded push/replacement transitions verified: 20 mobile tests, real Expo Router synthetic interactions and both exports passed. Runtime 1.0.4 unchanged; Android device acceptance pending. No OTA, APK or VPS publication."
   },
   "checks": [
     {
       "command": "npm run typecheck",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-28T09:59:13.067Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-FjSBrG/typecheck.log"
+      "checkedAt": "2026-11-28T11:13:07.975Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-hMtcy2/typecheck.log"
     },
     {
       "command": "npm run test",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-28T09:59:20.392Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-FjSBrG/test.log"
+      "checkedAt": "2026-11-28T11:13:15.479Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-hMtcy2/test.log"
     },
     {
       "command": "npm run build",
       "status": "passed",
       "exitCode": 0,
-      "checkedAt": "2026-11-28T09:59:25.920Z",
-      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-FjSBrG/build.log"
+      "checkedAt": "2026-11-28T11:13:21.140Z",
+      "log": "/var/folders/ct/12b1tyv511q0_9fdpx56ssyw0000gn/T/proconsulting-session-checks-hMtcy2/build.log"
     }
   ],
-  "updatedAt": "2026-11-28T09:59:44.977Z",
-  "verifiedSourceFingerprint": "e8fcefd5913b4720628bd2c9d2a83d6896b3f624c1025e85e38175d453a3be94"
+  "updatedAt": "2026-11-28T11:13:34.982Z",
+  "verifiedSourceFingerprint": "7477357c497506023884b26a102de54e9e7aeb0bc37f6e91a8f8f95778e69a78"
 }

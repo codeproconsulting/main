@@ -455,3 +455,7 @@ Mobile checkpoint 4a5012c retains runtime 1.0.4 and changes JavaScript only. OTA
 ### Mobile navigation guard checkpoint — 28 November 2026
 
 Navigation/menu and draft-guard changes are local source with both platform JavaScript exports verified. There are no native dependency or app configuration changes; runtime 1.0.4 is retained. This checkpoint is absent from the existing APK and has not been OTA published. Phase 1 device and Router acceptance remain open. The mobile checkout still has no remote, so its source checkpoint is local; CRM documentation push is separate from mobile publication.
+
+### Routed mobile source checkpoint — 28 November 2026
+
+File-route integration, direct local role guards and keyboard-layout changes passed local bundle/integration checks. No server endpoint, schema, native dependency, configuration or runtime change. Runtime remains 1.0.4. Existing APK source predates this code; no update was published. Device acceptance must run a reviewed pilot/development build containing the checkpoint, not the unchanged old APK. The native checklist is in the separate mobile checkout’s `docs/DEVICE-ACCEPTANCE.md`.
